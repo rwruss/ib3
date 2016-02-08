@@ -1,0 +1,55 @@
+<NotepadPlus>
+    <Project name="gameScript">
+        <Folder name="gameScripts">
+            <File name="1001.php" />
+            <File name="1002.php" />
+            <File name="1003.php" />
+            <File name="1004.php" />
+            <File name="1005.php" />
+            <File name="1006.php" />
+            <File name="1007.php" />
+            <File name="1008.php" />
+            <File name="1009.php" />
+            <File name="1010.php" />
+            <File name="1011.php" />
+            <File name="1012.php" />
+            <File name="1013.php" />
+            <File name="1014.php" />
+            <File name="1015.php" />
+            <File name="1016.php" />
+            <File name="1017.php" />
+            <File name="1018.php" />
+            <File name="1019.php" />
+            <File name="1020.php" />
+            <File name="1021.php" />
+            <File name="1022.php" />
+            <File name="1023.php" />
+            <File name="1024.php" />
+            <File name="1025.php" />
+            <File name="1026.php" />
+            <File name="1027.php" />
+            <File name="1028.php" />
+            <File name="1029.php" />
+            <File name="1030.php" />
+            <File name="1031.php" />
+            <File name="1032.php" />
+            <File name="1033.php" />
+            <File name="1034.php" />
+            <File name="1035.php" />
+            <File name="1036.php" />
+            <File name="cl255.php" />
+            <File name="gScriptList.txt" />
+        </Folder>
+        <Folder name="public_html">
+            <File name="E:\websites\IB3\public_html\glFunctions.js" />
+            <File name="E:\websites\IB3\public_html\glMatrix-0.9.5.min.js" />
+            <File name="E:\websites\IB3\public_html\webgl-utils.js" />
+            <File name="E:\websites\IB3\public_html\director.php" />
+            <File name="E:\websites\IB3\public_html\gameScr.php" />
+            <File name="E:\websites\IB3\public_html\index.php" />
+            <File name="E:\websites\IB3\public_html\play.php" />
+            <File name="E:\websites\IB3\public_html\slotFunctions.php" />
+            <File name="E:\websites\IB3\public_html\taskFunctions.php" />
+        </Folder>
+    </Project>
+</NotepadPlus>
