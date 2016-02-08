@@ -1,0 +1,18 @@
+<NotepadPlus>
+    <Project name="Org Tree">
+        <File name="baseView.html" />
+        <File name="blank.html" />
+        <File name="charDetail.html" />
+        <File name="cityForage.html" />
+        <File name="charManage.html" />
+        <File name="cityManage.html" />
+        <File name="cityPlayers.html" />
+        <File name="cityResources.html" />
+        <File name="rscInfo.html" />
+        <File name="tech.html" />
+        <File name="unitManage.html" />
+        <File name="unitMove.html" />
+        <File name="unitSelect.html" />
+        <File name="unitDetail.html" />
+    </Project>
+</NotepadPlus>

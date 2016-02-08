@@ -1,0 +1,46 @@
+.selected {
+	border:1px solid red;
+}
+
+.unselected {
+	border: 1px solid black;
+}
+
+.charSummary {
+	position:relative;
+	border: 1px solid black;
+	width:150;
+	height:150;
+}
+
+.charSummary .cSAvatar {
+	position:absolute;
+	left:5;
+	top:5;
+	width:90;
+	height:90;
+}
+
+.charSummary .cSDtlButton {
+	position:absolute;
+	left:5;
+	bottom:5;
+	width:140;
+	height:20;
+}
+
+.charSummary .cSRankButton {
+	position:absolute;
+	right:5;
+	top:5;
+	width:45;
+	height:45;
+}
+
+.charSummary .cSName {
+	position:absolute;
+	left:5;
+	top:100;
+	width:140;
+	height:20;
+}
