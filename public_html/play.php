@@ -2377,7 +2377,7 @@ precision mediump float;
 					//uPoints.push(unitStuff[uCount*2],unitStuff[uCount*2+1]);
 					uPoints.push(unitStuff[uCount*3], unitStuff[uCount*3+1], unitStuff[uCount*3+2]);
 					gridUnitsLength[i]+=1;
-					//alert(unitStuff[uCount*2] + ', ' + unitStuff[uCount*2+1]);
+					alert(unitStuff[uCount*2] + ', ' + unitStuff[uCount*2+1]);
 					minVals[0] = Math.min(minVals[0], unitStuff[uCount*3]);
 					minVals[1] = Math.min(minVals[1], unitStuff[uCount*3+1]);
 					maxVals[0] = Math.max(maxVals[0], unitStuff[uCount*3]);
@@ -2393,7 +2393,7 @@ precision mediump float;
 				gl.bindBuffer(gl.ARRAY_BUFFER, gridUniforms[i]);
 				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uPoints), gl.STATIC_DRAW);	
 			}
-		alert('Found ' + tmptotalUnits + ' units');
+		//alert('Found ' + tmptotalUnits + ' units');
 		//alert(gridUnitsLength);
 		//alert('min: ' + minVals[0] + ', ' + minVals[1] + '<---> max: ' + maxVals[0] + ', ' + maxVals[1]);
 		//alert(rData.byteLength + ', ' + totalOffset);
@@ -2410,6 +2410,7 @@ precision mediump float;
 	drawList[7] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35];
 	drawList[8] = drawList[0];
 	var clickParams = [];
+	var clickTarg = '';
 	function handleClick(event)	{
 		//alert(testParam + ',' + clickParams);
 		document.body.style.cursor = 'auto';
@@ -2436,20 +2437,22 @@ precision mediump float;
 			//alert(pixelValues[0] + ', ' + pixelValues[1] + ',' + pixelValues[2] + 'base: ' + baseTile[0] + ', ' + baseTile[1] + '/' + clickX + ', ' + clickY + ' = ' + longitude+'/'+latitude);
 			document.getElementById('clickLat').value = latitude;
 			document.getElementById('clickLong').value = longitude;
-			sendStr = '1019,'+pixelValues+','+baseTile+','+zoomLvl+','+clickParams;
+			sendStr = clickParams + ','+pixelValues+','+baseTile+','+zoomLvl;
 			if (clickParams[0] != 0) {
-				passClick(sendStr, clickParams[0]);
-				alert('blah ' + clickParams[0]);
+				passClick(sendStr, clickTarg);
+				//alert('blah ' + baseTile);
 			}
 			//else passClick(sendStr, 'rtPnl');
 		}
 		
 	clickParams = [0];
+	clickTarg = '';
 	}
 	
 	function setClick(params, style, trg) {
 		
 		clickParams=params;
+		clickTarg = trg;
 		//alert(params + ' ==> ' + clickParams + ', ' + style);
 		
 		document.body.style.cursor = style;

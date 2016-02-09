@@ -111,10 +111,10 @@ function addtoSlotGen($slot_handle, $check_slot, $addData, $slot_file, $slotSize
 			{
 			fseek($slot_file, $check_slot*$slotSize + $open_spot*4-4);
 			$seek = $check_slot*$slotSize + $open_spot*4-4;
-			fwrite($slot_file, $addData);
+			echo 'Write '.fwrite($slot_file, $addData);
 			$success = TRUE;
 			$check_slot = 0;
-			echo "Found open spot<br>";
+			echo ' =>Found open spot '.$open_spot.' at '.$seek.'<br>';
 			}
 		else
 			{

@@ -1,0 +1,49 @@
+1001 - Show list of Faction characters
+1002 - Show character details
+	1002a - Show owner details (full and true details)
+	1002b - show non-owner details
+	1002c - Show controller (not owner) details (full details but maybe not true:))
+1003 - startup options
+1004 - Process startup options
+1005 - Lands Menu
+1006 - Character click
+1007 - Faction Laws
+1008 - Faction Diplomacy
+1009 - Faction Plots
+1010 - Religion Change Menu
+1011 - Military Menu
+1012 - Issue Orders/Edicts
+1013 - Process establish town
+1014 - Settlement detail screen <--- replaced by CL255
+1015 - Economy Management
+1016 - Read technology to determine tasks ??
+1017 - Tech/Development Menu
+1018 - Show unit move
+1019 - Direct a click from the map (to CLxxx series)
+1020 - Test running a script
+1021 - View characters present in a city
+1022 - Manage city production
+1023 - Establish a resource point (receive Point)
+1024 - Start Forage from a city
+1025 - Process forage options
+1026 - Task detail screen
+1027 - Army/Unit Group Detail
+1028 - Unit Detail
+1029 - View city projects/tasks
+1030 - Process starting a project in the city
+1031 - Details for a started project in the city
+1032 - Promotion options for a character
+1033 - Process setting of rank for character
+1034 - unit Detail Information and Orders
+	1034a - Show owner details (full and true details)
+	1034b - Show controller (not owner) details (full details but maybe not true:))
+	1034c - show non-owner details
+1035 - Process order given for a character	
+1036 - Get description of a task and return
+1037 - Building detail information
+1038 - Send a scout to a location
+1039 - Process building creation
+1040 - Task Detail Screen
+2001 - Add Resources to a city
+
+CL255 - City interface
