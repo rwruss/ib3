@@ -28,7 +28,7 @@
 1025 - Process forage options
 1026 - Task detail screen
 1027 - Army/Unit Group Detail
-1028 - Unit Detail
+1028 - Unit (warband) Detail
 1029 - View city projects/tasks
 1030 - Process starting a project in the city
 1031 - Details for a started project in the city
@@ -47,3 +47,5 @@
 2001 - Add Resources to a city
 
 CL255 - City interface
+
+wbSC1 - Unit detail and options for a civilian unit
