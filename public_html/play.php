@@ -2377,7 +2377,7 @@ precision mediump float;
 					//uPoints.push(unitStuff[uCount*2],unitStuff[uCount*2+1]);
 					uPoints.push(unitStuff[uCount*3], unitStuff[uCount*3+1], unitStuff[uCount*3+2]);
 					gridUnitsLength[i]+=1;
-					alert(unitStuff[uCount*2] + ', ' + unitStuff[uCount*2+1]);
+					//alert(unitStuff[uCount*2] + ', ' + unitStuff[uCount*2+1]);
 					minVals[0] = Math.min(minVals[0], unitStuff[uCount*3]);
 					minVals[1] = Math.min(minVals[1], unitStuff[uCount*3+1]);
 					maxVals[0] = Math.max(maxVals[0], unitStuff[uCount*3]);

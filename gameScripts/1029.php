@@ -23,10 +23,12 @@ if ($approved) {
 		$taskDat = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[21], 40)));
 		$taskSize = sizeof($taskDat);
 		$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
-		for ($i=0; $i<$taskSize; $i++) {
-			fseek($taskFile, $taskDat[$i]*400);
-			$taskDtl = unpack('i*', fread($unitFile, 400));
-			echo '<div onclick="makeBox(\'taskDtl\', 1040, 500, 500, 200, 50);">Task Type '.$taskDtl[5].' is '.$taskdat[4].'% Complete</div>>';
+		print_r($taskDat);
+		for ($i=1; $i<=$taskSize; $i++) {
+			fseek($taskFile, $taskDat[$i]*200);
+			$taskDtl = unpack('i*', fread($taskFile, 400));
+			print_r($taskDtl);
+			echo '<div onclick="makeBox(\'taskDtl\', 1040, 500, 500, 200, 50);">'.$i.' - '.$taskDat[$i].')Task Type '.$taskDtl[5].' is '.$taskDtl[4].'/'.$taskDtl[3].' Complete</div>';
 		}
 		fclose($taskFile);
 	} else {

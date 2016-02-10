@@ -4,9 +4,9 @@ function createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $s
 	
 	// Save task
 	clearstatcache();
-	if (strlen($parameters>200) {
+	if (strlen($parameters>200)) {
 		$dataBlocks = str_split($parameters, 196);
-		$firstBlock = max(1,filesize($gamePath.'/tasks.tdt')/200);
+		$firstBlock = floor(max(1,filesize($gamePath.'/tasks.tdt')/200));
 		for ($i=0; $i<sizeof($dataBlocks)-1; $i++) {
 			fseek($taskFile, ($firstBlock+$i)*200);
 			fwrite($taskFile, $parameters.pack('i', $firstBlock+$i+1));
@@ -16,7 +16,7 @@ function createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $s
 		fseek($taskFile, ($newTaskID+$i)*200+196);
 		fwrite($taskFile, pack('i', 0));
 	} else {
-		$newTaskID = max(1,filesize($gamePath.'/tasks.tdt')/200);
+		$newTaskID = floor(max(1,filesize($gamePath.'/tasks.tdt')/200));
 		fseek($taskFile, $newTaskID*200);
 		fwrite($taskFile, $parameters);
 		fseek($taskFile, $newTaskID*200+196);

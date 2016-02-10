@@ -74,10 +74,14 @@ if ($approved != false) {
 		// Create a new task to be processed.
 		$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
 		$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
-		$newTask = createTask($taskFile, $taskIndex, 24*60, 0,$gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
+		$parameters = pack('i*', 1,time(),1000,0,2,$cityID,0);
+		$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 		fclose($taskFile);
 		
-		addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[21], pack('i', $taskIndex), $slotFile);
+		echo '<p>Parameters:';
+		print_r(unpack('i*', $parameters));
+		
+		addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[21], pack('i', $newTask), $slotFile);
 		// this is for adding to a map slot -> addtoSlotGen($gamePath.'/gameSlots.slt', $cityDat[21], pack('i', $taskIndex), $slot_file, 40) // function addtoSlotGen($slot_handle, $check_slot, $addData, $slot_file, $slotSize)
 
 		// add the building to the map file at the specified location
