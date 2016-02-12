@@ -11,7 +11,7 @@
 1008 - Faction Diplomacy
 1009 - Faction Plots
 1010 - Religion Change Menu
-1011 - Military Menu
+1011 - Military Menu for player
 1012 - Issue Orders/Edicts
 1013 - Process establish town
 1014 - Settlement detail screen <--- replaced by CL255
@@ -44,6 +44,8 @@
 1038 - Send a scout to a location
 1039 - Process building creation
 1040 - Task Detail Screen
+1041 - Assign labor to project
+1042 - View Garrison at a town
 2001 - Add Resources to a city
 
 CL255 - City interface

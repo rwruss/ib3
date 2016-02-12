@@ -28,8 +28,6 @@ if ($approved) {
 	print_r($unitsHere);
 }
 
-
-
 fclose($unitFile);
 
 ?>
