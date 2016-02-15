@@ -20,7 +20,7 @@ $approved = array_search($pGameID, $credList);
 
 if ($approved != false) {
 	$credLevel = $credList[$approved-1]*(-1);
-	
+
 	// Verify that enough resources are available for the building
 	$buildingDat = explode('<-->', file_get_contents($gamePath.'/buildings.desc'));
 	$rscList = explode('/', $buildingDat[$postVals[3]*7+4]);
@@ -30,31 +30,31 @@ if ($approved != false) {
 	for ($i=0; $i<$numReqd; $i++) {
 		$reqdRsc[$rscList[$i*2]] = $rscList[$i*2+1];
 	}
-			
+
 	echo 'Resources required:<br>';
 	print_r($reqdRsc);
-			
+
 	$cityRsc = array_fill(1, 100, 0);
 	$rscDat = unpack("i*", readSlotData($slotFile, $cityDat[11], 40));
 	$numHave = floor(sizeof($rscDat)/2);
-	
+
 	echo '<p>RSC DAT:<br>';
 	print_r($rscDat);
-	
+
 	for ($i=0; $i<$numHave; $i++) {
 		$cityRsc[$rscDat[$i*2+1]] = $rscDat[$i*2+2];
-	}	
-	
+	}
+
 	echo '<p>City Resources:<br>';
 	print_r($cityRsc);
-	
+
 	$rscCheck = true;
 	foreach ($reqdRsc as $key => $value) {
 		if ($cityRsc[$key] - $value < 0) {
 			$rscCheck = false;
 		}
 	}
-	
+
 	if ($rscCheck) {
 		// Create a building object
 		if (flock($unitFile, LOCK_EX)) {
@@ -65,8 +65,8 @@ if ($approved != false) {
 			flock($unitFile, LOCK_UN);
 		}
 		fseek($unitFile, $newID*400);
-		fwrite($unitFile, pack('i*', $postVals[1], $postVals[2], 0, 3, $cityID, $cityID, 1, 1, 1, $postVals[3], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
-		
+		fwrite($unitFile, pack('i*', $postVals[1], $postVals[2], 0, 2, $cityID, $cityID, 1, 1, 1, $postVals[3], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
+
 		// add the building to the town as an "in progress" building
 		writeBlocktoSlot($gamePath.'/gameSlots.slt', $cityDat[17], pack('i*', 0, $newID), $slotFile, 40); // function writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize)
 		echo '<p>New unit ID is '.$newID.'<br>';
@@ -77,10 +77,10 @@ if ($approved != false) {
 		$parameters = pack('i*', 1,time(),1000,0,2,$cityID,0, $cityID, $newID);
 		$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 		fclose($taskFile);
-		
+
 		echo '<p>Parameters:';
 		print_r(unpack('i*', $parameters));
-		
+
 		addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[21], pack('i', $newTask), $slotFile);
 		// this is for adding to a map slot -> addtoSlotGen($gamePath.'/gameSlots.slt', $cityDat[21], pack('i', $taskIndex), $slot_file, 40) // function addtoSlotGen($slot_handle, $check_slot, $addData, $slot_file, $slotSize)
 
@@ -94,11 +94,11 @@ if ($approved != false) {
 		foreach($reqdRsc as $rscID => $rscQty) {
 			echo 'Resource '.$rscID.': '.($cityRsc[$rscID] - $rscQty).'<br>';
 		}
-	}	
-	
+	}
+
 } else {
 	$credLevel = 0;
-	echo 'You do not have the authority required to issue this order.'; 
+	echo 'You do not have the authority required to issue this order.';
 }
 
 

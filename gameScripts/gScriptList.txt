@@ -38,14 +38,16 @@
 	1034a - Show owner details (full and true details)
 	1034b - Show controller (not owner) details (full details but maybe not true:))
 	1034c - show non-owner details
-1035 - Process order given for a character	
+1035 - Process order given for a character
 1036 - Get description of a task and return
 1037 - Building detail information
 1038 - Send a scout to a location
 1039 - Process building creation
 1040 - Task Detail Screen
-1041 - Assign labor to project
+1041 - Assign labor to project Options
 1042 - View Garrison at a town
+1043 - Process assigning labor to a project
+1044 - Process assigning labor to a resource point
 2001 - Add Resources to a city
 
 CL255 - City interface
