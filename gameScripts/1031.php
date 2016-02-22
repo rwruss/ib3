@@ -6,8 +6,8 @@ include("./slotFunctions.php");
 $cityID = $_SESSION['selectedItem'];
 $charID = $_SESSION['selectedChar'];
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $cityID*400);
-$cityDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $cityID*$defaultBlockSize);
+$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Verify that player has credentials to view this info
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
@@ -39,7 +39,7 @@ for ($i=0; $i<$numLeaders; $i++) {
 }
 
 if ($approved) {
-	
+
 } else {
 }
 

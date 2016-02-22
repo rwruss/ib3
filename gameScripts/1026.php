@@ -1,10 +1,10 @@
 <?php
 
 // open task file
-$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
+$taskFile = fopen($gamePath.'/unitDat.dat', 'rb');
 
-fseek($taskFile, $taskID*200);
-$taskDat = unpack('i*', fread($taskFile, 200));
+fseek($taskFile, $taskID*$defaultBlockSize);
+$taskDat = unpack('i*', fread($taskFile, $jobBlockSize));
 
 fclose($taskFile);
 

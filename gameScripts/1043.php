@@ -2,8 +2,8 @@
 
 // Confirm that player controls unit
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $postVals[1]*400);
-$unitDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $postVals[1]*$defaultBlockSize);
+$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 $control = false;
 if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) $control = true;
@@ -11,8 +11,8 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) $control = true;
 if ($control) {
   // Confirm that task can be done by this unit
   $taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
-  fseek($taskFile, $postVals[2]*200);
-  $taskDat = unpack('i*', fread($taskFile, 200));
+  fseek($taskFile, $postVals[2]*$defaultBlockSize);
+  $taskDat = unpack('i*', fread($taskFile, $jobBlockSize));
 
   if ($taskDat[8] == $unitDat[12]) {
 

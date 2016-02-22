@@ -2,8 +2,8 @@
 
 // Get slot for units for this group
 $unitFile = fopen($gamePath./'unitDat.dat', 'rb');
-fseek($unitFile, $unitID*400);
-$groupDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $unitID*$defaultBlockSize);
+$groupDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Read all units in this group
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
@@ -12,8 +12,8 @@ $unitList = array_filter(unpack("N*", readSlotData($slotFile, <--index to read--
 fclose($slotFile);
 
 foreach($unitList as $listUnitID) {
-	fseek($unitFile, $listUnitID*400);
-	$unitDat = unpack('i*', fread($unitFile, 400));
+	fseek($unitFile, $listUnitID*$defaultBlockSize);
+	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 }
 
 // Show orders available for this army group based on the unit types present

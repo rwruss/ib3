@@ -7,8 +7,8 @@ $cityID = $_SESSION['selectedItem'];
 //$charID = $_SESSION['selectedChar'];
 $charID = $postVals[1];
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $cityID*400);
-$cityDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $cityID*$defaultBlockSize);
+$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Verify that player has credentials to view this info
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
@@ -41,14 +41,14 @@ for ($i=0; $i<$numLeaders; $i++) {
 
 if ($approved) {
 	// get character data
-	fseek($unitFile, $charID*400);
-	$charDat = unpack('i*', fread($unitFile, 400));
-	
+	fseek($unitFile, $charID*$defaultBlockSize);
+	$charDat = unpack('i*', fread($unitFile, $unitBlockSize));
+
 	$positionList = unpack("i*", readSlotData($slotFile, $charDat[13], 40));
 	$posIndex = array_search($cityID*(-1), $positionList);
-	
+
 	$oldRank = $positionList[$posIndex+1];
-	
+
 	// update the character's rank and record
 	$positionList[$posIndex+1] = $postVals[1];
 	$useDat = '';
@@ -56,13 +56,13 @@ if ($approved) {
 	for ($i=1; $i<=$positionSize; $i++) {
 		$useDat .= pack('i', $positionList[$i]);
 	}
-	
+
 	writeBlocktoSlot($gamePath.'/gameSlots.slt', $charDat[13], $useDat, $slotFile, 40) // function writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize)
-	
+
 	// Update leadership positions
 	$oldRankIndex = array_search($charID, $rankList[$oldRank]);
 	unset($rankList[$oldRank][$oldRankIndex]);
-	
+
 	// Repack leadership data and save
 	$useDat = '';
 	for ($i=0; $i<9; $i++) {
@@ -72,12 +72,12 @@ if ($approved) {
 		}
 	}
 	writeBlocktoSlot($gamePath.'/gameSlots.slt', $cityDat[13], $useDat, $slotFile, 40) // function writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize)
-	
-	// check for changes to the player's credintial level - get list of characters that player controls and compare to the rank list moving up from the new 
+
+	// check for changes to the player's credintial level - get list of characters that player controls and compare to the rank list moving up from the new
 	// rank for the current player.
-	fseek($unitFile, $pGameID*400);
-	$playerDat = unpack('i*', fread($unitFile, 400));
-	
+	fseek($unitFile, $pGameID*$defaultBlockSize);
+	$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
+
 	$playerCharList = array_filter((unpack("i*", readSlotData($slotFile, $playerDat[19], 40)));
 	$newHighRank = $postVals[1];
 	$checkRank = 9;
@@ -90,13 +90,13 @@ if ($approved) {
 		}
 		$checkRank--;
 	}
-	
+
 	if ($newHighRank < $credLevel) {
 		// update the leadership slot for the city
 		writeSlotPoint($slotFile, $cityDat[19], $approved-1, pack('i', $newHighRank), 40); //writeSlotPoint($slotFile, $startSlot, $targetPoint, $data, $slotSize)
-	}	
-	
-	
+	}
+
+
 	echo '<Script>alert("change saved - unit '.$charID.' from rank '.$oldRank.' to rank '.$postVals[2].'");
 	alert(document.getElementById("rankBox_'.$charID.'").innerHTML);
 	document.getElementById("rankBox_'.$charID.'").innerHTML = "'.$postVals[2].'"</script>';

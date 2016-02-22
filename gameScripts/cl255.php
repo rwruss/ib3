@@ -2,8 +2,8 @@
 //print_r($postVals);
 $unitID = $postVals[2]*255+$postVals[3];
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $unitID*400);
-$unitDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $unitID*$defaultBlockSize);
+$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 //$unitInf = unpack('i*', $unitDat);
 //print_r(unpack('i*', $unitDat));

@@ -5,8 +5,8 @@ echo 'This is the garrison at the town<br>';
 $cityID = $_SESSION['selectedItem'];
 // Verify selection is a town
 $unitFile = fopen($gamePath.'/unitDat.dat' ,'r+b');
-fseek($unitFile, $cityID*400);
-$cityDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $cityID*$defaultBlockSize);
+$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 if ($cityDat[4] == 1) {
 

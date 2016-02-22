@@ -8,6 +8,9 @@ class player {
 	}
 }
 
+$defaultBlockSize = 100;
+$unitBlockSize = 400;
+$jobBlockSize = 100;
 session_start();
 $gameID = $_GET['gid'];
 if ($gameID != $_SESSION['instance']) {echo "<script>alert('Game mismatch')</script>";exit;}
@@ -28,7 +31,7 @@ function read_slot($file, $slot_num, $slot_size)
 		fseek($file, $next_slot*$slot_size);
 		$slot_dat = fread($file, $slot_size);
 		$units_a = array_merge($units_a, unpack("N*", substr($slot_dat, 4)));
-	
+
 		$slot_check = unpack("N", $slot_dat);
 		$next_slot = $slot_check[1];
 		//echo "Next Slot: ".$next_slot;

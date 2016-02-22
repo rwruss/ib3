@@ -1,6 +1,6 @@
 <?php
 
-$playerDat = unpack('i*', file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*400, 400));
+$playerDat = unpack('i*', file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*$defaultBlockSize, $unitBlockSize));
 
 
 echo 'Faction plots - SLOT TBD';

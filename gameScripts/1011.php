@@ -2,8 +2,8 @@
 include("./slotFunctions.php");
 // Get list of all units for this faction
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $pGameID*400);
-$playerDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $pGameID*$defaultBlockSize);
+$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 $playerObj = new player($playerDat);
 
@@ -12,8 +12,8 @@ $unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerObj->unitSl
 
 if (sizeof($unitList)>0) {
 	foreach ($unitList as $unitID) {
-		fseek($unitFile, $unitID*400);
-		$unitDat = unpack('i*', fread($unitFile, 400));
+		fseek($unitFile, $unitID*$defaultBlockSize);
+		$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 		echo '<div onclick="makeBox(\'unitDetail\', \'1034,'.$unitID.'\', 500, 500, 200, 50);">Unit #'.$unitID.'</div>';
 	}
 } else {

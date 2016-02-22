@@ -2,8 +2,8 @@
 
 // Get date for this unit
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $postVals[1]*400);
-$unitDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $postVals[1]*$defaultBlockSize);
+$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 
 // Give unit options and stats dependant upon unit type

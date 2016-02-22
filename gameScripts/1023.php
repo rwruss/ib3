@@ -23,15 +23,15 @@ $cityID = $_SESSION['selectedItem'];
 print_r($postVals);
 // Get city data
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $cityID*400);
-$cityDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $cityID*$defaultBlockSize);
+$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Verify credintials
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
 $approved = array_search($pGameID, $credList);
-echo '<p>City Dat:<br>';
-//print_r($cityDat);
+echo '<p>City Dat cred slot is '.$cityDat[19].':<br>';
+print_r($credList);
 if ($approved != false) {
 	$credLevel = $credList[$approved-1]*(-1);
 } else {
@@ -46,8 +46,8 @@ if ($approved) {
 	$numBuildings = sizeof($buildingDat);
 
 	for ($i=0; $i<$numBuildings; $i++) {
-		fseek($unitFile, $bldgID*400);
-		$buildingDat = unpack('i*', fread($unitFile, 400));	
+		fseek($unitFile, $bldgID*$defaultBlockSize);
+		$buildingDat = unpack('i*', fread($unitFile, $unitBlockSize));
 		$typeList[$buildingDat[10]][] = $i;
 		$buildingDatList[] = $buildingDat;
 	}
@@ -63,14 +63,14 @@ if ($approved) {
 			foreach ($typeList[$typeID] as $bldgIndex) {
 				echo '<div onclick="makeBox(\'bldgDtl\', 1037, 500, 500, 200, 50)">Building #'.$bldgIndex.' with a condition of '.$buildingDatList[$bldgIndex][20].'</div>>';
 			}
-		}		
+		}
 	// create a pointer at the location on the map
 	echo '<script></script>';
 	} else {
 		echo 'No buildings at this location';
 	}
 } else {
-	echo 'You do not have the authority required to issue this order.';
+	echo 'You do not have the authority required to issue this order. ('.$pGameID.')';
 }
 
 ?>

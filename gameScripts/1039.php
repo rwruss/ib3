@@ -11,8 +11,8 @@ print_r($postVals);
 $cityID = $_SESSION['selectedItem'];
 // Verify that the person giving the order has the proper credintials
 $unitFile = fopen($gamePath.'/unitDat.dat' ,'r+b');
-fseek($unitFile, $cityID*400);
-$cityDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $cityID*$defaultBlockSize);
+$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 $credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
@@ -59,12 +59,42 @@ if ($approved != false) {
 		// Create a building object
 		if (flock($unitFile, LOCK_EX)) {
 			clearstatcache();
-			$newID = max(1,filesize($gamePath.'/unitDat.dat')/400);
-			fseek($unitFile, $newID*400+396);
+			$newID = max(1,filesize($gamePath.'/unitDat.dat')/$defaultBlockSize);
+			$projectID = $newID + 4;
+			fseek($unitFile, $newID*$defaultBlockSize+$unitBlockSize-4);
 			fwrite($unitFile, pack('i', 0));
+
+			// Create job object for this point
+			fseek($unitFile, $projectID*$defaultBlockSize);
+			fwrite($unitFile);
+
+
 			flock($unitFile, LOCK_UN);
+
+			$mapObjectFile = fopen($gamePath.'/mapObjects.map', 'ab');
+			if (flock($mapObjectFile, LOCK_EX)) {
+				$mapObjectSize = filesize($gamePath.'/mapObjects.map');
+				fwrite($mapObjectFile, pack('i*', $newID, 0, 0));
+				flock($mapObjectFile, LOCK_UN);
+
+				// Record map object ID for this objet
+				fseek($unitFile, $newID*$defaultBlockSize+52);
+				fwrite($unitFile, $mapObjectSize/4);
+				/*
+				// Record map/move object ID for the military unit
+				fseek($unitFile, $militaryID*$defaultBlockSize+88);
+				fwrite($unitFile, $mapObjectSize/4);
+
+				// Record map/move object ID for the civilian unit
+				fseek($unitFile, $civilianID*$defaultBlockSize+88);
+				fwrite($unitFile, $mapObjectSize/4);
+				*/
+			}
+			fclose($mapObjectFile);
+		} else {
+			echo 'Major lock error';
 		}
-		fseek($unitFile, $newID*400);
+		fseek($unitFile, $newID*$defaultBlockSize);
 		fwrite($unitFile, pack('i*', $postVals[1], $postVals[2], 0, 2, $cityID, $cityID, 1, 1, 1, $postVals[3], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
 
 		// add the building to the town as an "in progress" building
@@ -98,7 +128,7 @@ if ($approved != false) {
 
 } else {
 	$credLevel = 0;
-	echo 'You do not have the authority required to issue this order.';
+	echo 'You do not have the authority required to issue this order. ('.$pGameID.')';
 }
 
 

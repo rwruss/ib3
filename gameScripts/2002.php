@@ -7,8 +7,8 @@ include("./slotFunctions.php");
 //Load city info
 $cityID = $_SESSION['selectedItem'];
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $cityID*400);
-$cityDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $cityID*$defaultBlockSize);
+$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 fclose($unitFile);
 echo 'City Data: ';
 print_r($cityDat);
@@ -22,7 +22,7 @@ $numHave = sizeof($rscDat)/2;
 echo '<p>City Resources: ';
 for ($i=1; $i<$numHave; $i++) {
 	$cityRsc[$rscDat[$i*2-1]] = $rscDat[$i*2];
-}	
+}
 
 // Update for resources to add...
 $cityRsc[$postVals[1]] += $postVals[2];

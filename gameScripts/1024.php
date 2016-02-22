@@ -4,8 +4,8 @@ include("./slotFunctions.php");
 //$playerFile = fopen($gamePath.'/players.plr', 'rb');
 echo 'seek to place '.$pGameID.'<br>';
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $pGameID*400);
-$playerDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $pGameID*$defaultBlockSize);
+$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 print_r($playerDat);
 
@@ -20,8 +20,8 @@ echo '<script>groupList = [];</script>Forage from a city options...<p>
 Select units to forage with:';
 
 foreach ($unitList as $unitID) {
-	fseek($unitFile, $unitID*400);
-	$unitDat = unpack('i*', fread($unitFile, 400));
+	fseek($unitFile, $unitID*$defaultBlockSize);
+	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 	echo '<div id="selOpt_'.$unitID.'" class="unselected" onclick="groupSelect('.$unitID.')">Unit '.$unitID.' - Type '.$unitDat[4].'</div>';
 }
 echo '

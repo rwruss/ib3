@@ -5,6 +5,7 @@ echo 'Unit Details for unit '.$unitID.'<br>
   Controller: '.$unitDat[6].'<br>
   Status: '.$unitDat[7].'<br>
   Space: '.$unitDat[8].'<br>
+  Map Object ID '.$unitDat[23].'<br>
   <div style="position:absolute; bottom:100; left:0;" onclick="makeBox(\'cityProd\', 1022, 500, 500, 200, 50);">Manage Production</div>
   <div style="position:absolute; bottom:120; left:0;" onclick="makeBox(\'cityMan\', 1021, 500, 500, 200, 50);">Characters Present</div>
   <div style="position:absolute; bottom:140; left:0;" onclick="makeBox(\'cityMan\', \'1029,'.$unitID.'\', 500, 500, 200, 50);">City Projects</div>

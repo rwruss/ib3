@@ -6,8 +6,8 @@ echo 'A unit has been clicked ('.$unitID.')';
 print_r($postVals);
 
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $unitID*400);
-$unitDat = fread($unitFile, 400);
+fseek($unitFile, $unitID*$defaultBlockSize);
+$unitDat = fread($unitFile, $unitBlockSize);
 $unitLoc = unpack('i*', $unitDat);
 fclose($unitFile);
 $lat = $unitLoc[2]/120;

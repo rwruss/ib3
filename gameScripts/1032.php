@@ -5,8 +5,8 @@ $cityID = $_SESSION['selectedItem'];
 
 // Get city data
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $cityID*400);
-$cityDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $cityID*$defaultBlockSize);
+$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Verify data is for a city
 
@@ -26,8 +26,8 @@ if ($approved != false) {
 if ($cityDat[20] == $pGameID) $credLevel = 10;
 
 // Determine the character's current rank in the city
-fseek($unitFile, $postVals[1]*400);
-$charDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $postVals[1]*$defaultBlockSize);
+$charDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Get characters current position
 print_r($charDat);
@@ -44,7 +44,7 @@ $promotionList = array('Chief', 'SWBear', 'SHBear', 'Warrior', 'Councilor');
 
 echo '<script>
 window["saveRank"] = function() {
-	
+
 	setVal = document.getElementById("rankSelect").value;
 	//alert("saveRank " + setVal + " for char '.$postVals[1].'");
 	scrMod("1033,'.$postVals[1].',"+setVal);

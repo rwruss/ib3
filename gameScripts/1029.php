@@ -8,8 +8,8 @@ $cityID = $_SESSION['selectedItem'];
 echo 'Show projects for city '.$cityID.'<br>';
 // Verify that the person giving the order has the proper credintials
 $unitFile = fopen($gamePath.'/unitDat.dat' ,'rb');
-fseek($unitFile, $cityID*400);
-$cityDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $cityID*$defaultBlockSize);
+$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 //print_r($cityDat);
 
@@ -25,8 +25,8 @@ if ($approved) {
 		$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
 		print_r($taskDat);
 		for ($i=1; $i<=$taskSize; $i++) {
-			fseek($taskFile, $taskDat[$i]*200);
-			$taskDtl = unpack('i*', fread($taskFile, 200));
+			fseek($taskFile, $taskDat[$i]*$defaultBlockSize);
+			$taskDtl = unpack('i*', fread($taskFile, $jobBlockSize));
 			//print_r($taskDtl);
 			echo '<div onclick="makeBox(\'taskDtl\', \'1040,'.$taskDat[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskDat[$i].')Task Type '.$taskDtl[5].' is '.$taskDtl[4].'/'.$taskDtl[3].' Complete</div>';
 		}
@@ -56,7 +56,7 @@ if ($cityDat[17] > 0) {
 	$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 	$bldgDat = array_filter(unpack("N*", readSlotData($slotFile, $cityDat[17], 40))); // Bldg ID, % Complete
 	fclose($slotFile);
-} 
+}
 $bldgDatSize = sizeof($bldgDat)/2;
 $bldgProgress = array();
 $bldgDmg = array();
@@ -96,13 +96,13 @@ if (sizeof($bldgHere) > 0) {
 for ($i=1;$i<$listSize; $i++) {
 	// Check prereqs
 	//echo $bldgList[$i*7];
-	
-	
+
+
 	if ($bldgList[$i*7+3] == 'None') {
 		//echo 'Can Build - no prereq';
 		$canBuild[] = $i;
 	}	else  {
-		
+
 		$preReqs = explode(',', $bldgList[$i*7+3]);
 		//print_r($preReqs);
 		$pScore = 1;
@@ -119,9 +119,9 @@ for ($i=1;$i<$listSize; $i++) {
 			$noBuild[] = $i;
 		}
 	}
-	
+
 	//echo '<br>';
-	
+
 }
 echo 'Buildings in progress:<br>';
 if (sizeof($bldgProgress) > 0) {

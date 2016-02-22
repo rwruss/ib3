@@ -3,8 +3,8 @@
 echo 'Non owner details for a character';
 
 // Load player Dat to get intelligence slot
-fseek($unitFile, $pGameID*400);
-$playerDat = unpack('i*', fread($unitFile, 400));
+fseek($unitFile, $pGameID*$unitBlockSize);
+$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 $playerObj = new player($playerDat);
 
