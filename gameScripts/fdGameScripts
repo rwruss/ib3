@@ -40,10 +40,18 @@
             <File name="1037.php" />
             <File name="1039.php" />
             <File name="1040.php" />
+            <File name="1041.php" />
+            <File name="1042.php" />
+            <File name="1043.php" />
+            <File name="1044.php" />
             <File name="2001.php" />
             <File name="2002.php" />
             <File name="cl255.php" />
             <File name="gScriptList.txt" />
+            <Folder name="units">
+                <File name="units\wbsc_1.php" />
+            </Folder>
+            <Folder name="tasks" />
         </Folder>
         <Folder name="public_html">
             <File name="E:\websites\IB3\public_html\glFunctions.js" />

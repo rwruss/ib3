@@ -10,7 +10,7 @@ if ($unitDat[11] > 0) {
 	fseek($taskFile, $unitDat[11]*200);
 	$taskDat = unpack('i*', fread($taskFile, 200));
 	
-	include('../gameScripts/units/tp_'.$taskDat[5].'.php');
+	include('../gameScripts/tasks/tp_'.$taskDat[5].'.php');
 } else {
 	echo 'This unit is not currently working on anything';
 }
