@@ -48,6 +48,7 @@
 1042 - View Garrison at a town
 1043 - Process assigning labor to a project
 1044 - Process assigning labor to a resource point
+1045 - Receive a move order
 2001 - Add Resources to a city
 
 CL255 - City interface

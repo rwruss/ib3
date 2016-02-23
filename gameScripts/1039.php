@@ -71,26 +71,6 @@ if ($approved != false) {
 
 			flock($unitFile, LOCK_UN);
 
-			$mapObjectFile = fopen($gamePath.'/mapObjects.map', 'ab');
-			if (flock($mapObjectFile, LOCK_EX)) {
-				$mapObjectSize = filesize($gamePath.'/mapObjects.map');
-				fwrite($mapObjectFile, pack('i*', $newID, 0, 0));
-				flock($mapObjectFile, LOCK_UN);
-
-				// Record map object ID for this objet
-				fseek($unitFile, $newID*$defaultBlockSize+52);
-				fwrite($unitFile, $mapObjectSize/4);
-				/*
-				// Record map/move object ID for the military unit
-				fseek($unitFile, $militaryID*$defaultBlockSize+88);
-				fwrite($unitFile, $mapObjectSize/4);
-
-				// Record map/move object ID for the civilian unit
-				fseek($unitFile, $civilianID*$defaultBlockSize+88);
-				fwrite($unitFile, $mapObjectSize/4);
-				*/
-			}
-			fclose($mapObjectFile);
 		} else {
 			echo 'Major lock error';
 		}

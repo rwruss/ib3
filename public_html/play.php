@@ -703,6 +703,21 @@ precision mediump float;
 		}
 	}
 
+	var moveString = '';
+	function move(val) {
+		if (val < 10) moveString += val;
+		else {
+			if (val == 10) {
+				moveString = moveString.slice(0,-1);
+			} else {moveString = '';}
+		}
+	}
+
+	function orderMove() {
+		alert(moveString);
+		makeBox('moveOptions', '1045,'+moveString, 500, 500, 500, 500);
+	}
+
 
 	function passClick(val, trg) {
 		params = 'val1='+val;

@@ -201,28 +201,6 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fclose($unitFile);
 	fclose($gameSlot);
 	fclose($mapSlotFile);
-
-	// Add city to map object file
-	$mapObjectFile = fopen($gamePath.'/mapObjects.map', 'ab');
-	if (flock($mapObjectFile, LOCK_EX)) {
-		$mapObjectSize = filesize($gamePath.'/mapObjects.map');
-		fwrite($mapObjectFile, pack('i*', $townID, 0, 0));
-		flock($mapObjectFile, LOCK_UN);
-
-		// Record map object ID for this city
-		fseek($unitFile, $townID*$defaultBlockSize+88);
-		fwrite($unitFile, $mapObjectSize/4);
-		/*
-		// Record map/move object ID for the military unit
-		fseek($unitFile, $militaryID*$defaultBlockSize+88);
-		fwrite($unitFile, $mapObjectSize/4);
-
-		// Record map/move object ID for the civilian unit
-		fseek($unitFile, $civilianID*$defaultBlockSize+88);
-		fwrite($unitFile, $mapObjectSize/4);
-		*/
-	}
-	fclose($mapObjectFile);
 }
 
 echo "<script>window.location.replace('./play.php?gameID=".$gameID."')</script>";
