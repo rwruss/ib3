@@ -715,7 +715,7 @@ precision mediump float;
 
 	function orderMove() {
 		alert(moveString);
-		makeBox('moveOptions', '1045,'+moveString, 500, 500, 500, 500);
+		makeBox('moveOptions', '1045,'+moveString, 500, 500, 200, 50);
 	}
 
 
