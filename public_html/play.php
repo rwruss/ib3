@@ -704,13 +704,106 @@ precision mediump float;
 	}
 
 	var moveString = '';
+	var rpList = new Array();
+	var fauxVerts = new Array();
+	var drawLoc = [];
+	xMoves = [0, -1, 0, 1, -1, 0, 1, -1, 0, 1];
+	yMoves = [0, 1, 1, 1, 0, 0, 0, -1, -1, -1];
 	function move(val) {
-		if (val < 10) moveString += val;
-		else {
-			if (val == 10) {
+		lineWidth = 0.25;
+		
+		if (val < 10) {
+			moveString += val;
+			
+			mag = Math.sqrt(xMoves[val]*xMoves[val]+yMoves[val]*yMoves[val]);
+			
+			normx = xMoves[val]/mag;
+			normy = yMoves[val]/mag;
+
+			rpList.push(drawLoc[0]-normy*lineWidth, drawLoc[1]+normx*lineWidth,
+			drawLoc[0]-normy*lineWidth, drawLoc[1]+normx*lineWidth,
+			drawLoc[0]+normy*lineWidth, drawLoc[1]-normx*lineWidth);
+			
+			drawLoc[0] += xMoves[1];
+			drawLoc[1] += yMoves[1];
+			
+			rpList.push(drawLoc[0]-normy*lineWidth+normx*lineWidth, drawLoc[1]+normx*lineWidth+normy*lineWidth,
+			drawLoc[0]+normy*lineWidth+normx*lineWidth, drawLoc[1]-normx*lineWidth+normy*lineWidth,
+			drawLoc[0]+normy*lineWidth+normx*lineWidth, drawLoc[1]-normx*lineWidth+normy*lineWidth);
+			
+			fauxVerts.push(0,0,0,
+			mag,0,lineWidth,
+			mag,0,-lineWidth,
+			mag,mag+lineWidth,lineWidth,
+			mag,mag+lineWidth,-lineWidth,
+			0,0,0);
+		} else {
+			if (val == 10 && moveString.length > 0) {
 				moveString = moveString.slice(0,-1);
-			} else {moveString = '';}
+				rpList = rpList.slice(0,-6);
+				fauxVerts = fauxVerts.slice(0,-6);
+				
+			} else {
+				moveString = '';
+				rpList = [];
+				fauxVerts = [];
+				}
 		}
+		
+		moveLength = rpList.length/2.0;
+		gl.bindBuffer(gl.ARRAY_BUFFER, moveLine);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rpList), gl.STATIC_DRAW);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, moveVerts);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(fauxVerts), gl.STATIC_DRAW);
+	}
+	
+	function loadMove(startA, steps, times) {
+		lineWidth = 0.25;
+		//alert('loadMove - ' + steps);
+		//alert(times);
+		rpList = new Array();
+		fauxVerts = new Array();
+		//resetCount=0;
+		//xMoves = [0, -1, 0, 1, -1, 0, 1, -1, 0, 1];
+		//yMoves = [0, 1, 1, 1, 0, 0, 0, -1, -1, -1];
+		alert(steps.length + ' steps');
+		for (var j=0; j<steps.length; j++) {
+			mag = Math.sqrt(xMoves[steps[j]]*xMoves[steps[j]]+yMoves[steps[j]]*yMoves[steps[j]]);
+			mag = Math.sqrt(xMoves[1]*xMoves[1]+yMoves[1]*yMoves[1]);
+			normx = xMoves[steps[j]]/mag;
+			normy = yMoves[steps[j]]/mag;
+
+			normx = xMoves[1]/mag;
+			normy = yMoves[1]/mag;
+
+			rpList.push(startA[0]-normy*lineWidth, startA[1]+normx*lineWidth,
+			startA[0]-normy*lineWidth, startA[1]+normx*lineWidth,
+			startA[0]+normy*lineWidth, startA[1]-normx*lineWidth);
+			//startA[0] += xMoves[steps[j]];
+			//startA[1] += yMoves[steps[j]];
+
+			startA[0] += xMoves[1];
+			startA[1] += yMoves[1];
+			rpList.push(startA[0]-normy*lineWidth+normx*lineWidth, startA[1]+normx*lineWidth+normy*lineWidth,
+			startA[0]+normy*lineWidth+normx*lineWidth, startA[1]-normx*lineWidth+normy*lineWidth,
+			startA[0]+normy*lineWidth+normx*lineWidth, startA[1]-normx*lineWidth+normy*lineWidth);
+
+			fauxVerts.push(0,0,0,
+			mag,0,lineWidth,
+			mag,0,-lineWidth,
+			mag,mag+lineWidth,lineWidth,
+			mag,mag+lineWidth,-lineWidth,
+			0,0,0);
+		}
+
+		moveLength = rpList.length/2.0;
+		gl.bindBuffer(gl.ARRAY_BUFFER, moveLine);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rpList), gl.STATIC_DRAW);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, moveVerts);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(fauxVerts), gl.STATIC_DRAW);
+		//alert('Move Length of ' + moveLength);
 	}
 
 	function orderMove() {
@@ -2231,55 +2324,6 @@ precision mediump float;
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
-
-
-	function loadMove(startA, steps, times) {
-		lineWidth = 0.25;
-		//alert('loadMove - ' + steps);
-		//alert(times);
-		rpList = new Array();
-		fauxVerts = new Array();
-		resetCount=0;
-		xMoves = [0, -1, 0, 1, -1, 0, 1, -1, 0, 1];
-		yMoves = [0, -1, -1, -1, 0, 0, 0, 1, 1, 1];
-		alert(steps.length + ' steps');
-		for (var j=0; j<steps.length; j++) {
-			mag = Math.sqrt(xMoves[steps[j]]*xMoves[steps[j]]+yMoves[steps[j]]*yMoves[steps[j]]);
-			mag = Math.sqrt(xMoves[1]*xMoves[1]+yMoves[1]*yMoves[1]);
-			normx = xMoves[steps[j]]/mag;
-			normy = yMoves[steps[j]]/mag;
-
-			normx = xMoves[1]/mag;
-			normy = yMoves[1]/mag;
-
-			rpList.push(startA[0]-normy*lineWidth, startA[1]+normx*lineWidth,
-			startA[0]-normy*lineWidth, startA[1]+normx*lineWidth,
-			startA[0]+normy*lineWidth, startA[1]-normx*lineWidth);
-			//startA[0] += xMoves[steps[j]];
-			//startA[1] += yMoves[steps[j]];
-
-			startA[0] += xMoves[1];
-			startA[1] += yMoves[1];
-			rpList.push(startA[0]-normy*lineWidth+normx*lineWidth, startA[1]+normx*lineWidth+normy*lineWidth,
-			startA[0]+normy*lineWidth+normx*lineWidth, startA[1]-normx*lineWidth+normy*lineWidth,
-			startA[0]+normy*lineWidth+normx*lineWidth, startA[1]-normx*lineWidth+normy*lineWidth);
-
-			fauxVerts.push(0,0,0,
-			mag,0,lineWidth,
-			mag,0,-lineWidth,
-			mag,mag+lineWidth,lineWidth,
-			mag,mag+lineWidth,-lineWidth,
-			0,0,0);
-		}
-
-		moveLength = rpList.length/2.0;
-		gl.bindBuffer(gl.ARRAY_BUFFER, moveLine);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rpList), gl.STATIC_DRAW);
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, moveVerts);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(fauxVerts), gl.STATIC_DRAW);
-		//alert('Move Length of ' + moveLength);
-	}
 
 
 	function loadRivers(tiles, rData, rivTargets) {

@@ -1,6 +1,7 @@
 <?php
 
-echo '<script>moveString="'.$postVals[1].',"</script>Full and true unit information for this unit. <br>
+echo '<script>moveString="'.$postVals[1].',";
+drawLoc = ['.$unitDat[1].', '.$unitDat[2].']</script>Full and true unit information for this unit. <br>
 Move Options:
 <table>
   <tr><td onclick="move(7)">7</td><td onclick="move(8)">8</td><td onclick="move(9)">9</td></tr>
