@@ -66,6 +66,7 @@ echo "
 <link rel='stylesheet' type='text/css' href='ib3styles.css'>
 <script type='text/javascript' src='glMatrix-0.9.5.min.js'></script>
 <script type='text/javascript' src='webgl-utils.js'></script>
+<script type='text/javascript' src='templates.js'></script>
 
 <script id='shader-fs' type='x-shader/x-fragment'>
     precision mediump float;

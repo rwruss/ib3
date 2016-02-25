@@ -44,3 +44,57 @@
 	width:140;
 	height:20;
 }
+
+.udHolder {
+	position:relative;
+	width:150;
+	height:150;
+	border: 1px Solid black;
+}
+
+.udAvatar {
+	position:absolute;
+	left:0;
+	top:0;
+	width:75;
+	height:75;
+}
+
+.udExp {
+	position:absolute;
+	left:0;
+	top:120;
+	width:150;
+	height:15;
+}
+
+.udName {
+	position:absolute;
+	left:0;
+	top:135;
+	width:150;
+	height:15;
+}
+
+.udType {
+	position:absolute;
+	left:125;
+	top:0;
+	width:25;
+}
+
+.udLvl {
+	position:absolute;
+	left:125;
+	top:15;
+	width:25;
+	height:25;
+}
+
+.udAct {
+	position:absolute;
+	left:125;
+	top:30;
+	width:25;
+	height:15;
+}

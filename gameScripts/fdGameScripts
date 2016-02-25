@@ -35,6 +35,7 @@
             <File name="1032.php" />
             <File name="1033.php" />
             <File name="1034.php" />
+            <File name="1034a.php" />
             <File name="1035.php" />
             <File name="1036.php" />
             <File name="1037.php" />
@@ -51,8 +52,16 @@
             <File name="gScriptList.txt" />
             <Folder name="units">
                 <File name="units\wbsc_1.php" />
+                <File name="units\wbsc_5.php" />
+                <File name="units\wbsc_6.php" />
+                <File name="units\wbsc_8.php" />
             </Folder>
             <Folder name="tasks" />
+            <Folder name="objects">
+                <File name="objects\obj_1.php" />
+                <File name="objects\obj_2.php" />
+                <File name="objects\obj_6.php" />
+            </Folder>
         </Folder>
         <Folder name="public_html">
             <File name="E:\websites\IB3\public_html\glFunctions.js" />
@@ -64,6 +73,8 @@
             <File name="E:\websites\IB3\public_html\play.php" />
             <File name="E:\websites\IB3\public_html\slotFunctions.php" />
             <File name="E:\websites\IB3\public_html\taskFunctions.php" />
+            <File name="E:\websites\IB3\public_html\templates.js" />
+            <File name="E:\websites\IB3\public_html\ib3styles.css" />
         </Folder>
     </Project>
 </NotepadPlus>
