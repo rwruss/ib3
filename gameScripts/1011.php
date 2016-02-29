@@ -14,7 +14,7 @@ if (sizeof($unitList)>0) {
 	foreach ($unitList as $unitID) {
 		fseek($unitFile, $unitID*$defaultBlockSize);
 		$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
-		echo '<div onclick="makeBox(\'unitDetail\', \'1034,'.$unitID.'\', 500, 500, 200, 50);">Unit #'.$unitID.'</div>';
+		echo '<div onclick="passClick(\'1034,'.$unitID.'\', \'rtPnl\');">Unit #'.$unitID.'</div>';
 	}
 } else {
 	echo 'You don\'t controll any units at this time';

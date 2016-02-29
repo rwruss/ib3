@@ -19,8 +19,8 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   // Adjust x/y coordinates for unit.
   $moves = sizeof($moveList);
   for ($i=0; $i<$moves; $i++) {
-    $newLoc[1] += $xDir[$moveList[$i]];
-    $newLoc[2] += $yDir[$moveList[$i]];
+    $newLoc[1] += $xDir[$moveList[$i]]*2;
+    $newLoc[2] += $yDir[$moveList[$i]]*2;
     echo 'Step to ('.$newLoc[1].', '.$newLoc[2].')<br>';
   }
   $newSlot = floor($newLoc[2]/120)*120+floor($newLoc[1]/120);

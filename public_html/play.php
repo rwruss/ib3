@@ -704,7 +704,7 @@ precision mediump float;
 		}
 	}
 
-	var moveString = '';
+	var moveString = new Array();
 	var umList = new Array();
 	var umFauxVerts = new Array();
 	var drawLoc = [];
@@ -712,10 +712,10 @@ precision mediump float;
 	yMoves = [0, 1, 1, 1, 0, 0, 0, -1, -1, -1];
 	function move(val) {
 		lineWidth = 0.75;
-		//alert(xMoves[val] + ' : ' + yMoves[val]);
+		//alert(moveString);
 		if (val < 10) {
-			moveString += val;
-
+			moveString.push(val);
+			//alert(moveString);
 			mag = Math.sqrt(xMoves[val]*xMoves[val]+yMoves[val]*yMoves[val]);
 
 			normx = xMoves[val]/mag;
@@ -739,13 +739,19 @@ precision mediump float;
 			mag,mag+lineWidth,-lineWidth,
 			0,0,0);
 		} else {
-			if (val == 10 && moveString.length > 0) {
-				moveString = moveString.slice(0,-1);
-				umList = umList.slice(0,-6);
-				umFauxVerts = umFauxVerts.slice(0,-6);
+			//alert(val + ', ' + moveString.length + '/' + moveString);
+			if (val == 10 && moveString.length > 2) {
+				//alert('back');
+				lastMove = moveString.pop();
+				//moveString = moveString.slice(0,-1);
+				umList = umList.slice(0,-12);
+				umFauxVerts = umFauxVerts.slice(0,-18);
+
+				drawLoc[0] -= xMoves[lastMove]*2;
+				drawLoc[1] -= yMoves[lastMove]*2;
 
 			} else {
-				moveString = '';
+				moveString = [];
 				umList = [];
 				umFauxVerts = [];
 				}
@@ -808,8 +814,13 @@ precision mediump float;
 	}
 
 	function orderMove() {
-		alert(moveString);
-		makeBox('moveOptions', '1045,'+moveString, 500, 500, 200, 50);
+		alert(moveString.toString());
+		var sendString = '';
+		for (var i=1; i<moveString.length; i++) {
+			sendString = sendString + moveString[i];
+		}
+		alert(sendString);
+		makeBox('moveOptions', '1045,'+moveString[0]+','+sendString, 500, 500, 200, 50);
 	}
 
 

@@ -1,7 +1,9 @@
 <?php
 
-echo '<script>moveString="'.$postVals[1].',";
-drawLoc = ['.$unitDat[1].', '.$unitDat[2].']</script>Full and true unit information for this unit. <br>
+echo '<script>//drawLoc = ['.$unitDat[1].', '.$unitDat[2].'];
+newUnitDetail('.$postVals[1].', "rtPnl");
+newMoveBox('.$postVals[1].', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
+document.getElementById("Udtl_'.$postVals[1].'_name").innerHTML = "unitName";</script>Full and true unit information for this unit. <br>
 Move Options:
 <table>
   <tr><td onclick="move(7)">7</td><td onclick="move(8)">8</td><td onclick="move(9)">9</td></tr>
