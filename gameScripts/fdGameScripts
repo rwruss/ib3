@@ -61,6 +61,7 @@
                 <File name="objects\obj_1.php" />
                 <File name="objects\obj_2.php" />
                 <File name="objects\obj_6.php" />
+                <File name="objects\obj_8.php" />
             </Folder>
         </Folder>
         <Folder name="public_html">
@@ -76,5 +77,7 @@
             <File name="E:\websites\IB3\public_html\templates.js" />
             <File name="E:\websites\IB3\public_html\ib3styles.css" />
         </Folder>
+        <Folder name="other" />
     </Project>
+    <Project name="portfolio" />
 </NotepadPlus>
