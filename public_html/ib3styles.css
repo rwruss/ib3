@@ -63,17 +63,24 @@
 .udExp {
 	position:absolute;
 	left:0;
-	top:120;
-	width:150;
-	height:25;
+	top:115;
+	height:8;
 }
+
+.udAct {
+	position:absolute;
+	left:0;
+	top:105;
+	height:8;
+}
+
 
 .udName {
 	position:absolute;
 	left:0;
-	top:135;
+	top:125;
 	width:150;
-	height:15;
+	height:25;
 }
 
 .udType {
@@ -88,14 +95,6 @@
 	position:absolute;
 	left:125;
 	top:25;
-	width:25;
-	height:25;
-}
-
-.udAct {
-	position:absolute;
-	left:125;
-	top:50;
 	width:25;
 	height:25;
 }

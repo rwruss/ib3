@@ -4,7 +4,11 @@ echo '<script>
 //drawLoc = ['.$unitDat[1].', '.$unitDat[2].'];
 newUnitDetail('.$unitID.', "rtPnl");
 newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
-document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";</script>Full and true unit information for this unit. <br>
+document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
+//document.getElementById("Udtl_'.$unitID.'_act").innerHTML = "'.$unitDat[16].'";
+setUnitAction('.$unitID.', 1);
+setUnitExp('.$unitID.', 0.5);
+</script>Full and true unit information for this unit. <br>
 
 Move Options:
 <table>

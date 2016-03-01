@@ -21,7 +21,7 @@ newUnitDetail = function(id, target) {
 	holderDiv.appendChild(uDLvl);
 
 	var uDAct = document.createElement("div");
-	uDAct.className = "uDAct";
+	uDAct.className = "udAct";
 	uDAct.id = "Udtl_"+id+"_act";
 	holderDiv.appendChild(uDAct);
 
@@ -40,6 +40,28 @@ newUnitDetail = function(id, target) {
 	holderDiv.appendChild(uDGoto);
 
 	document.getElementById(target).appendChild(holderDiv);
+}
+
+setUnitAction = function(id, pct) {
+	document.getElementById("Udtl_"+id+"_act").style.width = 150 * pct;
+	//document.getElementById("Udtl_"+id+"_act").style.color = 150 * pct;
+	var colorVal = 255*pct;
+	var r = 255*(1-pct);
+	var g = 255*pct;
+	var b = 0;
+	document.getElementById("Udtl_"+id+"_act").style.background = "rgb(" + r + "," + g + ",0)";
+}
+
+setUnitExp = function(id, pct) {
+	//alert("exp set");
+	document.getElementById("Udtl_"+id+"_exp").style.width = 150 * pct;
+	//document.getElementById("Udtl_"+id+"_act").style.color = 150 * pct;
+	var colorVal = 255*pct;
+	var r = parseInt(255*(1-pct));
+	var g = parseInt(255*pct);
+	var b = parseInt(0);
+	//alert("rgb(" + r + "," + g + ",0)");
+	document.getElementById("Udtl_"+id+"_exp").style.background = "rgb(" + r + "," + g + ",0)";
 }
 
 newMoveBox = function(id, x, y, target) {

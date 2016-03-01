@@ -152,6 +152,10 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,8,$pGameID, $pGameID,1,$postVals[1],0));
 	// Secondary information
 	fwrite($unitFile, pack("i*", 1, 0, $townID));
+	// Record energy points
+	fseek($unitFile, ($civilianID)*$defaultBlockSize+60);
+	fwrite($unitFile, pack("i", 1000));
+
 	fseek($unitFile, ($civilianID)*$defaultBlockSize+$unitBlockSize-4);
 	fwrite($unitFile, pack("i", 9990));
 
@@ -162,6 +166,11 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,6,$pGameID, $pGameID,1,$postVals[1],0));
 	// Secondary information
 	fwrite($unitFile, pack("i*", 1, 0, $townID));
+
+	// Record energy points
+	fseek($unitFile, ($militaryID)*$defaultBlockSize+60);
+	fwrite($unitFile, pack("i", 1000));
+
 	fseek($unitFile, ($militaryID)*$defaultBlockSize+$unitBlockSize-4);
 	fwrite($unitFile, pack("i", 9990));
 
