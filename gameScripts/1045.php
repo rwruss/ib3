@@ -17,33 +17,33 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   $oldSlot = floor($unitDat[2]/120)*120+floor($unitDat[1]/120);
   $newLoc[1] = $unitDat[1];
   $newLoc[2] = $unitDat[2];
-  
+
   $startCol = floor($unitDat[1]/2)-51;
-  $startRow = floor($unitDat[2]/2)-51;  
+  $startRow = floor($unitDat[2]/2)-51;
   // Load terrain data for the affected area:  Each degree has 60x60 tiles
-  $terMoveFile = fopen('', 'rb');
+  $terMoveFile = fopen('../scenarios/common/terMoveFile.dat', 'rb');
   $terDat = '';
   for ($row=0; $row<101; $row++) {
-	  fseek($terMoveFile, ($startRow+$row)*60*120+$startCol);	  
+	  fseek($terMoveFile, ($startRow+$row)*60*120+$startCol);
 	  $terDat .= fread($terMoveFile, 101);
   }
   fclose($terMoveFile);
   $terInfo = unpack("C*", $terDat);
-  
+
   // Load elevation data for the affected area: Each degree has 60 x 60 tiles
-  $elMoveFile = fopen('', 'rb');
+  $elMoveFile = fopen('../scenarios/common/elMoveFile.dat', 'rb');
   $elDat = '';
   for ($row=0; $row<101; $row++) {
-	  fseek($elMoveFile, ($startRow+$row)*60*120+$startCol);	  
+	  fseek($elMoveFile, ($startRow+$row)*60*120+$startCol);
 	  $elDat .= fread($elMoveFile, 101);
   }
   fclose($elMoveFile);
   $elInfo = unpack("c*", $elDat);
-  
+
   //Temp override
   $terInfo = array_fill(1,101*101,20);
   $elInfo = array_fill(1,101*101,0);
-  
+
   // Load rivers for this area
 
   // Adjust x/y coordinates for unit.
@@ -51,15 +51,15 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   $terIndex = 5101;
   $riverCheck = true;
   for ($i=0; $i<$moves; $i++) {
-	$oldElevation = $elDat[$terIndex];
+	$oldElevation = $elInfo[$terIndex];
 	$terIndex += $xDir[$moveList[$i]] + $yDir[$moveList[$i]]*101;
-	$moveCost = $terInfo[$terIndex] + abs(floor($oldEelvation - $elDatp$terIndex)/100);
-	if ($unitDat[16] > $terInfo[$terIndex]) {
+	$moveCost = $terInfo[$terIndex] + abs(floor($oldElevation - $elInfo[$terIndex])/100);
+	if ($unitDat[16] >= $terInfo[$terIndex]) {
 		if ($riverCheck == true) {
 			$newLoc[1] += $xDir[$moveList[$i]]*2;
 			$newLoc[2] += $yDir[$moveList[$i]]*2;
-			$unitDat[16] += $moveCost;
-			
+			$unitDat[16] -= $moveCost;
+
 			echo 'Step to ('.$newLoc[1].', '.$newLoc[2].').  '.$moveCost.' Move points used and '.$unitDat[16].' Action Points Remaining<br>';
 		}
 	} else {
@@ -98,11 +98,11 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   // Record new location of unit
   fseek($unitFile, $postVals[1]*$defaultBlockSize);
   fwrite($unitFile, pack('i*', $newLoc[1], $newLoc[2]));
-  
+
   // Record new energy level of unit
   fseek($unitFile, $postVals[1]*$defaultBlockSize+60);
   fwrite($unitFile, pack('i', $unitDat[16]));
-  
+
   // Record last update time for unit
   fseek($unitFile, $postVals[1]*$defaultBlockSize+104);
   fwrite($unitFile, pack('i', time()));
@@ -113,6 +113,4 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 }
 
 fclose($unitFile);
-
-
 ?>
