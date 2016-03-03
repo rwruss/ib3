@@ -21,7 +21,7 @@ newUnitDetail = function(id, target) {
 	holderDiv.appendChild(uDLvl);
 
 	var uDAct = document.createElement("div");
-	uDAct.className = "udAct";
+	uDAct.className = "uDAct";
 	uDAct.id = "Udtl_"+id+"_act";
 	holderDiv.appendChild(uDAct);
 
@@ -46,9 +46,9 @@ setUnitAction = function(id, pct) {
 	document.getElementById("Udtl_"+id+"_act").style.width = 150 * pct;
 	//document.getElementById("Udtl_"+id+"_act").style.color = 150 * pct;
 	var colorVal = 255*pct;
-	var r = 255*(1-pct);
-	var g = 255*pct;
-	var b = 0;
+	var r = parseInt(255*(1-pct));
+	var g = parseInt(255*pct);
+	var b = parseInt(0);
 	document.getElementById("Udtl_"+id+"_act").style.background = "rgb(" + r + "," + g + ",0)";
 }
 
@@ -129,4 +129,30 @@ newMoveBox = function(id, x, y, target) {
 
 
 	document.getElementById(target).appendChild(mBContain);
+}
+
+newConfirmBox = function(target) {
+
+	var queryHolder = document.createElement("div");
+	queryHolder.id = "queryBox";
+	queryHolder.className = "optionHolder";
+
+	var promptItem = doceument.createElement("div");
+	promptItem.id = "promptBox";
+	promptItem.className = "optionPrompt";
+	queryHolder.appendChild(promptItem);
+
+	var acceptItem = document.createElement("div");
+	acceptItem.id = "acceptBox";
+	acceptItem.className = "optionAccept";
+	queryHolder.appendChild(acceptItem);
+
+	var declineItem = document.createElement("div");
+	declineItem.id = "decelineBox";
+	decelineItem.className = "optionDecline";
+	decelineItem.onclick = closeBox;
+	queryHolder.appendChild(declineItem);
+
+	document.getElementById(target).appendChild(queryHolder);
+
 }

@@ -505,7 +505,7 @@ precision mediump float;
 		gl_Position = locRough;
 		//gl_Position = vec4(aVertexPosition, 1.0);
 		vPosition = aVertexPosition;
-		uColor = vec3(mod(aUnitLoc.z,1000.)/1000., mod(aUnitLoc.z,100.)/100., mod(aUnitLoc.z,10.)/10.);
+		//uColor = vec3(mod(aUnitLoc.z,1000.)/1000., mod(aUnitLoc.z,100.)/100., mod(aUnitLoc.z,10.)/10.);
 		uColor = vec3(1., floor(aUnitLoc.z/255.)/255., mod(aUnitLoc.z,255.)/255.);
 		}
 </script>
@@ -708,6 +708,15 @@ precision mediump float;
 	var umList = new Array();
 	var umFauxVerts = new Array();
 	var drawLoc = [];
+
+	function resetMove() {
+		moveString = [];
+		umList = [];
+		umFauxVerts = [];
+		drawLoc = [];
+		moveLength = 0;
+	}
+
 	xMoves = [0, -1, 0, 1, -1, 0, 1, -1, 0, 1];
 	yMoves = [0, 1, 1, 1, 0, 0, 0, -1, -1, -1];
 	function move(val) {
@@ -774,7 +783,7 @@ precision mediump float;
 		//resetCount=0;
 		//xMoves = [0, -1, 0, 1, -1, 0, 1, -1, 0, 1];
 		//yMoves = [0, 1, 1, 1, 0, 0, 0, -1, -1, -1];
-		alert(steps.length + ' steps');
+
 		for (var j=0; j<steps.length; j++) {
 			mag = Math.sqrt(xMoves[steps[j]]*xMoves[steps[j]]+yMoves[steps[j]]*yMoves[steps[j]]);
 			mag = Math.sqrt(xMoves[1]*xMoves[1]+yMoves[1]*yMoves[1]);
@@ -814,13 +823,13 @@ precision mediump float;
 	}
 
 	function orderMove() {
-		alert(moveString.toString());
+		//alert(moveString.toString());
 		var sendString = '';
 		for (var i=1; i<moveString.length; i++) {
 			sendString = sendString + moveString[i];
 		}
-		alert(sendString);
-		makeBox('moveOptions', '1045,'+moveString[0]+','+sendString, 500, 500, 200, 50);
+		//alert(sendString);
+		scrMod('1045,'+moveString[0]+','+sendString);
 	}
 
 
@@ -1397,8 +1406,9 @@ precision mediump float;
 	var moveLine;
 	var moveVerts;
 	var gridUnits = [];
-	var gridUnitsLength =[];
-	var gridUniforms =[];
+	var gridUnitsLength = [];
+	var gridUniforms = [];
+	var gridUnitLists = [];
 	var riverLength = 0;
 	var indexBuffer;
 	var unitIndexBuffer;
@@ -1487,6 +1497,8 @@ precision mediump float;
 			gridUniforms[i] = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, gridUniforms[i]);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
+
+			gridUnitLists[i] = [];
 			}
 
 		tileBuffers = gl.createBuffer();
@@ -2440,13 +2452,15 @@ precision mediump float;
 				gridUnits[i] = [];
 				gridUnitsLength[i] = 0;
 				gridUniforms[i] = gl.createBuffer();
-				uPoints = new Array();
+				gridUnitLists[i].splice(0,gridUnitLists[i].length);
 				dumbVal = [1, 1];
 
 				for (var uCount=0; uCount<headDat[i]; uCount++) {
 					//tmp.push(unitStuff[uCount*2], unitStuff[uCount*2+1]);
-					//uPoints.push(unitStuff[uCount*2],unitStuff[uCount*2+1]);
-					uPoints.push(unitStuff[uCount*3], unitStuff[uCount*3+1], unitStuff[uCount*3+2]);
+
+
+					// Data is X Point, Y Point, Unit ID
+					gridUnitLists[i].push(unitStuff[uCount*3], unitStuff[uCount*3+1], unitStuff[uCount*3+2]);
 					gridUnitsLength[i]+=1;
 					//alert(unitStuff[uCount*2] + ', ' + unitStuff[uCount*2+1]);
 					minVals[0] = Math.min(minVals[0], unitStuff[uCount*3]);
@@ -2459,16 +2473,37 @@ precision mediump float;
 				tmptotalUnits += gridUnitsLength[i];
 				//tmp = [0.0, 0.0, 1.0, 1.0, 2.0, 3.0];
 				//gridUnitsLength[i] = 3;
-				gridUnitsLength[i] = uPoints.length/3.0;
+				gridUnitsLength[i] = gridUnitLists[i].length/3.0;
 				//alert(gridUnitsLength[i] + ' = ' + tmptotalUnits);
 				gl.bindBuffer(gl.ARRAY_BUFFER, gridUniforms[i]);
-				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uPoints), gl.STATIC_DRAW);
+				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(gridUnitLists[i]), gl.STATIC_DRAW);
 			}
 		//alert('Found ' + tmptotalUnits + ' units');
 		//alert(gridUnitsLength);
 		//alert('min: ' + minVals[0] + ', ' + minVals[1] + '<---> max: ' + maxVals[0] + ', ' + maxVals[1]);
 		//alert(rData.byteLength + ', ' + totalOffset);
 		}
+
+	function updateUnitPosition(unitID, X, Y) {
+		alert('update position');
+		idCheck: {
+			for (var i=0; i<36; i++) {
+				for (var j=2; j<gridUnitLists[i].length; j+=3) {
+					if (gridUnitLists[i][j] == unitID) {
+						alert('spot found: ' + j + ', Old length: ' + gridUnitLists[i].length);
+						alert(gridUnitLists[i]);
+						gridUnitLists[i][j-2] = X;
+						gridUnitLists[i][j-1] = Y;
+						alert('New length: ' + gridUnitLists[i].length);
+						alert(gridUnitLists[i]);
+						gl.bindBuffer(gl.ARRAY_BUFFER, gridUniforms[i]);
+						gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(gridUnitLists[i]), gl.STATIC_DRAW);
+						break idCheck;
+					}
+				}
+			}
+		}
+	}
 
 	var drawList = [];
 	drawList[0] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35];

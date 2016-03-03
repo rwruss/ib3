@@ -246,6 +246,10 @@ function readSlotDataEndKey($file, $slot_num, $slot_size)
 	return $slotData;
 	}
 
+function removeFromSlot($file, $startSlot, $slot_size, $targetVal) {
+
+}
+
 function removeFromEndSlot($file, $startSlot, $slot_size, $targetVal) {
 	$next_slot = $startSlot;
 	//$slotData = "";
@@ -262,7 +266,12 @@ function removeFromEndSlot($file, $startSlot, $slot_size, $targetVal) {
 		$foundLoc = array_search($targetVal, $checkVals);
 		if ($foundLoc) {
 			echo 'Found at location '.$foundLoc;
+			// overwrite the value at that position
+			fseek($file, $next_slot*$slot_size+$foundLoc*4-4);
+			fwrite($file, pack('i', 0));
+
 			$returnVal = $foundLoc;
+			$looking = false;
 		} else {
 			//$slotData .= substr($slot_dat, 0, $slot_size-4);
 			//echo 'Slot size is '.strlen($slot_dat).' <br>';

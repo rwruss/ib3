@@ -103,9 +103,16 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   fseek($unitFile, $postVals[1]*$defaultBlockSize+60);
   fwrite($unitFile, pack('i', $unitDat[16]));
 
-  // Record last update time for unit
-  fseek($unitFile, $postVals[1]*$defaultBlockSize+104);
-  fwrite($unitFile, pack('i', time()));
+  // Record Current Slot and last update time for unit
+  fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
+  fwrite($unitFile, pack('i*', $newSlot, time()));
+
+  // Output results to browser
+  echo '<script>
+	setUnitAction('.$postVals[1].',  '.($unitDat[16]/1000).');
+	updateUnitPosition('.$postVals[1].', '.$newLoc[1].', '.$newLoc[2].');
+  resetMove();
+  </script>';
 
 } else {
 	// Move is not allowed

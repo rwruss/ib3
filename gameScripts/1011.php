@@ -20,5 +20,6 @@ if (sizeof($unitList)>0) {
 	echo 'You don\'t controll any units at this time';
 }
 echo "Faction Military";
+fclose($slotFile);
 
 ?>

@@ -49,6 +49,8 @@
 1043 - Process assigning labor to a project
 1044 - Process assigning labor to a resource point
 1045 - Receive a move order
+1046 - Create prompt for city conversion to tribe
+1047 - Process conversion from city to tribe.
 2001 - Add Resources to a city
 
 CL255 - City interface
