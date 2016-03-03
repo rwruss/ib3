@@ -50,15 +50,33 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   $moves = sizeof($moveList);
   $terIndex = 5101;
   $riverCheck = true;
+  $loadedSlots = new array();
+  $diplomacyList = new array();
   for ($i=0; $i<$moves; $i++) {
 	$oldElevation = $elInfo[$terIndex];
 	$terIndex += $xDir[$moveList[$i]] + $yDir[$moveList[$i]]*101;
 	$moveCost = $terInfo[$terIndex] + abs(floor($oldElevation - $elInfo[$terIndex])/100);
-	if ($unitDat[16] >= $terInfo[$terIndex]) {
-		if ($riverCheck == true) {
+	if ($unitDat[16] >= $moveCost) {
+		if ($riverCheck == true) {			
 			$newLoc[1] += $xDir[$moveList[$i]]*2;
 			$newLoc[2] += $yDir[$moveList[$i]]*2;
 			$unitDat[16] -= $moveCost;
+			
+			// Check for collisions at the new location
+			// Load slot data for the new location if it is not already loaded
+			$currentSlot = floor($newLoc[2]/120)*120+floor($newLoc[1]/120);
+			if (!array_key_exists($currentSlot, $loadedSlots)) {
+				$unitList = unpack('i*', loadNewSlot($slotFile, $currentSlot));
+				foreach ($unitList as $unitNumber) {
+					fseek($unitFile, $unitNumber*$20);
+					$tmpUnit = unpack('i*', fread($unitFile, $unitBlockSize));
+					array_push($loadedSlots[$currentSlot], $tmpUnit[1], $tmpUnit[2], $unitNumber, $tmpUnit[4], $tmpUnit[5], $tmpUnit[6]);
+				}
+			}
+			$collsionList = checkCollisions($currentSlot, $newLoc);
+			foreach ($collisionList as $collisionID) {
+				// Check diplomacy conditions for each unit
+			}
 
 			echo 'Step to ('.$newLoc[1].', '.$newLoc[2].').  '.$moveCost.' Move points used and '.$unitDat[16].' Action Points Remaining<br>';
 		}
@@ -120,4 +138,21 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 }
 
 fclose($unitFile);
+
+function checkCollisions($slotNumber, $location) {
+	$returnList = [];
+	for ($j=1; $j<=sizeof($loadedSlots[$slotNumber]); $j+=6;) {
+		if ($location[1] == $loadedSlots[$slotNumber][$j]) { /// X Values Match
+			if ($location[2] == $loadedSlots[$slotNumber][$j+1]) { // Y Values Match
+				$returnList[] = $j;
+			}
+		}
+	}
+	
+	return $returnList;
+}
+
+function loadNewSlot($slotFile, $targetSlot) {
+	return readSlotDataEndKey($slotFile, $targetSlot, 404); //function readSlotDataEndKey($file, $slot_num, $slot_size)	
+}
 ?>
