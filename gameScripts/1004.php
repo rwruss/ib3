@@ -2,8 +2,8 @@
 
 include("./slotFunctions.php");
 // Check to see if player is already in game
-$playerList = unpack("N*", file_get_contents("../games/".$gameID."/players.dat"));
-$pGameID = array_search($_SESSION['playerId'], $playerList);
+$playerList = unpack("i*", file_get_contents("../games/".$gameID."/players.dat"));
+$idSpot = array_search($_SESSION['playerId'], $playerList);
 
 $startLocation = [4800, 5260];
 
@@ -48,9 +48,11 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 		// Add player to list of players for this game
 		$pListFile = fopen("../games/".$gameID."/players.dat", "ab");
-		fwrite($pListFile, pack("N*", $_SESSION['playerId'], $pGameId));
+		fwrite($pListFile, pack("i*", $_SESSION['playerId'], $pGameId*-1));
 		fclose($pListFile);
-		}
+	} else {
+		$pGameId = intval($playerList[$idSpot+1]*-1);
+	}
 
 
 	//$pGameID = $_SESSION['gameIDs'][$_GET['gid']];
@@ -152,10 +154,6 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,8,$pGameID, $pGameID,1,$postVals[1],0));
 	// Secondary information
 	fwrite($unitFile, pack("i*", 1, 0, $townID));
-	// Record energy points
-	fseek($unitFile, ($civilianID)*$defaultBlockSize+60);
-	fwrite($unitFile, pack("i", 1000));
-
 	fseek($unitFile, ($civilianID)*$defaultBlockSize+$unitBlockSize-4);
 	fwrite($unitFile, pack("i", 9990));
 
@@ -166,11 +164,6 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,6,$pGameID, $pGameID,1,$postVals[1],0));
 	// Secondary information
 	fwrite($unitFile, pack("i*", 1, 0, $townID));
-
-	// Record energy points
-	fseek($unitFile, ($militaryID)*$defaultBlockSize+60);
-	fwrite($unitFile, pack("i", 1000));
-
 	fseek($unitFile, ($militaryID)*$defaultBlockSize+$unitBlockSize-4);
 	fwrite($unitFile, pack("i", 9990));
 
