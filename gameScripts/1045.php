@@ -7,6 +7,8 @@ $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 fseek($unitFile, $postVals[1]*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
+$slotFile = fopen($gamePath.'/mapSlotFile.slt', 'rb');
+
 $xDir = [0,-1,0,1,-1,0,1,-1,0,1];
 $yDir = [0,1,1,1,0,0,0,-1,-1,-1];
 
@@ -50,39 +52,50 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   $moves = sizeof($moveList);
   $terIndex = 5101;
   $riverCheck = true;
-  $loadedSlots = new array();
-  $diplomacyList = new array();
+  $loadedSlots = [];
+  $diplomacyList = [];
+  $actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
   for ($i=0; $i<$moves; $i++) {
-	$oldElevation = $elInfo[$terIndex];
-	$terIndex += $xDir[$moveList[$i]] + $yDir[$moveList[$i]]*101;
-	$moveCost = $terInfo[$terIndex] + abs(floor($oldElevation - $elInfo[$terIndex])/100);
-	if ($unitDat[16] >= $moveCost) {
-		if ($riverCheck == true) {			
-			$newLoc[1] += $xDir[$moveList[$i]]*2;
-			$newLoc[2] += $yDir[$moveList[$i]]*2;
-			$unitDat[16] -= $moveCost;
-			
-			// Check for collisions at the new location
-			// Load slot data for the new location if it is not already loaded
-			$currentSlot = floor($newLoc[2]/120)*120+floor($newLoc[1]/120);
-			if (!array_key_exists($currentSlot, $loadedSlots)) {
-				$unitList = unpack('i*', loadNewSlot($slotFile, $currentSlot));
-				foreach ($unitList as $unitNumber) {
-					fseek($unitFile, $unitNumber*$20);
-					$tmpUnit = unpack('i*', fread($unitFile, $unitBlockSize));
-					array_push($loadedSlots[$currentSlot], $tmpUnit[1], $tmpUnit[2], $unitNumber, $tmpUnit[4], $tmpUnit[5], $tmpUnit[6]);
-				}
-			}
-			$collsionList = checkCollisions($currentSlot, $newLoc);
-			foreach ($collisionList as $collisionID) {
-				// Check diplomacy conditions for each unit
-			}
+  	$oldElevation = $elInfo[$terIndex];
+  	$terIndex += $xDir[$moveList[$i]] + $yDir[$moveList[$i]]*101;
+  	$moveCost = $terInfo[$terIndex] + abs(floor($oldElevation - $elInfo[$terIndex])/100);
 
-			echo 'Step to ('.$newLoc[1].', '.$newLoc[2].').  '.$moveCost.' Move points used and '.$unitDat[16].' Action Points Remaining<br>';
-		}
-	} else {
-		break;
-	}
+  	if ($actionPoints >= $moveCost) {
+  		if ($riverCheck == true) {
+        echo 'process move<br>';
+  			$newLoc[1] += $xDir[$moveList[$i]]*2;
+  			$newLoc[2] += $yDir[$moveList[$i]]*2;
+  			$actionPoints -= $moveCost;
+
+  			// Check for collisions at the new location
+  			// Load slot data for the new location if it is not already loaded
+
+  			$currentSlot = floor($newLoc[2]/120)*120+floor($newLoc[1]/120);
+        echo 'Look for slot '.$currentSlot.'<br>';
+  			if (!array_key_exists(intval($currentSlot), $loadedSlots)) {
+          echo 'Load units in slot '.$currentSlot.'<br>';
+          $loadedSlots[$currentSlot] = [];
+  				$unitList = array_filter(unpack('i*', loadNewSlot($slotFile, $currentSlot)));
+  				foreach ($unitList as $unitNumber) {
+            echo 'Load unit '.$unitNumber.'<br>';
+  					fseek($unitFile, $unitNumber*$defaultBlockSize);
+  					$tmpUnit = unpack('i*', fread($unitFile, $unitBlockSize));
+  					array_push($loadedSlots[$currentSlot], $tmpUnit[1], $tmpUnit[2], $unitNumber, $tmpUnit[4], $tmpUnit[5], $tmpUnit[6]);
+  				}
+  			} else {
+          echo 'That key already exists!';
+        }
+  			$collisionList = checkCollisions($currentSlot, $newLoc, $loadedSlots);
+  			foreach ($collisionList as $collisionID) {
+  				// Check diplomacy conditions for each unit
+  			}
+
+  			echo 'Step to ('.$newLoc[1].', '.$newLoc[2].').  '.$moveCost.' Move points used and '.$unitDat[16].' Action Points Remaining<br>';
+  		}
+  	} else {
+      echo 'Not enough move points ('.$actionPoints.' vs '.$moveCost.')<br>';
+  		break;
+  	}
   }
   $newSlot = floor($newLoc[2]/120)*120+floor($newLoc[1]/120);
 
@@ -119,7 +132,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 
   // Record new energy level of unit
   fseek($unitFile, $postVals[1]*$defaultBlockSize+60);
-  fwrite($unitFile, pack('i', $unitDat[16]));
+  fwrite($unitFile, pack('i', $actionPoints));
 
   // Record Current Slot and last update time for unit
   fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
@@ -127,7 +140,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 
   // Output results to browser
   echo '<script>
-	setUnitAction('.$postVals[1].',  '.($unitDat[16]/1000).');
+	setUnitAction('.$postVals[1].',  '.($actionPoints/1000).');
 	updateUnitPosition('.$postVals[1].', '.$newLoc[1].', '.$newLoc[2].');
   resetMove();
   </script>';
@@ -136,23 +149,26 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 	// Move is not allowed
   echo 'Not allowed to make this order';
 }
-
+fclose($slotFile);
 fclose($unitFile);
 
-function checkCollisions($slotNumber, $location) {
+function checkCollisions($slotNumber, $location, &$loadedSlots) {
 	$returnList = [];
-	for ($j=1; $j<=sizeof($loadedSlots[$slotNumber]); $j+=6;) {
+  print_r($loadedSlots);
+	for ($j=0; $j<sizeof($loadedSlots[$slotNumber]); $j+=6) {
+    echo 'Check '.$loadedSlots[$slotNumber][$j+2].'<br>';
 		if ($location[1] == $loadedSlots[$slotNumber][$j]) { /// X Values Match
 			if ($location[2] == $loadedSlots[$slotNumber][$j+1]) { // Y Values Match
+        echo 'HIT!!!!!!!!!!!!!!!!!!!!!!';
 				$returnList[] = $j;
 			}
 		}
 	}
-	
+
 	return $returnList;
 }
 
 function loadNewSlot($slotFile, $targetSlot) {
-	return readSlotDataEndKey($slotFile, $targetSlot, 404); //function readSlotDataEndKey($file, $slot_num, $slot_size)	
+	return readSlotDataEndKey($slotFile, $targetSlot, 404); //function readSlotDataEndKey($file, $slot_num, $slot_size)
 }
 ?>

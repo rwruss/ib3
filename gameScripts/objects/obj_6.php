@@ -5,8 +5,6 @@ $actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
 echo '<script>
 resetMove();
 
-updateUnitPosition('.$unitID.', 0, 0)
-
 newUnitDetail('.$unitID.', "rtPnl");
 newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
 document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";

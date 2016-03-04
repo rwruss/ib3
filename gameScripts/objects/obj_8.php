@@ -3,7 +3,7 @@ date_default_timezone_set('America/Chicago');
 $actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
 
 echo '<script>
-//resetMove();
+resetMove();
 
 newUnitDetail('.$unitID.', "rtPnl");
 newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");

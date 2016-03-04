@@ -671,11 +671,9 @@ precision mediump float;
 
 	function ncode_div(el_id) {
          var x = document.getElementById(el_id).getElementsByTagName('script');
-		 //alert(x.length);
          for(var i=0;i<x.length;i++) {
                  eval(x[i].text);
-
-                 }
+							   }
          }
 
 	function ncode_general(data) {
@@ -705,8 +703,8 @@ precision mediump float;
 	}
 
 	var moveString = new Array();
-	var umList = new Array();
-	var umFauxVerts = new Array();
+	var umList = [];
+	var umFauxVerts = [];
 	var drawLoc = [];
 
 	function resetMove() {
@@ -721,7 +719,6 @@ precision mediump float;
 	yMoves = [0, 1, 1, 1, 0, 0, 0, -1, -1, -1];
 	function move(val) {
 		lineWidth = 0.75;
-		//alert(moveString);
 		if (val < 10) {
 			moveString.push(val);
 			//alert(moveString);
@@ -760,9 +757,11 @@ precision mediump float;
 				drawLoc[1] -= yMoves[lastMove]*2;
 
 			} else {
-				moveString = [];
+				moveString.splice(1, moveString.length+1);
 				umList = [];
 				umFauxVerts = [];
+				drawLoc = [drawLoc[2], drawLoc[3], drawLoc[2], drawLoc[3]];
+				moveLength = 0;
 				}
 		}
 
@@ -2485,17 +2484,17 @@ precision mediump float;
 		}
 
 	function updateUnitPosition(unitID, X, Y) {
-		alert('update position');
+		//alert('update position');
 		idCheck: {
 			for (var i=0; i<36; i++) {
 				for (var j=2; j<gridUnitLists[i].length; j+=3) {
 					if (gridUnitLists[i][j] == unitID) {
-						alert('spot found: ' + j + ', Old length: ' + gridUnitLists[i].length);
-						alert(gridUnitLists[i]);
+						//alert('spot found: ' + j + ', Old length: ' + gridUnitLists[i].length);
+						//alert(gridUnitLists[i]);
 						gridUnitLists[i][j-2] = X;
 						gridUnitLists[i][j-1] = Y;
-						alert('New length: ' + gridUnitLists[i].length);
-						alert(gridUnitLists[i]);
+						//alert('New length: ' + gridUnitLists[i].length);
+						//alert(gridUnitLists[i]);
 						gl.bindBuffer(gl.ARRAY_BUFFER, gridUniforms[i]);
 						gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(gridUnitLists[i]), gl.STATIC_DRAW);
 						break idCheck;
