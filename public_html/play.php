@@ -2376,7 +2376,7 @@ precision mediump float;
 			resetCount=0;
 			if (test.length > 0) {
 				//alert(test[0] + ', ' + test[1]);
-				for (var j=0; j<test.length-1; j++) {
+				for (var j=0; j<test.length/2-2; j++) {
 				if (test[j*2+2] != 0 && test[j*2+3] != 0) {
 					dirX = test[j*2+2]-test[j*2];
 					dirY = test[j*2+3]-test[j*2+1];

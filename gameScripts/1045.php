@@ -67,59 +67,127 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   $diplomacyList = [];
   $collisionList = [];
   $actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
+  $seenBy = [];
   for ($i=0; $i<$moves; $i++) {
   	$oldElevation = $elInfo[$terIndex];
   	$terIndex += $xDir[$moveList[$i]] + $yDir[$moveList[$i]]*101;
   	$moveCost = $terInfo[$terIndex] + abs(floor($oldElevation - $elInfo[$terIndex])/100);
-
+	
+	$tmpLoc[1] = $newLoc[1] + $xDir[$moveList[$i]]*2;
+	$tmpLoc[2] = $newLoc[2] + $yDir[$moveList[$i]]*2;
+	$startSlot = floor($newLoc[2]/120)*120+floor($newLoc[1]/120);
+	$endSlot = floor($tmpLoc[2]/120)*120+floor($tmpLoc[1]/120);
   	if ($actionPoints >= $moveCost) {
+		// Check rivers
+		
+		if (!array_key_exists(intval($endSlot), $riverDat)) {
+			// River data for this area not loaded yet
+			$riverDat[$endSlot] = unpack("v*", file_get_contents("./riverFiles/1/".$endSlot.".pf2"));
+		}
+		
+		$moveLine = [$newLoc[0], $newLoc[1], $tmpLoc[0], $tmpLoc[1]];
+		if ($startSlot != $endSlot) {
+			// Need to check the start slot separate from the end slot
+			for ($rNum=0; $rNum<sizeof($riverDat[$startSlot]); $rNum+=2) {
+				// If there is a break in the lines, skip this segment and increment an extra space to start of next segment
+				if ($rNum+2 == 0 && $rNum+3 == 0) {
+					$rNum+=2;
+				} else {
+					$spin1 = calcSpin($newLoc, $tmpLoc, [$riverDat[$startSlot][$rNum], $riverDat[$startSlot][$rNum+1]]);
+					$spin2 = calcSpin($newLoc, $tmpLoc, [$riverDat[$startSlot][$rNum+2], $riverDat[$startSlot][$rNum+3]]);
+					$spin3 = calcSpin([$riverDat[$startSlot][$rNum], $riverDat[$startSlot][$rNum+1]], [$riverDat[$startSlot][$rNum+2], $riverDat[$startSlot][$rNum+3]], $newLoc);
+					$spin4 = calcSpin([$riverDat[$startSlot][$rNum], $riverDat[$startSlot][$rNum+1]], [$riverDat[$startSlot][$rNum+2], $riverDat[$startSlot][$rNum+3]], $tmpLoc);
+					if ($spin1*$spin2 <= 0 || $spin3*$spin4 <=0) {
+						// May need to add a check against $terInfo[$terIndex] to see if there is a bridge along this path.  This could be indicated by a terrain value greater than a certain 
+						// threshold.  The terrain affects would then be calculate using a mod of this value.
+						
+						echo 'Can\'t cross a river!';
+						goto endMove;
+					}
+				}
+			}
+		}
+
+		// Check the rivers in the ending slot
+		for ($rNum=0; $rNum<sizeof($riverDat[$startSlot]); $rNum+=2) {
+		// If there is a break in the lines, skip this segment and increment an extra space to start of next segment
+			if ($rNum+2 == 0 && $rNum+3 == 0) {
+				$rNum+=2;
+			} else {
+				$spin1 = calcSpin($newLoc, $tmpLoc, [$riverDat[$startSlot][$rNum], $riverDat[$startSlot][$rNum+1]]);
+				$spin2 = calcSpin($newLoc, $tmpLoc, [$riverDat[$startSlot][$rNum+2], $riverDat[$startSlot][$rNum+3]]);
+				$spin3 = calcSpin([$riverDat[$startSlot][$rNum], $riverDat[$startSlot][$rNum+1]], [$riverDat[$startSlot][$rNum+2], $riverDat[$startSlot][$rNum+3]], $newLoc);
+				$spin4 = calcSpin([$riverDat[$startSlot][$rNum], $riverDat[$startSlot][$rNum+1]], [$riverDat[$startSlot][$rNum+2], $riverDat[$startSlot][$rNum+3]], $tmpLoc);
+				if ($spin1*$spin2 <= 0 || $spin3*$spin4 <=0) {
+					// May need to add a check against $terInfo[$terIndex] to see if there is a bridge along this path.  This could be indicated by a terrain value greater than a certain 
+					// threshold.  The terrain affects would then be calculate using a mod of this value.
+					
+					echo 'Can\'t cross a river!';
+					$riverCheck = false;
+					goto endMove;
+				}
+			}
+		}
+		
   		if ($riverCheck == true) {
         echo 'process move<br>';
-  			$newLoc[1] += $xDir[$moveList[$i]]*2;
-  			$newLoc[2] += $yDir[$moveList[$i]]*2;
-  			$actionPoints -= $moveCost;
+  		$newLoc[1] = $tmpLoc[1];
+  		$newLoc[2] = $tmpLoc[2];
+  		$actionPoints -= $moveCost;
 
-  			// Check for collisions at the new location
-  			// Load slot data for the new location if it is not already loaded
+  		// Check for collisions at the new location
+  		// Load slot data for the new location if it is not already loaded
 
-  			$currentSlot = floor($newLoc[2]/120)*120+floor($newLoc[1]/120);
+  		$currentSlot = floor($newLoc[2]/120)*120+floor($newLoc[1]/120);
+		
+		// Load surrounding slots as needed for view checks
+		
         echo 'Look for slot '.$currentSlot.'<br>';
-  			if (!array_key_exists(intval($currentSlot), $loadedSlots)) {
-          echo 'Load units in slot '.$currentSlot.'<br>';
-          $loadedSlots[$currentSlot] = [];
-  				$unitList = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $currentSlot, 404)));
-  				foreach ($unitList as $unitNumber) {
-            echo 'Load unit '.$unitNumber.'<br>';
-  					fseek($unitFile, $unitNumber*$defaultBlockSize);
-  					$tmpUnit = unpack('i*', fread($unitFile, $unitBlockSize));
-  					//array_push($loadedSlots[$currentSlot], $unitNumber);
-						$loadedSlots[$currentSlot][] = $unitNumber;
-						$unitList[$unitNumber] = [];
-						array_push($unitList[$unitNumber], $tmpUnit[1], $tmpUnit[2], $tmpUnit[6]); // X Loc, Y Loc, Controller
-  				}
-  			} else {
+  		if (!array_key_exists(intval($currentSlot), $loadedSlots)) {
+			echo 'Load units in slot '.$currentSlot.'<br>';
+			$loadedSlots[$currentSlot] = [];
+			$unitList = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $currentSlot, 404)));
+  			foreach ($unitList as $unitNumber) {
+				echo 'Load unit '.$unitNumber.'<br>';
+  				fseek($unitFile, $unitNumber*$defaultBlockSize);
+  				$tmpUnit = unpack('i*', fread($unitFile, $unitBlockSize));
+  				//array_push($loadedSlots[$currentSlot], $unitNumber);
+				$loadedSlots[$currentSlot][] = $unitNumber;
+				$unitList[$unitNumber] = [];
+				array_push($unitList[$unitNumber], $tmpUnit[1], $tmpUnit[2], $tmpUnit[6], $tmpUnit[4], $tmpUnit[28]); // X Loc, Y Loc, Controller, Type, View Range
+  			}
+  		} else {
           echo 'That key already exists!';
         }
   			$turnCollisions = checkCollisions($currentSlot, $newLoc, $loadedSlots, $unitList);
   			foreach ($turnCollisions as $collisionID) {
   				// Check if diplomacy has already been loaded for the unit that you are colliding with
+				
 					if (!array_key_exists($collisionID, $collisionList)) {
-						echo 'Collision with unit '.$collisionID.'<br>';
-						// Load the war list for the unit
-						fseek($unitFile, $unitList[$collisionID][2]*$defaultBlockSize);
-						$trgPlayerData = unpack('i*', fread($unitFile, $unitBlockSize));
+						switch ($unitList[$collissionID][3]) {
+						// Determine action based on unit type
+							case 6:					
+				
+							echo 'Collision with unit '.$collisionID.'<br>';
+							// Load the war list for the unit
+							fseek($unitFile, $unitList[$collisionID][2]*$defaultBlockSize);
+							$trgPlayerData = unpack('i*', fread($unitFile, $unitBlockSize));
 
-						$trgWarList = array_filter(unpack("i*", readSlotData($datSlotFile, $trgPlayerData[32], 40)));
-						$collisionList[$collisionID] = 1;
+							$trgWarList = array_filter(unpack("i*", readSlotData($datSlotFile, $trgPlayerData[32], 40)));
+							$collisionList[$collisionID] = 1;
 
-						if(sizeof($trgWarList) > sizeof($myWarList)) {
-							$foundWars = compareWarLists($myWarList, $trgWarList);
-						} else {
-							$foundWars = compareWarLists($trgWarList, $myWarList);
-						}
+							if(sizeof($trgWarList) > sizeof($myWarList)) {
+								$foundWars = compareWarLists($myWarList, $trgWarList);
+							} else {
+								$foundWars = compareWarLists($trgWarList, $myWarList);
+							}
 
-						if (sizeof($foundWars) > 0) {
-							goto endMove;
+							if (sizeof($foundWars) > 0) {
+								goto endMove;
+							} else {
+								// Start a battle at this location.  This will affect all of the common wars found.
+								startNewBattle($postVals[1], $collisionID, $foundWars, $unitFile, $mapSlotFile, $newLoc);
+							}
 						}
 					}
   			}
@@ -186,18 +254,8 @@ fclose($datSlotFile);
 fclose($mapSlotFile);
 fclose($unitFile);
 
-function compareWarLists(&$shortList, &$longList) {
-	echo 'Coparing war lists<br>';
-	$returnList = [];
-	for($w=1; $w<=sizeof($shortList); $w+=2) {
-		$matchKey = array_search($shortList[$w], $longList);
-		if ($matchKey) {
-			if ($shortList[$w+1] != $longList[$matchKey+1]) {
-				$returnList[] = $shortList[$w];
-			}
-		}
-	}
-	return $returnList;
+function calcSpin($p1, $p2, $p3) {
+	$spin1 = ($p2[0]-$p1[0])*($p3[1]-$p1[1])-($p3[0]-$p1[0])*($p2[1]-$p1[1]);
 }
 
 function checkCollisions($slotNumber, $location, &$loadedSlots, &$unitList) {
@@ -215,6 +273,31 @@ function checkCollisions($slotNumber, $location, &$loadedSlots, &$unitList) {
 
 	return $returnList;
 }
+
+function compareWarLists(&$shortList, &$longList) {
+	echo 'Coparing war lists<br>';
+	$returnList = [];
+	for($w=1; $w<=sizeof($shortList); $w+=2) {
+		$matchKey = array_search($shortList[$w], $longList);
+		if ($matchKey) {
+			if ($shortList[$w+1] != $longList[$matchKey+1]) {
+				$returnList[] = $shortList[$w];
+			}
+		}
+	}
+	return $returnList;
+}
+
+function startNewBattle($unit1, $unit2, $warList, $unitFile, $mapSlotFile, $location) {
+	// Create a battle slot with location, start time, affected wars, etc.
+	
+	// Remove the two units from the map slot file and add a battle icon
+	
+	// Adjust the status for each unit to set it for battle
+	
+}
+
+
 /*
 function loadNewSlot($, $targetSlot) {
 	return readSlotDataEndKey($, $targetSlot, 404); //function readSlotDataEndKey($file, $slot_num, $slot_size)

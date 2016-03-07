@@ -76,6 +76,9 @@
             <File name="E:\websites\IB3\public_html\taskFunctions.php" />
             <File name="E:\websites\IB3\public_html\templates.js" />
             <File name="E:\websites\IB3\public_html\ib3styles.css" />
+            <Folder name="rivers">
+                <File name="E:\websites\IB3\public_html\rivers\loadRivers_v2.php" />
+            </Folder>
         </Folder>
         <Folder name="other" />
     </Project>
