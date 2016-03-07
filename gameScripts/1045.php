@@ -14,7 +14,7 @@ $xDir = [0,-1,0,1,-1,0,1,-1,0,1];
 $yDir = [0,1,1,1,0,0,0,-1,-1,-1];
 
 fseek($unitFile, $pGameID*$defaultBlockSize);
-$playerDat = unpack('i*', fread($untiFile, $unitBlockSize));
+$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 if ($playerDat[32] > 0) {
 	$myWarList = array_filter(unpack("i*", readSlotData($datSlotFile, $playerDat[32], 40)));
@@ -87,39 +87,41 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   			if (!array_key_exists(intval($currentSlot), $loadedSlots)) {
           echo 'Load units in slot '.$currentSlot.'<br>';
           $loadedSlots[$currentSlot] = [];
-  				$unitList = array_filter(unpack('i*', loadNewSlot($, $currentSlot)));
+  				$unitList = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $currentSlot, 404)));
   				foreach ($unitList as $unitNumber) {
             echo 'Load unit '.$unitNumber.'<br>';
   					fseek($unitFile, $unitNumber*$defaultBlockSize);
   					$tmpUnit = unpack('i*', fread($unitFile, $unitBlockSize));
   					//array_push($loadedSlots[$currentSlot], $unitNumber);
-					$loadedSlots[$currentSlot][] = $unitNumber;
-					array_push($unitList[$unitNumber], $tmpUnit[1], $tmpUnit[2], $tmpUnit[6]); // X Loc, Y Loc, Controller
+						$loadedSlots[$currentSlot][] = $unitNumber;
+						$unitList[$unitNumber] = [];
+						array_push($unitList[$unitNumber], $tmpUnit[1], $tmpUnit[2], $tmpUnit[6]); // X Loc, Y Loc, Controller
   				}
   			} else {
           echo 'That key already exists!';
         }
-  			$turnCollisions = checkCollisions($currentSlot, $newLoc, $loadedSlots);
+  			$turnCollisions = checkCollisions($currentSlot, $newLoc, $loadedSlots, $unitList);
   			foreach ($turnCollisions as $collisionID) {
   				// Check if diplomacy has already been loaded for the unit that you are colliding with
-				if (!array_key_exists($collisionID, $collisionList)) {
-					// Load the war list for the unit
-					fseek($unitFile, $unitList[$collissionID][2]*$defaultBlockSize);
-					$trgPlayerData = unpack('i*', fread($unitFile, $unitBlockSize));
-					
-					$trgWarList = array_filter(unpack("i*", readSlotData($datSlotFile, $trgPlayerData[32], 40)));
-					$collisionList[$collisionID] = 1;
-					
-					if(sizeof($trgWarList) > sizeof($myWarList) {
-						$foundWars = compareWarLists($myWarList, $trgWarList);
-					} else {
-						$foundWars = compareWarLists($trgWarList, $myWarList);
+					if (!array_key_exists($collisionID, $collisionList)) {
+						echo 'Collision with unit '.$collisionID.'<br>';
+						// Load the war list for the unit
+						fseek($unitFile, $unitList[$collisionID][2]*$defaultBlockSize);
+						$trgPlayerData = unpack('i*', fread($unitFile, $unitBlockSize));
+
+						$trgWarList = array_filter(unpack("i*", readSlotData($datSlotFile, $trgPlayerData[32], 40)));
+						$collisionList[$collisionID] = 1;
+
+						if(sizeof($trgWarList) > sizeof($myWarList)) {
+							$foundWars = compareWarLists($myWarList, $trgWarList);
+						} else {
+							$foundWars = compareWarLists($trgWarList, $myWarList);
+						}
+
+						if (sizeof($foundWars) > 0) {
+							goto endMove;
+						}
 					}
-					
-					if (sizeof($foundWars) > 0) {
-						goto endMove;
-					}
-				}
   			}
 
   			echo 'Step to ('.$newLoc[1].', '.$newLoc[2].').  '.$moveCost.' Move points used and '.$unitDat[16].' Action Points Remaining<br>';
@@ -128,7 +130,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
       echo 'Not enough move points ('.$actionPoints.' vs '.$moveCost.')<br>';
   		break;
   	}
-  }  
+  }
  endMove:
   $newSlot = floor($newLoc[2]/120)*120+floor($newLoc[1]/120);
 
@@ -149,13 +151,11 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 
     removeFromEndSlot($mapSlotFile, $oldSlot, 404, $postVals[1]); //removeFromEndSlot($slotFile, $startSlot, $slot_size, $targetVal)
     addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404); //addtoSlotGen($gamePath.'/mapSlotFile.slt', $mapSlot, pack('i', $newID), $mapSlotFile, 404);
-    fclose($mapSlotFile);
   }
   else if ($unitDat[26] == 0) {
     // Record this unit in the slot file
     $mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
     addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404);
-    fclose($mapSlotFile);
   }
 
 
@@ -182,13 +182,15 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 	// Move is not allowed
   echo 'Not allowed to make this order';
 }
-fclose($);
+fclose($datSlotFile);
+fclose($mapSlotFile);
 fclose($unitFile);
 
 function compareWarLists(&$shortList, &$longList) {
+	echo 'Coparing war lists<br>';
 	$returnList = [];
 	for($w=1; $w<=sizeof($shortList); $w+=2) {
-		$matchKey = array_search($shortList[$w], $longList)
+		$matchKey = array_search($shortList[$w], $longList);
 		if ($matchKey) {
 			if ($shortList[$w+1] != $longList[$matchKey+1]) {
 				$returnList[] = $shortList[$w];
@@ -206,15 +208,15 @@ function checkCollisions($slotNumber, $location, &$loadedSlots, &$unitList) {
 		if ($location[1] == $unitList[$loadedSlots[$slotNumber][$j]][0]) { /// X Values Match
 			if ($location[2] == $unitList[$loadedSlots[$slotNumber][$j]][1]) { // Y Values Match
         echo 'HIT!!!!!!!!!!!!!!!!!!!!!!';
-				$returnList[] = $j;
+				$returnList[] = $loadedSlots[$slotNumber][$j];
 			}
 		}
 	}
 
 	return $returnList;
 }
-
+/*
 function loadNewSlot($, $targetSlot) {
 	return readSlotDataEndKey($, $targetSlot, 404); //function readSlotDataEndKey($file, $slot_num, $slot_size)
-}
+}*/
 ?>

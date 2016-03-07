@@ -12,7 +12,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	clearstatcache();
 	$unitIndex = max(1,filesize($gamePath.'/unitDat.dat')/$defaultBlockSize);
 	// If player is not already in game, add the player to the game and record the game in the player's list
-	if ($pGameID == FALSE) {
+	if ($idSpot == FALSE) {
 
 		// Add game to players list of games
 		$uDatFile = fopen("../users/userDat.dat", "r+b");
@@ -48,10 +48,10 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 		// Add player to list of players for this game
 		$pListFile = fopen("../games/".$gameID."/players.dat", "ab");
-		fwrite($pListFile, pack("i*", $_SESSION['playerId'], $pGameId*-1));
+		fwrite($pListFile, pack("i*", $_SESSION['playerId'], $pGameID*-1));
 		fclose($pListFile);
 	} else {
-		$pGameId = intval($playerList[$idSpot+1]*-1);
+		$pGameID = intval($playerList[$idSpot+1]*-1);
 	}
 
 

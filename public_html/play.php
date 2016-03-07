@@ -6,9 +6,9 @@ if (!isset($_GET['gameID'])) echo "<script>window.location.replace('./index.php'
 
 // Read game file to determine player number and status.
 
-$playerList = unpack("N*", file_get_contents("../games/".$_GET['gameID']."/players.dat"));
+$playerList = unpack("i*", file_get_contents("../games/".$_GET['gameID']."/players.dat"));
 $playerListLoc = array_search($_SESSION['playerId'], $playerList);
-$pGameID = $playerList[$playerListLoc+1];
+$pGameID = $playerList[$playerListLoc+1]*-1;
 $_SESSION['instance'] = $_GET['gameID'];
 //echo "PLAYER GAME ID IS ".$pGameID;
 if ($pGameID == FALSE) {
@@ -76,6 +76,7 @@ echo "
 	varying vec2 vTextureCoord;
 	varying vec2 vVertexPosition;
 	varying vec3 vVertexNormal;
+	//vec3 vMapScale
 	varying vec4 oceanColor;
 	varying vec4 screenPos;
 	varying float fOffset;
@@ -92,6 +93,7 @@ echo "
 	vec4 terIndexDn;
 	vec4 terIndexRt;
 	vec4 terIndexDnRt;
+	//uniform vec3 uMapScale;
 	uniform sampler2D uSampler;
 	uniform sampler2D uBSampler;
 	uniform sampler2D uTSampler;
@@ -112,6 +114,7 @@ echo "
 	vec4 hexPattern;
 	varying vec4 flatPos;
 	vec4 flatColor;
+	//varying float vMapScale;
 	varying float vTileNum;
 	varying float directionalLightWeighting;
 	varying float timeVal;
@@ -193,7 +196,7 @@ echo "
 				}
 			else {
 				vec4 addMarks = vec4(0.,0.,0.,0.);
-				if (uUseColor == 1.) addMarks = max(vec4(0.),vec4(10.*(0.1 - fract(vVertexPosition.x*6.0)), 10.*(0.1 - fract(vVertexPosition.y*6.0)), 0., 1.)) ;
+				if (uUseColor == 1.) addMarks = max(vec4(0.),vec4(10.*(0.1 - fract(vVertexPosition.x*1.5)), 10.*(0.1 - fract(vVertexPosition.y*1.5)), 0., 1.)) ;
 				//else vec4 addMarks = vec4(0.,0.,0.,0.);
 				float xMod = mod(vVertexPosition.x,1.0);
 				float yMod = mod(vVertexPosition.y,1.0);
@@ -295,6 +298,7 @@ echo "
 	varying vec3 vTransformedNormal;
 	varying vec2 vVertexPosition;
 	varying float vTileNum;
+	//varying float vMapScale;
 	varying float directionalLightWeighting;
 
 	vec4 locRough;
@@ -358,6 +362,7 @@ echo "
 		vTileNum = uTileNum;}
 		vTextureCoord = vec2(aTextureCoord.x, aTextureCoord.y);
 		vVertexPosition = aVertexPosition;
+		//vMapScale = uMapScale.x;
 		}
 </script>
 
