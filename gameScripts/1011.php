@@ -21,6 +21,7 @@ if (sizeof($unitList)>0) {
 		newUnitDetail('.$unitID.', "rtPnl");
 		//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
 		document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
+		document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {passClick("1034,'.$unitID.'", "rtPnl")});
 		setUnitAction('.$unitID.', '.($actionPoints/1000).');
 		setUnitExp('.$unitID.', 0.5);';
 	}

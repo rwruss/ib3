@@ -184,11 +184,18 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 							switch ($unitList[$collisionID][3]) {
 							// Determine action based on unit type
 								case 1: // A village
-									echo 'Collision with city '.$collisionID.'<br>';
+									if ($moves - $i == 1) {
+										echo 'End in city '.$collisionID.'<br>';
+									} else {
+										echo 'Collision with city '.$collisionID.'<br>';}
 									break; // end case 1
 
 								case 2: // a resource building
-									echo 'Collision with resource Building '.$collisionID.' Player '.$pGameID.', Controller '.$unitList[$collisionID][2].'<br>';
+									if ($moves - $i == 1) {
+										echo 'End on resource Building '.$collisionID.' Player '.$pGameID.', Controller '.$unitList[$collisionID][2].'<br>';
+									} else {
+										echo 'Collision with resource Building '.$collisionID.' Player '.$pGameID.', Controller '.$unitList[$collisionID][2].'<br>';
+									}
 									break; // end case 2
 
 								case 3: // An army
