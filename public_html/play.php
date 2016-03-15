@@ -712,12 +712,13 @@ precision mediump float;
 	var umFauxVerts = [];
 	var drawLoc = [];
 
-	function resetMove() {
-		moveString = [];
+	function resetMove(x, y) {
+		moveString.splice(1, moveString.length+1);
 		umList = [];
 		umFauxVerts = [];
-		drawLoc = [];
+		drawLoc = [x,y,x,y];
 		moveLength = 0;
+
 	}
 
 	xMoves = [0, -1, 0, 1, -1, 0, 1, -1, 0, 1];

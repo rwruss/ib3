@@ -178,7 +178,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   			$turnCollisions = checkCollisions($currentSlot, $newLoc, $loadedSlots, $unitList);
   			foreach ($turnCollisions as $collisionID) {
   				// Check if diplomacy has already been loaded for the unit that you are colliding with
-
+					echo 'Collision with type '.$unitList[$collisionID][3].'<br>';
 					if (!array_key_exists($collisionID, $collisionList)) {
 						if ($unitList[$collisionID][2] != $pGameID) {
 							switch ($unitList[$collisionID][3]) {
@@ -236,7 +236,10 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 								}
 						} else {
 							// Collision is with a player controlled object
+							echo 'Collision with something you own <br>';
 						}
+					} else {
+						echo 'This one was already checked';
 					}
   			}
 
@@ -291,7 +294,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   echo '<script>
 	setUnitAction('.$postVals[1].',  '.($actionPoints/1000).');
 	updateUnitPosition('.$postVals[1].', '.$newLoc[1].', '.$newLoc[2].');
-  resetMove();
+  resetMove('.$newLoc[1].', '.$newLoc[2].');
   </script>';
 
 } else {
