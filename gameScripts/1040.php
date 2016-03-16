@@ -1,5 +1,6 @@
 <?php
 
+include('./slotFunctions.php');
 // postvals 1=> task ID
 echo 'Task Detail for task '.$postVals[1].'<br>';
 
@@ -11,6 +12,6 @@ fclose($taskFile);
 
 print_r($taskDat);
 
-include("../gameScripts/tasks/td_".$taskDat[5].".php");
+include('../gameScripts/tasks/td_'.$taskDat[5].'.php');
 
 ?>

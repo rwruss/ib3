@@ -1,5 +1,9 @@
 <?php
 
+function lookForWorkers() {
+	
+}
+
 function createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile) {
 	
 	// Save task
