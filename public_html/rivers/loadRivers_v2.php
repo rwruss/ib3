@@ -98,7 +98,7 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 					}
 					//echo "read unit".($unitID)." for Row: ".$rows.", Col ".$cols." (".$tileIndex.") in game ".$gameID."<br>";
 					fseek($unitFile, $unitID*100);
-					$drawDat = $drawDat.fread($unitFile, 8).substr($listDat, $count*4, 4);
+					$drawDat = $drawDat.fread($unitFile, 12).substr($listDat, $count*4, 4); // X Loc, Y Loc, Unit ID
 					//$drawDat = $drawDat.fread($unitFile, 8).$thousand;
 					//$drawDat = $drawDat.fread($unitFile, 12);
 					$numUnits++;

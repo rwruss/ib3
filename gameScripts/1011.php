@@ -18,7 +18,8 @@ if (sizeof($unitList)>0) {
 		//echo '<div onclick="passClick(\'1034,'.$unitID.'\', \'rtPnl\');">Unit #'.$unitID.'</div>';
 		$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
 		echo '
-		newUnitDetail('.$unitID.', "rtPnl");
+
+		newUnitDetail('.$unitID.', "militaryContent");
 		//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
 		document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
 		document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {passClick("1034,'.$unitID.'", "rtPnl")});

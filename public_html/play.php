@@ -2437,23 +2437,20 @@ precision mediump float;
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(fauxVerts), gl.STATIC_DRAW);
 
 			}
-			//alert(rData.byteLength + ', ' + totalOffset);
 			unitOffset = 2*(tiles.length-3)+totalOffset;
 			totalOffset = 4*(tiles.length-3);
-			//alert('head dat from ' + unitOffset + ' to ' + (unitOffset+4*(tiles.length-3)) + ' of ' + rData.byteLength);
+
 			headDat = new Int32Array(rData.slice(unitOffset, unitOffset+4*(tiles.length-3)));
-			//alert(headDat.length);
+
 			minVals = [100000,100000];
 			maxVals = [0,0];
 			tmptotalUnits = 0;
 
 			for (var i=0; i<tiles.length - 3; i++) {
-				unitStuff = new Int32Array(rData.slice(unitOffset+totalOffset, unitOffset+totalOffset+12*headDat[i]));
+				unitStuff = new Int32Array(rData.slice(unitOffset+totalOffset, unitOffset+totalOffset+16*headDat[i]));
 				start = unitOffset+totalOffset;
-				//alert(start + ' of ' + rData.byteLength + ' --> ' + headDat[i] + ', ' + unitStuff[0] + ', ' + unitStuff[1]);
-				totalOffset += 12*headDat[i];
-				//gridUnits
-				//gridUnitsLength;
+				totalOffset += 16*headDat[i];
+
 				gridUnits[i] = [];
 				gridUnitsLength[i] = 0;
 				gridUniforms[i] = gl.createBuffer();
@@ -2461,32 +2458,19 @@ precision mediump float;
 				dumbVal = [1, 1];
 
 				for (var uCount=0; uCount<headDat[i]; uCount++) {
-					//tmp.push(unitStuff[uCount*2], unitStuff[uCount*2+1]);
-
-
 					// Data is X Point, Y Point, Unit ID
-					gridUnitLists[i].push(unitStuff[uCount*3], unitStuff[uCount*3+1], unitStuff[uCount*3+2]);
+					gridUnitLists[i].push(unitStuff[uCount*4], unitStuff[uCount*4+1], unitStuff[uCount*4+3]);
 					gridUnitsLength[i]+=1;
-					//alert(unitStuff[uCount*2] + ', ' + unitStuff[uCount*2+1]);
-					minVals[0] = Math.min(minVals[0], unitStuff[uCount*3]);
-					minVals[1] = Math.min(minVals[1], unitStuff[uCount*3+1]);
-					maxVals[0] = Math.max(maxVals[0], unitStuff[uCount*3]);
-					maxVals[1] = Math.max(maxVals[1], unitStuff[uCount*3+1]);
-					if (unitStuff[uCount*3] == 'NaN') alert('fock1');
-					//alert(unitStuff[uCount*2]);
+					//minVals[0] = Math.min(minVals[0], unitStuff[uCount*3]);
+					//minVals[1] = Math.min(minVals[1], unitStuff[uCount*3+1]);
+					//maxVals[0] = Math.max(maxVals[0], unitStuff[uCount*3]);
+					//maxVals[1] = Math.max(maxVals[1], unitStuff[uCount*3+1]);
 				}
 				tmptotalUnits += gridUnitsLength[i];
-				//tmp = [0.0, 0.0, 1.0, 1.0, 2.0, 3.0];
-				//gridUnitsLength[i] = 3;
 				gridUnitsLength[i] = gridUnitLists[i].length/3.0;
-				//alert(gridUnitsLength[i] + ' = ' + tmptotalUnits);
 				gl.bindBuffer(gl.ARRAY_BUFFER, gridUniforms[i]);
 				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(gridUnitLists[i]), gl.STATIC_DRAW);
 			}
-		//alert('Found ' + tmptotalUnits + ' units');
-		//alert(gridUnitsLength);
-		//alert('min: ' + minVals[0] + ', ' + minVals[1] + '<---> max: ' + maxVals[0] + ', ' + maxVals[1]);
-		//alert(rData.byteLength + ', ' + totalOffset);
 		}
 
 	function updateUnitPosition(unitID, X, Y) {
