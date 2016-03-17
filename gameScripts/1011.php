@@ -13,6 +13,7 @@ $unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerObj->unitSl
 if (sizeof($unitList)>0) {
 	echo '<script>';
 	foreach ($unitList as $unitID) {
+		
 		fseek($unitFile, $unitID*$defaultBlockSize);
 		$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 		//echo '<div onclick="passClick(\'1034,'.$unitID.'\', \'rtPnl\');">Unit #'.$unitID.'</div>';
@@ -26,6 +27,7 @@ if (sizeof($unitList)>0) {
 		setUnitAction('.$unitID.', '.($actionPoints/1000).');
 		setUnitExp('.$unitID.', 0.5);';
 	}
+	
 } else {
 	echo 'You don\'t controll any units at this time';
 }

@@ -46,6 +46,8 @@
             <File name="1043.php" />
             <File name="1044.php" />
             <File name="1045.php" />
+            <File name="1046.php" />
+            <File name="1047.php" />
             <File name="2001.php" />
             <File name="2002.php" />
             <File name="cl255.php" />
@@ -56,7 +58,10 @@
                 <File name="units\wbsc_6.php" />
                 <File name="units\wbsc_8.php" />
             </Folder>
-            <Folder name="tasks" />
+            <Folder name="tasks">
+                <File name="tasks\td_1.php" />
+                <File name="tasks\td_2.php" />
+            </Folder>
             <Folder name="objects">
                 <File name="objects\obj_1.php" />
                 <File name="objects\obj_2.php" />
