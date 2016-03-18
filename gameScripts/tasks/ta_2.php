@@ -17,7 +17,9 @@
 		fwrite($unitFile, pack('i', time()));
 		
 		if ($taskDat[6] >= $taskDat[5]) { // process completion of task
-		
+			// Adjust the building information to reflect a complete structure
+			fseek($unitFile, $taskDat[11]*$defaultBlockSize);
+			
 		}		
 	}
 
