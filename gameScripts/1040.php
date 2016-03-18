@@ -6,12 +6,12 @@ echo 'Task Detail for task '.$postVals[1].'<br>';
 
 // Load task detail
 $taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
-fseek($taskFile, $postVals[1]*$defaultBlockSize);
+fseek($taskFile, $postVals[1]*$jobBlockSize);
 $taskDat = unpack('i*', fread($taskFile, $jobBlockSize));
 fclose($taskFile);
 
 print_r($taskDat);
 
-include('../gameScripts/tasks/td_'.$taskDat[5].'.php');
+include('../gameScripts/tasks/td_'.$taskDat[7].'.php');
 
 ?>

@@ -25,11 +25,13 @@ if ($approved) {
 		$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
 		print_r($taskDat);
 		for ($i=1; $i<=$taskSize; $i++) {
-			fseek($taskFile, $taskDat[$i]*$defaultBlockSize);
+			fseek($taskFile, $taskDat[$i]*$jobBlockSize);
 			$taskDtl = unpack('i*', fread($taskFile, $jobBlockSize));
 			//print_r($taskDtl);
 			if ($taskDtl[3] > $taskDtl[4]) { // Task is not complete
-				echo '<div onclick="makeBox(\'taskDtl\', \'1040,'.$taskDat[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskDat[$i].')Task Type '.$taskDtl[5].' is '.$taskDtl[4].'/'.$taskDtl[3].' Complete</div>';
+				echo 'Incomplete: <div onclick="makeBox(\'taskDtl\', \'1040,'.$taskDat[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskDat[$i].')Task Type '.$taskDtl[7].' is '.$taskDtl[6].'/'.$taskDtl[5].' Complete</div>';
+			} else {
+				echo 'Complete ('.$jobBlockSize.'): <div onclick="makeBox(\'taskDtl\', \'1040,'.$taskDat[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskDat[$i].')Task Type '.$taskDtl[7].' is '.$taskDtl[6].'/'.$taskDtl[5].' Complete</div>';
 			}
 		}
 		fclose($taskFile);

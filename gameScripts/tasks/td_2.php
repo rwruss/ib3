@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/Chicago');
+
 if (isset($unitAssign)) {
   if ($unitAssign != 0) {
     echo 'Task type 2 Detail - unit assigned #'.$unitAssign.'<br>';
@@ -25,20 +27,21 @@ $unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerObj->unitSl
 $noUnitsHere = true;
 foreach ($unitList as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);
-	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize);
-	
-	
+	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
+
+
 	if ($unitDat[4] == 8) { // this is an elligable civilian unit
 		if ($unitDat[1] == $taskDat[1] && $unitDat[2] == $taskDat[2]) {
 			// this unit is at the task location and can add points
 			$noUnitsHere = false;
-			
+
 			// Get total number of production points available for this unit
-			$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/$unitDat[17]));			
-			
+      $actionReplenishRate = max(1, $unitDat[17]);
+			$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/$actionReplenishRate));
+
 			// Show option to add production points to this task
-			echo '<script>
-			newUnitDetail('.$unitID.', "militaryContent");
+			echo 'Unit found!<script>
+			newUnitDetail('.$unitID.', "taskDtlContent");
 			//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
 			document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
 			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {scrMod("1046,'.$unitID.','.$postVals[1].'")});
@@ -46,7 +49,7 @@ foreach ($unitList as $unitID) {
 			setUnitExp('.$unitID.', 0.5);</script>';
 		}
 	}
-	
+
 }
 
 if ($noUnitsHere) {

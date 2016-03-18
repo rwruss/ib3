@@ -10,7 +10,7 @@ class player {
 
 $defaultBlockSize = 100;
 $unitBlockSize = 400;
-$jobBlockSize = 100;
+$jobBlockSize = 200;
 session_start();
 $gameID = $_GET['gid'];
 if ($gameID != $_SESSION['instance']) {echo "<script>alert('Game mismatch')</script>";exit;}

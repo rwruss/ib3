@@ -84,7 +84,7 @@ if ($approved != false) {
 		// Create a new task to be processed.
 		$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
 		$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
-		$parameters = pack('i*', 1,time(),1000,0,2,$cityID,0, $cityID, $newID);
+		$parameters = pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2,1,time(),1000,0,2,$cityID,0, $cityID, $newID);
 		$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 		fclose($taskFile);
 
