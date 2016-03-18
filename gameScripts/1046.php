@@ -16,7 +16,6 @@ if ($actionPoints > 20) {
 	$taskDat = unpack('i*', fread($taskFile, 100));
 
 	include('./tasks/ta_'.$taskDat[7].'.php');
-	something new
 
 	// If task is complete, make no changes
 
