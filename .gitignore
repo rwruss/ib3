@@ -4,4 +4,6 @@ engine/
 games/
 scenarios/
 users/
-gameScripts/rivers/riverFiles
+gameScripts/rivers/riverFiles/
+public_html/imgTiles/
+public_html/textures/
