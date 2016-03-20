@@ -643,7 +643,7 @@ precision mediump float;
 	attribute vec2 aVertexPosition;
 
 	uniform sampler2D uSampler;
-	uniform sampler2D uSampler2;
+	//uniform sampler2D uSampler2;
 	uniform float uTime;
 
 	varying float directionalLightWeighting;
@@ -656,11 +656,17 @@ precision mediump float;
         //float timeOff = 0.;
 		float imgSize = 256.0;
 		vec2 tPos = vec2(aVertexPosition.x, aVertexPosition.y);
-	    vec4 hmUp = texture2D(uSampler, vec2(tPos.x+timeOff, tPos.y-1./imgSize)) - texture2D(uSampler2, vec2(tPos.x, tPos.y-1./imgSize));
-	    vec4 hmDn = texture2D(uSampler, vec2(tPos.x+timeOff, tPos.y+1./imgSize)) - texture2D(uSampler2, vec2(tPos.x, tPos.y+1./imgSize));
-	    vec4 hmLt = texture2D(uSampler, vec2(tPos.x+timeOff-1./imgSize, tPos.y)) - texture2D(uSampler2, vec2(tPos.x-1./imgSize, tPos.y));
-	    vec4 hmRt = texture2D(uSampler, vec2(tPos.x+timeOff+1./imgSize, tPos.y)) - texture2D(uSampler2, vec2(tPos.x+1./imgSize, tPos.y));
-	    vec4 hmC = texture2D(uSampler, vec2(tPos.x+timeOff, tPos.y)) - texture2D(uSampler2, vec2(tPos.x, tPos.y));
+	    //vec4 hmUp = texture2D(uSampler, vec2(tPos.x+timeOff, tPos.y-1./imgSize)) - texture2D(uSampler2, vec2(tPos.x, tPos.y-1./imgSize));
+	    //vec4 hmDn = texture2D(uSampler, vec2(tPos.x+timeOff, tPos.y+1./imgSize)) - texture2D(uSampler2, vec2(tPos.x, tPos.y+1./imgSize));
+	    //vec4 hmLt = texture2D(uSampler, vec2(tPos.x+timeOff-1./imgSize, tPos.y)) - texture2D(uSampler2, vec2(tPos.x-1./imgSize, tPos.y));
+	    //vec4 hmRt = texture2D(uSampler, vec2(tPos.x+timeOff+1./imgSize, tPos.y)) - texture2D(uSampler2, vec2(tPos.x+1./imgSize, tPos.y));
+	    //vec4 hmC = texture2D(uSampler, vec2(tPos.x+timeOff, tPos.y)) - texture2D(uSampler2, vec2(tPos.x, tPos.y));
+
+			vec4 hmUp = texture2D(uSampler, vec2(tPos.x+timeOff, tPos.y-1./imgSize));
+	    vec4 hmDn = texture2D(uSampler, vec2(tPos.x+timeOff, tPos.y+1./imgSize));
+	    vec4 hmLt = texture2D(uSampler, vec2(tPos.x+timeOff-1./imgSize, tPos.y));
+	    vec4 hmRt = texture2D(uSampler, vec2(tPos.x+timeOff+1./imgSize, tPos.y));
+	    vec4 hmC = texture2D(uSampler, vec2(tPos.x+timeOff, tPos.y));
 
 		vNorm = normalize(vec3(2.*(hmRt.r-hmLt.r), 0.01569, 2.*(hmUp.r-hmDn.r)));
 
@@ -1042,15 +1048,19 @@ precision mediump float;
         gl.bindTexture(gl.TEXTURE_2D, null);
 		//alert('loaded ' + texture.image.src);
 		}
-
+	var loadedImages = 0;
+	var requiredImages = 0;
 	function loadTexture(textureNumber, src) {
 		//alert('load texture ' + textureNumber);
-
+		requiredImages++;
 		textureList[textureNumber].image = new Image();
         textureList[textureNumber].image.onload = function () {
-            handleLoadedTexture(textureList[textureNumber])
+            handleLoadedTexture(textureList[textureNumber]);
+						loadedImages++;
+						if (loadedImages == requiredImages) {initBuffers();}
 			}
         textureList[textureNumber].image.src = src;
+
 		}
 
     function getShader(gl, id) {
@@ -1117,7 +1127,7 @@ precision mediump float;
         gl.enableVertexAttribArray(oceanTexProgram.vertexPositionAttribute);
 
 		oceanTexProgram.samplerUniform = gl.getUniformLocation(oceanTexProgram, 'uSampler');
-		oceanTexProgram.samplerUniformf = gl.getUniformLocation(oceanTexProgram, 'uSampler2');
+		//oceanTexProgram.samplerUniformf = gl.getUniformLocation(oceanTexProgram, 'uSampler2');
 		oceanTexProgram.timeUniform = gl.getUniformLocation(oceanTexProgram, 'uTime');
 
 
@@ -1227,17 +1237,17 @@ precision mediump float;
         gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
 
 		shaderProgram.normalAttribute = gl.getAttribLocation(shaderProgram, 'aVertexNormal');
-        gl.enableVertexAttribArray(shaderProgram.normalAttribute);
+    gl.enableVertexAttribArray(shaderProgram.normalAttribute);
 
-        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler');
-        shaderProgram.hexPatternSampler = gl.getUniformLocation(shaderProgram, 'uHexPSampler');
-        shaderProgram.terrainSampler = gl.getUniformLocation(shaderProgram, 'uTSampler');
-        shaderProgram.oceanSampler = gl.getUniformLocation(shaderProgram, 'uOSampler');
-        shaderProgram.areaSampler = gl.getUniformLocation(shaderProgram, 'uAreaSampler');
-        shaderProgram.borderSampler = gl.getUniformLocation(shaderProgram, 'uBSampler');
-        shaderProgram.roadSampler = gl.getUniformLocation(shaderProgram, 'uRoadSampler');
-        shaderProgram.plainsSampler = gl.getUniformLocation(shaderProgram, 'uPlainsSampler');
-        shaderProgram.grassSampler = gl.getUniformLocation(shaderProgram, 'uGrassSampler');
+    shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler');
+    shaderProgram.hexPatternSampler = gl.getUniformLocation(shaderProgram, 'uHexPSampler');
+    shaderProgram.terrainSampler = gl.getUniformLocation(shaderProgram, 'uTSampler');
+    shaderProgram.oceanSampler = gl.getUniformLocation(shaderProgram, 'uOSampler');
+    shaderProgram.areaSampler = gl.getUniformLocation(shaderProgram, 'uAreaSampler');
+    shaderProgram.borderSampler = gl.getUniformLocation(shaderProgram, 'uBSampler');
+    shaderProgram.roadSampler = gl.getUniformLocation(shaderProgram, 'uRoadSampler');
+    shaderProgram.plainsSampler = gl.getUniformLocation(shaderProgram, 'uPlainsSampler');
+    shaderProgram.grassSampler = gl.getUniformLocation(shaderProgram, 'uGrassSampler');
 		shaderProgram.mover = gl.getUniformLocation(shaderProgram, 'uOffset');
 		shaderProgram.hexOn = gl.getUniformLocation(shaderProgram, 'uHexOn');
 		shaderProgram.useOn = gl.getUniformLocation(shaderProgram, 'uUseColor');
@@ -1304,7 +1314,7 @@ precision mediump float;
 
 		///// - UNIT Program
 		var fragmentShader = getShader(gl, 'unitFS');
-        var vertexShader = getShader(gl, 'unitVS');
+    var vertexShader = getShader(gl, 'unitVS');
 		unitProgram = gl.createProgram();
 
         gl.attachShader(unitProgram, vertexShader);
@@ -1324,8 +1334,8 @@ precision mediump float;
 		unitProgram.pointLocation = gl.getAttribLocation(unitProgram, 'aUnitLoc');
 		gl.enableVertexAttribArray(unitProgram.pointLocation);
 
-		unitProgram.dummyLocation = gl.getAttribLocation(unitProgram, 'aDummyThing');
-		gl.enableVertexAttribArray(unitProgram.dummyLocation);
+		//unitProgram.dummyLocation = gl.getAttribLocation(unitProgram, 'aDummyThing');
+		//gl.enableVertexAttribArray(unitProgram.dummyLocation);
 
 		unitProgram.scaleUniform = gl.getUniformLocation(unitProgram, 'uMapScale');
 		unitProgram.offsetUniform = gl.getUniformLocation(unitProgram, 'uMapOffset');
@@ -1336,35 +1346,34 @@ precision mediump float;
 		// < --- AREA PROGRAM --- >
 
 		var fragmentShader = getShader(gl, 'areaFS');
-        var vertexShader = getShader(gl, 'areaVS');
+    var vertexShader = getShader(gl, 'areaVS');
 
-        areaProgram = gl.createProgram();
-        gl.attachShader(areaProgram, vertexShader);
-        gl.attachShader(areaProgram, fragmentShader);
-        gl.linkProgram(areaProgram);
+    areaProgram = gl.createProgram();
+    gl.attachShader(areaProgram, vertexShader);
+    gl.attachShader(areaProgram, fragmentShader);
+    gl.linkProgram(areaProgram);
 
-        if (!gl.getProgramParameter(areaProgram, gl.LINK_STATUS)) {
-            alert('Could not initialise shaders');
-        }
+    if (!gl.getProgramParameter(areaProgram, gl.LINK_STATUS)) {
+        alert('Could not initialise shaders');
+    }
 
-        gl.useProgram(areaProgram);
+    gl.useProgram(areaProgram);
 
-        areaProgram.vertexPositionAttribute = gl.getAttribLocation(areaProgram, 'aVertexPosition');
-        gl.enableVertexAttribArray(areaProgram.vertexPositionAttribute);
+    areaProgram.vertexPositionAttribute = gl.getAttribLocation(areaProgram, 'aVertexPosition');
+    gl.enableVertexAttribArray(areaProgram.vertexPositionAttribute);
 
 		areaProgram.circleCenterAttribute = gl.getAttribLocation(areaProgram, 'aCircleCenter');
-        gl.enableVertexAttribArray(areaProgram.circleCenterAttribute);
+    gl.enableVertexAttribArray(areaProgram.circleCenterAttribute);
 
 		areaProgram.circleColorAttribute = gl.getAttribLocation(areaProgram, 'aCircleColor');
-        gl.enableVertexAttribArray(areaProgram.circleColorAttribute);
+    gl.enableVertexAttribArray(areaProgram.circleColorAttribute);
 
-        areaProgram.pMatrixUniform = gl.getUniformLocation(areaProgram, 'uPMatrix');
-        areaProgram.mvMatrixUniform = gl.getUniformLocation(areaProgram, 'uMVMatrix');
+    areaProgram.pMatrixUniform = gl.getUniformLocation(areaProgram, 'uPMatrix');
+    areaProgram.mvMatrixUniform = gl.getUniformLocation(areaProgram, 'uMVMatrix');
 		areaProgram.scaleUniform = gl.getUniformLocation(areaProgram, 'uMapScale');
 		areaProgram.offsetUniform = gl.getUniformLocation(areaProgram, 'uMapOffset');
 
-
-		tick();
+		//tick();
 		}
 
 
@@ -1432,6 +1441,7 @@ precision mediump float;
 
 	baseOffset[0] = (baseMap[0]-baseTile[0]*120*zoomLvl)/(12*zoomLvl)
 	baseOffset[1] = -(baseTile[1]*120*zoomLvl-baseMap[1])/(12*zoomLvl);
+
     function initBuffers() {
 		circleCenters = [4800, 5260];
 		var circleVerts = new Array();
@@ -1587,6 +1597,8 @@ precision mediump float;
 		for (var i=0; i<36; i++) {
 			tileForrests[i] = treeBuffer;
 			}
+		getData('../public_html/rivers/loadRivers_v2.php', [zoomLvl, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
+		tick();
 		}
 
 	function degToRad(degrees) {
@@ -1612,6 +1624,7 @@ precision mediump float;
 					20, 20, 20, 20, 20, 20];
 	var drawOrder = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35];
 	var zoomRot = [0, 3, 2, 0, 1, 0, 0, 0, 0];
+
     function drawScene() {
 		drawNum = Math.round((rY - Math.floor(rY/(2*3.141592654))*2*3.141592654)/0.7854);
 		document.getElementById('drawNum').value = drawNum;
@@ -1626,25 +1639,25 @@ precision mediump float;
 		mat4.rotate(mvMatrix, rY, [0, 1, 0]);
 		mat4.translate(mvMatrix, [0.0-rotShift[0], -10.0+Math.min(9.0, (zoomRot[zoomLvl]+mapScale-1)*1.5), 0.0+rotShift[1]]);
 
-		/*
+		/* <--------------
 		gl.useProgram(bufferProgram);
-        bufferProgram.VPAttribute = gl.getAttribLocation(bufferProgram, 'aVertexPosition');
-        gl.enableVertexAttribArray(bufferProgram.VPAttribute);
+    bufferProgram.VPAttribute = gl.getAttribLocation(bufferProgram, 'aVertexPosition');
+    gl.enableVertexAttribArray(bufferProgram.VPAttribute);
 
 		bufferProgram.textureCoordAttribute = gl.getAttribLocation(bufferProgram, 'aTextureCoord');
-        gl.enableVertexAttribArray(bufferProgram.textureCoordAttribute);
+    gl.enableVertexAttribArray(bufferProgram.textureCoordAttribute);
 
-        bufferProgram.pMatrixUniform = gl.getUniformLocation(bufferProgram, 'uPMatrix');
-        bufferProgram.mvMatrixUniform = gl.getUniformLocation(bufferProgram, 'uMVMatrix');
+    bufferProgram.pMatrixUniform = gl.getUniformLocation(bufferProgram, 'uPMatrix');
+    bufferProgram.mvMatrixUniform = gl.getUniformLocation(bufferProgram, 'uMVMatrix');
 
 		bufferProgram.samplerUniform = gl.getUniformLocation(bufferProgram, 'uSampler');
 		bufferProgram.tileNumberUniform = gl.getUniformLocation(bufferProgram, 'uTileNum');
 		bufferProgram.scaleUniform = gl.getUniformLocation(bufferProgram, 'uMapScale');
 		bufferProgram.offsetUniform = gl.getUniformLocation(bufferProgram, 'uMapOffset');
-		*/
+		-----------> */
 
 		// <--- Draw ocean shading texture --->
-		/*
+		/* <--------------
 		gl.useProgram(oceanTexProgram);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, oceanFrameBuffer);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -1656,9 +1669,9 @@ precision mediump float;
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, textureList[8]);
 
-		gl.uniform1i(oceanTexProgram.samplerUniformf, 0);
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, textureList[9]);
+		//gl.uniform1i(oceanTexProgram.samplerUniformf, 0);
+		//gl.activeTexture(gl.TEXTURE0);
+		//gl.bindTexture(gl.TEXTURE_2D, textureList[9]);
 
 		gl.uniform1f(oceanTexProgram.timeUniform, (lastTime/1000.0)%60);
 
@@ -1666,12 +1679,13 @@ precision mediump float;
 		gl.drawElements(gl.TRIANGLE_STRIP, drawLength, gl.UNSIGNED_SHORT, 0);
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-		*/
+		-----------> */
 		// <-- End draw ocean shading texture --->
 
 		gl.useProgram(bufferProgram);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, rttFramebuffer);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
 		// draw whatever on the fb
 		gl.bindBuffer(gl.ARRAY_BUFFER, tileBuffers);
 		gl.vertexAttribPointer(bufferProgram.VPAttribute, 2, gl.FLOAT, false, 0, 0);
@@ -1682,7 +1696,7 @@ precision mediump float;
 		gl.uniform3f(bufferProgram.offsetUniform, locTr[0]+baseOffset[0], 0.0, locTr[1]+baseOffset[1]);
 
 		gl.uniformMatrix4fv(bufferProgram.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(bufferProgram.mvMatrixUniform, false, mvMatrix);
+    gl.uniformMatrix4fv(bufferProgram.mvMatrixUniform, false, mvMatrix);
 		for (var i=0; i<drawList[drawNum].length; i++) {
 			gl.uniform3f(bufferProgram.scaleUniform, mapScale, testXShift[drawList[drawNum][i]], testZShift[drawList[drawNum][i]]);
 			gl.uniform1i(bufferProgram.samplerUniform, 0);
@@ -1705,7 +1719,8 @@ precision mediump float;
 		gl.uniform3f(unitProgram.scaleUniform, mapScale, zoomLvl, 0.0);
 
 		gl.uniformMatrix4fv(unitProgram.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(unitProgram.mvMatrixUniform, false, mvMatrix);
+    gl.uniformMatrix4fv(unitProgram.mvMatrixUniform, false, mvMatrix);
+
 		for (var i=0; i<drawList[drawNum].length; i++) {
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, unitIndexBuffer);
 
@@ -1719,14 +1734,14 @@ precision mediump float;
 			ANGLEia.vertexAttribDivisorANGLE(unitProgram.pointLocation, 0);
 		}
 
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 		// Draw Controled areas
 		gl.useProgram(areaProgram);
 		//gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);  This kind of works
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // This is the gl.ONE :)
-        gl.enable(gl.BLEND);
-        gl.disable(gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.disable(gl.DEPTH_TEST);
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, terFramebuffer);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -1745,7 +1760,8 @@ precision mediump float;
 
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 3);
 		gl.disable(gl.BLEND);
-        gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.DEPTH_TEST);
+
 		// End draw Controlled areas
 
 		gl.useProgram(colorProgram);
@@ -1755,7 +1771,7 @@ precision mediump float;
 		gl.uniform3f(colorProgram.offsetUniform, locTr[0]+baseOffset[0], 0.0, locTr[1]+baseOffset[1]);
 		gl.uniform3f(colorProgram.scaleUniform, mapScale, testXShift[drawList[drawNum][i]], testZShift[drawList[drawNum][i]]);
 		setColorUniforms();
-		//gl.drawArrays(gl.TRIANGLE_STRIP, 0, 10);
+		//////////////////////gl.drawArrays(gl.TRIANGLE_STRIP, 0, 10);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, riverLine);
 		gl.vertexAttribPointer(colorProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
@@ -1784,7 +1800,7 @@ precision mediump float;
 			gl.bindBuffer(gl.ARRAY_BUFFER, riverFauxVerts[drawList[drawNum][i]]);
 			gl.vertexAttribPointer(riverProgram.shadePoints, 3, gl.FLOAT, false, 0, 0);
 
-			gl.drawArrays(gl.TRIANGLE_STRIP, 0, drawRiverLength[drawList[drawNum][i]]);
+			if (drawRiverLength[drawList[drawNum][i]]>0) 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, drawRiverLength[drawList[drawNum][i]]);
 			}
 		// End Draw Rivers
 
@@ -1798,13 +1814,13 @@ precision mediump float;
 		gl.bindBuffer(gl.ARRAY_BUFFER, moveVerts);
 		gl.vertexAttribPointer(riverProgram.shadePoints, 3, gl.FLOAT, false, 0, 0);
 
-		gl.drawArrays(gl.TRIANGLE_STRIP, 0, moveLength);
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		if (moveLength > 0)		gl.drawArrays(gl.TRIANGLE_STRIP, 0, moveLength);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		//End Draw Unit Moves
 		document.getElementById('moveLength').value = moveLength;
 
 		//draw trees
-
+		/*
 		gl.useProgram(treeProgram);
 
 
@@ -1817,7 +1833,7 @@ precision mediump float;
 		gl.bindTexture(gl.TEXTURE_2D, textureList[7]);
 
 		gl.uniformMatrix4fv(treeProgram.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(treeProgram.mvMatrixUniform, false, mvMatrix);
+    gl.uniformMatrix4fv(treeProgram.mvMatrixUniform, false, mvMatrix);
 		for (var i=0; i<drawList[drawNum].length; i++) {
 			gl.uniform3f(treeProgram.scaleUniform, mapScale, testXShift[drawList[drawNum][i]], testZShift[drawList[drawNum][i]]);
 			gl.uniform1i(treeProgram.samplerUniform, 0);
@@ -1827,8 +1843,9 @@ precision mediump float;
 			gl.bindBuffer(gl.ARRAY_BUFFER, tileForrests[drawList[drawNum][i]]);
 			gl.vertexAttribPointer(treeProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
-			//gl.drawArrays(gl.TRIANGLE_STRIP, 0, forrestSizes[drawList[drawNum][i]]);
+			/////////////////gl.drawArrays(gl.TRIANGLE_STRIP, 0, forrestSizes[drawList[drawNum][i]]);
 			}
+		*/
 		// end draw trees
 
 		gl.useProgram(shaderProgram);
@@ -1864,13 +1881,13 @@ precision mediump float;
 		gl.bindTexture(gl.TEXTURE_2D, oceanTexture);
 		gl.uniform1i(shaderProgram.oceanSampler, 8);
 
-		gl.activeTexture(gl.TEXTURE11);
-		gl.bindTexture(gl.TEXTURE_2D, textureList[11]);
-		gl.uniform1i(shaderProgram.plainsSampler, 11);
+		//gl.activeTexture(gl.TEXTURE11);
+		//gl.bindTexture(gl.TEXTURE_2D, textureList[11]);
+		//gl.uniform1i(shaderProgram.plainsSampler, 11);
 
-		gl.activeTexture(gl.TEXTURE10);
-		gl.bindTexture(gl.TEXTURE_2D, textureList[12]);
-		gl.uniform1i(shaderProgram.grassSampler, 10);
+		//gl.activeTexture(gl.TEXTURE10);
+		//gl.bindTexture(gl.TEXTURE_2D, textureList[12]);
+		//gl.uniform1i(shaderProgram.grassSampler, 10);
 
 		if (document.getElementById('showMask').checked) {
 			gl.uniform1f(shaderProgram.hexOn, 1.0);
@@ -1937,7 +1954,8 @@ precision mediump float;
 		gl.uniform3f(unitProgram.scaleUniform, mapScale, zoomLvl, 0.0);
 
 		gl.uniformMatrix4fv(unitProgram.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(unitProgram.mvMatrixUniform, false, mvMatrix);
+    gl.uniformMatrix4fv(unitProgram.mvMatrixUniform, false, mvMatrix);
+
 		totalUnits = 0;
 		for (var i=0; i<drawList[drawNum].length; i++) {
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, unitIndexBuffer);
@@ -1946,7 +1964,7 @@ precision mediump float;
 			gl.bindBuffer(gl.ARRAY_BUFFER, gridUniforms[drawList[drawNum][i]]);
 			gl.vertexAttribPointer(unitProgram.pointLocation, 3, gl.FLOAT, false, 0, 0);
 
-			//gl.drawArrays(gl.TRIANGLE_STRIP, 0, 10);
+
 			ANGLEia.vertexAttribDivisorANGLE(unitProgram.pointLocation, 1);
 			ANGLEia.drawElementsInstancedANGLE(gl.TRIANGLE_STRIP, 10, gl.UNSIGNED_SHORT, 0, gridUnitsLength[drawList[drawNum][i]]);
 			ANGLEia.vertexAttribDivisorANGLE(unitProgram.pointLocation, 0);
@@ -2165,12 +2183,13 @@ precision mediump float;
 		}
 
 
-    function tick() {
-        requestAnimFrame(tick);
-		handleKeys();
-        drawScene();
-        animate();
-    }
+  function tick() {
+      requestAnimFrame(tick);
+			handleKeys();
+      drawScene();
+      animate();
+  }
+
 	var tileCanvas;
 	var ctx;
 
@@ -2593,10 +2612,10 @@ precision mediump float;
 
 	function webGLStart() {
 		setClick([0], 'auto')
-        var canvas = document.getElementById('lesson03-canvas');
+    var canvas = document.getElementById('lesson03-canvas');
 		canvasInit();
 
-        initGL(canvas);
+    initGL(canvas);
 		textureList[0] = gl.createTexture();
 		loadTexture(0, './textures/terrainTex3.png');
 		textureList[1] = gl.createTexture();
@@ -2615,26 +2634,25 @@ precision mediump float;
 		loadTexture(7, './textures/treeTex.png');
 		textureList[8] = gl.createTexture();
 		loadTexture(8, './textures/PerlinExample_256.png');
-		textureList[9] = gl.createTexture();
-		loadTexture(9, './textures/PerlinExample_256f.png');
+		//////textureList[9] = gl.createTexture();
+		//////loadTexture(9, './textures/PerlinExample_256f.png');
 		textureList[10] = gl.createTexture();
 		loadTexture(10, './textures/bump_water.jpg');
-		textureList[11] = gl.createTexture();
-		loadTexture(11, './textures/grass_256.jpg');
-		textureList[12] = gl.createTexture();
-		loadTexture(12, './textures/plains_256.jpg');
-		textureList[13] = gl.createTexture();
-		loadTexture(13, './textures/forestBump_256.png');
+		//////textureList[11] = gl.createTexture();
+		//////loadTexture(11, './textures/grass_256.jpg');
+		//////textureList[12] = gl.createTexture();
+		//////loadTexture(12, './textures/plains_256.jpg');
+		//////textureList[13] = gl.createTexture();
+		//////loadTexture(13, './textures/forestBump_256.png');
 		textureList[14] = gl.createTexture();
 		loadTexture(14, './textures/forestBump1_256.jpg');
 		textureList[15] = gl.createTexture();
 		loadTexture(15, './textures/PerlinExample_256.png');
 		textureList[16] = gl.createTexture();
 		loadTexture(16, './textures/borderMask3.png');
-		initBuffers();
+
 		initTiles(baseTile[0], baseTile[1], zoomLvl, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
 		//loadTiles(baseTile[0], baseTile[1], zoomLvl);
-        initShaders();
 
 		//initTextureFramebuffer(rttFramebuffer, rttTexture);
 
@@ -2658,8 +2676,6 @@ precision mediump float;
 		rttFramebuffer = gl.createFramebuffer();
 		initTextureFramebuffer(rttFramebuffer, rttTexture, 1200, 700);
 
-
-
 		document.getElementById('baseOff').value = baseOffset[0]+', '+baseOffset[1];
 		document.getElementById('baseTile').value = baseTile[0]+', '+baseTile[1];
 		if (canvas.addEventListener) {
@@ -2671,15 +2687,15 @@ precision mediump float;
 		// IE 6/7/8
 		else canvas.attachEvent('onmousewheel', MouseWheelHandler);
 		//alert(baseTile[0]);
-		getData('../public_html/rivers/loadRivers_v2.php', [zoomLvl, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
+		//getData('../public_html/rivers/loadRivers_v2.php', [zoomLvl, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
 
-        gl.clearColor(0.0, 0.0, 0.0, 0.0);
-        gl.enable(gl.DEPTH_TEST);
-
-
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.enable(gl.DEPTH_TEST);
 
 		document.onkeydown = handleKeyDown;
 		document.onkeyup = handleKeyUp;
+
+		initShaders();
 		}
 
 	function showDiagnostics() {

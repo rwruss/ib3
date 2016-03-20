@@ -1,4 +1,43 @@
 
+addDiv = function(id, useClassName, target) {
+	var newDiv = document.createElement("div");
+	newDiv.className = useClassName;
+	newDiv.id = id;
+	//alert(target + ' = ' + id);
+	target.appendChild(newDiv);
+	//alert(target)
+	return newDiv;
+}
+
+addImg = function(id, useClassName, target) {
+	var newImg = document.createElement("img");
+	newImg.className = useClassName;
+	newImg.id = id;
+	//alert(target)
+	target.appendChild(newImg);
+}
+
+newTaskDetail = function(id, target, pctComplete) {
+	var thisDetail = addDiv("tDtl_"+id, "tdHolder", document.getElementById(target));
+
+	//alert('returned ' + thisDetail)
+	//alert(thisDetail);
+	addDiv("tDtl_"+id+"_prog", "udAct", thisDetail);
+	alert(thisDetail.childNodes.length + ", " + thisDetail.id);
+	for (var i=0; i<thisDetail.childNodes.length; i++) {
+		alert(thisDetail.childNodes[i].id)
+		if (thisDetail.childNodes[i].id = "tDtl_"+id+"_prog") {alert("found something")
+		}
+	}
+	setBarSize("tDtl_"+id+"_prog", pctComplete, 150)
+	addImg("tDtl_"+id+"_img", "tdImg", thisDetail);
+	document.getElementById("tDtl_"+id+"_img").src = "./textures/borderMask3.png"
+
+	thisDetail.addEventListener("click", function() {makeBox("taskDtl", "1040,"+id, 500, 500, 200, 50);});
+	//alert('New task finished');
+
+}
+
 newUnitDetail = function(id, target) {
 
 	var holderDiv = document.createElement("div")
@@ -40,6 +79,16 @@ newUnitDetail = function(id, target) {
 	holderDiv.appendChild(uDGoto);
 
 	document.getElementById(target).appendChild(holderDiv);
+}
+
+setBarSize = function(id, pct, full) {
+	document.getElementById(id).style.width = full * pct;
+	//document.getElementById("Udtl_"+id+"_act").style.color = 150 * pct;
+	var colorVal = 255*pct;
+	var r = parseInt(255*(1-pct));
+	var g = parseInt(255*pct);
+	var b = parseInt(0);
+	document.getElementById(id).style.background = "rgb(" + r + "," + g + ",0)";
 }
 
 setUnitAction = function(id, pct) {

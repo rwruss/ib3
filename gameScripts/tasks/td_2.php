@@ -41,7 +41,7 @@ foreach ($unitList as $unitID) {
 
 			// Show option to add production points to this task
 			echo 'Unit found!<script>
-			newUnitDetail('.$unitID.', "taskDtlContent");
+			newUnitDetail('.$unitID.', "unitArea");
 			//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
 			document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
 			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {scrMod("1046,'.$unitID.','.$postVals[1].'")});

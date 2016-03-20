@@ -45,68 +45,6 @@
 	height:20;
 }
 
-.udHolder {
-	position:relative;
-	width:150;
-	height:150;
-	border: 1px solid black;
-}
-
-.udAvatar {
-	position:absolute;
-	left:0;
-	top:0;
-	width:75;
-	height:75;
-}
-
-.udExp {
-	position:absolute;
-	left:0;
-	top:115;
-	height:8;
-}
-
-.udAct {
-	position:absolute;
-	left:0;
-	top:105;
-	height:8;
-}
-
-
-.udName {
-	position:absolute;
-	left:0;
-	top:125;
-	width:150;
-	height:25;
-}
-
-.udType {
-	position:absolute;
-	left:125;
-	top:0;
-	width:25;
-	height:25;
-}
-
-.udLvl {
-	position:absolute;
-	left:125;
-	top:25;
-	width:25;
-	height:25;
-}
-
-.udGoto {
-	position:absolute;
-	left:125;
-	top:75;
-	width:25;
-	height:25;
-}
-
 .mbContain {
 	position:relative;
 	width:200;
@@ -230,3 +168,81 @@
 	right:0;
 }
 
+.tdHolder {
+	position:relative;
+	float:left;
+	width:150;
+	height:150;
+	border: 1px solid black;
+}
+
+.tdImg {
+	position:absolute;
+	left:10;
+	top:0;
+	width:75;
+	height:75;
+}
+
+.udHolder {
+	position:relative;
+	float:left;
+	width:150;
+	height:150;
+	border: 1px solid black;
+}
+
+.udAvatar {
+	position:absolute;
+	left:0;
+	top:0;
+	width:75;
+	height:75;
+}
+
+.udExp {
+	position:absolute;
+	left:0;
+	top:115;
+	height:8;
+}
+
+.udAct {
+	position:absolute;
+	left:0;
+	top:105;
+	height:8;
+}
+
+
+.udName {
+	position:absolute;
+	left:0;
+	top:125;
+	width:150;
+	height:25;
+}
+
+.udType {
+	position:absolute;
+	left:125;
+	top:0;
+	width:25;
+	height:25;
+}
+
+.udLvl {
+	position:absolute;
+	left:125;
+	top:25;
+	width:25;
+	height:25;
+}
+
+.udGoto {
+	position:absolute;
+	left:125;
+	top:75;
+	width:25;
+	height:25;
+}
