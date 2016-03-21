@@ -78,8 +78,18 @@ if ($approved != false) {
 		fwrite($unitFile, pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2, 0, 2, $cityID, $cityID, 1, 1, 1, $postVals[3], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
 
 		// add the building to the town as an "in progress" building
-		writeBlocktoSlot($gamePath.'/gameSlots.slt', $cityDat[17], pack('i*', 0, $newID), $slotFile, 40); // function writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize)
+		
+		// Verify that slot exists and create one if needed.
+		if ($cityDat[17] == 0) { // Need to create a new slot
+			$cityDat[17] = startASlot($slotFile, $gamePath.'/gameSlots.slt'); //startASlot($slot_file, $slot_handle)
+			fseek($unitFile, $cityID*$defaultBlockSize+64);
+			fwrite($unitFile, pack('i', $cityDat[17]));
+		}
+		
+		addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[17], pack('i', $newID), $slotFile);
+		//writeBlocktoSlot($gamePath.'/gameSlots.slt', $cityDat[17], pack('i*', 0, $newID), $slotFile, 40); // function writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize)
 		echo '<p>New unit ID is '.$newID.'<br>';
+		
 		// add a task to the town as an "in progress" task
 		// Create a new task to be processed.
 		$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');

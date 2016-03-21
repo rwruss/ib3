@@ -36,7 +36,6 @@ newTab = function(target, count) {
 }
 
 tabSelect = function(target, selection) {
-
 	var tabHolder = document.getElementById(target+"_tabs");
 
 	document.getElementById(target+"_tab"+selection).style.zindex = 3;
@@ -49,10 +48,20 @@ tabSelect = function(target, selection) {
 	//alert("select " + selection)
 }
 
+newBldgSum = function(id, target, pctComplete) {
+	var thisDetail = addDiv("bldg_"+id, "bldgHolder", document.getElementById(target));
+	addDiv("bldg_"+id+"_cond", "udAct", thisDetail);
+	setBarSize("bldg_"+id+"_cond", pctComplete, 150);
+	addImg("bldg_"+id+"_img", "tdImg", thisDetail);
+	document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
+
+	thisDetail.addEventListener("click", function() {makeBox("bldgDtl", "1048,"+id, 500, 500, 200, 50);});
+}
+
 newTaskDetail = function(id, target, pctComplete) {
 	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
 	addDiv(id+"_prog", "udAct", thisDetail);
-	setBarSize(id+"_prog", pctComplete, 150)
+	setBarSize(id+"_prog", pctComplete, 150);
 	addImg(id+"_img", "tdImg", thisDetail);
 	document.getElementById(id+"_img").src = "./textures/borderMask3.png"
 
