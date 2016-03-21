@@ -17,21 +17,56 @@ addImg = function(id, useClassName, target) {
 	target.appendChild(newImg);
 }
 
-newTaskDetail = function(id, target, pctComplete) {
-	var thisDetail = addDiv("tDtl_"+id, "tdHolder", document.getElementById(target));
+newTabMenu = function(target) {
+	var tabHolder = document.getElementById(target+"_tabs");
+	tabHolder.currentSelection = 1;
+}
 
-	//alert('returned ' + thisDetail)
-	//alert(thisDetail);
-	addDiv("tDtl_"+id+"_prog", "udAct", thisDetail);
-	alert(thisDetail.childNodes.length + ", " + thisDetail.id);
-	for (var i=0; i<thisDetail.childNodes.length; i++) {
-		alert(thisDetail.childNodes[i].id)
-		if (thisDetail.childNodes[i].id = "tDtl_"+id+"_prog") {alert("found something")
-		}
+newTab = function(target, count) {
+	var tabHead = document.createElement("li");
+	tabHead.id = target+"_head"+count;
+	document.getElementById(target+"_tabs_ul").appendChild(tabHead);
+	tabHead.addEventListener("click", function() {tabSelect(target, count);});
+	tabHead.innerHTML = "Option " + count;
+
+	var tabContent = document.createElement("div");
+	tabContent.className = "tabBox";
+	tabContent.id = target+"_tab"+count;
+	document.getElementById(target+"_options").appendChild(tabContent);
+}
+
+tabSelect = function(target, selection) {
+
+	var tabHolder = document.getElementById(target+"_tabs");
+
+	document.getElementById(target+"_tab"+selection).style.zindex = 3;
+	if (tabHolder.currentSelection != selection)	{
+		//alert("set " + target+"_tab"+tabHolder.currentSelection + "to 1");
+		document.getElementById(target+"_tab"+tabHolder.currentSelection).style.zIndex = 1;
 	}
-	setBarSize("tDtl_"+id+"_prog", pctComplete, 150)
-	addImg("tDtl_"+id+"_img", "tdImg", thisDetail);
-	document.getElementById("tDtl_"+id+"_img").src = "./textures/borderMask3.png"
+	document.getElementById(target+"_tab"+selection).style.zIndex = 2;
+	tabHolder.currentSelection = selection;
+	//alert("select " + selection)
+}
+
+newTaskDetail = function(id, target, pctComplete) {
+	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
+	addDiv(id+"_prog", "udAct", thisDetail);
+	setBarSize(id+"_prog", pctComplete, 150)
+	addImg(id+"_img", "tdImg", thisDetail);
+	document.getElementById(id+"_img").src = "./textures/borderMask3.png"
+
+	thisDetail.addEventListener("click", function() {makeBox("taskDtl", "1040,"+id, 500, 500, 200, 50);});
+	//alert('New task finished');
+
+}
+
+newTaskSummary = function(id, target, pctComplete) {
+	var thisDetail = addDiv("tSum_"+id, "tdHolder", document.getElementById(target));
+	addDiv("tSum_"+id+"_prog", "udAct", thisDetail);
+	setBarSize("tSum_"+id+"_prog", pctComplete, 150)
+	addImg("tSum_"+id+"_img", "tdImg", thisDetail);
+	document.getElementById("tSum_"+id+"_img").src = "./textures/borderMask3.png"
 
 	thisDetail.addEventListener("click", function() {makeBox("taskDtl", "1040,"+id, 500, 500, 200, 50);});
 	//alert('New task finished');
@@ -82,13 +117,15 @@ newUnitDetail = function(id, target) {
 }
 
 setBarSize = function(id, pct, full) {
-	document.getElementById(id).style.width = full * pct;
-	//document.getElementById("Udtl_"+id+"_act").style.color = 150 * pct;
-	var colorVal = 255*pct;
-	var r = parseInt(255*(1-pct));
-	var g = parseInt(255*pct);
-	var b = parseInt(0);
-	document.getElementById(id).style.background = "rgb(" + r + "," + g + ",0)";
+	if (document.getElementById(id)) {
+		document.getElementById(id).style.width = full * pct;
+		//document.getElementById("Udtl_"+id+"_act").style.color = 150 * pct;
+		var colorVal = 255*pct;
+		var r = parseInt(255*(1-pct));
+		var g = parseInt(255*pct);
+		var b = parseInt(0);
+		document.getElementById(id).style.background = "rgb(" + r + "," + g + ",0)";
+	}
 }
 
 setUnitAction = function(id, pct) {

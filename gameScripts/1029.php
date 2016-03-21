@@ -31,12 +31,12 @@ if ($approved) {
 			//print_r($taskDtl);
 			if ($taskDtl[3] > $taskDtl[4]) { // Task is not complete
 				$requiredPoints = max(1000,$taskDtl[7]);
-				echo 'newTaskDetail("'.$taskDat[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
+				echo 'newTaskSummary("'.$taskDat[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
 
 				//echo 'Incomplete: <div onclick="makeBox(\'taskDtl\', \'1040,'.$taskDat[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskDat[$i].')Task Type '.$taskDtl[7].' is '.$taskDtl[6].'/'.$taskDtl[5].' Complete</div>';
 			} else {
 				$requiredPoints = max(1000,$taskDtl[7]);
-				echo 'newTaskDetail("'.$taskDat[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
+				echo 'newTaskSummary("'.$taskDat[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
 				//echo 'Complete ('.$jobBlockSize.'): <div onclick="makeBox(\'taskDtl\', \'1040,'.$taskDat[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskDat[$i].')Task Type '.$taskDtl[7].' is '.$taskDtl[6].'/'.$taskDtl[5].' Complete</div>';
 			}
 		}

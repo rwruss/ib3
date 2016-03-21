@@ -24,7 +24,9 @@ if ($actionPoints > 20) {
 
 	echo '<script>
 		setUnitAction('.$postVals[1].', '.($actionPoints/1000).');
-		alert("'.$spentPoints.' total action point added!");
+		setBarSize("tDtl_'.$postVals[2].'_prog", '.($taskDat[6]/$taskDat[5]).', 150);
+		setBarSize("tSum_'.$postVals[2].'_prog", '.($taskDat[6]/$taskDat[5]).', 150);
+		//alert("'.$spentPoints.' total action point added!");
 	</script>';
 }
 fclose($unitFile);

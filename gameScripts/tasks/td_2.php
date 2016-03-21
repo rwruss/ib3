@@ -8,11 +8,8 @@ if (isset($unitAssign)) {
     print_r($taskDat);
   }
 } else {
-  echo 'Task type 2 Detail';
+  //echo 'Task type 2 Detail';
 }
-
-echo 'This task is construction of a building.  The task was started at '.date('m/d/y', $taskDat[4]).'<br>
-This building has '.$taskDat[6].' of '.$taskDat[5].' required progress points.';
 
 // Get list of workers avaialble to work on this task.
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
@@ -25,6 +22,15 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
 
 $noUnitsHere = true;
+
+echo '<script>
+newTabMenu("task_'.$postVals[1].'");
+newTab("task_'.$postVals[1].'", 1);
+newTab("task_'.$postVals[1].'", 2);
+tabSelect("task_'.$postVals[1].'", 1);
+
+newTaskDetail("tDtl_'.$postVals[1].'", "task_'.$postVals[1].'_header", '.($taskDat[6]/$taskDat[5]).')';
+
 foreach ($unitList as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);
 	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
@@ -40,9 +46,9 @@ foreach ($unitList as $unitID) {
 			$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/$actionReplenishRate));
 
 			// Show option to add production points to this task
-			echo 'Unit found!<script>
-			newUnitDetail('.$unitID.', "unitArea");
-			//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
+
+      echo '
+			newUnitDetail('.$unitID.', "task_'.$postVals[1].'_tab2");
 			document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
 			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {scrMod("1046,'.$unitID.','.$postVals[1].'")});
 			setUnitAction('.$unitID.', '.($actionPoints/1000).');
@@ -51,9 +57,9 @@ foreach ($unitList as $unitID) {
 	}
 
 }
-
+echo '</script>';
 if ($noUnitsHere) {
-		echo 'There are no units here that can contribute to the progress of this task.';
+		//echo 'There are no units here that can contribute to the progress of this task.';
 	}
 fclose($slotFile);
 fclose($unitFile);

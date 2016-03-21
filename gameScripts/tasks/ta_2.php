@@ -10,7 +10,7 @@
 
 
 
-		echo 'Record '.$taskDat[6].' points';
+		//echo 'Record '.$taskDat[6].' points';
 
 		fseek($taskFile, $postVals[2]*200+20);
 		fwrite($taskFile, pack('i', $taskDat[6]));
