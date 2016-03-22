@@ -19,11 +19,11 @@ echo 'Approved level '.$approved.'<br>
 Show buildings in slot '.$cityDat[17].'<br>';
 if ($approved) {
 	echo '<div id="bldgHolder"></div><script>';
-	$bldgList = unpack("i*", readSlotData($slotFile, $cityDat[17], 40));
+	$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
 	foreach ($bldgList as $bldgID) {
 		fseek($unitFile, $bldgID*$defaultBlockSize);
 		$bldgDat = unpack('i*', fread($unitFile, $defaultBlockSize));
-		echo 'newBldgSum("'.$bldgID.'", )';
+		echo 'newBldgSum("'.$bldgID.'", "bldgHolder", .5)';
 	}
 	echo '</script>';
 } else {
