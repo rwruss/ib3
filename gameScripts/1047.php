@@ -17,13 +17,30 @@ $credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40))
 $approved = array_search($pGameID, $credList);
 echo 'Approved level '.$approved.'<br>
 Show buildings in slot '.$cityDat[17].'<br>';
+
 if ($approved) {
+	echo '
+	<div class="taskHeader" id="bldg_header"></div>
+	<div class="centeredmenu" id="bldg_tabs"><ul id="bldg_tabs_ul"></ul></div>
+	<div class="taskOptions" id="bldg_options"></div>';
+	
+	echo '<script>
+		newTabMenu("bldg_");
+		newTab("bldg", 1);
+		newTab("bldg", 2);
+		tabSelect("bldg", 1);';
+	
 	echo '<div id="bldgHolder"></div><script>';
 	$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
 	foreach ($bldgList as $bldgID) {
 		fseek($unitFile, $bldgID*$defaultBlockSize);
 		$bldgDat = unpack('i*', fread($unitFile, $defaultBlockSize));
-		echo 'newBldgSum("'.$bldgID.'", "bldgHolder", .5)';
+		echo 'newBldgSum("'.$bldgID.'", "bldg_tab1", .5)';
+	}
+	
+	// Generate a list of buildings that can be built at this location
+	for ($i=0; $<10; $i++) {
+		echo 'newBldgSum("'.$bldgID.'", "bldg_tab2", .5)';
 	}
 	echo '</script>';
 } else {

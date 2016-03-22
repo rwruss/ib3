@@ -60,14 +60,9 @@ if ($approved != false) {
 		if (flock($unitFile, LOCK_EX)) {
 			clearstatcache();
 			$newID = max(1,filesize($gamePath.'/unitDat.dat')/$defaultBlockSize);
-			$projectID = $newID + 4;
+
 			fseek($unitFile, $newID*$defaultBlockSize+$unitBlockSize-4);
 			fwrite($unitFile, pack('i', 0));
-
-			// Create job object for this point
-			//fseek($unitFile, $projectID*$defaultBlockSize);
-			//fwrite($unitFile);
-
 
 			flock($unitFile, LOCK_UN);
 
