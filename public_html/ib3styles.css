@@ -178,10 +178,7 @@
 	z-index: 1;
 	background:#FFFFFF;
 	opacity:1;
-}
-
-.tabWorkOptions {
-
+	overflow:auto;
 }
 
 .taskHeader {

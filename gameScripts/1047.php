@@ -23,24 +23,24 @@ if ($approved) {
 	<div class="taskHeader" id="bldg_header"></div>
 	<div class="centeredmenu" id="bldg_tabs"><ul id="bldg_tabs_ul"></ul></div>
 	<div class="taskOptions" id="bldg_options"></div>';
-	
+
 	echo '<script>
-		newTabMenu("bldg_");
+		newTabMenu("bldg");
 		newTab("bldg", 1);
 		newTab("bldg", 2);
-		tabSelect("bldg", 1);';
-	
+		tabSelect("bldg", 1);
+		</script>';
 	echo '<div id="bldgHolder"></div><script>';
 	$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
 	foreach ($bldgList as $bldgID) {
 		fseek($unitFile, $bldgID*$defaultBlockSize);
 		$bldgDat = unpack('i*', fread($unitFile, $defaultBlockSize));
-		echo 'newBldgSum("'.$bldgID.'", "bldg_tab1", .5)';
+		echo 'newBldgSum("'.$bldgID.'", "bldg_tab1", .5);';
 	}
-	
+
 	// Generate a list of buildings that can be built at this location
-	for ($i=0; $<10; $i++) {
-		echo 'newBldgSum("'.$bldgID.'", "bldg_tab2", .5)';
+	for ($i=0; $i<10; $i++) {
+		echo 'newBldgSum("'.$i.'", "bldg_tab2", .5);';
 	}
 	echo '</script>';
 } else {

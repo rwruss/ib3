@@ -49,7 +49,7 @@ tabSelect = function(target, selection) {
 }
 
 newBldgSum = function(id, target, pctComplete) {
-	var thisDetail = addDiv("bldg_"+id, "bldgHolder", document.getElementById(target));
+	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
 	addDiv("bldg_"+id+"_cond", "udAct", thisDetail);
 	setBarSize("bldg_"+id+"_cond", pctComplete, 150);
 	addImg("bldg_"+id+"_img", "tdImg", thisDetail);
