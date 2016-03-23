@@ -28,6 +28,7 @@ if ($approved) {
 		newTabMenu("bldg");
 		newTab("bldg", 1);
 		newTab("bldg", 2);
+		newTab("bldg", 3);
 		tabSelect("bldg", 1);
 		</script>';
 	echo '<div id="bldgHolder"></div><script>';
@@ -38,9 +39,14 @@ if ($approved) {
 		echo 'newBldgSum("'.$bldgID.'", "bldg_tab1", .5);';
 	}
 
-	// Generate a list of buildings that can be built at this location
+	// Generate a list of common buildings that can be built at this location
 	for ($i=0; $i<10; $i++) {
-		echo 'newBldgSum("'.$i.'", "bldg_tab2", .5);';
+		echo 'newBldgOpt("'.$i.'", "bldg_tab2", .5);';
+	}
+	
+	// Generate a list of player buildings that can be built at this locaiton
+	for ($i=0; $i<10; $i++) {
+		echo 'newBldgOpt("'.$i.'", "bldg_tab3", .5);';
 	}
 	echo '</script>';
 } else {

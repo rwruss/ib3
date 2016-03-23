@@ -6,11 +6,60 @@
 	border: 1px solid black;
 }
 
+.bldgImg {
+	position:absolute;
+	left:0;
+	top:0;
+	width:150;
+	height:150;
+}
+
+.bldgLvl {
+	position:absolute;
+	left:125;
+	top:125;
+	width:25;
+	height:25;
+}
+
 .charSummary {
 	position:relative;
 	border: 1px solid black;
 	width:150;
 	height:150;
+}
+
+.cBox {
+	position:absolute;
+	border: 1px solid black;
+	width:250;
+	height:250;
+	float:left;
+}
+
+.cBoxA {
+	position:absolute;
+	top:0;
+	left:100;
+	height:200;
+	width:50;
+}
+
+.cBoxD {
+	position:absolute;
+	top:210;
+	left:75;
+	height:30;
+	width:50;
+}
+
+.cBoxMsg {
+	text-align: center;
+	position:absolute;
+	top:210;
+	left:125;
+	height:30;
+	width:50;
 }
 
 .charSummary .cSAvatar {

@@ -52,6 +52,8 @@
 1046 - Process action point for task
 1047 - View buildings in a city
 1048 - Specific building information
+1049 - Detail for constructing a building at this city
+1050 - Process order for construction a building at this city
 2001 - Add Resources to a city
 
 CL255 - City interface
