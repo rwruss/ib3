@@ -170,22 +170,22 @@ function addDataToSlot($slot_handle, $check_slot, $addData, $slot_file)
 	return TRUE;
 	}
 	*/
-	
+
 function addDataToSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize) {
 	// Read size of block
 	fseek($slotFile, $slotSize*$checkSlot);
 	$firstSlotDat = unpack('i*', fread($slotFile, $slotSize));
 	$dataLength = $firstSlotDat[2];
-	
+
 	$startBlock = floor($dataLength/($slotSize-4));
 	$startPos = $dataLength - $startBlock*($slotSize-4);
 	$endPos = $startPos + strlen($addData);
-	
+
 	// Build slot tree
 	$slotList[] = $checkSlot;
 	$checkSlot = $slotList[1];
 	$blocksPresent = 1;
-	
+
 	echo 'Write a blocks starting at '.$checkSlot.'<br>';
 	while ($checkSlot > 0) {
 		fseek($slotFile, $slotSize*$checkSlot);
@@ -194,10 +194,10 @@ function addDataToSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize) 
 		$checkSlot = $nextSlot[1];
 		$blocksPresent ++;
 	}
-	
+
 	if ($endPos > $slotSize-4) {
 		// Need to generate some new slots
-		$numSlotsNeeded = ceil((($endPos - ($slotSize-4))/($slotSize-4);
+		$numSlotsNeeded = ceil(($endPos - ($slotSize-4))/($slotSize-4));
 
 		// Need to get some more slotSize
 		echo 'Getting more slots ('.$numSlotsNeeded.')<br>';
@@ -215,34 +215,34 @@ function addDataToSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize) 
 		}
 	}
 	$slotList[]= 0; // Add a null reference as the last one so the final slot location will not have a pointer
-	
+
 	$chunkList[0] = min(($slotSize - 4) - $startPos, strlen($addData));
 	$chunkCount = 1;
-	$chunkTot = $chunkList[1]
+	$chunkTot = $chunkList[1];
 	while ($chunkTot <strlen($addData)) {
 		$nextSize = min(($slotSize-4), strlen($addData)-$chunkTot);
 		$chunkList[$chunkCount] = $nextSize;
 		$chunkTot += $nextSize;
 		$chunkCount++;
 	}
-	
+
 	$chunkTot = 0;
 	// Record each chunk in the correct spot
 	fseek($slotFile, $slotList[$startBlock]*$slotSize);
 	fwrite($slotFile, pack('i', $slotList[1]));
 	fseek($slotFile, $slotList[$startBlock]*$slotSize + $startPos);
-	fwrite($slotFile, substr($addData, $chunkTot, $chunkList[0]);
+	fwrite($slotFile, substr($addData, $chunkTot, $chunkList[0]));
 	for ($i=1; $i<$chunkCount; $i++) {
 		fseek($slotFile, $slotList[$startBlock+$i]*$slotSize);
 		fwrite($slotFile, pack('i', $slotList[1+$i]).substr($addData, $chunkTot, $chunkList[$i]));
 	}
-	
+
 	// Record the new total data length for this field
 	$dataLength += strlen($addData);
 	fseek($slotFile, $slotList[0]*$slotSize);
-	fwrite($slotFile, pack('i', $dataLength);
+	fwrite($slotFile, pack('i', $dataLength));
 }
-	
+
 function readSlotData($file, $slot_num, $slot_size)
 	{
 	$next_slot = $slot_num;

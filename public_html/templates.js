@@ -17,12 +17,12 @@ addImg = function(id, useClassName, target) {
 	target.appendChild(newImg);
 }
 
-confirmBox(msg, prm) {
+confirmBox = function (msg, prm) {
 	var boxHolder = addDiv("confirmBox", "cBox", document.getElementsByTagName('body')[0]);
 	var boxMsg = addDiv("confirmBox", "cBoxM", boxHolder)
 	var declineButton = addDiv("optionDecline", "cBoxD", boxHolder);
 	var acceptButton = addDiv("optionAccept", "cBoxA", boxHolder);
-	
+
 	acceptButton.innerHTMl = "Accept";
 	acceptButton.addEventListener("click", function() {scrMod(prm)});
 	declineButton.innerHTML = "Decline";
@@ -49,7 +49,14 @@ newTab = function(target, count) {
 
 tabSelect = function(target, selection) {
 	var tabHolder = document.getElementById(target+"_tabs");
-
+	document.getElementById(target+"_tab"+selection).style.visibility =  "visible";
+	//alert(document.getElementById(target+"_tabs").style.visibility);
+	if (tabHolder.currentSelection != selection)	{
+		//alert("set " + target+"_tab"+tabHolder.currentSelection + "to 1");
+		document.getElementById(target+"_tab"+tabHolder.currentSelection).style.visibility =  "hidden";
+	}
+	tabHolder.currentSelection = selection;
+	/*
 	document.getElementById(target+"_tab"+selection).style.zindex = 3;
 	if (tabHolder.currentSelection != selection)	{
 		//alert("set " + target+"_tab"+tabHolder.currentSelection + "to 1");
@@ -57,6 +64,7 @@ tabSelect = function(target, selection) {
 	}
 	document.getElementById(target+"_tab"+selection).style.zIndex = 2;
 	tabHolder.currentSelection = selection;
+	*/
 	//alert("select " + selection)
 }
 
@@ -66,7 +74,7 @@ newBldgOpt = function(id, target, pctComplete) {
 	addDiv("bldg_"+id+"_lvl", "bldgLvl", thisDetail);
 	document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
 
-	thisDetail.addEventListener("click", function() {makeBox("bldgOpt", "1049,"+id, 500, 500, 200, 50);});
+	thisDetail.addEventListener("click", function() {makeBox("bldgStart", "1049,"+id, 500, 500, 200, 50);});
 }
 
 newBldgSum = function(id, target, pctComplete) {

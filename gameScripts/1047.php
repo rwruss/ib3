@@ -43,7 +43,7 @@ if ($approved) {
 	for ($i=0; $i<10; $i++) {
 		echo 'newBldgOpt("'.$i.'", "bldg_tab2", .5);';
 	}
-	
+
 	// Generate a list of player buildings that can be built at this locaiton
 	for ($i=0; $i<10; $i++) {
 		echo 'newBldgOpt("'.$i.'", "bldg_tab3", .5);';
