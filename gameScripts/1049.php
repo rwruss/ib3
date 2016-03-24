@@ -51,21 +51,40 @@ if ($approved) {
 
 			if ($bldgDat[7] == 1) {
 				// Building is complete - add to list
-				$buildingsPresent[$bldgDat[10]]  = 1;
+				$buildingsPresent[$bldgDat[10]]++;
 			}
 		}
 
 		// Compare the list of buildings in the $bldgNames list to what is here and can be constructed.
 		echo 'Building Prerequsites for building tye '.$postVals[1].'<br>';
 		$prereqs = explode(',', $buildingInfo[$postVals[1]*7+3]);
-		foreach ($prereqs as $pVal) {
-			echo 'Prereq: '.$pVal.'<br>';
+		$preCheck = true;
+		for ($i=0; $i<sizeof($prereqs); $i+=2) {
+			echo 'Prereq: '.$prereqs[$i].' needs '.$prereqs[$i+1].'<br>';
+			if ($buildingsPresent[$prereqs[$i]] < $prereqs[$i+1]) $buildingsNeeded[$prereqs[$i]] = $prereqs[$i+1]-$buildingsPresent[$prereqs[$i]];
 		}
 
 		echo 'Resource requirements for building type '.$postVals[1].'<br>';
-		$rscReqs = explode('/', $buildingInfo[$postVals[1]*7+4]);
-		for ($r=0; $r<sizeof($rscReqs); $r+=2) {
-			echo 'Resource #'.$rscReqs[$r].' Needs '.$rscReqs[$r+1].'<br>';
+		
+		$neededRsc = [];
+		$rscList = explode('/', $buildingDat[$postVals[3]*7+4]);
+		$rscCheck = true;
+		for ($i=0; $i<sizeof($rscList); $i++) {
+			if ($cityRsc[$rscList[$i]] < $rscList[$i+2]);
+			$rscCheck = false;
+			$neededRsc[] = $rscList[$i];
+		}
+		if ($rscCheck) {
+			if ($preCheck) {
+				// Give the option to Proceed with starting a task and construction of the building
+				confirmBox("Confirm that you would like to construct this building", "1050,'.$_SESSION['selectedItem].','.$postVals[1].'");
+			} else {
+				echo "Need more of the following buildings."
+				print_r($buildingsNeeded);
+			}
+		} else {
+			echo 'Need more of the following resoruces';
+			print_r($neededRsc);
 		}
 
 	} else {
@@ -85,7 +104,7 @@ if ($approved) {
 			if ($$bldgDat[5] == $pGameID) {
 				if ($bldgDat[7] == 1 ) {
 					// Building is complete - add to list
-					$buildingsPresent[$bldgDat[10]]  = 1;
+					$buildingsPresent[$bldgDat[10]]++;
 					if ($bldgDat[10] == 1) $playerRscSlot = $bldgDat[11];
 				}
 			}
@@ -97,8 +116,17 @@ if ($approved) {
 			$playerRsc[$rscDat[$i]] += $rscDat[$i+1];
 		}
 
-		// Compare the cost of the building versus the resources available.
-		/*
+		// Compare the list of buildings in the $bldgNames list to what is here and can be constructed.
+		echo 'Building Prerequsites for building tye '.$postVals[1].'<br>';
+		$prereqs = explode(',', $buildingInfo[$postVals[1]*7+3]);
+		$preCheck = true;
+		for ($i=0; $i<sizeof($prereqs); $i+=2) {
+			echo 'Prereq: '.$prereqs[$i].' needs '.$prereqs[$i+1].'<br>';
+			if ($buildingsPresent[$prereqs[$i]] < $prereqs[$i+1]) $buildingsNeeded[$prereqs[$i]] = $prereqs[$i+1]-$buildingsPresent[$prereqs[$i]];
+		}
+
+		echo 'Resource requirements for building type '.$postVals[1].'<br>';
+		
 		$neededRsc = [];
 		$rscList = explode('/', $buildingDat[$postVals[3]*7+4]);
 		$rscCheck = true;
@@ -108,15 +136,17 @@ if ($approved) {
 			$neededRsc[] = $rscList[$i];
 		}
 		if ($rscCheck) {
-			// Give the option to Proceed with starting a task and construction of the building
-			confirmBox("Confirm that you would like to construct this building", "1050,'.$_SESSION['selectedItem].','.$postVals[1].'");
+			if ($preCheck) {
+				// Give the option to Proceed with starting a task and construction of the building
+				confirmBox("Confirm that you would like to construct this building", "1050,'.$_SESSION['selectedItem].','.$postVals[1].'");
+			} else {
+				echo "Need more of the following buildings."
+				print_r($buildingsNeeded);
+			}
 		} else {
 			echo 'Need more of the following resoruces';
 			print_r($neededRsc);
 		}
-
-		*/
-
 	}
 } else {
 	echo 'You are not approved to look at buildings in this city';
