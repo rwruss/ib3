@@ -20,7 +20,9 @@ echo 'Approved level '.$approved.'<br>';
 if ($approved) {
 	// Read the block data for the projects in progress
 	if ($cityDat[21] > 0) {
+		echo 'Project slot is '.$cityDat[21];
 		$taskDat = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[21], 40)));
+		//print_r($taskDat);
 		$taskSize = sizeof($taskDat);
 		$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
 		//print_r($taskDat);

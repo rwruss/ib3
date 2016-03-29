@@ -11,5 +11,5 @@ fseek($unitFile, $postVals[1]*$defaultBlockSize);
 $bldgDat = unpack('i*', fread($unitFile, $defaultBlockSize));
 
 include('../gameScripts/objects/bldg_'.$bldgDat[10].'.php');
-
+fclose($unitFile);
 ?>

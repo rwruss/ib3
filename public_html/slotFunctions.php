@@ -171,77 +171,56 @@ function addDataToSlot($slot_handle, $check_slot, $addData, $slot_file)
 	}
 	*/
 
-function addDataToSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize) {
-	// Read size of block
-	fseek($slotFile, $slotSize*$checkSlot);
-	$firstSlotDat = unpack('i*', fread($slotFile, $slotSize));
-	$dataLength = $firstSlotDat[2];
+	function addDataToSlot($slot_handle, $check_slot, $addData, $slot_file)
+		{
+		// Loop over slots until a space if found in a slot
+		echo "Adding to slot ".$check_slot;
+		$success = FALSE;
+		while ($check_slot)
+			{
+			fseek($slot_file, $check_slot*40);
+			$check_dat_bin = fread($slot_file, 40);
+			$check_dat_a = unpack("N*", substr($check_dat_bin, 4));
+			//print_r($check_dat_a);
+			$open_spot = array_search(0, $check_dat_a);
+			if ($open_spot)
+				{
+				fseek($slot_file, $check_slot*40 + $open_spot*4);
+				$seek = $check_slot*40 + $open_spot*4;
+				fwrite($slot_file, $addData);
+				$success = TRUE;
+				$check_slot = 0;
+				echo "Found open spot<br>";
+				}
+			else
+				{
+				$prev_slot = $check_slot;
+				$next_slot_a = unpack("N", $check_dat_bin);
+				$check_slot = $next_slot_a[1];
+				echo "<br>Check Next Slot: ".$check_slot;
+				}
+			}
+		// If no slot is found add a new one
+		if (!$success)
+			{
+			$new_slot_id = max(1, (filesize($slot_handle))/40);
+			// Write new item ID to the new slot
+			fseek($slot_file, $new_slot_id*40 + 4);
+			fwrite($slot_file, $addData);
+			// Fill the entire slot
+			fseek($slot_file, $new_slot_id*40 + 4 + 35);
+			fwrite($slot_file, pack("C", 0));
 
-	$startBlock = floor($dataLength/($slotSize-4));
-	$startPos = $dataLength - $startBlock*($slotSize-4);
-	$endPos = $startPos + strlen($addData);
+			// Write new slot pointer to last slot
+			fseek($slot_file, $prev_slot*40);
+			fwrite($slot_file, pack('N', $new_slot_id));
+			//echo "case 3";
+			echo "<br>Need a new slot : ".$new_slot_id." Write to slot ".$prev_slot."<br>";
+			}
+		//fclose($slot_file);
 
-	// Build slot tree
-	$slotList[] = $checkSlot;
-	$checkSlot = $slotList[1];
-	$blocksPresent = 1;
-
-	echo 'Write a blocks starting at '.$checkSlot.'<br>';
-	while ($checkSlot > 0) {
-		fseek($slotFile, $slotSize*$checkSlot);
-		$nextSlot = unpack('i', fread($slotFile, 4));
-		$slotList[] = $nextSlot[1];
-		$checkSlot = $nextSlot[1];
-		$blocksPresent ++;
+		return TRUE;
 	}
-
-	if ($endPos > $slotSize-4) {
-		// Need to generate some new slots
-		$numSlotsNeeded = ceil(($endPos - ($slotSize-4))/($slotSize-4));
-
-		// Need to get some more slotSize
-		echo 'Getting more slots ('.$numSlotsNeeded.')<br>';
-		if (flock($slotFile, LOCK_EX)) {
-
-			clearstatcache();
-			$eof = filesize($slotHandle);
-			fseek($slotFile, $eof+$numSlotsNeeded*$slotSize+$slotSize-4);
-			fwrite($slotFile, pack('i', 0));
-			flock($slot_file, LOCK_UN); // release the lock
-		}
-		for ($i=0; $i<$neededSlots; $i++) {
-			$slotList[] = $eof/$slotSize+$i;
-			echo 'Add slot '.($eof/$slotSize+$i).'<br>';
-		}
-	}
-	$slotList[]= 0; // Add a null reference as the last one so the final slot location will not have a pointer
-
-	$chunkList[0] = min(($slotSize - 4) - $startPos, strlen($addData));
-	$chunkCount = 1;
-	$chunkTot = $chunkList[1];
-	while ($chunkTot <strlen($addData)) {
-		$nextSize = min(($slotSize-4), strlen($addData)-$chunkTot);
-		$chunkList[$chunkCount] = $nextSize;
-		$chunkTot += $nextSize;
-		$chunkCount++;
-	}
-
-	$chunkTot = 0;
-	// Record each chunk in the correct spot
-	fseek($slotFile, $slotList[$startBlock]*$slotSize);
-	fwrite($slotFile, pack('i', $slotList[1]));
-	fseek($slotFile, $slotList[$startBlock]*$slotSize + $startPos);
-	fwrite($slotFile, substr($addData, $chunkTot, $chunkList[0]));
-	for ($i=1; $i<$chunkCount; $i++) {
-		fseek($slotFile, $slotList[$startBlock+$i]*$slotSize);
-		fwrite($slotFile, pack('i', $slotList[1+$i]).substr($addData, $chunkTot, $chunkList[$i]));
-	}
-
-	// Record the new total data length for this field
-	$dataLength += strlen($addData);
-	fseek($slotFile, $slotList[0]*$slotSize);
-	fwrite($slotFile, pack('i', $dataLength));
-}
 
 function readSlotData($file, $slot_num, $slot_size)
 	{

@@ -927,6 +927,21 @@ precision mediump float;
 		this.parentNode.parentNode.removeChild(this.parentNode);
 		}
 
+	function killBox(trg) {
+		if (trg.nodeName == 'DIV') {
+			testNode = trg;
+			//alert('trg is ' + trg)
+		} else {
+			//alert('this is ' + this)
+			testNode = this;
+		}
+		while (testNode.parentNode.nodeName != 'BODY') {
+			//1alert(testNode.parentNode.nodeName);
+			testNode = testNode.parentNode;
+		}
+		testNode.parentNode.removeChild(testNode);
+	}
+
 	var taskList = new Array();
 	function startTask() {
 		taskList.push(new Date().getTime(), 10, 1);

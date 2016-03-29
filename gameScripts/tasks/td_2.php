@@ -22,14 +22,14 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
 
 $noUnitsHere = true;
-
+//print_r($taskDat);
 echo '<script>
 newTabMenu("task_'.$postVals[1].'");
-newTab("task_'.$postVals[1].'", 1);
-newTab("task_'.$postVals[1].'", 2);
+newTab("task_'.$postVals[1].'", 1, "Description");
+newTab("task_'.$postVals[1].'", 2, "Workers available");
 tabSelect("task_'.$postVals[1].'", 1);
 
-newTaskDetail("tDtl_'.$postVals[1].'", "task_'.$postVals[1].'_header", '.($taskDat[6]/$taskDat[5]).')';
+newTaskDetail("tDtl_'.$postVals[1].'", "task_'.$postVals[1].'_header", '.($taskDat[6]/$taskDat[5]).', 1)';
 
 foreach ($unitList as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);

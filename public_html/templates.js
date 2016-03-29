@@ -17,16 +17,65 @@ addImg = function(id, useClassName, target) {
 	target.appendChild(newImg);
 }
 
-confirmBox = function (msg, prm) {
+confirmBox = function (msg, prm, type, trg, aSrc, dSrc) {
 	var boxHolder = addDiv("confirmBox", "cBox", document.getElementsByTagName('body')[0]);
 	var boxMsg = addDiv("confirmBox", "cBoxM", boxHolder)
-	var declineButton = addDiv("optionDecline", "cBoxD", boxHolder);
-	var acceptButton = addDiv("optionAccept", "cBoxA", boxHolder);
+	var dButton = addDiv("optionDecline", "cBoxD", boxHolder);
 
-	acceptButton.innerHTMl = "Accept";
+
+	boxMsg.innerHTML = msg;
+	if (type == 2) {
+		var acceptButton = addDiv("optionAccept", "cBoxA", boxHolder);
+		if (aSrc) {
+			acceptButton.innerHTML = aSrc;
+		} else {
+			acceptButton.innerHTML = "Accept";
+		}
+		acceptButton.addEventListener("click", function() {scrMod(prm)});
+	}
+
+	if (dSrc.length > 0) {
+		dButton.innerHTML = dSrc;
+	} else {
+		dButton.innerHTML = "Decline";
+	}
+
+	if (trg.length > 0) {
+		dButton.addEventListener("click", function() {
+			this.parentNode.parentNode.removeChild(this.parentNode);
+			killBox(document.getElementById(trg))});
+	} else {
+		dButton.addEventListener("click", function() {
+			this.parentNode.parentNode.removeChild(this.parentNode)});
+		}
+}
+
+confirmButtons = function (msg, prm, trg, opt, asrc, dsrc) {
+
+	var boxHolder = addDiv(trg+"_confirmButtons", "cButtons", document.getElementById(trg));
+
+	var boxMsg = addDiv("confirmBox", "cBoxM", boxHolder);
+	var buttonHolder = addDiv(trg+"buttonHolder", "cButtons", boxHolder);
+
+	boxMsg.innerHTML = msg;
+
+	if (opt == 2) {
+	var acceptButton = addDiv("optionAccept", "cBoxA", buttonHolder);
+	if (asrc) {
+		acceptButton.innerHTML = asrc;
+	} else {
+		acceptButton.innerHTML = "Accept";
+	}
 	acceptButton.addEventListener("click", function() {scrMod(prm)});
-	declineButton.innerHTML = "Decline";
-	declineButton.addEventListener("click", function() {closeBox()});
+	}
+
+	var dButton = addDiv("optionDecline", "cBoxD", buttonHolder);
+	if (dsrc) {
+		dButton.innerHTML = dsrc;
+	} else {
+		dButton.innerHTML = "Decline";
+	}
+	dButton.addEventListener("click", killBox);
 }
 
 newTabMenu = function(target) {
@@ -34,17 +83,45 @@ newTabMenu = function(target) {
 	tabHolder.currentSelection = 1;
 }
 
-newTab = function(target, count) {
+newTab = function(target, count, desc) {
 	var tabHead = document.createElement("li");
 	tabHead.id = target+"_head"+count;
 	document.getElementById(target+"_tabs_ul").appendChild(tabHead);
 	tabHead.addEventListener("click", function() {tabSelect(target, count);});
-	tabHead.innerHTML = "Option " + count;
+	if (desc) tabHead.innerHTML = desc;
+	else tabHead.innerHTML = "Option " + count;
 
 	var tabContent = document.createElement("div");
 	tabContent.className = "tabBox";
 	tabContent.id = target+"_tab"+count;
 	document.getElementById(target+"_options").appendChild(tabContent);
+}
+
+messageBox = function (msg, trg) {
+	var boxHolder = addDiv("confirmBox", "cBox", document.getElementsByTagName('body')[0]);
+	var boxMsg = addDiv("confirmBox", "cBoxM", boxHolder)
+	var dButton = addDiv("optionDecline", "cBoxD", boxHolder);
+	var acceptButton = addDiv("optionAccept", "cBoxA", boxHolder);
+
+	boxMsg.innerHTML = msg;
+	acceptButton.innerHTML = "Accept";
+	acceptButton.addEventListener("click", function() {scrMod(prm)});
+	dButton.innerHTML = "Decline";
+	dButton.addEventListener("click", function() {
+		this.parentNode.parentNode.removeChild(this.parentNode)});
+}
+
+reqBox = function (src, trg, have, need) {
+
+		if (have < need) {
+			var rscBox = addDiv("confirmBox", "reqBox2", document.getElementById(trg));
+		} else {
+			var rscBox = addDiv("confirmBox", "reqBox1", document.getElementById(trg));
+		}
+
+		addImg(src, "reqImg", rscBox);
+		var textDiv = addDiv("a", "reqText", rscBox);
+		textDiv.innerHTML = src + ': ' + have + '/' + need;
 }
 
 tabSelect = function(target, selection) {
@@ -68,10 +145,13 @@ tabSelect = function(target, selection) {
 	//alert("select " + selection)
 }
 
-newBldgOpt = function(id, target, pctComplete) {
+newBldgOpt = function(id, target, desc) {
 	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
 	addImg("bldg_"+id+"_img", "bldgImg", thisDetail);
-	addDiv("bldg_"+id+"_lvl", "bldgLvl", thisDetail);
+	var lvlDiv = addDiv("bldg_"+id+"_lvl", "bldgLvl", thisDetail);
+	var descDiv = addDiv("bldg_"+id+"_desc", "bldgDesc", thisDetail);
+	lvlDiv.innerHTML = "1";
+	descDiv.innerHTML = desc;
 	document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
 
 	thisDetail.addEventListener("click", function() {makeBox("bldgStart", "1049,"+id, 500, 500, 200, 50);});
@@ -87,14 +167,14 @@ newBldgSum = function(id, target, pctComplete) {
 	thisDetail.addEventListener("click", function() {makeBox("bldgDtl", "1048,"+id, 500, 500, 200, 50);});
 }
 
-newTaskDetail = function(id, target, pctComplete) {
+newTaskDetail = function(id, target, pctComplete, killLink) {
 	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
 	addDiv(id+"_prog", "udAct", thisDetail);
 	setBarSize(id+"_prog", pctComplete, 150);
 	addImg(id+"_img", "tdImg", thisDetail);
 	document.getElementById(id+"_img").src = "./textures/borderMask3.png"
 
-	thisDetail.addEventListener("click", function() {makeBox("taskDtl", "1040,"+id, 500, 500, 200, 50);});
+	if (!killLink) thisDetail.addEventListener("click", function() {makeBox("taskDtl", "1040,"+id, 500, 500, 200, 50);});
 	//alert('New task finished');
 
 }
@@ -253,30 +333,4 @@ newMoveBox = function(id, x, y, target) {
 
 
 	document.getElementById(target).appendChild(mBContain);
-}
-
-newConfirmBox = function(target) {
-
-	var queryHolder = document.createElement("div");
-	queryHolder.id = "queryBox";
-	queryHolder.className = "optionHolder";
-
-	var promptItem = doceument.createElement("div");
-	promptItem.id = "promptBox";
-	promptItem.className = "optionPrompt";
-	queryHolder.appendChild(promptItem);
-
-	var acceptItem = document.createElement("div");
-	acceptItem.id = "acceptBox";
-	acceptItem.className = "optionAccept";
-	queryHolder.appendChild(acceptItem);
-
-	var declineItem = document.createElement("div");
-	declineItem.id = "decelineBox";
-	decelineItem.className = "optionDecline";
-	decelineItem.onclick = closeBox;
-	queryHolder.appendChild(declineItem);
-
-	document.getElementById(target).appendChild(queryHolder);
-
 }

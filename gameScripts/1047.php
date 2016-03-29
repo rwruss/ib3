@@ -19,6 +19,7 @@ echo 'Approved level '.$approved.'<br>
 Show buildings in slot '.$cityDat[17].'<br>';
 
 if ($approved) {
+	$buildingInfo = explode('<-->', file_get_contents($gamePath.'/buildings.desc'));
 	echo '
 	<div class="taskHeader" id="bldg_header"></div>
 	<div class="centeredmenu" id="bldg_tabs"><ul id="bldg_tabs_ul"></ul></div>
@@ -26,9 +27,9 @@ if ($approved) {
 
 	echo '<script>
 		newTabMenu("bldg");
-		newTab("bldg", 1);
-		newTab("bldg", 2);
-		newTab("bldg", 3);
+		newTab("bldg", 1, "Buildings Present");
+		newTab("bldg", 2, "Common Buildings");
+		newTab("bldg", 3, "Player Buildings");
 		tabSelect("bldg", 1);
 		</script>';
 	echo '<div id="bldgHolder"></div><script>';
@@ -40,13 +41,13 @@ if ($approved) {
 	}
 
 	// Generate a list of common buildings that can be built at this location
-	for ($i=0; $i<10; $i++) {
-		echo 'newBldgOpt("'.$i.'", "bldg_tab2", .5);';
+	for ($i=1; $i<7; $i++) {
+		echo 'newBldgOpt("'.$i.'", "bldg_tab2", "'.$buildingInfo[$i*7].'");';
 	}
 
 	// Generate a list of player buildings that can be built at this locaiton
-	for ($i=0; $i<10; $i++) {
-		echo 'newBldgOpt("'.$i.'", "bldg_tab3", .5);';
+	for ($i=101; $i<110; $i++) {
+		//echo 'newBldgOpt("'.$i.'", "bldg_tab3", "'.$buildingInfo[$i*7].'");';
 	}
 	echo '</script>';
 } else {
