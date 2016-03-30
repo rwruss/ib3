@@ -1,4 +1,22 @@
 <?php
+
+class dataSlot {
+	private $slotList = [];
+	public $slotData = [];
+	
+	function __construct($start, $slotFile, $size) {
+		$nextSlot = $start;
+		while ($nextSlot > 0) {
+			$slotList[] = $nextSlot;
+			fseek($slotFile, $start*$size);
+			$tmpDat = fread($slotFile, $size);
+			$slotData .= substr($tmpDat, 4);
+			$tmpA = unpack("N", $tmpDat);
+			$nextSlot = $tmpA[1];
+		}
+	}
+}
+
 function startASlot($slot_file, $slot_handle)
 	{
 	echo "no slot established<br>";
