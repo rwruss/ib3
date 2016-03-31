@@ -137,7 +137,7 @@ if ($approved) {
 		}
 
 		fseek($unitFile, $newID*$defaultBlockSize);
-		fwrite($unitFile, pack('i*', $cityDat[1], $cityDat[2], 0, 2, $cityID, $cityID, 0, 1, 1, $postVals[1], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
+		fwrite($unitFile, pack('i*', $cityDat[1], $cityDat[2], 0, 9, $cityID, $cityID, 0, 1, 1, $postVals[1], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
 
 		// Verify that slot exists and create one if needed.
 		if ($cityDat[17] == 0) { // Need to create a new slot
