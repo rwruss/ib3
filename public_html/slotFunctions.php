@@ -2,17 +2,97 @@
 
 class dataSlot {
 	private $slotList = [];
+	public $dataString;
 	public $slotData = [];
+	private $itemsPerSlot;
+	private $slotSize;
 	
 	function __construct($start, $slotFile, $size) {
+		$slotSize = $size;
 		$nextSlot = $start;
+		$itemsPerSlot = ($size-4)/4;
 		while ($nextSlot > 0) {
 			$slotList[] = $nextSlot;
 			fseek($slotFile, $start*$size);
 			$tmpDat = fread($slotFile, $size);
-			$slotData .= substr($tmpDat, 4);
+			$dataString .= substr($tmpDat, 4);
 			$tmpA = unpack("N", $tmpDat);
 			$nextSlot = $tmpA[1];
+		}
+	}
+	
+	function save($file) {
+		$numSlots = sizeof($slotList);
+		$slotList[] = 0;  /// Add null reference so that last slot is not linked
+		for ($i=0; $i<$numSlots, $i++) {
+			fseek($file, $slotList[$i]*$slotSize);
+			fwrite(file, pack("N", $slotList[$i+1]).substr($dataString, $i*($slotSize*4), $slotSize-4);
+		}
+	}
+}
+
+class blockSlot extends dataSlot {
+	function addBlock($value, $file, $handle, $size) {
+		
+	}
+	
+	function deleteBlock() {
+		
+	}
+}
+
+class itemSlot extends dataSlot {
+	function addItem($value, $file, $handle) {
+		$emptySpot = array_search(0, $this->$slotData);
+		if ($emptySpot) {
+			// determine which slot this spot is in 
+			$useSlot = floor(($emptySpot-1)/$itemsPerSlot);
+			$slotSpot = $emptySpot-$useSlot*$itemsPerSlot-1;
+			$writePos = ($useSlot*$itemsPerSlot+$slotSpot)*4;
+		} else {
+			$useSlot = startASlot($file, $handle);
+			$slotList[] = $useSlot;
+			$writePos = ($useSlot*$itemsPerSlot)*4;
+		}
+		
+		if ($writePos > strlen($dataString)) {
+			$dataString .= pack('i', $value);
+		} else {
+			substr_replace($dataString, pack('i', $value), $writePos, 4);
+		}
+	}
+	
+	function deleteItem($value) {
+		$itemSpot = array_search($value, $this->$slotData);
+		if ($itemSpot) {
+			// determine which slot this spot is in 
+			$useSlot = floor(($itemSpot-1)/$itemsPerSlot);
+			$slotSpot = $itemSpot-$useSlot*$itemsPerSlot-1;
+			$writePos = ($useSlot*$itemsPerSlot+$slotSpot)*4;
+		} else {
+		}
+		
+		if ($writePos == strlen($dataString)-4) {
+			$dataString = substr($dataString, 0, -4);
+		} else {
+			substr_replace($dataString, '', $writePos, 4);
+		}
+	}
+	
+	function addItemAtSpot($value, $location) {
+		if ($location*4 > strlen($dataString)) {
+			$dataString .= pack('i', $value);
+		} else {
+			$dataString = substr($dataString, 0, $location*4).pack('i', $value).substr($dataString, $location*4);
+		}
+	}
+	
+	function deleteItemAtSpot($location) {
+		$byteLoc = ($location -1)*4;
+		if ($byteLoc >= strlen($dataString)-4) {
+			$dataString = substr($dataString, 0, -4);
+		} else {
+			substr_replace($dataString, '', $byteLoc, 4);
 		}
 	}
 }
