@@ -24,7 +24,7 @@ $bldgTypeInfo = explode(',', $buildingInfo[$targetBuilding->bType*7+1]);
 //print_r($bldgTypeInfo);
 
 for ($i=1; $i<sizeof($bldgTypeInfo); $i++) {
-	echo 'newBldgOpt("'.$bldgTypeInfo[$i].'", "bldg_'.$postVals[1].'_tab3", "'.$buildingInfo[$bldgTypeInfo[$i]*7].'");';
+	echo 'newBldgOpt("'.$bldgTypeInfo[$i].', '.$postVals[1].'", "bldg_'.$postVals[1].'_tab3", "'.$buildingInfo[$bldgTypeInfo[$i]*7].'");';
 }
 
 // Produce task options for this buildingInfo

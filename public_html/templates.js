@@ -145,11 +145,12 @@ tabSelect = function(target, selection) {
 	//alert("select " + selection)
 }
 
-taskOpt = function(id, target) {
+taskOpt = function(id, target, prm) {
 	var thisOpt = addDiv(id, "tdHolder", document.getElementById(target));
 	thisOpt.innerHTML = id;
 
-	thisOpt.addEventListener("click", function() {makeBox("taskDtl", "1026,"+id,500, 500, 200, 50);});
+	if (prm) thisOpt.addEventListener("click", function() {makeBox("taskDtl", "1026,"+id+","+prm,500, 500, 200, 50);});
+	else thisOpt.addEventListener("click", function() {makeBox("taskDtl", "1026,"+id,500, 500, 200, 50);});
 }
 
 textBlob = function (id, target, content) {
@@ -158,7 +159,7 @@ textBlob = function (id, target, content) {
 	thisBlob.style.width = "100%";
 }
 
-newBldgOpt = function(id, target, desc) {
+newBldgOpt = function(id, base, target, desc) {
 	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
 	addImg("bldg_"+id+"_img", "bldgImg", thisDetail);
 	var lvlDiv = addDiv("bldg_"+id+"_lvl", "bldgLvl", thisDetail);
@@ -167,7 +168,7 @@ newBldgOpt = function(id, target, desc) {
 	descDiv.innerHTML = desc;
 	document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
 
-	thisDetail.addEventListener("click", function() {makeBox("bldgStart", "1049,"+id, 500, 500, 200, 50);});
+	thisDetail.addEventListener("click", function() {makeBox("bldgStart", "1049,"+id + "," + base, 500, 500, 200, 50);});
 }
 
 newBldgSum = function(id, target, pctComplete) {

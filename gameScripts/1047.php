@@ -42,7 +42,7 @@ if ($approved) {
 
 	// Generate a list of common buildings that can be built at this location
 	for ($i=1; $i<7; $i++) {
-		echo 'newBldgOpt("'.$i.'", "bldg_tab2", "'.$buildingInfo[$i*7].'");';
+		echo 'newBldgOpt("'.$i.'", 0, "bldg_tab2", "'.$buildingInfo[$i*7].'");';
 	}
 
 	// Generate a list of player buildings that can be built at this locaiton

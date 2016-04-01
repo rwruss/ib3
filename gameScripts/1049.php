@@ -117,9 +117,6 @@ if ($approved) {
 	}
 
 	// Check for buildings in progress
-
-
-
 	$neededRsc = [];
 	$rscList = explode('/', $buildingInfo[$postVals[1]*7+4]);
 	$rscCheck = true;
@@ -132,10 +129,18 @@ if ($approved) {
 			$neededRsc[] = $rscList[$i];
 		}
 	}
+	
+	// Check if building is an upgrade item
+	if ($postVals[2] > 0) {
+		echo 'This is an updgrade.'
+		
+		// Confirm that this project is in the upgrade path for the building ID.
+	}
+	
 	if ($preCheck && $rscCheck) {
 		if ($buildingProgress[$postVals[1]]+$buildingsPresent[$postVals[1]] < $buildingInfo[$postVals[1]*7+6]) {
 			// Give the option to Proceed with starting a task and construction of the building
-			echo 'confirmButtons("Confirm that you would like to construct this building", "1050,'.$postVals[1].','.$_SESSION["selectedItem"].', '.$postVals[1].'", "bldgStartContent", 2, "Build It!");</script>';
+			echo 'confirmButtons("Confirm that you would like to construct this building", "1050,'.$postVals[1].','.$postVals[2].'", "bldgStartContent", 2, "Build It!");</script>';
 			//echo 'confirmBox("Confirm that you would like to construct this building", "1050,'.$_SESSION['selectedItem].', '.$postVals[1].'");';
 		} else {
 			echo 'reqBox("Allowed:", "test", '.$buildingInfo[$postVals[1]*7+6].', '.($buildingProgress[$postVals[1]]+$buildingsPresent[$postVals[1]]).');

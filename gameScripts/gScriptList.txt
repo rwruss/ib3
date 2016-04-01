@@ -26,7 +26,7 @@
 1023 - Establish a resource point (receive Point)
 1024 - Start Forage from a city
 1025 - Process forage options
-1026 - Task option detail screen
+1026 - Task option detail screen (for city/building tasks)
 1027 - Army/Unit Group Detail
 1028 - Unit (warband) Detail
 1029 - View city projects/tasks

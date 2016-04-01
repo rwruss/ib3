@@ -60,8 +60,11 @@
                 <File name="units\wbsc_8.php" />
             </Folder>
             <Folder name="tasks">
-                <File name="tasks\td_1.php" />
-                <File name="tasks\td_2.php" />
+                <File name="E:\websites\ib3\gameScripts\tasks\ta_2.php" />
+                <File name="E:\websites\ib3\gameScripts\tasks\td_1.php" />
+                <File name="E:\websites\ib3\gameScripts\tasks\td_2.php" />
+                <File name="E:\websites\ib3\gameScripts\tasks\to_1.php" />
+                <File name="E:\websites\ib3\gameScripts\tasks\ts_1.php" />
             </Folder>
             <Folder name="objects">
                 <File name="objects\obj_1.php" />

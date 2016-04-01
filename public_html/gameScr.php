@@ -18,8 +18,14 @@ if (!isset($_SESSION['gameIDs'][$gameID])) echo "<script>window.location.replace
 $pGameID = $_SESSION['gameIDs'][$gameID];
 $postVals = explode(",", $_POST['val1']);
 
-$gamePath = "../games/".$gameID;
-include("../gameScripts/".$postVals[0].".php");
+$inputValidate = TRUE;
+foreach ($postVals as $value) {
+	if (!ctype_digit($value) || $value < 0) $inputValidate = FALSE;
+}
+if ($inputValidate) {
+	$gamePath = "../games/".$gameID;
+	include("../gameScripts/".$postVals[0].".php");
+}
 
 function read_slot($file, $slot_num, $slot_size)
 	{
