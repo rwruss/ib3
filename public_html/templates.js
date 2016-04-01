@@ -145,6 +145,19 @@ tabSelect = function(target, selection) {
 	//alert("select " + selection)
 }
 
+taskOpt = function(id, target) {
+	var thisOpt = addDiv(id, "tdHolder", document.getElementById(target));
+	thisOpt.innerHTML = id;
+
+	thisOpt.addEventListener("click", function() {makeBox("taskDtl", "1026,"+id,500, 500, 200, 50);});
+}
+
+textBlob = function (id, target, content) {
+	var thisBlob = addDiv(id, "tdHolder", document.getElementById(target));
+	thisBlob.innerHTML= content;
+	thisBlob.style.width = "100%";
+}
+
 newBldgOpt = function(id, target, desc) {
 	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
 	addImg("bldg_"+id+"_img", "bldgImg", thisDetail);

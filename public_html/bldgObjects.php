@@ -2,7 +2,7 @@
 
 class townBuilding {
 
-	public $XLoc, $YLoc, $icon, $uType, $owner, $controller, $status, $culture, $religion, $bType, $currentSlot, $updateTime, $visionDistance;
+	public $XLoc, $YLoc, $icon, $uType, $owner, $controller, $status, $culture, $religion, $bType, $currentSlot, $updateTime, $visionDistance, $currentTask;
 
 	function __construct($id, $file) {
 		$this->id = intval($id);
@@ -20,6 +20,7 @@ class townBuilding {
 		$this->culture = $bldgDat[8];
 		$this->religion = $bldgDat[9];
 		$this->bType = $bldgDat[10];
+		$this->currentTask = $bldgDat[11];
 		$this->currentSlot = $bldgDat[26];
 		$this->updateTime = $bldgDat[27];
 		$this->visionDistance = $bldgDat[28];

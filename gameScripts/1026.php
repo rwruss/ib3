@@ -1,11 +1,7 @@
 <?php
 
-// open task file
-$taskFile = fopen($gamePath.'/unitDat.dat', 'rb');
+echo 'Task description for task type '.$postVals[1].'<br>';
 
-fseek($taskFile, $taskID*$defaultBlockSize);
-$taskDat = unpack('i*', fread($taskFile, $jobBlockSize));
-
-fclose($taskFile);
+include('../gameScripts/tasks/to_'.$postVals[1].'.php');
 
 ?>

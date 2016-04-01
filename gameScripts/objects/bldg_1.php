@@ -26,5 +26,15 @@ $bldgTypeInfo = explode(',', $buildingInfo[$targetBuilding->bType*7+1]);
 for ($i=1; $i<sizeof($bldgTypeInfo); $i++) {
 	echo 'newBldgOpt("'.$bldgTypeInfo[$i].'", "bldg_'.$postVals[1].'_tab3", "'.$buildingInfo[$bldgTypeInfo[$i]*7].'");';
 }
+
+// Produce task options for this buildingInfo
+if ($targetBuilding->currentTask == 0) {
+  echo 'textBlob("descriptiveBlob", "bldg_'.$postVals[1].'_tab2", "This building is idle");';
+} else {
+  echo 'textBlob("descriptiveBlob", "bldg_'.$postVals[1].'_tab2", "You have a task in progress with this building.");';
+}
+echo 'taskOpt(1, "bldg_'.$postVals[1].'_tab2");';
+
+echo 'textBlob("descriptiveBlob", "bldg_'.$postVals[1].'_tab1", "I want to quote somebody whot said \"blah blah blah\"");';
 echo '</script>';
 ?>
