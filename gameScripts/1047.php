@@ -37,12 +37,13 @@ if ($approved) {
 	foreach ($bldgList as $bldgID) {
 		fseek($unitFile, $bldgID*$defaultBlockSize);
 		$bldgDat = unpack('i*', fread($unitFile, $defaultBlockSize));
-		echo 'newBldgSum("'.$bldgID.'", "bldg_tab1", .5);';
+		echo 'newBldgSum("'.$bldgID.'", "bldg_tab1", .5, '.$bldgDat[7].');';
 	}
 
 	// Generate a list of common buildings that can be built at this location
-	for ($i=1; $i<7; $i++) {
-		echo 'newBldgOpt("'.$i.'", 0, "bldg_tab2", "'.$buildingInfo[$i*7].'");';
+	for ($i=1; $i<sizeof($buildingInfo)/7; $i++) {
+		$bldgClass = explode(',', $buildingInfo[$i*7+1]);
+		if ($bldgClass[2] == 1)		echo 'newBldgOpt("'.$i.'", 0, "bldg_tab'.($bldgClass[1]+1).'", "'.$buildingInfo[$i*7].'");';
 	}
 
 	// Generate a list of player buildings that can be built at this locaiton

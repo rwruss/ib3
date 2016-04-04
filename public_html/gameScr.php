@@ -20,11 +20,14 @@ $postVals = explode(",", $_POST['val1']);
 
 $inputValidate = TRUE;
 foreach ($postVals as $value) {
-	if (!ctype_digit($value) || $value < 0) $inputValidate = FALSE;
+	if (!is_numeric ($value) || $value < 0) $inputValidate = FALSE;
 }
 if ($inputValidate) {
 	$gamePath = "../games/".$gameID;
 	include("../gameScripts/".$postVals[0].".php");
+} else {
+	echo 'Validation error';
+	print_r($postVals);
 }
 
 function read_slot($file, $slot_num, $slot_size)

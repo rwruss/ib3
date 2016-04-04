@@ -112,6 +112,53 @@
 	height:20;
 }
 
+.eqBox {
+	position:absolute;
+	border:1px solid Red;
+	width:50;
+	height:50;
+}
+
+.eqBox.eq1 {
+	left:225;
+	top:50;
+}
+
+.eqBox.eq2 {
+	left:150;
+	top:150;
+}
+
+.eqBox.eq3 {
+	left:225;
+	top:150;
+}
+
+.eqBox.eq4 {
+	left:300;
+	top:150;
+}
+
+.eqBox.eq5 {
+	left:100;
+	top:250;
+}
+
+.eqBox.eq6 {
+	left:175;
+	top:250;
+}
+
+.eqBox.eq7 {
+	left:275;
+	top:250;
+}
+
+.eqBox.eq8 {
+	left:350;
+	top:250;
+}
+
 .mbContain {
 	position:relative;
 	float:left;
@@ -270,6 +317,12 @@
 	height:25;
 }
 
+.stdFloatDiv {
+	width:100%;
+	position:relative;
+	float:left;
+}
+
 .tabBox {
 	position:absolute;
 	top:0;
@@ -290,7 +343,7 @@
 }
 
 .textBlob {
-	width:100%;
+	width:auto;
 }
 
 .centeredmenu {

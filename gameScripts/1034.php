@@ -5,7 +5,7 @@ $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 fseek($unitFile, $postVals[1]*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
-echo 'Unit Detail for unit #'.$postVals[1];
+//echo 'Unit Detail for unit #'.$postVals[1];
 
 if ($unitDat[5] == $pGameID) {
 	// Get information for the owner with full and true information

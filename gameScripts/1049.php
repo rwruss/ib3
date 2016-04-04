@@ -129,14 +129,14 @@ if ($approved) {
 			$neededRsc[] = $rscList[$i];
 		}
 	}
-	
+
 	// Check if building is an upgrade item
 	if ($postVals[2] > 0) {
-		echo 'This is an updgrade.'
-		
+		echo 'This is an updgrade.';
+
 		// Confirm that this project is in the upgrade path for the building ID.
 	}
-	
+
 	if ($preCheck && $rscCheck) {
 		if ($buildingProgress[$postVals[1]]+$buildingsPresent[$postVals[1]] < $buildingInfo[$postVals[1]*7+6]) {
 			// Give the option to Proceed with starting a task and construction of the building

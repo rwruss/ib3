@@ -115,7 +115,7 @@ if ($approved) {
 			$neededRsc[] = $rscList[$i];
 		}
 	}
-	
+
 	if ($preCheck && $rscCheck) {
 		// Give the option to Proceed with starting a task and construction of the building
 		echo 'APPROVED - PROCESS THIS BUILDING';
@@ -123,23 +123,23 @@ if ($approved) {
 
 		// Create a new building data space for this objects
 		if ($postVals[2] > 0) { // This is an upgrade to an existing building
-		
+			$buildingPoints = explode(',', $buildingInfo[$postVals[1]*7+2]);
 			// Create a new task to be processed.
 			$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
 			$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
-			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),1000,0,5,$cityID,0, $cityID, $postVals[2], $postVals[1]);
+			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),$buildingPoints[0],0,5,$cityID,0, $cityID, $postVals[2], $postVals[1]);
 			$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 			fclose($taskFile);
 			fclose($taskIndex);
-			
+
 			// Update existing building status to show that it is being upgraded
 			fseek($unitFile, $postVals[2]*$defaultBlockSize+24);
 			fwrite($unitFile, pack('i', 2));
-			
+
 			// Record the new task in the building upgrade task spot
 			fseek($unitFile, $postVals[2]*$defaultBlockSize+48);
 			fwrite($unitFile, pack('i', $newTask));
-			
+
 			// Record task in city task list
 			// Verify that slot exists and create one if needed.
 			if ($cityDat[21] == 0) { // Need to create a new slot
@@ -151,9 +151,9 @@ if ($approved) {
 
 			addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[21], pack('i', $newTask), $slotFile);
 			// Does this need to be adjust to add to player task list as well??
-		
+
 		} else {
-		
+
 			if (flock($unitFile, LOCK_EX)) {
 
 				echo 'GOT LOCK<br>';
@@ -171,7 +171,7 @@ if ($approved) {
 
 			fseek($unitFile, $newID*$defaultBlockSize);
 			fwrite($unitFile, pack('i*', $cityDat[1], $cityDat[2], 0, 9, $cityID, $cityID, 0, 1, 1, $postVals[1], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
-			
+
 			// Verify that city building slot exists and create one if needed.
 			if ($cityDat[17] == 0) { // Need to create a new slot
 				echo 'Making a new slot';
@@ -179,11 +179,11 @@ if ($approved) {
 				fseek($unitFile, $cityID*$defaultBlockSize+64);
 				fwrite($unitFile, pack('i', $cityDat[17]));
 			}
-			
+
 			// Record new building in city buildign slot
 			addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[17], pack('i', $newID), $slotFile);
 			//writeBlocktoSlot($gamePath.'/gameSlots.slt', $cityDat[17], pack('i*', 0, $newID), $slotFile, 40); // function writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize)
-			
+
 			echo '<p>New unit ID is '.$newID.'<br>';
 
 			// add a task to the town as an "in progress" task
@@ -197,7 +197,7 @@ if ($approved) {
 
 			echo '<p>Parameters:';
 			print_r(unpack('i*', $parameters));
-			
+
 			// Record task in city task list
 			// Verify that slot exists and create one if needed.
 			if ($cityDat[21] == 0) { // Need to create a new slot

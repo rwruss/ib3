@@ -145,16 +145,16 @@ tabSelect = function(target, selection) {
 	//alert("select " + selection)
 }
 
-taskOpt = function(id, target, prm) {
+taskOpt = function(id, target, prm, desc) {
 	var thisOpt = addDiv(id, "tdHolder", document.getElementById(target));
-	thisOpt.innerHTML = id;
+	if (desc) thisOpt.innerHTML = desc;
 
 	if (prm) thisOpt.addEventListener("click", function() {makeBox("taskDtl", "1026,"+id+","+prm,500, 500, 200, 50);});
 	else thisOpt.addEventListener("click", function() {makeBox("taskDtl", "1026,"+id,500, 500, 200, 50);});
 }
 
 textBlob = function (id, target, content) {
-	var thisBlob = addDiv(id, "tdHolder", document.getElementById(target));
+	var thisBlob = addDiv(id, "textBlob", document.getElementById(target));
 	thisBlob.innerHTML= content;
 	thisBlob.style.width = "100%";
 }
@@ -171,9 +171,11 @@ newBldgOpt = function(id, base, target, desc) {
 	thisDetail.addEventListener("click", function() {makeBox("bldgStart", "1049,"+id + "," + base, 500, 500, 200, 50);});
 }
 
-newBldgSum = function(id, target, pctComplete) {
+newBldgSum = function(id, target, pctComplete, status) {
 	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
 	addDiv("bldg_"+id+"_cond", "udAct", thisDetail);
+	var statusBox = addDiv("bldg_"+id+"_stat", "bldgLvl", thisDetail);
+	statusBox.innerHTML = status;
 	setBarSize("bldg_"+id+"_cond", pctComplete, 150);
 	addImg("bldg_"+id+"_img", "tdImg", thisDetail);
 	document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
