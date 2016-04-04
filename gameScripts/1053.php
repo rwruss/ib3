@@ -19,7 +19,7 @@ for (var i=1; i<9; i++) {
 }';
 
 for ($i=1; $i<9; $i++) {
-  echo 'document.getElementById("w'.$i.'").addEventListener("click", function() {makeBox("eqItem", "1054,'.$i.'", 500, 500, 700, 50)});';
+  echo 'document.getElementById("w'.$i.'").addEventListener("click", function() {makeBox("eqItem", "1054,'.$i.','.$postVals[1].'", 500, 500, 700, 50)});';
 }
 echo '</script>';
 

@@ -157,6 +157,8 @@ textBlob = function (id, target, content) {
 	var thisBlob = addDiv(id, "textBlob", document.getElementById(target));
 	thisBlob.innerHTML= content;
 	thisBlob.style.width = "100%";
+	
+	return thisBlob;
 }
 
 newBldgOpt = function(id, base, target, desc) {
