@@ -32,6 +32,11 @@ class dataSlot {
 }
 
 class blockSlot extends dataSlot {
+	function __construct($start, $slotFile, $size) {
+		parent::__construct($start, $slotFile, $size);
+		$slotData = unpack('i*', $dataString);
+	}
+	
 	function addBlock($value, $file, $handle, $size) {
 
 	}
@@ -42,6 +47,11 @@ class blockSlot extends dataSlot {
 }
 
 class itemSlot extends dataSlot {
+	function __construct($start, $slotFile, $size) {
+		parent::__construct($start, $slotFile, $size);
+		$slotData = unpack('i*', $dataString);
+	}
+	
 	function addItem($value, $file, $handle) {
 		$emptySpot = array_search(0, $this->$slotData);
 		if ($emptySpot) {

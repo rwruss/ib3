@@ -1,22 +1,36 @@
 <?php
-/* Old stuff
-$playerDat = file_get_contents($gamePath."/players.plr", NULL, NULL, $pGameID*200, 200);
-$playerStats = unpack("C*", substr($playerDat, 0, 5));
-$playerOther = unpack("s*", substr($playerDat, 24, 42));
-$playerSlots = unpack("N*", substr($playerDat, 66, 100));
 
+include("./slotFunctions.php");
+$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 
-if ($playerDat[3] == 0) echo "You are an independent Lord<hr>";
-else echo "Your Lord is ".$playerDat[3]."<hr>";
-if ($playerSlots[11] == 0) echo "You do not have any diplomatic relationships at this time";
-else {
-	$diplFile = fopen("gameSlots.slt", "rb");
-	$diplDat = read_slot($diplFile, $playerSlots[11], 40);
-	$diplA = unpack("v*", $diplDat);
-	$numActions = $diplDat/10;
-	for ($i=$numActions; $i>0; $i--) {
-		echo "Diplomatic Action";
-		}
-	}
-*/
+// Get player information
+fseek($unitFile, $pGameID*$defaultBlockSize);
+$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
+
+// Get overall diplomatic statuses
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+$diplSlot = new blockSlot($playerDat[23], $slotFile, 40);
+
+// Get list of wars player is involved in
+$warList = new itemSlot($playerDat[32], $slotFile, 40);
+
+// Build diplomacy tree and history
+$dipTree = [];
+for ($i=1; $i<=sizeof($dipSlot->$slotData); $i+=2) {
+	$dipTree[$dipSlot->$slotData[$i]][] = $dipTree[$dipSlot->$slotData[$i+1];
+	$dipTree[$dipSlot->$slotData[$i]][] = $dipTree[$dipSlot->$slotData[$i+2];
+}
+
+foreach ($dipTree as $trgID => $action) {
+	echo 'Action '.$action[0].' with faction '.$trgID.' at time '.$action[1].'<br>';
+}
+
+foreach ($warList->slotData as $warID) {
+	fseek($unitFile, $warID*$defaultBlockSize);
+	$warDat = unpack('i*', fread($unitFile, 100));
+}
+
+fclose($unitFile);
+fclose($slotFile);
+
 ?>

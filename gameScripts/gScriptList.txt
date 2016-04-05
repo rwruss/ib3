@@ -60,6 +60,7 @@
 1054 - Equipment slot detail
 1055 - Show detail for equipment and allow selection
 1056 - Process equipment selection
+1057 - Empty
 2001 - Add Resources to a city
 
 CL255 - City interface
