@@ -24,7 +24,7 @@ confirmBox = function (msg, prm, type, trg, aSrc, dSrc) {
 
 
 	boxMsg.innerHTML = msg;
-	if (type == 2) {
+	if (type == 2 || 3) {
 		var acceptButton = addDiv("optionAccept", "cBoxA", boxHolder);
 		if (aSrc) {
 			acceptButton.innerHTML = aSrc;
@@ -34,10 +34,12 @@ confirmBox = function (msg, prm, type, trg, aSrc, dSrc) {
 		acceptButton.addEventListener("click", function() {scrMod(prm)});
 	}
 
-	if (dSrc.length > 0) {
-		dButton.innerHTML = dSrc;
-	} else {
-		dButton.innerHTML = "Decline";
+if (type == 1 || 2) {
+		if (dSrc.length > 0) {
+			dButton.innerHTML = dSrc;
+		} else {
+			dButton.innerHTML = "Decline";
+		}
 	}
 
 	if (trg.length > 0) {
@@ -59,23 +61,25 @@ confirmButtons = function (msg, prm, trg, opt, asrc, dsrc) {
 
 	boxMsg.innerHTML = msg;
 
-	if (opt == 2) {
-	var acceptButton = addDiv("optionAccept", "cBoxA", buttonHolder);
-	if (asrc) {
-		acceptButton.innerHTML = asrc;
-	} else {
-		acceptButton.innerHTML = "Accept";
-	}
-	acceptButton.addEventListener("click", function() {scrMod(prm)});
+	if (opt == 2 || opt == 3) {
+		var acceptButton = addDiv("optionAccept", "cBoxA", buttonHolder);
+		if (asrc) {
+			acceptButton.innerHTML = asrc;
+		} else {
+			acceptButton.innerHTML = "Accept";
+		}
+		acceptButton.addEventListener("click", function() {scrMod(prm)});
 	}
 
-	var dButton = addDiv("optionDecline", "cBoxD", buttonHolder);
-	if (dsrc) {
-		dButton.innerHTML = dsrc;
-	} else {
-		dButton.innerHTML = "Decline";
+	if (opt == 1 || opt == 2) {
+		var dButton = addDiv("optionDecline", "cBoxD", buttonHolder);
+		if (dsrc) {
+			dButton.innerHTML = dsrc;
+		} else {
+			dButton.innerHTML = "Decline";
+		}
+		dButton.addEventListener("click", killBox);
 	}
-	dButton.addEventListener("click", killBox);
 }
 
 newTabMenu = function(target) {
@@ -157,7 +161,7 @@ textBlob = function (id, target, content) {
 	var thisBlob = addDiv(id, "textBlob", document.getElementById(target));
 	thisBlob.innerHTML= content;
 	thisBlob.style.width = "100%";
-	
+
 	return thisBlob;
 }
 
