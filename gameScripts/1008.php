@@ -28,6 +28,8 @@ foreach ($dipTree as $trgID => $action) {
 foreach ($warList->slotData as $warID) {
 	fseek($unitFile, $warID*$defaultBlockSize);
 	$warDat = unpack('i*', fread($unitFile, 100));
+	
+	echo 'warDetail('.$warID.')';
 }
 
 fclose($unitFile);

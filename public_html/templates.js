@@ -82,6 +82,13 @@ confirmButtons = function (msg, prm, trg, opt, asrc, dsrc) {
 	}
 }
 
+optionButton = function (msg, prm, trg, src) {
+	var newButton = addDiv("button", "cBoxA", document.getElementById(trg));
+	//newButton.addEventListener("click", function () {scrMod(prm)})
+	newButton.innerHTML = src;
+	return newButton;
+}
+
 newTabMenu = function(target) {
 	var tabHolder = document.getElementById(target+"_tabs");
 	tabHolder.currentSelection = 1;
@@ -355,4 +362,11 @@ newMoveBox = function(id, x, y, target) {
 
 
 	document.getElementById(target).appendChild(mBContain);
+}
+
+warDetail = function(id, target) {
+	var container = addDiv(id, "tdHolder", document.getElementById(target));
+	container.innerHTML = "War "+id;
+	
+	container.addEventListener("click", function () {makeBox("warDtl", "1057,"+id, 500, 500, 200, 50);});
 }
