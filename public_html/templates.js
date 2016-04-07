@@ -224,6 +224,13 @@ newTaskOpt = function(id, target) {
 	thisDetail.innerHTML = id;
 }
 
+unitTaskOpt = function(id, target, desc) (
+	var thisOpt = addDiv("utOpt_"+id, "tdHolder", document.getElementById(target));
+	thisDetail.innerHTML = desc;
+	
+	thisDetail.addEventListener("click", function () {makeBox("taskDtl", "1060,"+id, 500, 500, 200, 50);});
+)
+
 newUnitDetail = function(id, target) {
 
 	var holderDiv = document.createElement("div")

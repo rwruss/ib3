@@ -1,5 +1,7 @@
 <?php
 
+echo 'Order/task detail for a unit';
+
 // Load unit data
 $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 fseek($unitFile, $postVals[1]*$defaultBlockSize);
@@ -15,8 +17,11 @@ $unitTasks = explode($unitDesc[$unitDat[10]*x+x]);
 // Load task file to get list of tasks that can be done by this unit
 $taskDesc = explode('<->', file_get_contents($gamePath.'/tasks.desc'));
 
-for ($i=0; $i<sizeof($unitTasks); $i++) {
-	echo 'var task = unitTaskOpt('.$i.', "ordersContent", "'.$taskDesc[$i+x].'");';
+// verify that unit can perform this task
+if (array_search()) {
+	echo 'Approved';
+} else {
+	echo 'This unit cannot perfrom this task';
 }
 
 ?>

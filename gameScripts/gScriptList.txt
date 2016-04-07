@@ -62,6 +62,9 @@
 1056 - Process equipment selection
 1057 - War Detail
 1058 - Process joining a war
+1059 - Unit Orders main file
+	1059-x unit orders by unit type
+1060 - Unit Order detail screen
 2001 - Add Resources to a city
 
 CL255 - City interface

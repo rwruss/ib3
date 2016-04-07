@@ -2,8 +2,8 @@
 
 echo '<script>';
 
-for ($i=0; $i<20; $i++) {
-  echo 'newTaskOpt('.$i.', "ordersContent");';
+for ($i=0; $i<sizeof($taskDesc); $i+=6) {
+  echo 'var task = unitTaskOpt('.$i.', "ordersContent", "'.$taskDesc[$i+3].'");';
 }
 echo '</script>';
 
