@@ -217,7 +217,11 @@ newTaskSummary = function(id, target, pctComplete) {
 
 	thisDetail.addEventListener("click", function() {makeBox("taskDtl", "1040,"+id, 500, 500, 200, 50);});
 	//alert('New task finished');
+}
 
+newTaskOpt = function(id, target) {
+	var thisDetail = addDiv("taskOpt_"+id, "tdHolder", document.getElementById(target));
+	thisDetail.innerHTML = id;
 }
 
 newUnitDetail = function(id, target) {
@@ -367,6 +371,6 @@ newMoveBox = function(id, x, y, target) {
 warDetail = function(id, target) {
 	var container = addDiv(id, "tdHolder", document.getElementById(target));
 	container.innerHTML = "War "+id;
-	
+
 	container.addEventListener("click", function () {makeBox("warDtl", "1057,"+id, 500, 500, 200, 50);});
 }
