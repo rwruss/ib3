@@ -65,6 +65,7 @@
 1059 - Unit Orders main file
 	1059-x unit orders by unit type
 1060 - Unit Order detail screen
+	1060-x unit orders detail by order type
 2001 - Add Resources to a city
 
 CL255 - City interface

@@ -82,7 +82,7 @@ confirmButtons = function (msg, prm, trg, opt, asrc, dsrc) {
 	}
 }
 
-optionButton = function (msg, prm, trg, src) {
+optionButton = function (prm, trg, src) {
 	var newButton = addDiv("button", "cBoxA", document.getElementById(trg));
 	//newButton.addEventListener("click", function () {scrMod(prm)})
 	newButton.innerHTML = src;

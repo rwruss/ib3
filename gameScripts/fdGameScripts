@@ -48,17 +48,21 @@
             <File name="1045.php" />
             <File name="1046.php" />
             <File name="1047.php" />
-            <File name="E:\websites\ib3\gameScripts\1048.php" />
-            <File name="E:\websites\ib3\gameScripts\1049.php" />
-            <File name="E:\websites\ib3\gameScripts\1050.php" />
-            <File name="E:\websites\ib3\gameScripts\1051.php" />
-            <File name="E:\websites\ib3\gameScripts\1052.php" />
-            <File name="E:\websites\ib3\gameScripts\1053.php" />
-            <File name="E:\websites\ib3\gameScripts\1054.php" />
-            <File name="E:\websites\ib3\gameScripts\1055.php" />
-            <File name="E:\websites\ib3\gameScripts\1056.php" />
-            <File name="E:\websites\ib3\gameScripts\1057.php" />
-            <File name="E:\websites\ib3\gameScripts\1058.php" />
+            <File name="1048.php" />
+            <File name="1049.php" />
+            <File name="1050.php" />
+            <File name="1051.php" />
+            <File name="1052.php" />
+            <File name="1053.php" />
+            <File name="1054.php" />
+            <File name="1055.php" />
+            <File name="1056.php" />
+            <File name="1057.php" />
+            <File name="1058.php" />
+            <File name="1059.php" />
+            <File name="1059-6.php" />
+            <File name="1059-8.php" />
+            <File name="1060.php" />
             <File name="2001.php" />
             <File name="2002.php" />
             <File name="cl255.php" />
@@ -70,18 +74,18 @@
                 <File name="units\wbsc_8.php" />
             </Folder>
             <Folder name="tasks">
-                <File name="E:\websites\ib3\gameScripts\tasks\ta_2.php" />
-                <File name="E:\websites\ib3\gameScripts\tasks\td_1.php" />
-                <File name="E:\websites\ib3\gameScripts\tasks\td_2.php" />
-                <File name="E:\websites\ib3\gameScripts\tasks\to_1.php" />
-                <File name="E:\websites\ib3\gameScripts\tasks\ts_1.php" />
+                <File name="tasks\ta_2.php" />
+                <File name="tasks\td_1.php" />
+                <File name="tasks\td_2.php" />
+                <File name="tasks\to_1.php" />
+                <File name="tasks\ts_1.php" />
             </Folder>
             <Folder name="objects">
                 <File name="objects\obj_1.php" />
                 <File name="objects\obj_2.php" />
                 <File name="objects\obj_6.php" />
                 <File name="objects\obj_8.php" />
-                <File name="E:\websites\ib3\gameScripts\objects\bldg_1.php" />
+                <File name="objects\bldg_1.php" />
             </Folder>
         </Folder>
         <Folder name="public_html">

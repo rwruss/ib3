@@ -1,6 +1,6 @@
 <?php
 
-echo 'Order/task detail for a unit';
+// Process an job order given to a unit
 
 // Load unit data
 $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
@@ -20,7 +20,7 @@ $taskDesc = explode('<->', file_get_contents($gamePath.'/tasks.desc'));
 // verify that unit can perform this task
 if (array_search()) {
 	echo 'Approved';
-	include('../gameScripts/1060-'.$taskDesc[?].'.php');
+	include('../gameScripts/1061-'.$taskDesc[?].'.php');
 } else {
 	echo 'This unit cannot perfrom this task';
 }

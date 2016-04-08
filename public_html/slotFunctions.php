@@ -107,6 +107,17 @@ class itemSlot extends dataSlot {
 	}
 }
 
+class mapEffectSlot extends dataSlot {
+	function __construct($start, $slotFile, $size) {
+		parent::__construct($start, $slotFile, $size);
+		$slotData = unpack('i*', $this->dataString);
+	}
+	
+	function addAffect($data) {
+		$this->datastring .= $data;
+	}
+}
+
 function startASlot($slot_file, $slot_handle)
 	{
 	echo "no slot established<br>";
