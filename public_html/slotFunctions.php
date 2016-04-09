@@ -8,6 +8,7 @@ class dataSlot {
 	private $slotSize;
 
 	function __construct($start, $slotFile, $size) {
+		echo 'Read slot '.$start.' with a size of '.$size.'<br>';
 		$slotSize = $size;
 		$nextSlot = $start;
 		$itemsPerSlot = ($size-4)/4;
@@ -15,7 +16,7 @@ class dataSlot {
 			$slotList[] = $nextSlot;
 			fseek($slotFile, $start*$size);
 			$tmpDat = fread($slotFile, $size);
-			$dataString .= substr($tmpDat, 4);
+			$this->dataString .= substr($tmpDat, 4);
 			$tmpA = unpack("N", $tmpDat);
 			$nextSlot = $tmpA[1];
 		}
@@ -34,7 +35,7 @@ class dataSlot {
 class blockSlot extends dataSlot {
 	function __construct($start, $slotFile, $size) {
 		parent::__construct($start, $slotFile, $size);
-		$slotData = unpack('i*', $this->dataString);
+		echo 'Unpack '.strlen($this->dataString).'<br>';
 	}
 
 	function addBlock($value, $file, $handle, $size) {
@@ -108,11 +109,13 @@ class itemSlot extends dataSlot {
 }
 
 class mapEffectSlot extends dataSlot {
+	public $numEffects;
 	function __construct($start, $slotFile, $size) {
 		parent::__construct($start, $slotFile, $size);
-		$slotData = unpack('i*', $this->dataString);
+		$this->slotData = unpack('i*', $this->dataString);
+		$this->numEffects = $this->$slotData[1];
 	}
-	
+
 	function addAffect($data) {
 		$this->datastring .= $data;
 	}
