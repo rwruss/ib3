@@ -1,18 +1,39 @@
 <?php
 
+// postvals 1 = resource ID, 2 = energy to use
+
 include("./slotFunctions.php");
 $meSlotFile = fopen($gamePath.'/mapEffects.slt', 'rb');
 
 // Process a type 1 task (gathering from an area on the map)
-$jobRadius = 10;
+$jobRadius = 10;  // Need to adjust this to be pulled from the task parameters
 $jobX = [$unitDat[1]-$jobRadius, $unitDat[1]+$jobRadius];
 $jobY = [$unitDat[2]-$jobRadius, $unitDat[2]+$jobRadius];
 
 // Determine the amount of action points to use
+// 1= minimum amount, 2 = 25%, 3 = 50%, 4 = max
+$workLevel = [0, 20, 250, 500, 1000];
+$divisor = max(1,$unitDat[17]);
+$actionPoints = min($workLevel[$postVals[2]], $unitDat[16] + floor((time()-$unitDat[27])/$divisor));
 
-// Load the map informatuion for the affected area
+// Load map terrain information for the base production from this area
+$rowSize = 14400;
+for ($rowCount = 0; $rowCount<$jobRadius*2+1; $rowCount++ ){
+	fseek($terrainFile, ($jobY[0]+$rowCount)*$rowSize+$jobX[0]);
+	$terrainDat .= fread($terrainFile, $jobRadius*2+1);
+}
+$terrainArray = unpack('C*', $terrainDat);
+
+// Load the terrain description to get the base production values
+echo 'Load resource production for resource ID #'.$postVals[1];
+$rscDesc = explode('<-->', file_get_contents($gamePath.'/rsc.desc'));
+$rscProd = explode(',', $rscDesc[$postVals[1]]);
+for ($i=0; $i=sizeof($terrainArray); $i++) {
+	$jobArray[$i]=$rscProd[$terrainArray[$i+1]];
+}
+
+// Load the map effects informatuion for the affected area
 $mapSlot = floor($unitDat[2]/120)*120+floor($unitDat[1]/120);
-
 $mapEffects = new mapEffectSlot($mapSlot, $meSlotFile, 404); //$start, $slotFile, $size
 
 $now = time();
