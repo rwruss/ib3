@@ -1,25 +1,33 @@
 <?php
 
 class dataSlot {
-	private $slotList = [];
+	public $slotList = [];
 	public $dataString;
 	public $slotData = [];
 	private $itemsPerSlot;
 	private $slotSize;
+	public $start, $size;
 
 	function __construct($start, $slotFile, $size) {
+		$this->start = $start;
+		$this->size = $size;
 		echo 'Read slot '.$start.' with a size of '.$size.'<br>';
 		$slotSize = $size;
 		$nextSlot = $start;
 		$itemsPerSlot = ($size-4)/4;
 		while ($nextSlot > 0) {
-			$slotList[] = $nextSlot;
-			fseek($slotFile, $start*$size);
+			$seekto = $nextSlot*$size;
+			echo 'Add slot '.$nextSlot.' and seek to '.$seekto.'<br>';
+			$this->slotList[] = $nextSlot;
+			fseek($slotFile, $nextSlot*$size);
 			$tmpDat = fread($slotFile, $size);
 			$this->dataString .= substr($tmpDat, 4);
 			$tmpA = unpack("N", $tmpDat);
 			$nextSlot = $tmpA[1];
 		}
+	echo 'Final slot List';
+	print_r($this->slotList);
+	echo '<p>';
 	}
 
 	function save($file) {
@@ -28,6 +36,34 @@ class dataSlot {
 		for ($i=0; $i<$numSlots; $i++) {
 			fseek($file, $slotList[$i]*$slotSize);
 			fwrite($file, pack("N", $slotList[$i+1]).substr($this->dataString, $i*($slotSize*4), $slotSize-4));
+		}
+	}
+
+	function saveItem($fille, $data, $location) {
+		// Determine if the new item will fit in the slot spaces already allocated
+		$available = $this->size*sizeof($this->slotList);
+		if ($location*4+strlen($data) > $available) {
+			// Get a new block for this slot
+			if (flock($fille, LOCK_EX)) {  // acquire an exclusive lock
+				// verify that a new block hasn't already been added by another user
+				do {
+					fseeK($file, end($this->slotList)*$this->size);
+					$nextSlot = unpack('i', fread($file, 4));
+					if ($nextSlot[1] > 0) $this->slotList[] = $nextSlot[1];
+				} while ($nextSlot[1] > 0);
+
+				fseek($file, $this->size-4, SEEK_END);
+
+				$newBlock = (ftell($file)+4)/$this->size;
+
+				fwrite($file, pack('i', 0));
+				fflush($file);
+
+		    flock($fille, LOCK_UN);    // release the lock
+
+				// Add new block to list of blocks for this slot
+				$this->slotList[] = $newBlock;
+			}
 		}
 	}
 }
@@ -51,6 +87,8 @@ class itemSlot extends dataSlot {
 	function __construct($start, $slotFile, $size) {
 		parent::__construct($start, $slotFile, $size);
 		$slotData = unpack('i*', $this->dataString);
+
+		echo 'Slot size is '.$this->size.'<p>';
 	}
 
 	function addItem($value, $file, $handle) {
@@ -109,15 +147,91 @@ class itemSlot extends dataSlot {
 }
 
 class mapEffectSlot extends dataSlot {
-	public $numEffects;
+	public $numEffects, $version;
 	function __construct($start, $slotFile, $size) {
 		parent::__construct($start, $slotFile, $size);
 		$this->slotData = unpack('i*', $this->dataString);
-		$this->numEffects = $this->$slotData[1];
+		$this->numEffects = $this->slotData[1];
+		$this->version = $this->slotData[2];
+
+		$this->slotData = array_slice($this->slotData, 0, $this->numEffects*6+2);
+		//$this->dataString = substr($this->dataString, 0, 4+$this->numEffects*24);
 	}
 
-	function addAffect($data) {
-		$this->datastring .= $data;
+	function addItem($file, $data, $location) {
+		echo 'Slotlist:<br>';
+		print_r($this->slotList);
+		echo 'data block length '.strlen($data).'<br>';
+		if (flock($file, LOCK_EX)) {  // acquire an exclusive lock
+			// Read the last item that was saved in this slot and version
+			fseek($file, $this->slotList[0]*$this->size+4);
+			$header = unpack('i*', fread($file, 8));
+			echo 'VERSION '.$header[2].'<p>';
+			if ($this->version != $header[2]) {
+				// Reload the information so that you are working with the most current slot list
+				$this->slotList = array();
+				$nextIndex[1] = $this->start;
+				while ($nextIndex[1] > 0) {
+					$this->slotList[] = $nextIndex[1];
+					fseek($file, $nextIndex*$this->size);
+					$nextIndex = unpack('N', fread($file, 4));
+				}
+			}
+
+			// Check if enough space is available for new items
+			$available = sizeof($this->slotList)*($this->size-4);
+			while ($available < $location*4+8) {
+				// Will need to get new slot
+				$oldEnd = end($this->slotList);
+
+				fseek($file, $this->size-4, SEEK_END);
+				fwrite($file, pack('i', 0));
+				$newLoc = ftell($file)/$this->size - 1;
+				$this->slotList[] = $newLoc;
+
+				fseek($file, $oldEnd*$this->size);
+				fwrite($file, pack('N', $newLoc));
+
+				$available = sizeof($this->slotList)*($this->size-4);
+			}
+
+			$startBlock = intval(($location*4+8)/($this->size-4));
+			$endBlock = intval(($location*4+8+strlen($data))/($this->size-4));
+
+			if ($startBlock != $endBlock) {
+				echo 'Split block -- '.$startBlock.' vs '.$endBlock.'<p>';
+				// Need to split the string up
+				$startOffset = ($location*4+8)%($this->size-4);
+				$part1 = ($this->size - 4) - $startOffset;
+				$part2 = strlen($data)-$part1;
+
+				$block1 = substr($data, 0, $part1);
+				$block2 = substr($data, $part1);
+
+				fseek($file, $startBlock*$this->size + $startOffset+4);
+				fwrite($file, $block1);
+
+				fseek($file, $endBlock*$this->size+4);
+				fwrite($file, $block2);
+			} else {
+				$startOffset = ($location*4+8)%($this->size-4);
+				$seekto = $this->slotList[$startBlock]*$this->size + $startOffset+4;
+				echo 'Write Data ('.strlen($data).') at slot ('.$this->slotList[$startBlock].') at pos ('.$seekto.'):';
+				print_r(unpack('i*', $data));
+
+				fseek($file, $this->slotList[$startBlock]*$this->size + $startOffset+4);
+				fwrite($file, $data);
+			}
+
+			// increment the update and count
+			$seekto = $this->slotList[0]*$this->size+4;
+			echo '<br>Go to '.$seekto.' and write header';
+			fseek($file, $this->slotList[0]*$this->size+4);
+			fwrite($file, pack('i*', $header[1]+1, $header[2]+1));
+
+			fflush($file);
+			flock($file, LOCK_UN);    // release the lock
+		}
 	}
 }
 
