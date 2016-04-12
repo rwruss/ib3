@@ -9,6 +9,10 @@ class dataSlot {
 	public $start, $size;
 
 	function __construct($start, $slotFile, $size) {
+		init($start, $slotFile, $size);
+	}
+	
+	function init($start, $slotFile, $size) {
 		$this->start = $start;
 		$this->size = $size;
 		echo 'Read slot '.$start.' with a size of '.$size.'<br>';
@@ -68,25 +72,10 @@ class dataSlot {
 	}
 }
 
-class blockSlot extends dataSlot {
-	function __construct($start, $slotFile, $size) {
-		parent::__construct($start, $slotFile, $size);
-		echo 'Unpack '.strlen($this->dataString).'<br>';
-	}
-
-	function addBlock($value, $file, $handle, $size) {
-
-	}
-
-	function deleteBlock() {
-
-	}
-}
-
 class itemSlot extends dataSlot {
 	function __construct($start, $slotFile, $size) {
 		parent::__construct($start, $slotFile, $size);
-		$slotData = unpack('i*', $this->dataString);
+		$this->slotData = unpack('i*', $this->dataString);
 
 		echo 'Slot size is '.$this->size.'<p>';
 	}
@@ -146,7 +135,7 @@ class itemSlot extends dataSlot {
 	}
 }
 
-class mapEffectSlot extends dataSlot {
+class blockSlot extends dataSlot {
 	public $numEffects, $version;
 	function __construct($start, $slotFile, $size) {
 		parent::__construct($start, $slotFile, $size);
@@ -168,6 +157,7 @@ class mapEffectSlot extends dataSlot {
 			$header = unpack('i*', fread($file, 8));
 			echo 'VERSION '.$header[2].'<p>';
 			if ($this->version != $header[2]) {
+				/*
 				// Reload the information so that you are working with the most current slot list
 				$this->slotList = array();
 				$nextIndex[1] = $this->start;
@@ -176,8 +166,11 @@ class mapEffectSlot extends dataSlot {
 					fseek($file, $nextIndex*$this->size);
 					$nextIndex = unpack('N', fread($file, 4));
 				}
+				*/
+			init($this->slotList[0], $file, $this->size)
 			}
 
+			if (!$locaiton) $location = sizeof($this->slotData);
 			// Check if enough space is available for new items
 			$available = sizeof($this->slotList)*($this->size-4);
 			echo 'Available space: '.$available.', Need: '.($location*4+24).'<br>';

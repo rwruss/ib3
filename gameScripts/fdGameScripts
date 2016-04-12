@@ -63,6 +63,8 @@
             <File name="1059-6.php" />
             <File name="1059-8.php" />
             <File name="1060.php" />
+            <File name="1061.php" />
+            <File name="1061-1.php" />
             <File name="2001.php" />
             <File name="2002.php" />
             <File name="cl255.php" />
@@ -105,6 +107,11 @@
             </Folder>
         </Folder>
         <Folder name="other" />
+        <Folder name="test">
+            <Folder name="slots">
+                <File name="E:\websites\ib3\test\slots\eventSlotTest.php" />
+            </Folder>
+        </Folder>
     </Project>
     <Project name="portfolio" />
 </NotepadPlus>

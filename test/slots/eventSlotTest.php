@@ -9,7 +9,7 @@ fwrite($testFile, pack('i', 0));
 $sendData = pack('i*', 1, 2, 3, 4, 5, 6);
 print_r(unpack('i*', $sendData));
 
-$testSlot = new mapEffectSlot(5, $testFile, 404);
+$testSlot = new blockSlot(5, $testFile, 404);
 
 $addTarget = sizeof($testSlot->slotData);
 echo 'Add target os '.$addTarget.'<br>';
