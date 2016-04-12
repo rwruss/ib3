@@ -180,7 +180,8 @@ class mapEffectSlot extends dataSlot {
 
 			// Check if enough space is available for new items
 			$available = sizeof($this->slotList)*($this->size-4);
-			while ($available < $location*4+8) {
+			echo 'Available space: '.$available.', Need: '.($location*4+24).'<br>';
+			while ($available < $location*4+24) {
 				// Will need to get new slot
 				$oldEnd = end($this->slotList);
 
@@ -189,32 +190,39 @@ class mapEffectSlot extends dataSlot {
 				$newLoc = ftell($file)/$this->size - 1;
 				$this->slotList[] = $newLoc;
 
+				echo 'Add new slot: '.$newLoc.'<br>';
+
 				fseek($file, $oldEnd*$this->size);
 				fwrite($file, pack('N', $newLoc));
 
 				$available = sizeof($this->slotList)*($this->size-4);
 			}
 
-			$startBlock = intval(($location*4+8)/($this->size-4));
-			$endBlock = intval(($location*4+8+strlen($data))/($this->size-4));
+			$startBlock = intval(($location*4)/($this->size-4));
+			$endBlock = intval(($location*4+strlen($data)-1)/($this->size-4));
 
 			if ($startBlock != $endBlock) {
 				echo 'Split block -- '.$startBlock.' vs '.$endBlock.'<p>';
 				// Need to split the string up
-				$startOffset = ($location*4+8)%($this->size-4);
+				$startOffset = ($location*4)%($this->size-4);
 				$part1 = ($this->size - 4) - $startOffset;
 				$part2 = strlen($data)-$part1;
 
+				echo 'Start offset = '.$startOffset.', Part 1  = '.$part1.', Part 2 = '.$part2.'<br>';
+
 				$block1 = substr($data, 0, $part1);
 				$block2 = substr($data, $part1);
+				$seek1 = $this->slotList[$startBlock]*$this->size + $startOffset+4;
+				$seek2 = $this->slotList[$endBlock]*$this->size+4;
+				echo 'Write block 1 ('.strlen($block1).') at location '.$seek1.', and block 2 ('.strlen($block2).') at location '.$seek2.'<br>';
 
-				fseek($file, $startBlock*$this->size + $startOffset+4);
+				fseek($file,$this->slotList[$startBlock]*$this->size + $startOffset+4);
 				fwrite($file, $block1);
 
-				fseek($file, $endBlock*$this->size+4);
+				fseek($file, $this->slotList[$endBlock]*$this->size+4);
 				fwrite($file, $block2);
 			} else {
-				$startOffset = ($location*4+8)%($this->size-4);
+				$startOffset = ($location*4)%($this->size-4);
 				$seekto = $this->slotList[$startBlock]*$this->size + $startOffset+4;
 				echo 'Write Data ('.strlen($data).') at slot ('.$this->slotList[$startBlock].') at pos ('.$seekto.'):';
 				print_r(unpack('i*', $data));
