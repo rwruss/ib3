@@ -127,7 +127,7 @@ if ($unitDat[15] > 0 ) {
 				$traitMods = explode('<-->', $traitItems[$cmdTraits->slotData[$i]]);
 
 				// Look through the loaded traits for a relevant resource boost
-				$foundKey = array_search('rsc_'.$postVals[1], $traitMods);
+				$foundKey = array_search('rsc_'.$postVals[1], explode(',', $traitMods[1]));
 				if ($foundKey) $cmdBoost += $traitMods[$foundKey+1];
 			}
 		}

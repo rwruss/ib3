@@ -19,20 +19,19 @@ for ($i=1; $i<=sizeof($mapItems->slotList); $i++) {
 	fseek($unitFile, $mapItems->slotList[$i]*$defaultBlockSize);
 	$checkDat = unpack('i*', fread($unitFile, 400);
 	
-	if ($checkDat[4] == 2) {
-		$distCheck = ($checkDat[1]-$unitDat[1])*($checkDat[1]-$unitDat[1])+($checkDat[2]-$unitDat[2])*($checkDat[2]-$unitDat[2]);
-		if ($distCheck == 0) {
-			// Check to see if the unit is on a city (this gives access to all of the city resource buildings)
-			if ($checkDat[4] == 1) {
-				$cityID = $mapItems->slotList[$i];
-			} else {
-				$workItems[] = $mapItems->slotList[$i];
-			}
-		}
-		else if ($distCheck <= $oRadiusSq) {
-			// Object is close enough to be worked on by this unit
+	if ($checkDat[4] == 2 && $checkDat[10] == $postVals[1])
+	$distCheck = ($checkDat[1]-$unitDat[1])*($checkDat[1]-$unitDat[1])+($checkDat[2]-$unitDat[2])*($checkDat[2]-$unitDat[2]);
+	if ($distCheck == 0) {
+		// Check to see if the unit is on a city (this gives access to all of the city resource buildings)
+		if ($checkDat[4] == 1) {
+			$cityID = $mapItems->slotList[$i];
+		} else {
 			$workItems[] = $mapItems->slotList[$i];
 		}
+	}
+	else if ($distCheck <= $oRadiusSq) {
+		// Object is close enough to be worked on by this unit
+		$workItems[] = $mapItems->slotList[$i];
 	}
 }
 
@@ -105,12 +104,10 @@ fclose($mapSlotFile);
 for ($i=0; $i<sizeof($checkItemList); $i++) {
 	fseek($unitFile, $checkItemList[$i]*$defaultBlockSize);
 	$checkDat = unpack('i*', fread($unitFile, 400));
-	
-	if ($checkDat[4] == 2) {
-		$distCheck = ($checkDat[1]-$unitDat[1])*($checkDat[1]-$unitDat[1])+($checkDat[2]-$unitDat[2])*($checkDat[2]-$unitDat[2]);
-		if ($distCheck <= $oRadiusSq) {
-			$workItems[] = $checkItemList[$i];
-		}
+		
+	$distCheck = ($checkDat[1]-$unitDat[1])*($checkDat[1]-$unitDat[1])+($checkDat[2]-$unitDat[2])*($checkDat[2]-$unitDat[2]);
+	if ($distCheck <= $oRadiusSq) {
+		$workItems[] = $checkItemList[$i];
 	}
 }
 
