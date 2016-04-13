@@ -19,7 +19,7 @@ $jobDesc = explode('<->', file_get_contents($gamePath.'/jobs.desc'));
 
 // verify that unit can perform this task
 if (array_search($postVals[1], $unitTasks) !== false) {
-	echo 'Approved';
+	echo 'Approved<p>';
 	include('../gameScripts/1061-'.$jobDesc[$postVals[1]*4+1].'.php');
 } else {
 	echo 'This unit cannot perfrom this task';

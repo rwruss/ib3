@@ -9,9 +9,9 @@ class dataSlot {
 	public $start, $size;
 
 	function __construct($start, $slotFile, $size) {
-		init($start, $slotFile, $size);
+		$this->init($start, $slotFile, $size);
 	}
-	
+
 	function init($start, $slotFile, $size) {
 		$this->start = $start;
 		$this->size = $size;
@@ -167,10 +167,10 @@ class blockSlot extends dataSlot {
 					$nextIndex = unpack('N', fread($file, 4));
 				}
 				*/
-			init($this->slotList[0], $file, $this->size)
+			init($this->slotList[0], $file, $this->size);
 			}
 
-			if (!$locaiton) $location = sizeof($this->slotData);
+			if (!$location) $location = sizeof($this->slotData);
 			// Check if enough space is available for new items
 			$available = sizeof($this->slotList)*($this->size-4);
 			echo 'Available space: '.$available.', Need: '.($location*4+24).'<br>';
