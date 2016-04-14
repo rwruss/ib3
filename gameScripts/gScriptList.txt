@@ -38,7 +38,7 @@
 	1034a - Show owner details (full and true details)
 	1034b - Show controller (not owner) details (full details but maybe not true:))
 	1034c - show non-owner details
-1035 - Process order given for a character
+1035 - Process order given for a character (NOT USED)
 1036 - Get description of a task and return
 1037 - Building detail information
 1038 - Send a scout to a location

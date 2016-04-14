@@ -17,8 +17,8 @@ $cityID = 0;
 for ($i=1; $i<=sizeof($mapItems->slotList); $i++) {
 	// Check to see if the item is a city or is in the radius of the unit orders
 	fseek($unitFile, $mapItems->slotList[$i]*$defaultBlockSize);
-	$checkDat = unpack('i*', fread($unitFile, 400);
-	
+	$checkDat = unpack('i*', fread($unitFile, 400));
+
 	if ($checkDat[4] == 2) {
 		$distCheck = ($checkDat[1]-$unitDat[1])*($checkDat[1]-$unitDat[1])+($checkDat[2]-$unitDat[2])*($checkDat[2]-$unitDat[2]);
 		if ($distCheck == 0) {
@@ -42,7 +42,7 @@ $right = false;
 $top = false;
 $bot = false;
 
-if ($unitDat[1] - (floor($unitDat[1]/120)*120 <= $orderRadius) $left = true;
+if ($unitDat[1] - (floor($unitDat[1]/120)*120 <= $orderRadius)) $left = true;
 else if (floor($unitDat[1]/120)*120+120 - $unitDat[1] <= $orderRadius) $right = true;
 
 if ($unitDat[2] - floor($unitDat[2]/120)*120 <= $orderRadius) $bot = true;
@@ -50,31 +50,35 @@ else if (floor($unitDat[2]/120)*120+120 - $unitDat[2] <= $orderRadius) $top = tr
 
 $checkItemList = [];
 if ($left) {
+	echo 'Left<br>';
 	$xVal = $unitDat[1] - 120;
-	$mapSlot = floor($unitDat[2]/120)*120+floor($xVal[1]/120);
+	$mapSlot = floor($unitDat[2]/120)*120+floor($xVal/120);
 	$list = checkSlot($mapSlot, $mapSlotFile, 404);
 	$checkItemList = array_merge($checkItemList, $list->slotList);
 	if ($top) {
+		echo 'Top<br>';
 		$yVal = $unitDat[2]+120;
 		$mapSlot = floor($yVak/120)*120+floor($xVal/120);
 		$list = checkSlot($mapSlot, $mapSlotFile, 404);
 		$checkItemList = array_merge($checkItemList, $list->slotList);
 	}
 	else if ($bot) {
+		echo 'Bot<br>';
 		$yVal = $unitDat[2]-120;
 		$mapSlot = floor($yVal/120)*120+floor($xVal/120);
 		$list = checkSlot($mapSlot, $mapSlotFile, 404);
 		$checkItemList = array_merge($checkItemList, $list->slotList);
 	}
-} 
+}
 else if ($right) {
+	echo 'Right<br>';
 	$xVal = $unitDat[1] + 120;
 	$mapSlot = floor($unitDat[2]/120)*120+floor($xVal[1]/120);
 	$list = checkSlot($mapSlot, $mapSlotFile, 404);
 	$checkItemList = array_merge($checkItemList, $list->slotList);
 	if ($top) {
 		$yVal = $unitDat[2]+120;
-		$mapSlot = floor($yVak/120)*120+floor($xVal/120);
+		$mapSlot = floor($yVal/120)*120+floor($xVal/120);
 		$list = checkSlot($mapSlot, $mapSlotFile, 404);
 		$checkItemList = array_merge($checkItemList, $list->slotList);
 	}
@@ -105,7 +109,7 @@ fclose($mapSlotFile);
 for ($i=0; $i<sizeof($checkItemList); $i++) {
 	fseek($unitFile, $checkItemList[$i]*$defaultBlockSize);
 	$checkDat = unpack('i*', fread($unitFile, 400));
-	
+
 	if ($checkDat[4] == 2) {
 		$distCheck = ($checkDat[1]-$unitDat[1])*($checkDat[1]-$unitDat[1])+($checkDat[2]-$unitDat[2])*($checkDat[2]-$unitDat[2]);
 		if ($distCheck <= $oRadiusSq) {
@@ -117,7 +121,8 @@ for ($i=0; $i<sizeof($checkItemList); $i++) {
 // Output each item to an order option
 
 function checkSlot($slotNum, $slotFile) {
-	return = new itemSlot($slotNum, $slotFile, 404);	
+	echo 'Look up slot '.$slotNum.'<br>';
+	return new itemSlot($slotNum, $slotFile, 404);
 }
 
 ?>
