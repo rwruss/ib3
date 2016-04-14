@@ -27,19 +27,20 @@ fclose($moveFile);
 
 // Read unit Long Move
 $longFile = fopen($gamePath.'/randomLongFile.lmf', 'rb');
+$moveSlot = new itemSlot($unitID*9, $longFile, 84);
 $longMoveDat = readSlotDataEndKey($longFile, $unitID*9, 84);
 fclose($longFile);
 
-for ($i=0; $i<strlen($longMoveDat)/80; $i++) {
-	$dirDat .= substr($longMoveDat, $i*80, 40);
-	$timeDat .= substr($longMoveDat, $i*80+40, 40);
+for ($i=0; $i<strlen($moveSlot->dataSring)/80; $i++) {
+	$dirDat .= substr($moveSlot->dataSring, $i*80, 40);
+	$timeDat .= substr($moveSlot->dataSring, $i*80+40, 40);
 }
 //print_r($longMove);
 
 $moveDirs = unpack('i*', $dirDat);
 $moveTimes = unpack('i*', $timeDat);
 
-echo 'long move size of '.strlen($longMoveDat).'
+echo 'long move size of '.strlen($moveSlot->dataSring).'
 	<script>loadMove(['.$unitLoc[1].','.$unitLoc[2].'], ['.implode(",", $moveDirs).'], ['.implode(",", $moveTimes).']);</script>';
 
 ?>

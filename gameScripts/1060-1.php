@@ -9,16 +9,16 @@ gathering this resource.  The more you gather, the more the surrounding area wil
 <script>
 addDiv("jobOptions", "cButtons", document.getElementById("taskDtlContent"));
 
-var opt1 = optionButton("", "jobOptions", "1");//optionButton = function (msg, prm, trg, src)
+var opt1 = optionButton("", "jobOptions", "1");
 opt1.addEventListener("click", function() {scrMod("1061,'.$postVals[1].',1")});
 
-var opt2 = optionButton("", "jobOptions", "2");//optionButton = function (msg, prm, trg, src)
+var opt2 = optionButton("", "jobOptions", "2");
 opt2.addEventListener("click", function() {scrMod("1061,'.$postVals[1].',2")});
 
-var opt3 = optionButton("", "jobOptions", "3");//optionButton = function (msg, prm, trg, src)
+var opt3 = optionButton("", "jobOptions", "3");
 opt3.addEventListener("click", function() {scrMod("1061,'.$postVals[1].',3")});
 
-var opt4 = optionButton("", "jobOptions", "4");//optionButton = function (msg, prm, trg, src)
+var opt4 = optionButton("", "jobOptions", "4");
 opt4.addEventListener("click", function() {scrMod("1061,'.$postVals[1].',4")});
 </script>';
 

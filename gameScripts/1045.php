@@ -162,7 +162,9 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   		if (!array_key_exists(intval($currentSlot), $loadedSlots)) {
 			echo 'Load units in slot '.$currentSlot.'<br>';
 			$loadedSlots[$currentSlot] = [];
-			$unitList = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $currentSlot, 404)));
+			$mapList = new itemSlot($currentSlot, $mapSlotFile, 404);
+			$unitList = array_filter($mapList->slotData);
+			//$unitList = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $currentSlot, 404)));
   			foreach ($unitList as $unitNumber) {
 				echo 'Load unit '.$unitNumber.'<br>';
   				fseek($unitFile, $unitNumber*$defaultBlockSize);
@@ -259,14 +261,20 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   if ($oldSlot != $newSlot && $unitDat[26] != 0) {
     // Remove from old slot file and add to new slot file
     $mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
-    $oldDat = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $oldSlot, 404)));
-    $newDat = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $newSlot, 404)));
+    //$oldDat = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $oldSlot, 404)));
+    //$newDat = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $newSlot, 404)));
+	
+	$oldSlotItem = new itemSlot($oldSlot, $mapSlotFile, 404);
+	$newSlotItem = new itemSlot($newSlot, $mapSlotFile, 404);
+	
+	$oldSlotItem->deleteItem($postVals[1], $mapSlotFile);
+	$newSlotItem->addItem($postVals[1], $mapSlotFile);
 
     echo 'Old Slot:<br>';
-    print_r($oldDat);
+    print_r($oldSlotItem->slotData);
 
     echo '<p>New Slot<br>';
-    print_r($newDat);
+    print_r($newSlotItem->slotData);
 
     removeFromEndSlot($mapSlotFile, $oldSlot, 404, $postVals[1]); //removeFromEndSlot($slotFile, $startSlot, $slot_size, $targetVal)
     addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404); //addtoSlotGen($gamePath.'/mapSlotFile.slt', $mapSlot, pack('i', $newID), $mapSlotFile, 404);
@@ -274,7 +282,10 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   else if ($unitDat[26] == 0) {
     // Record this unit in the slot file
     $mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
-    addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404);
+    
+	$newSlotItem = new itemSlot($newSlot, $mapSlotFile, 404);
+	$newSlotItem->addItem($postVals[1], $mapSlotFile);
+	//addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404);
   }
 
 
@@ -352,9 +363,4 @@ function startNewBattle($unit1, $unit2, $warList, $unitFile, $mapSlotFile, $loca
 
 }
 
-
-/*
-function loadNewSlot($, $targetSlot) {
-	return readSlotDataEndKey($, $targetSlot, 404); //function readSlotDataEndKey($file, $slot_num, $slot_size)
-}*/
 ?>

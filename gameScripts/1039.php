@@ -102,7 +102,11 @@ if ($approved != false) {
 		// add the building to the map file at the specified location
 		$mapSlot = floor($postVals[2]/120)*120+floor($postVals[1]/120);
 		$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
-		addtoSlotGen($gamePath.'/mapSlotFile.slt', $mapSlot, pack('i', $newID), $mapSlotFile, 404);
+		
+		$mSlotItem = new itemSlot($mapSlot, $mapSlotFile, 404);
+		$mSlotItem->addItem($newID, $mapSlotFile);
+		
+		//addtoSlotGen($gamePath.'/mapSlotFile.slt', $mapSlot, pack('i', $newID), $mapSlotFile, 404);
 		fclose($mapSlotFile);
 	} else {
 		echo 'Not enough resources<br>';

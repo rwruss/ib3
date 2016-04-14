@@ -16,9 +16,9 @@ $warList = new itemSlot($playerDat[32], $slotFile, 40);
 
 // Build diplomacy tree and history
 $dipTree = [];
-for ($i=1; $i<=sizeof($diplSlot->slotData); $i+=2) {
-	$dipTree[$dipSlot->$slotData[$i]][] = $dipTree[$dipSlot->$slotData[$i+1]];
-	$dipTree[$dipSlot->$slotData[$i]][] = $dipTree[$dipSlot->$slotData[$i+2]];
+for ($i=3; $i<=sizeof($diplSlot->slotData); $i+=3) {
+	$dipTree[$dipSlot->$slotData[$i]][] = $dipTree[$dipSlot->$slotData[$i+1]]; // Action #
+	$dipTree[$dipSlot->$slotData[$i]][] = $dipTree[$dipSlot->$slotData[$i+2]]; // Time
 }
 
 foreach ($dipTree as $trgID => $action) {

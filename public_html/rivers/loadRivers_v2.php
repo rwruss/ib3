@@ -81,8 +81,9 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 
 			$tileIndex = $tileY*120+$tileX;
 
-			$listDat = readSlotDataEndKey($slotFile, $tileIndex, 404);
-			$unitList = unpack("i*", $listDat);
+			//$listDat = readSlotDataEndKey($slotFile, $tileIndex, 404);
+			$mapDat = new itemSlot($tileIndex, $slotFile, 404); // start, file, size
+			$unitList = unpack("i*", $mapDat->slotData);
 			$count = 0;
 			/*
 			if ($tileIndex == 5200) {

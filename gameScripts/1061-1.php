@@ -18,7 +18,7 @@ $jobDistanceMod = array_fill(0, $jRowSize*$jRowSize, 1);
 // 1= minimum amount, 2 = 25%, 3 = 50%, 4 = max
 $workLevel = [0, 20, 250, 500, 1000];
 $divisor = max(1,$unitDat[17]);
-$actionPoints = min($workLevel[$postVals[2]], $unitDat[16] + floor((time()-$unitDat[27])/$divisor));
+$actionPoints = min(1000, min($workLevel[$postVals[2]], $unitDat[16] + floor((time()-$unitDat[27])/$divisor)));
 
 // Load map terrain information for the base production from this area
 $rowSize = 14400;
@@ -147,7 +147,7 @@ if ($foundKey) $unitMod = $unitBoosts[$foundKey+1];
 $expBoost = 1.0;
 if ($unitDat[14] > 0) {
 $unitSlotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-$unitExp = new blockSlot($unitDat[14], $unitSlotFile, 404);
+$unitExp = new blockSlot($unitDat[14], $unitSlotFile, 40);
 
 	// Adjust the production rate based on experience
 	for ($i=2; $i<sizeof($unitExp->slotData); $i+=2) {
@@ -174,6 +174,27 @@ $eventData = pack('i*', $postVals[1], $postVals[2], $actionType, time(), $magnit
 echo 'Add effect<br>';
 $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addTarget);
 
+// Save resources collected to unit slot
+$carried = 0;
+$unitRSC = new blockSlot($unitDat[30], $unitSlotFile, 40);
+$rscStart = [0,0];
+for ($i=3; $i<=sizeof($unitRSC->slotData); $i+=2) {
+	if ($unitRSC->slotData[$i] == $postVals[1]) {
+		$rscStart[0] = $i;
+		$rscStart[1] = $unitRSC->slotData[$i+1];
+	}
+	$carried += $thisRSC->slotData[$i+1];
+}
+
+if ($carried < $unitDat[29]) {
+	$space = $unitDat[29] - $carried;
+	$location = sizeof($unitRSC->slotData);
+	if ($rscStart[0]>0) $location = $rscStart[0];
+	
+	$unitRSC->addItem($unitSlotFile, pack('i*', $postVals[1], $rscStart[1]+min($space, $collected)), $location);
+} else { 
+	echo 'Can not carry any more<br>'
+}
 
 fclose($meSlotFile);
 fclose($unitFile);

@@ -13,7 +13,8 @@ $orderRadius = 5;
 $oRadiusSq = $orderRadius*$orderRadius;
 
 $cityID = 0;
-
+$cityItems = [];
+$workItems = [];
 for ($i=1; $i<=sizeof($mapItems->slotList); $i++) {
 	// Check to see if the item is a city or is in the radius of the unit orders
 	fseek($unitFile, $mapItems->slotList[$i]*$defaultBlockSize);
@@ -26,12 +27,13 @@ for ($i=1; $i<=sizeof($mapItems->slotList); $i++) {
 			if ($checkDat[4] == 1) {
 				$cityID = $mapItems->slotList[$i];
 			} else {
-				$workItems[] = $mapItems->slotList[$i];
+				$workItems[$mapItems->slotList[$i]] = $checkDat[10];
+				//$cityItems[$mapItems->slotList[$i]] = $checkDat[10];
 			}
 		}
 		else if ($distCheck <= $oRadiusSq) {
 			// Object is close enough to be worked on by this unit
-			$workItems[] = $mapItems->slotList[$i];
+			$workItems[$mapItems->slotList[$i]] = $checkDat[10];
 		}
 	}
 }
@@ -113,12 +115,35 @@ for ($i=0; $i<sizeof($checkItemList); $i++) {
 	if ($checkDat[4] == 2) {
 		$distCheck = ($checkDat[1]-$unitDat[1])*($checkDat[1]-$unitDat[1])+($checkDat[2]-$unitDat[2])*($checkDat[2]-$unitDat[2]);
 		if ($distCheck <= $oRadiusSq) {
-			$workItems[] = $checkItemList[$i];
+			$workItems[$checkItemList[$i]] = $checkDat[10];
 		}
 	}
 }
 
 // Output each item to an order option
+foreach($cityItems as $bldgID => $bType) {
+	echo '
+	addDiv("jobOptions_'.$bldgID.'", "cButtons", document.getElementById("taskDtlContent"));
+	textBlob("1", "jobOptions+'.$bldgID.'", "Do you wish to work at this location?");	
+
+	var opt1 = optionButton("", "jobOptions_'.$bldgID.'", "1");
+	opt1.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',1")});
+
+	var opt2 = optionButton("", "jobOptions_'.$bldgID.'", "2");
+	opt2.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',2")});
+
+	var opt3 = optionButton("", "jobOptions_'.$bldgID.'", "3");
+	opt3.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',3")});
+
+	var opt4 = optionButton("", "jobOptions_'.$bldgID.'", "4");
+	opt4.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',4")});
+	
+	var gotoBox = addDiv("goto_'.$bldgID.'", "", "jobOptions_'.$bldgID.'");
+	gotoBox.innerHTML = "G";
+	gotoBox.addEventListener("click", function() {goto()});
+	';
+	
+}
 
 function checkSlot($slotNum, $slotFile) {
 	echo 'Look up slot '.$slotNum.'<br>';

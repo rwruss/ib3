@@ -18,7 +18,7 @@ class dataSlot {
 		echo 'Read slot '.$start.' with a size of '.$size.'<br>';
 		$slotSize = $size;
 		$nextSlot = $start;
-		$itemsPerSlot = ($size-4)/4;
+		$this->itemsPerSlot = ($size-4)/4;
 		while ($nextSlot > 0) {
 			$seekto = $nextSlot*$size;
 			echo 'Add slot '.$nextSlot.' and seek to '.$seekto.'<br>';
@@ -43,15 +43,15 @@ class dataSlot {
 		}
 	}
 
-	function saveItem($fille, $data, $location) {
+	function saveItem($file, $data, $location) {
 		// Determine if the new item will fit in the slot spaces already allocated
 		$available = $this->size*sizeof($this->slotList);
 		if ($location*4+strlen($data) > $available) {
 			// Get a new block for this slot
-			if (flock($fille, LOCK_EX)) {  // acquire an exclusive lock
+			if (flock($file, LOCK_EX)) {  // acquire an exclusive lock
 				// verify that a new block hasn't already been added by another user
 				do {
-					fseeK($file, end($this->slotList)*$this->size);
+					fseek($file, end($this->slotList)*$this->size);
 					$nextSlot = unpack('i', fread($file, 4));
 					if ($nextSlot[1] > 0) $this->slotList[] = $nextSlot[1];
 				} while ($nextSlot[1] > 0);
@@ -63,7 +63,7 @@ class dataSlot {
 				fwrite($file, pack('i', 0));
 				fflush($file);
 
-		    flock($fille, LOCK_UN);    // release the lock
+		    flock($file, LOCK_UN);    // release the lock
 
 				// Add new block to list of blocks for this slot
 				$this->slotList[] = $newBlock;
@@ -80,33 +80,71 @@ class itemSlot extends dataSlot {
 		echo 'Slot size is '.$this->size.'<p>';
 	}
 
-	function addItem($value, $file, $handle) {
+	function addItem($value, $file) {
+		// Determine if there is a spot to add the item
+		$emptySpot = array_search(0, $this->$slotData);
+		if (!$emptySpot) $emptySpot = sizeof($this->slotData);
+		
+		// Determine if there is enough space in the slot
+		$available = sizeof($this->slotList)*($this->size-4);
+		$numSlotsStart = sizeof($this->slotList);
+		if ($emptySpot*4 > $available) {
+			// Need to get a new Slot
+			if (flock($file, LOCK_EX)) {  // acquire an exclusive lock
+				while($emptySpot*4 > $avaialable) {
+					fseek($file, $this->size-4, SEEK_END);
+					fwrite($file, pack('i', 0);
+				
+					$newBlock = ftell($file)/$this->size;
+					$this->slotList[] = $newBlock;
+					$available+= $this->size-4;
+				}			
+			flock($file, LOCK_UN);
+			}
+			
+			// Record new slot links
+			$this->slotList[] = 0; // Dead link at end of list
+			for ($i=numSlotsStart; $i<sizeof($this->slotList); $i++) {
+				fseek($this->slotList[$i-1]*$this->size);
+				fwrite($file, pack('N', $this->slotList[$i]));
+			}
+		}
+		
+		// Determine which slot to write in 
+		$writeSlot = floor($emptySpot*4/($this->size-4));
+		$writePos = 4*$emptySpot - $writeSlot*($this->size-4);
+		
+		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos+4);
+		fwrite($file, pack('i', $value);
+		/*
 		$emptySpot = array_search(0, $this->$slotData);
 		if ($emptySpot) {
 			// determine which slot this spot is in
-			$useSlot = floor(($emptySpot-1)/$itemsPerSlot);
-			$slotSpot = $emptySpot-$useSlot*$itemsPerSlot-1;
-			$writePos = ($useSlot*$itemsPerSlot+$slotSpot)*4;
+			$useSlot = floor(($emptySpot-1)/$this->itemsPerSlot);
+			$slotSpot = $emptySpot-$useSlot*$this->itemsPerSlot-1;
+			$writePos = ($useSlot*$this->itemsPerSlot+$slotSpot)*4;
 		} else {
 			$useSlot = startASlot($file, $handle);
 			$slotList[] = $useSlot;
-			$writePos = ($useSlot*$itemsPerSlot)*4;
+			$writePos = ($useSlot*$this->itemsPerSlot)*4;
 		}
 
 		if ($writePos > strlen($dataString)) {
 			$dataString .= pack('i', $value);
 		} else {
 			substr_replace($dataString, pack('i', $value), $writePos, 4);
-		}
+		}*/
 	}
 
-	function deleteItem($value) {
+	function deleteItem($position, $file) {
+		addItemAtSpot(0, $positions, $file);
+		/*
 		$itemSpot = array_search($value, $this->$slotData);
 		if ($itemSpot) {
 			// determine which slot this spot is in
-			$useSlot = floor(($itemSpot-1)/$itemsPerSlot);
-			$slotSpot = $itemSpot-$useSlot*$itemsPerSlot-1;
-			$writePos = ($useSlot*$itemsPerSlot+$slotSpot)*4;
+			$useSlot = floor(($itemSpot-1)/$this->itemsPerSlot);
+			$slotSpot = $itemSpot-$useSlot*$this->itemsPerSlot-1;
+			$writePos = ($useSlot*$this->itemsPerSlot+$slotSpot)*4;
 		} else {
 		}
 
@@ -115,23 +153,29 @@ class itemSlot extends dataSlot {
 		} else {
 			substr_replace($dataString, '', $writePos, 4);
 		}
+		*/
 	}
 
-	function addItemAtSpot($value, $location) {
+	function addItemAtSpot($value, $position, $file) {
+		// Position is the key in the array that should be deleted.  slotData array starts with key [1];
+		
+		// Determine which slot and position this is in
+		$writeSlot = floor(($position-1)*4/($this->size-4));
+		$writePos = 4*$position - $writeSlot*($this->size-4);
+		
+		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos+4);
+		fwrite($file, pack('i', $value);
+		/*
 		if ($location*4 > strlen($dataString)) {
 			$dataString .= pack('i', $value);
 		} else {
 			$dataString = substr($dataString, 0, $location*4).pack('i', $value).substr($dataString, $location*4);
 		}
+		*/
 	}
 
-	function deleteItemAtSpot($location) {
-		$byteLoc = ($location -1)*4;
-		if ($byteLoc >= strlen($dataString)-4) {
-			$dataString = substr($dataString, 0, -4);
-		} else {
-			substr_replace($dataString, '', $byteLoc, 4);
-		}
+	function deleteByValue() {
+		
 	}
 }
 
@@ -234,6 +278,10 @@ class blockSlot extends dataSlot {
 			flock($file, LOCK_UN);    // release the lock
 		}
 	}
+	
+	function deleteItem() {
+		
+	}
 }
 
 function startASlot($slot_file, $slot_handle)
@@ -259,6 +307,7 @@ function startASlot($slot_file, $slot_handle)
 		}
 	return $use_slot;
 	}
+	
 function writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize) {
 	// Build slot tree
 	$slotList[] = $checkSlot;
@@ -309,6 +358,7 @@ function writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSiz
 	echo 'Block done';
 }
 // link to next slot at end
+/*
 function addtoSlotGen($slot_handle, $check_slot, $addData, $slot_file, $slotSize) {
 	// function where pointer to next slot is at the END of the string
 	// Loop over slots until a space if found in a slot
@@ -357,56 +407,7 @@ function addtoSlotGen($slot_handle, $check_slot, $addData, $slot_file, $slotSize
 	//fclose($slot_file);
 	return TRUE;
 }
-/*
-function addDataToSlot($slot_handle, $check_slot, $addData, $slot_file)
-	{
-	// Loop over slots until a space if found in a slot
-	echo "Adding to slot ".$check_slot;
-	$success = FALSE;
-	while ($check_slot)
-		{
-		fseek($slot_file, $check_slot*40);
-		$check_dat_bin = fread($slot_file, 40);
-		$check_dat_a = unpack("N*", substr($check_dat_bin, 4));
-		//print_r($check_dat_a);
-		$open_spot = array_search(0, $check_dat_a);
-		if ($open_spot)
-			{
-			fseek($slot_file, $check_slot*40 + $open_spot*4);
-			$seek = $check_slot*40 + $open_spot*4;
-			fwrite($slot_file, $addData);
-			$success = TRUE;
-			$check_slot = 0;
-			echo "Found open spot<br>";
-			}
-		else
-			{
-			$prev_slot = $check_slot;
-			$next_slot_a = unpack("N", $check_dat_bin);
-			$check_slot = $next_slot_a[1];
-			echo "<br>Check Next Slot: ".$check_slot;
-			}
-		}
-	// If no slot is found add a new one
-	if (!$success)
-		{
-		$new_slot_id = max(1, (filesize($slot_handle))/40);
-		// Write new item ID to the new slot
-		fseek($slot_file, $new_slot_id*40 + 4);
-		fwrite($slot_file, $addData);
-		// Fill the entire slot
-		fseek($slot_file, $new_slot_id*40 + 4 + 35);
-		fwrite($slot_file, pack("C", 0));
-		// Write new slot pointer to last slot
-		fseek($slot_file, $prev_slot*40);
-		fwrite($slot_file, pack('N', $new_slot_id));
-		//echo "case 3";
-		echo "<br>Need a new slot : ".$new_slot_id." Write to slot ".$prev_slot."<br>";
-		}
-	//fclose($slot_file);
-	return TRUE;
-	}
-	*/
+*/
 
 	function addDataToSlot($slot_handle, $check_slot, $addData, $slot_file)
 		{
@@ -492,6 +493,7 @@ function readSingleSlot($file, $slot_num, $slot_size) {
 	//echo "Return ".strlen($slotData)."<br>";
 	return $slotData;
 }
+/*
 function readSlotDataEndKey($file, $slot_num, $slot_size)
 	{
 	$next_slot = $slot_num;
@@ -511,8 +513,8 @@ function readSlotDataEndKey($file, $slot_num, $slot_size)
 	//echo "Return ".strlen($slotData)."<br>";
 	return $slotData;
 	}
-function removeFromSlot($file, $startSlot, $slot_size, $targetVal) {
-}
+*/	
+/*
 function removeFromEndSlot($file, $startSlot, $slot_size, $targetVal) {
 	$next_slot = $startSlot;
 	//$slotData = "";
@@ -543,7 +545,7 @@ function removeFromEndSlot($file, $startSlot, $slot_size, $targetVal) {
 		 	}
 		}
 return $returnVal;
-}
+}*/
 function writeSlotPoint($slotFile, $startSlot, $targetPoint, $data, $slotSize) {
 		$blockNum = floor($targetPoint/($slotSize-4));
 		for ($i=0; $i<=$blockNum; $i++) {
