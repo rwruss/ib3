@@ -183,7 +183,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 	// Add city to map slot file
 	$mapSlot = new itemSlot($mapSlot, $mapSlotFile, 404); /// start, file, size
-	$mapSlot->addItem($townID, $mapSlot, $gamePath.'/mapSlotFile.slt'); // value, file, handle
+	$mapSlot->addItem($townID, $mapSlotFile); // value, file, handle
 	//addtoSlotGen($gamePath."/mapSlotFile.slt", $mapSlot, pack("i", $townID), $mapSlotFile, 404);
 
 	// Add units to city unit slot
@@ -204,6 +204,6 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fclose($mapSlotFile);
 }
 
-echo "<script>window.location.replace('./play.php?gameID=".$gameID."')</script>";
+//echo "<script>window.location.replace('./play.php?gameID=".$gameID."')</script>";
 
 ?>

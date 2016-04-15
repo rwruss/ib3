@@ -83,8 +83,10 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 
 			//$listDat = readSlotDataEndKey($slotFile, $tileIndex, 404);
 			$mapDat = new itemSlot($tileIndex, $slotFile, 404); // start, file, size
-			$unitList = unpack("i*", $mapDat->slotData);
+			$unitList = unpack("i*", $mapDat->dataString);
 			$count = 0;
+
+			//echo 'Found '.sizeof($unitList).'units<br>';
 			/*
 			if ($tileIndex == 5200) {
 				echo '('.$tileX.', '.$tileY.')check slot: '.$tileIndex.'<br>';
@@ -97,9 +99,9 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 						//echo "Repeat unit ".$unitID;
 						$repeat++;
 					}
-					//echo "read unit".($unitID)." for Row: ".$rows.", Col ".$cols." (".$tileIndex.") in game ".$gameID."<br>";
+					//echo "read unit".($unitID)." for Row: ".$rows.", Col ".$cols." (".$tileIndex.") in game ".$gameID." - count ".$count."<br>";
 					fseek($unitFile, $unitID*100);
-					$drawDat = $drawDat.fread($unitFile, 12).substr($listDat, $count*4, 4); // X Loc, Y Loc, Unit ID
+					$drawDat = $drawDat.fread($unitFile, 12).substr($mapDat->dataString, $count*4, 4); // X Loc, Y Loc, Unit ID
 					//$drawDat = $drawDat.fread($unitFile, 8).$thousand;
 					//$drawDat = $drawDat.fread($unitFile, 12);
 					$numUnits++;

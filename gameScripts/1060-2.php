@@ -15,9 +15,10 @@ $oRadiusSq = $orderRadius*$orderRadius;
 $cityID = 0;
 $cityItems = [];
 $workItems = [];
-for ($i=1; $i<=sizeof($mapItems->slotList); $i++) {
+//print_r($mapItems->slotData);
+for ($i=1; $i<=sizeof($mapItems->slotData); $i++) {
 	// Check to see if the item is a city or is in the radius of the unit orders
-	fseek($unitFile, $mapItems->slotList[$i]*$defaultBlockSize);
+	fseek($unitFile, $mapItems->slotData[$i]*$defaultBlockSize);
 	$checkDat = unpack('i*', fread($unitFile, 400));
 
 	if ($checkDat[4] == 2) {
@@ -25,15 +26,15 @@ for ($i=1; $i<=sizeof($mapItems->slotList); $i++) {
 		if ($distCheck == 0) {
 			// Check to see if the unit is on a city (this gives access to all of the city resource buildings)
 			if ($checkDat[4] == 1) {
-				$cityID = $mapItems->slotList[$i];
+				$cityID = $mapItems->slotData[$i];
 			} else {
-				$workItems[$mapItems->slotList[$i]] = $checkDat[10];
-				//$cityItems[$mapItems->slotList[$i]] = $checkDat[10];
+				$workItems[$mapItems->slotData[$i]] = $checkDat[10];
+				//$cityItems[$mapItems->slotData[$i]] = $checkDat[10];
 			}
 		}
 		else if ($distCheck <= $oRadiusSq) {
 			// Object is close enough to be worked on by this unit
-			$workItems[$mapItems->slotList[$i]] = $checkDat[10];
+			$workItems[$mapItems->slotData[$i]] = $checkDat[10];
 		}
 	}
 }
@@ -52,43 +53,43 @@ else if (floor($unitDat[2]/120)*120+120 - $unitDat[2] <= $orderRadius) $top = tr
 
 $checkItemList = [];
 if ($left) {
-	echo 'Left<br>';
+	//echo 'Left<br>';
 	$xVal = $unitDat[1] - 120;
 	$mapSlot = floor($unitDat[2]/120)*120+floor($xVal/120);
 	$list = checkSlot($mapSlot, $mapSlotFile, 404);
-	$checkItemList = array_merge($checkItemList, $list->slotList);
+	$checkItemList = array_merge($checkItemList, $list->slotData);
 	if ($top) {
-		echo 'Top<br>';
+		//echo 'Top<br>';
 		$yVal = $unitDat[2]+120;
 		$mapSlot = floor($yVak/120)*120+floor($xVal/120);
 		$list = checkSlot($mapSlot, $mapSlotFile, 404);
-		$checkItemList = array_merge($checkItemList, $list->slotList);
+		$checkItemList = array_merge($checkItemList, $list->slotData);
 	}
 	else if ($bot) {
-		echo 'Bot<br>';
+		//echo 'Bot<br>';
 		$yVal = $unitDat[2]-120;
 		$mapSlot = floor($yVal/120)*120+floor($xVal/120);
 		$list = checkSlot($mapSlot, $mapSlotFile, 404);
-		$checkItemList = array_merge($checkItemList, $list->slotList);
+		$checkItemList = array_merge($checkItemList, $list->slotData);
 	}
 }
 else if ($right) {
-	echo 'Right<br>';
+	//echo 'Right<br>';
 	$xVal = $unitDat[1] + 120;
 	$mapSlot = floor($unitDat[2]/120)*120+floor($xVal[1]/120);
 	$list = checkSlot($mapSlot, $mapSlotFile, 404);
-	$checkItemList = array_merge($checkItemList, $list->slotList);
+	$checkItemList = array_merge($checkItemList, $list->slotData);
 	if ($top) {
 		$yVal = $unitDat[2]+120;
 		$mapSlot = floor($yVal/120)*120+floor($xVal/120);
 		$list = checkSlot($mapSlot, $mapSlotFile, 404);
-		$checkItemList = array_merge($checkItemList, $list->slotList);
+		$checkItemList = array_merge($checkItemList, $list->slotData);
 	}
 	else if ($bot) {
 		$yVal = $unitDat[2]-120;
 		$mapSlot = floor($yVal/120)*120+floor($xVal/120);
 		$list = checkSlot($mapSlot, $mapSlotFile, 404);
-		$checkItemList = array_merge($checkItemList, $list->slotList);
+		$checkItemList = array_merge($checkItemList, $list->slotData);
 	}
 }
 
@@ -96,13 +97,13 @@ if ($top) {
 	$yVal = $unitDat[2]+120;
 	$mapSlot = floor($yVal/120)*120+floor($unitDat[1]/120);
 	$list = checkSlot($mapSlot, $mapSlotFile, 404);
-	$checkItemList = array_merge($checkItemList, $list->slotList);
+	$checkItemList = array_merge($checkItemList, $list->slotData);
 }
 else if ($bot) {
 	$yVal = $unitDat[2]-120;
 	$mapSlot = floor($yVal/120)*120+floor($unitDat[1]/120);
 	$list = checkSlot($mapSlot, $mapSlotFile, 404);
-	$checkItemList = array_merge($checkItemList, $list->slotList);
+	$checkItemList = array_merge($checkItemList, $list->slotData);
 }
 
 fclose($mapSlotFile);
@@ -121,28 +122,32 @@ for ($i=0; $i<sizeof($checkItemList); $i++) {
 }
 
 // Output each item to an order option
-foreach($cityItems as $bldgID => $bType) {
-	echo '
-	addDiv("jobOptions_'.$bldgID.'", "cButtons", document.getElementById("taskDtlContent"));
-	textBlob("1", "jobOptions+'.$bldgID.'", "Do you wish to work at this location?");	
+if (sizeof($workItems) > 0) {
+	foreach($workItems as $bldgID => $bType) {
+		echo '
+		addDiv("jobOptions_'.$bldgID.'", "cButtons", document.getElementById("taskDtlContent"));
+		textBlob("1", "jobOptions+'.$bldgID.'", "Do you wish to work at this location?");
 
-	var opt1 = optionButton("", "jobOptions_'.$bldgID.'", "1");
-	opt1.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',1")});
+		var opt1 = optionButton("", "jobOptions_'.$bldgID.'", "1");
+		opt1.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',1")});
 
-	var opt2 = optionButton("", "jobOptions_'.$bldgID.'", "2");
-	opt2.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',2")});
+		var opt2 = optionButton("", "jobOptions_'.$bldgID.'", "2");
+		opt2.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',2")});
 
-	var opt3 = optionButton("", "jobOptions_'.$bldgID.'", "3");
-	opt3.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',3")});
+		var opt3 = optionButton("", "jobOptions_'.$bldgID.'", "3");
+		opt3.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',3")});
 
-	var opt4 = optionButton("", "jobOptions_'.$bldgID.'", "4");
-	opt4.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',4")});
-	
-	var gotoBox = addDiv("goto_'.$bldgID.'", "", "jobOptions_'.$bldgID.'");
-	gotoBox.innerHTML = "G";
-	gotoBox.addEventListener("click", function() {goto()});
-	';
-	
+		var opt4 = optionButton("", "jobOptions_'.$bldgID.'", "4");
+		opt4.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',4")});
+
+		var gotoBox = addDiv("goto_'.$bldgID.'", "", "jobOptions_'.$bldgID.'");
+		gotoBox.innerHTML = "G";
+		gotoBox.addEventListener("click", function() {goto()});
+		';
+
+	}
+} else {
+	echo 'Nothing';
 }
 
 function checkSlot($slotNum, $slotFile) {
