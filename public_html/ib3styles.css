@@ -415,7 +415,7 @@
 .tdHolder {
 	position:relative;
 	float:left;
-	width:150;
+	width:99%;
 	height:150;
 	border: 1px solid black;
 }

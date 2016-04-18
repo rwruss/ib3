@@ -61,7 +61,7 @@ if ($left) {
 	if ($top) {
 		//echo 'Top<br>';
 		$yVal = $unitDat[2]+120;
-		$mapSlot = floor($yVak/120)*120+floor($xVal/120);
+		$mapSlot = floor($yVal/120)*120+floor($xVal/120);
 		$list = checkSlot($mapSlot, $mapSlotFile, 404);
 		$checkItemList = array_merge($checkItemList, $list->slotData);
 	}

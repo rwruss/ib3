@@ -22,7 +22,7 @@ if ($approved) {
 	if ($cityDat[21] > 0) {
 		echo 'Project slot is '.$cityDat[21];
 		$taskDat = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[21], 40)));
-		//print_r($taskDat);
+		print_r($taskDat);
 		$taskSize = sizeof($taskDat);
 		$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
 		//print_r($taskDat);

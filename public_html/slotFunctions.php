@@ -78,15 +78,20 @@ class itemSlot extends dataSlot {
 	function addItem($value, $file) {
 		// Determine if there is a spot to add the item
 		$emptySpot = array_search(0, $this->slotData);
-		if (!$emptySpot) $emptySpot = sizeof($this->slotData);
+		if (!$emptySpot) {
+			echo 'None found - go to end<br>';
+			$emptySpot = sizeof($this->slotData)+1;
+		}
 
 		// Determine if there is enough space in the slot
 		$available = sizeof($this->slotList)*($this->size-4);
 		$numSlotsStart = sizeof($this->slotList);
+		echo 'Need '.($emptySpot*4).', Have '.$available.'<p>';
 		if ($emptySpot*4 > $available) {
+			echo 'Add a slot<br>';
 			// Need to get a new Slot
 			if (flock($file, LOCK_EX)) {  // acquire an exclusive lock
-				while($emptySpot*4 > $avaialable) {
+				while($emptySpot*4 > $available) {
 					fseek($file, $this->size-4, SEEK_END);
 					fwrite($file, pack('i', 0));
 
@@ -99,17 +104,19 @@ class itemSlot extends dataSlot {
 
 			// Record new slot links
 			$this->slotList[] = 0; // Dead link at end of list
-			for ($i=numSlotsStart; $i<sizeof($this->slotList); $i++) {
-				fseek($this->slotList[$i-1]*$this->size);
+			for ($i=$numSlotsStart; $i<sizeof($this->slotList); $i++) {
+				fseek($file, $this->slotList[$i-1]*$this->size);
 				fwrite($file, pack('N', $this->slotList[$i]));
 			}
 		}
 
 		// Determine which slot to write in
-		$writeSlot = floor($emptySpot*4/($this->size-4));
+		$writeSlot = floor(($emptySpot*4-1)/($this->size-4));
 		$writePos = 4*$emptySpot - $writeSlot*($this->size-4);
 
-		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos+4);
+		echo 'Slot #'.$writeSlot.'Write Spot is '.$writePos.'<p>';
+
+		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos);
 		fwrite($file, pack('i', $value));
 		/*
 		$emptySpot = array_search(0, $this->$slotData);
@@ -132,7 +139,7 @@ class itemSlot extends dataSlot {
 	}
 
 	function deleteItem($position, $file) {
-		addItemAtSpot(0, $positions, $file);
+		$this->addItemAtSpot(0, $position, $file);
 		/*
 		$itemSpot = array_search($value, $this->$slotData);
 		if ($itemSpot) {
@@ -158,7 +165,7 @@ class itemSlot extends dataSlot {
 		$writeSlot = floor(($position-1)*4/($this->size-4));
 		$writePos = 4*$position - $writeSlot*($this->size-4);
 
-		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos+4);
+		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos);
 		fwrite($file, pack('i', $value));
 		/*
 		if ($location*4 > strlen($dataString)) {

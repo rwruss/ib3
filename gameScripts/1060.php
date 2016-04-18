@@ -20,12 +20,13 @@ echo '<br>Type '.gettype($unitTasks[0]).' ('.gettype($unitTasks[0]+100).')<br>';
 
 // Load task file to get list of tasks that can be done by this unit
 $jobDesc = explode('<->', file_get_contents($gamePath.'/jobs.desc'));
+$typeInfo = explode(',', $jobDesc[$postVals[1]*4+1]);
 
 // verify that unit can perform this task
 
 if (array_search($postVals[1], $unitTasks) !== false) {
 	echo 'Approved';
-	include('../gameScripts/1060-'.$jobDesc[$postVals[1]*4+1].'.php');
+	include('../gameScripts/1060-'.$typeInfo[0].'.php');
 } else {
 	echo 'This unit cannot perfrom this task';
 }

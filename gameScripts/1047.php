@@ -41,6 +41,7 @@ if ($approved) {
 	}
 
 	// Generate a list of common buildings that can be built at this location
+	//print_r($buildingInfo);
 	for ($i=1; $i<sizeof($buildingInfo)/7; $i++) {
 		$bldgClass = explode(',', $buildingInfo[$i*7+1]);
 		if ($bldgClass[2] == 1)		echo 'newBldgOpt("'.$i.'", 0, "bldg_tab'.($bldgClass[1]+1).'", "'.$buildingInfo[$i*7].'");';

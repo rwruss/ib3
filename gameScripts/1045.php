@@ -7,8 +7,8 @@ $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 fseek($unitFile, $postVals[1]*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
-$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'rb');
-$datSlotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
+$datSlotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 
 $xDir = [0,-1,0,1,-1,0,1,-1,0,1];
 $yDir = [0,1,1,1,0,0,0,-1,-1,-1];
@@ -62,6 +62,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   $moves = sizeof($moveList);
   $terIndex = 5101;
   $riverCheck = true;
+	$saveInSlot = true;
   $loadedSlots = [];
   $unitList = [];
   $diplomacyList = [];
@@ -239,6 +240,17 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 						} else {
 							// Collision is with a player controlled object
 							echo 'Collision with something you own <br>';
+
+							switch ($unitList[$collisionID][3]) {
+							// Determine action based on unit type
+								case 1: // A village
+									if ($moves - $i == 1) {
+										echo 'End in city '.$collisionID.'<br>';
+										$saveInSlot = false;
+									} else {
+										echo 'Collision with city '.$collisionID.'<br>';}
+									break; // end case 1
+								}
 						}
 					} else {
 						echo 'This one was already checked';
@@ -263,30 +275,51 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
     $mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
     //$oldDat = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $oldSlot, 404)));
     //$newDat = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $newSlot, 404)));
-	
-	$oldSlotItem = new itemSlot($oldSlot, $mapSlotFile, 404);
-	$newSlotItem = new itemSlot($newSlot, $mapSlotFile, 404);
-	
-	$oldSlotItem->deleteItem($postVals[1], $mapSlotFile);
-	$newSlotItem->addItem($postVals[1], $mapSlotFile);
 
+		$oldSlotItem = new itemSlot($oldSlot, $mapSlotFile, 404);
+
+
+		$oldSlotItem->deleteItem($postVals[1], $mapSlotFile);
+
+		if ($saveInSlot) {
+			$newSlotItem = new itemSlot($newSlot, $mapSlotFile, 404);
+			$newSlotItem->addItem($postVals[1], $mapSlotFile);
+
+			fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
+			fwrite($unitFile, pack('i', $newSlot));
+		}
     echo 'Old Slot:<br>';
     print_r($oldSlotItem->slotData);
 
     echo '<p>New Slot<br>';
     print_r($newSlotItem->slotData);
 
-    removeFromEndSlot($mapSlotFile, $oldSlot, 404, $postVals[1]); //removeFromEndSlot($slotFile, $startSlot, $slot_size, $targetVal)
-    addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404); //addtoSlotGen($gamePath.'/mapSlotFile.slt', $mapSlot, pack('i', $newID), $mapSlotFile, 404);
+
+    //removeFromEndSlot($mapSlotFile, $oldSlot, 404, $postVals[1]); //removeFromEndSlot($slotFile, $startSlot, $slot_size, $targetVal)
+    //addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404); //addtoSlotGen($gamePath.'/mapSlotFile.slt', $mapSlot, pack('i', $newID), $mapSlotFile, 404);
   }
-  else if ($unitDat[26] == 0) {
+  else {
+		$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
+		$newSlotItem = new itemSlot($newSlot, $mapSlotFile, 404);
+
+		if ($saveInSlot) {
+			$newSlotItem->addItem($postVals[1], $mapSlotFile);
+
+			fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
+			fwrite($unitFile, pack('i', $newSlot));
+		} else {
+			$deleteLoc = array_search($postVals[1], $newSlotItem->slotData);
+			if ($deleteLoc) $newSlotItem->deleteItem($deleteLoc, $mapSlotFile);
+		}
+	}
+
+	if ($unitDat[26] == 0) {
     // Record this unit in the slot file
-    $mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
-    
-	$newSlotItem = new itemSlot($newSlot, $mapSlotFile, 404);
-	$newSlotItem->addItem($postVals[1], $mapSlotFile);
+
 	//addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404);
   }
+
+
 
 
   // Record new location of unit

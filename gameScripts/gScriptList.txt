@@ -68,6 +68,7 @@
 	1060-x unit orders detail by order type
 1061 - Process job order given to a unit
 	1061-x process unit orders by order type
+1062 - Process task order given to unit (task already established at location)
 2001 - Add Resources to a city
 
 CL255 - City interface

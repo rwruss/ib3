@@ -11,13 +11,20 @@ echo "conPane
 			}
 		passClick(subVal);
 		}
-	</script>
 
+		window['checkKey'] = function() {
+			alert('key')
+		}
+	</script>
+	<form action ='#' method='get' onsubmit=readForm()>
 	<table>
+
 		<tr><td>User Name:</td><td><input id='su01'></td></tr>
 		<tr><td>Password:</td><td><input type='password' id='su02'></td></tr>
 		<tr><td onclick=readForm()>Submit!</td><td>yay</td></tr>
-		
-	</table>";
+		<div class='yourCustomDiv'/>
+    <input type='submit' style='display:none'/>
+
+	</table>	</form>";
 
 ?>

@@ -204,6 +204,6 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fclose($mapSlotFile);
 }
 
-//echo "<script>window.location.replace('./play.php?gameID=".$gameID."')</script>";
+echo "<script>window.location.replace('./play.php?gameID=".$gameID."')</script>";
 
 ?>

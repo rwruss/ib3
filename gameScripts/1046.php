@@ -4,10 +4,14 @@
 $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 fseek($unitFile, $postVals[1]*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
-
+$unitID = $postVals[1];
 // Process if unit has action points to spend
 $divisor = max(1,$unitDat[17]);
 $actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/$divisor));
+
+$actionPct = [0, 10, 25, 50, 100];
+$maxPoints = $actionPct[$postVals[3]]*10;
+$usePoints = min($maxPoints, $actionPoints);
 
 if ($actionPoints > 20) {
 

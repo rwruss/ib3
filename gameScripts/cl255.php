@@ -7,7 +7,7 @@ $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 //$unitInf = unpack('i*', $unitDat);
 //print_r(unpack('i*', $unitDat));
-echo 'Unit '.$unitID.'  - type '.$unitDat[4];
+//echo 'Unit '.$unitID.'  - type '.$unitDat[4];
 
 
 $_SESSION['selectedItem'] = $unitID;

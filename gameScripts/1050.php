@@ -7,13 +7,13 @@ include("./taskFunctions.php");
 $cityID = $_SESSION['selectedItem'];
 echo 'Construct a building in '.$cityID.' - Building Type is '.$postVals[1].'<br>';
 // Verify that the person giving the order has the proper credintials
-$unitFile = fopen($gamePath.'/unitDat.dat' ,'r+b');
+$unitFile = fopen($gamePath.'/unitDat.dat' ,'rb');
 fseek($unitFile, $cityID*$defaultBlockSize);
 $cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 //print_r($cityDat);
 
-$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
 $approved = array_search($pGameID, $credList);
 echo 'Approved level '.$approved.'<br>
@@ -26,11 +26,12 @@ if ($approved) {
 
 	// Load building Names and Costs
 	$buildingInfo = explode('<-->', file_get_contents($gamePath.'/buildings.desc'));
-	$buildingCat = // Need to determine if this is a city building or a player building
+	$buildingCat = explode(',', $buildingInfo[$postVals[1]*7+1]);// Need to determine if this is a city building or a player building
 	//print_r($buildingInfo);
 	//$rscNames = explode('<-->', file_get_contents($gamePath.'/resources.desc'));
-
-	if ($buildingCat == community building) {
+print_r($buildingInfo);
+echo 'Building cat '.$buildingCat[1].'<br>';
+	if ($buildingCat[1] == 1) {
 		// This is a community owned building
 
 		$cityRsc = array_fill(0, 100, 0);
@@ -71,7 +72,7 @@ if ($approved) {
 		foreach ($bldgList as $bldgID) {
 			fseek($unitFile, $bldgID*$defaultBlockSize);
 			$bldgDat = unpack('i*', fread($unitFile, 100));
-			if ($$bldgDat[5] == $pGameID) {
+			if ($bldgDat[5] == $pGameID) {
 				if ($bldgDat[7] == 1 ) {
 					// Building is complete - add to list
 					$buildingsPresent[$bldgDat[10]]++;
@@ -81,7 +82,7 @@ if ($approved) {
 		}
 
 		// Load resources available for the player
-		$rscDat = unpack("i*", readSlotData($slotFile, $$playerRscSlot, 40));
+		$rscDat = unpack("i*", readSlotData($slotFile, $playerRscSlot, 40));
 		for ($i=0; $i<sizeof($rscDat); $i+=2) {
 			$cityRsc[$rscDat[$i]] += $rscDat[$i+1];
 		}
@@ -89,16 +90,20 @@ if ($approved) {
 
 
 	// Compare the list of buildings in the $bldgNames list to what is here and can be constructed.
-	echo 'Buildings Required<br>';
+
 	$prereqs = explode(',', $buildingInfo[$postVals[1]*7+3]);
 	$preCheck = true;
 	$buildingsNeeded = [];
-	for ($i=0; $i<sizeof($prereqs); $i+=2) {
-		//echo 'Prereq: '.$prereqs[$i].' needs '.$prereqs[$i+1].'<br>';
-		echo $prereqs[$i+1].' X '.$prereqs[$i].' ('.$buildingsPresent[$prereqs[$i]].')<br>';
-		if ($buildingsPresent[$prereqs[$i]] < $prereqs[$i+1]) {
-			$preCheck = false;
-			$buildingsNeeded[$prereqs[$i]] = $prereqs[$i+1]-$buildingsPresent[$prereqs[$i]];
+	echo 'Buildings Required ('.sizeof($prereqs).')<br>';
+	print_r($prereqs);
+	if (sizeof($prereqs) > 1) {
+		for ($i=0; $i<sizeof($prereqs); $i+=2) {
+			//echo 'Prereq: '.$prereqs[$i].' needs '.$prereqs[$i+1].'<br>';
+			echo $prereqs[$i+1].' X '.$prereqs[$i].' ('.$buildingsPresent[$prereqs[$i]].')<br>';
+			if ($buildingsPresent[$prereqs[$i]] < $prereqs[$i+1]) {
+				$preCheck = false;
+				$buildingsNeeded[$prereqs[$i]] = $prereqs[$i+1]-$buildingsPresent[$prereqs[$i]];
+			}
 		}
 	}
 
@@ -123,10 +128,10 @@ if ($approved) {
 
 		// Create a new building data space for this objects
 		if ($postVals[2] > 0) { // This is an upgrade to an existing building
-			$buildingPoints = explode(',', $buildingInfo[$postVals[1]*7+2]);
+			$buildingPoints = explode(',', $buildingInfo[$postVals[1]*8+2]);
 			// Create a new task to be processed.
-			$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
-			$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
+			$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
+			$taskIndex = fopen($gamePath.'/tasks.tix', 'rb');
 			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),$buildingPoints[0],0,5,$cityID,0, $cityID, $postVals[2], $postVals[1]);
 			$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 			fclose($taskFile);
@@ -188,8 +193,8 @@ if ($approved) {
 
 			// add a task to the town as an "in progress" task
 			// Create a new task to be processed.
-			$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
-			$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
+			$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
+			$taskIndex = fopen($gamePath.'/tasks.tix', 'rb');
 			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),1000,0,2,$cityID,0, $cityID, $newID, $postVals[1]);
 			$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 			fclose($taskFile);
