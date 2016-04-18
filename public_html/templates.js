@@ -112,12 +112,12 @@ messageBox = function (msg, trg) {
 	var boxHolder = addDiv("confirmBox", "cBox", document.getElementsByTagName('body')[0]);
 	var boxMsg = addDiv("confirmBox", "cBoxM", boxHolder)
 	var dButton = addDiv("optionDecline", "cBoxD", boxHolder);
-	var acceptButton = addDiv("optionAccept", "cBoxA", boxHolder);
+	//var acceptButton = addDiv("optionAccept", "cBoxA", boxHolder);
 
 	boxMsg.innerHTML = msg;
-	acceptButton.innerHTML = "Accept";
-	acceptButton.addEventListener("click", function() {scrMod(prm)});
-	dButton.innerHTML = "Decline";
+	//acceptButton.innerHTML = "Accept";
+	//acceptButton.addEventListener("click", function() {scrMod(prm)});
+	dButton.innerHTML = "OK";
 	dButton.addEventListener("click", function() {
 		this.parentNode.parentNode.removeChild(this.parentNode)});
 }
@@ -133,6 +133,13 @@ reqBox = function (src, trg, have, need) {
 		addImg(src, "reqImg", rscBox);
 		var textDiv = addDiv("a", "reqText", rscBox);
 		textDiv.innerHTML = src + ': ' + have + '/' + need;
+}
+
+resourceBox = function (id, qty, target) {
+	rBox = addDiv(id, "rscQty", document.getElementById(target));	
+	rBox.innerHTML = id + ' = ' + qty;
+	
+	return rBox;
 }
 
 tabSelect = function(target, selection) {

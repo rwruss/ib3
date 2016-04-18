@@ -116,6 +116,7 @@
                 <File name="E:\websites\ib3\test\slots\eventSlotTest.php" />
             </Folder>
         </Folder>
+        <Folder name="scenarios" />
     </Project>
     <Project name="portfolio" />
 </NotepadPlus>

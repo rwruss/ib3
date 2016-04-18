@@ -1,5 +1,6 @@
 <?php
 include("./slotFunctions.php");
+
 date_default_timezone_set('America/Chicago');
 // Load unit data
 $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');

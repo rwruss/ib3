@@ -31,6 +31,48 @@ if ($approved) {
 	//$rscNames = explode('<-->', file_get_contents($gamePath.'/resources.desc'));
 print_r($buildingInfo);
 echo 'Building cat '.$buildingCat[1].'<br>';
+	
+$cityRsc = array_fill(0, 100, 0);
+
+
+
+// Load resources available in the city
+$rscDat = unpack("i*", readSlotData($slotFile, $cityDat[11], 40));
+for ($i=1; $i<sizeof($rscDat); $i+=2) {
+	$cityRsc[$rscDat[$i]] += $rscDat[$i+1];
+}
+
+// Load constructed buildings present to check for prereqs
+
+if ($buildingCat[1] == 1) {
+	$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
+	foreach ($bldgList as $bldgID) {
+		fseek($unitFile, $bldgID*$defaultBlockSize);
+		$bldgDat = unpack('i*', fread($unitFile, 100));
+
+		if ($bldgDat[7] == 1) {
+			$buildingsPresent[$bldgDat[10]]++;
+		}
+	}
+} else {
+	$bldgList = [];
+	// check if a parent city exists
+	if ($cityDat[29] > 0) {
+		fseek($unitFile, $cityDat[29]*$defaultBlockSize);
+		$parentDat = unpack('i*', fread($unitFile, 400));
+		
+		$bldgList = array_filter(unpack('i*', readSlotData($slotFile, $parentDat[17], 40));
+	}
+	foreach ($bldgList as $bldgID) {
+		fseek($unitFile, $bldgID*$defaultBlockSize);
+		$bldgDat = unpack('i*', fread($unitFile, 100));
+
+		if ($bldgDat[7] == 1) {
+			$buildingsPresent[$bldgDat[10]]++;
+		}
+	}
+}
+	/*
 	if ($buildingCat[1] == 1) {
 		// This is a community owned building
 
@@ -87,7 +129,7 @@ echo 'Building cat '.$buildingCat[1].'<br>';
 			$cityRsc[$rscDat[$i]] += $rscDat[$i+1];
 		}
 	}
-
+*/
 
 	// Compare the list of buildings in the $bldgNames list to what is here and can be constructed.
 

@@ -69,6 +69,13 @@
 1061 - Process job order given to a unit
 	1061-x process unit orders by order type
 1062 - Process task order given to unit (task already established at location)
+1063 - View resources at city
+1064 - Resource transfter options
+1065 - Process city to parent city resource transfer
+1066 - Leave a city
+1067 - Establish a permanant city
+
+// Manual Override Functions
 2001 - Add Resources to a city
 
 CL255 - City interface

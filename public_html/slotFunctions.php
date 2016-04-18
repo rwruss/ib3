@@ -286,6 +286,32 @@ class blockSlot extends dataSlot {
 	}
 }
 
+function newSlot($slotFile) {
+	echo "make a new slot<br>";
+	// Check for abandoned slots first
+	fseek($slotFile, 0);
+	$slot_list_dat = fread($slotFile, 40);
+	echo 'Size of read dat:'.strlen($slot_list_dat);
+	$check_slot = unpack("N", substr($slot_list_dat, 0, 4));
+	if ($check_slot[1] == 0) // Need to create a new slot
+		{
+		if (flock($slotFile, LOCK_EX)) {
+			echo "create new slot<br>";
+			clearstatcache();
+			fseek($slotFile, 0, SEEK_END);
+			$use_slot = max(1, (ftell($slotFile))/40);
+			fseek($slotFile, $use_slot*40 +39);
+			fwrite($slotFile, pack("C", 0));
+			flock($slotFile, LOCK_UN); // release the lock
+		} else {echo 'flocks issue';}
+	}
+	else // need to remove this slot from the list
+		{
+		echo 'something else ('.$check_slot[1].')';
+		}
+	return $use_slot;
+}
+
 function startASlot($slot_file, $slot_handle)
 	{
 	echo "no slot established<br>";
