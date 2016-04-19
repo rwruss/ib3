@@ -180,13 +180,14 @@ class blockSlot extends dataSlot {
 				$available = sizeof($this->slotList)*($this->size-4);
 			}
 
-			$startBlock = intval(($location*4-1)/($this->size-4));
-			$endBlock = intval(($location*4+strlen($data)-1)/($this->size-4));
+			$startBlock = intval(($location-1)*4/($this->size-4));
+			$endBlock = intval(($location+strlen($data)/4-1)/($this->size-4));
 
 			if ($startBlock != $endBlock) {
 				echo 'Split block -- '.$startBlock.' vs '.$endBlock.'<p>';
 				// Need to split the string up
-				$startOffset = ($location*4)%($this->size-4);
+				$startOffset = ($location-$startBlock*($this->size-4))*4;
+				//$startOffset = ($location*4) - ($this->size-4)*$startBlock;
 				$part1 = ($this->size) - $startOffset;
 				$part2 = strlen($data)-$part1;
 
@@ -219,7 +220,6 @@ class blockSlot extends dataSlot {
 	}
 
 	function deleteItem() {
-
 	}
 }
 

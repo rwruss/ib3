@@ -7,4 +7,26 @@
  - Any non-transferrable builindgs are left behind at the old city (or a ruin locaiton) to decay
 */
 
+include("./slotFunctions.php");
+
+// Load current city data
+$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
+fseek($unitFile, $_SESSION['selectedItem']*$defaultblocksize);
+$subCityDat = unpack('i*', fread($unitFile, 400));
+
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+$credList = array_filter(unpack("i*", readSlotData($slotFile, $subCityDat[19], 40)));
+$approved = array_search($pGameID, $credList);
+echo 'Approved level '.$approved.'<br>';
+
+if ($approved) {
+
+	if ($subCityDat[29] > 0) {
+		fseek($unitFile, $subCityDat[29]*$defaultblocksize);
+		$parCityDat = unpack('i*', fread($unitFile, 400));
+	}
+}
+
+fclose($slotFile);
+fclose($unitFile);
 ?>
