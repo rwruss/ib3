@@ -18,14 +18,14 @@ $approved = array_search($pGameID, $credList);
 echo 'Approved level '.$approved.'<br>';
 
 if ($approved) {
-	$rscList = new blockSlot($cityDat[11], $slotFile, 40);
+	$rscList = new itemSlot($cityDat[11], $slotFile, 40);
 	for ($i=1; $i<sizeof($rscList->slotData); $i+=2) {
 		if ($rscList->slotData[$i] == $postVals[1]) {
 			echo 'Resource '.$rscList->slotData[$i].' Qty is '.$rscList->slotData[$i+1].'<br>'
-			
+
 			if ($cityData[29] > 0) {
 				echo 'Options for adding to city store<br>
-				
+
 				<script>
 				addDiv("jobOptions", "cButtons", document.getElementById("rscDtlContent"));
 
@@ -41,7 +41,7 @@ if ($approved) {
 				var opt4 = optionButton("", "jobOptions", "100%");
 				opt4.addEventListener("click", function() {scrMod("1065,'.$postVals[1].',4")});
 				</script>
-				
+
 				';
 			}
 		}

@@ -21,13 +21,14 @@ class dataSlot {
 		$this->itemsPerSlot = ($size-4)/4;
 		while ($nextSlot > 0) {
 			$seekto = $nextSlot*$size;
-			//echo 'Add slot '.$nextSlot.' and seek to '.$seekto.'<br>';
+
 			$this->slotList[] = $nextSlot;
 			fseek($slotFile, $nextSlot*$size);
 			$tmpDat = fread($slotFile, $size);
 			$this->dataString .= substr($tmpDat, 4);
 			$tmpA = unpack("N", $tmpDat);
 			$nextSlot = $tmpA[1];
+			echo 'seek to '.$seekto.' for next slot '.$nextSlot.'<br>';
 		}
 	}
 
@@ -118,44 +119,10 @@ class itemSlot extends dataSlot {
 
 		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos);
 		fwrite($file, pack('i', $value));
-		/*
-		$emptySpot = array_search(0, $this->$slotData);
-		if ($emptySpot) {
-			// determine which slot this spot is in
-			$useSlot = floor(($emptySpot-1)/$this->itemsPerSlot);
-			$slotSpot = $emptySpot-$useSlot*$this->itemsPerSlot-1;
-			$writePos = ($useSlot*$this->itemsPerSlot+$slotSpot)*4;
-		} else {
-			$useSlot = startASlot($file, $handle);
-			$slotList[] = $useSlot;
-			$writePos = ($useSlot*$this->itemsPerSlot)*4;
-		}
-
-		if ($writePos > strlen($dataString)) {
-			$dataString .= pack('i', $value);
-		} else {
-			substr_replace($dataString, pack('i', $value), $writePos, 4);
-		}*/
 	}
 
 	function deleteItem($position, $file) {
 		$this->addItemAtSpot(0, $position, $file);
-		/*
-		$itemSpot = array_search($value, $this->$slotData);
-		if ($itemSpot) {
-			// determine which slot this spot is in
-			$useSlot = floor(($itemSpot-1)/$this->itemsPerSlot);
-			$slotSpot = $itemSpot-$useSlot*$this->itemsPerSlot-1;
-			$writePos = ($useSlot*$this->itemsPerSlot+$slotSpot)*4;
-		} else {
-		}
-
-		if ($writePos == strlen($dataString)-4) {
-			$dataString = substr($dataString, 0, -4);
-		} else {
-			substr_replace($dataString, '', $writePos, 4);
-		}
-		*/
 	}
 
 	function addItemAtSpot($value, $position, $file) {
@@ -167,13 +134,7 @@ class itemSlot extends dataSlot {
 
 		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos);
 		fwrite($file, pack('i', $value));
-		/*
-		if ($location*4 > strlen($dataString)) {
-			$dataString .= pack('i', $value);
-		} else {
-			$dataString = substr($dataString, 0, $location*4).pack('i', $value).substr($dataString, $location*4);
-		}
-		*/
+
 	}
 
 	function deleteByValue() {
@@ -182,6 +143,87 @@ class itemSlot extends dataSlot {
 }
 
 class blockSlot extends dataSlot {
+	public $version;
+	function __construct($start, $slotFile, $size) {
+		parent::__construct($start, $slotFile, $size);
+		$this->slotData = unpack('i*', $this->dataString);
+		//echo 'Read '.strlen($this->dataString).' bytes<br>';
+		//print_r($this->slotData);
+	}
+
+	function addItem($file, $data, $location) {
+		echo 'Slotlist:<br>';
+		print_r($this->slotList);
+		echo 'data block length '.strlen($data).'<br>';
+		if (flock($file, LOCK_EX)) {  // acquire an exclusive lock
+			// Read the last item that was saved in this slot and version
+			fseek($file, $this->slotList[0]*$this->size+4);
+
+			if (!$location) $location = sizeof($this->slotData);
+			// Check if enough space is available for new items
+			$available = sizeof($this->slotList)*($this->size-4);
+			echo 'Available space: '.$available.', Need: '.($location*4+strlen($data)-4).'<br>';
+			while ($available < $location*4+strlen($data)) {
+				// Will need to get new slot
+				$oldEnd = end($this->slotList);
+
+				fseek($file, $this->size-4, SEEK_END);
+				fwrite($file, pack('i', 0));
+				$newLoc = ftell($file)/$this->size - 1;
+				$this->slotList[] = $newLoc;
+
+				echo 'Add new slot: '.$newLoc.' Record at old location '.$oldEnd.' = ('.$oldEnd*$this->size.')<br>';
+
+				fseek($file, $oldEnd*$this->size);
+				fwrite($file, pack('N', $newLoc));
+
+				$available = sizeof($this->slotList)*($this->size-4);
+			}
+
+			$startBlock = intval(($location*4-1)/($this->size-4));
+			$endBlock = intval(($location*4+strlen($data)-1)/($this->size-4));
+
+			if ($startBlock != $endBlock) {
+				echo 'Split block -- '.$startBlock.' vs '.$endBlock.'<p>';
+				// Need to split the string up
+				$startOffset = ($location*4)%($this->size-4);
+				$part1 = ($this->size) - $startOffset;
+				$part2 = strlen($data)-$part1;
+
+				echo 'Start offset = '.$startOffset.', Part 1  = '.$part1.', Part 2 = '.$part2.'<br>';
+
+				$block1 = substr($data, 0, $part1);
+				$block2 = substr($data, $part1);
+				$seek1 = $this->slotList[$startBlock]*$this->size + $startOffset;
+				$seek2 = $this->slotList[$endBlock]*$this->size+4;
+				echo 'Write block 1 ('.strlen($block1).') at location '.$seek1.', and block 2 ('.strlen($block2).') at location '.$seek2.'<br>';
+
+				fseek($file,$this->slotList[$startBlock]*$this->size + $startOffset);
+				fwrite($file, $block1);
+
+				fseek($file, $this->slotList[$endBlock]*$this->size+4);
+				fwrite($file, $block2);
+			} else {
+				$startOffset = ($location*4)%($this->size-4);
+				$seekto = $this->slotList[$startBlock]*$this->size + $startOffset;
+				echo 'Write Data ('.strlen($data).') at slot ('.$this->slotList[$startBlock].') at pos ('.$seekto.'):';
+				print_r(unpack('i*', $data));
+
+				fseek($file, $this->slotList[$startBlock]*$this->size + $startOffset);
+				fwrite($file, $data);
+			}
+
+			fflush($file);
+			flock($file, LOCK_UN);    // release the lock
+		}
+	}
+
+	function deleteItem() {
+
+	}
+}
+
+class mapEventSlot extends dataSlot {
 	public $numEffects, $version;
 	function __construct($start, $slotFile, $size) {
 		parent::__construct($start, $slotFile, $size);

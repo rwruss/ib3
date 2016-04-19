@@ -17,16 +17,22 @@ $credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40))
 $approved = array_search($pGameID, $credList);
 echo 'Approved level '.$approved.'<br>';
 
+
+
 if ($approved) {
+	$rscList = new itemSlot($cityDat[11], $slotFile, 40);
+	print_r($rscList->slotData);
 	echo '<script>';
-	$rscList = new blockSlot($cityDat[11], $slotFile, 40);
+
 	for ($i=1; $i<sizeof($rscList->slotData); $i+=2) {
-		echo 'thisRsc = resourceBox("'.$rscList->slotData[$i].'", "'.$rscList->slotData[$i+1].'", "rscSummaryContent");
-		thisRsc.addEventListener("click", makeBox("rscDtl", "1064,'.$rscList->slotData[$i].'", 500, 500, 200, 50))';
-		
+		if ($rscList->slotData[$i+1]>0) {
+			echo 'thisRsc = resourceBox("rsc_'.$rscList->slotData[$i].'", "'.$rscList->slotData[$i+1].'", "rscSummaryContent");
+			thisRsc.addEventListener("click", function () {makeBox("rscDtl", "1064,'.$rscList->slotData[$i].'", 500, 500, 200, 50)});
+			';
+		}
 	}
 	echo '</script>';
 }
-fclose($slitFile);
+fclose($slotFile);
 
 ?>
