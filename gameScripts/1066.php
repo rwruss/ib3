@@ -24,29 +24,7 @@ if ($approved) {
 	if ($subCityDat[29] > 0) {
 		fseek($unitFile, $subCityDat[29]*$defaultblocksize);
 		$parCityDat = unpack('i*', fread($unitFile, 400));
-		
-		// Remove from the list of child citys for the parent city
-		$childCityList = new itemSlot($parCityDat[30], $slotFile);
-		$target = array_search($_SESSION['selectedItem'], $childCityList->slotData);
-		if ($target) $childCityList->deleteItem($target, $slotFile);
 	}
-	
-	// Change the child city to a resource cart/moving group object
-	
-	/// Save location of the unit to match that of the city and adjust unit types
-	fseek($unitFile, $_SESSION['selectedItem']*$defaultblocksize);
-	fwrite($unitFile, pack('i*', $parCityDat[1], $parCityDat[2], 10, 10));
-	
-	/// Update last change time
-	fseek($unitFile, $_SESSION['selectedItem']*$defaultblocksize+104);
-	fwrite($unitFile, pack('i', time()));
-	
-	/// Add to list of military units for this player
-	fseek($unitFile, $pGameID*$defaultblocksize);
-	$playerDat = unpack('i*', fread($unitFile, 400));
-	
-	$unitList = new itemSlot($playerDat[22], $slotFile, 40); // start, file, size
-	$unitList->addItem($_SESSION['selectedItem'], $slotFile);
 }
 
 fclose($slotFile);
