@@ -19,7 +19,7 @@ echo 'Approved level '.$approved.'<br>
 Show buildings in slot '.$cityDat[17].'<br>';
 
 if ($approved) {
-	$buildingInfo = explode('<-->', file_get_contents($gamePath.'/buildings.desc'));
+	$buildingInfo = explode('<-->', file_get_contents($scnPath.'/buildings.desc'));
 	echo '
 	<div class="taskHeader" id="bldg_header"></div>
 	<div class="centeredmenu" id="bldg_tabs"><ul id="bldg_tabs_ul"></ul></div>

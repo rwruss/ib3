@@ -15,6 +15,13 @@ session_start();
 $gameID = $_GET['gid'];
 if ($gameID != $_SESSION['instance']) {echo "<script>alert('Game mismatch')</script>";exit;}
 if (!isset($_SESSION['gameIDs'][$gameID])) echo "<script>window.location.replace('./index.php')</script>";
+
+if (!isset($_SESSION['game_'.$gameID]) {
+	$paramFile = fopen('../games/'.$gameID.'/params.ini', 'rb');
+	$params = unpack('i*', fread($paramFile, 40));
+	$_SESSION['game_'.$gameID]['scenario'] = $params[8];
+	fclose($paramFile);
+}
 $pGameID = $_SESSION['gameIDs'][$gameID];
 $postVals = explode(",", $_POST['val1']);
 
@@ -24,6 +31,7 @@ foreach ($postVals as $value) {
 }
 if ($inputValidate) {
 	$gamePath = "../games/".$gameID;
+	$scnPath = "../scenarios/".$_SESSION['game_'.$gameID]['scenario'];
 	include("../gameScripts/".$postVals[0].".php");
 } else {
 	echo 'Validation error';

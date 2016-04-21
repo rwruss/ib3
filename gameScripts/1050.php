@@ -25,10 +25,10 @@ if ($approved) {
 	echo 'Options for construction of building type '.$postVals[1].' at location '.$_SESSION['selectedItem'];
 
 	// Load building Names and Costs
-	$buildingInfo = explode('<-->', file_get_contents($gamePath.'/buildings.desc'));
+	$buildingInfo = explode('<-->', file_get_contents($scnPath.'/buildings.desc'));
 	$buildingCat = explode(',', $buildingInfo[$postVals[1]*7+1]);// Need to determine if this is a city building or a player building
 	//print_r($buildingInfo);
-	//$rscNames = explode('<-->', file_get_contents($gamePath.'/resources.desc'));
+	//$rscNames = explode('<-->', file_get_contents($scnPath.'/resources.desc'));
 print_r($buildingInfo);
 echo 'Building cat '.$buildingCat[1].'<br>';
 	

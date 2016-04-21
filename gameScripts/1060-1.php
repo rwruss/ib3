@@ -1,7 +1,7 @@
 <?php
 
 // Get job descriptions
-//$taskDesc = explode('<->', file_get_contents($gamePath.'/tasks.desc'));
+//$taskDesc = explode('<->', file_get_contents($scnPath.'/tasks.desc'));
 
 echo 'Gather a resource from the map.  Do you wish to '.$jobDesc[$postVals[1]*4+2].'?  Select the amount of effort you want to put into
 gathering this resource.  The more you gather, the more the surrounding area will be depleted.

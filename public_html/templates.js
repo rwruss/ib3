@@ -34,7 +34,7 @@ confirmBox = function (msg, prm, type, trg, aSrc, dSrc) {
 		acceptButton.addEventListener("click", function() {scrMod(prm)});
 	}
 
-if (type == 1 || 2) {
+	if (type == 1 || 2) {
 		if (dSrc.length > 0) {
 			dButton.innerHTML = dSrc;
 		} else {

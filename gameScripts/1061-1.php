@@ -32,7 +32,7 @@ $terrainArray = unpack('C*', $terrainDat);
 
 // Load the terrain description to get the max production values
 echo 'Load resource production for resource ID #'.$postVals[1];
-$rscDesc = explode('<-->', file_get_contents($gamePath.'/resources.desc'));
+$rscDesc = explode('<-->', file_get_contents($scnPath.'/resources.desc'));
 $rscProd = explode(',', $rscDesc[$postVals[1]]);
 
 // This puts the base amount of resource that this type of terrain produces into the jobArray for each tile
@@ -122,7 +122,7 @@ if ($unitDat[15] > 0 ) {
 			$cmdTraits = new itemSlot($cmdDat[15], $unitSlotFile, 40);
 
 			// Load the traits desc file to get the affects
-			$traitItems = explode('<->', file_get_contents($gamePath.'/traits.desc'));
+			$traitItems = explode('<->', file_get_contents($scnPath.'/traits.desc'));
 			for ($i=0; $i<sizeof($cmdTraits->slotData); $i++) {
 				$traitMods = explode('<-->', $traitItems[$cmdTraits->slotData[$i]]);
 
@@ -135,7 +135,7 @@ if ($unitDat[15] > 0 ) {
 }
 
 // Load unit descriptions
-$unitDesc = explode('<-->', file_get_contents($gamePath.'/units.desc'));
+$unitDesc = explode('<-->', file_get_contents($scnPath.'/units.desc'));
 $unitBoosts = explode(',', $unitDesc[$unitDat[10]]);
 
 // Read the unit boots/nerfs

@@ -18,11 +18,11 @@ echo 'Updated at '.date('d,m,y', $unitDat[27]).' = '.$unitDat[27];
 
 
 // Load unit desc to determine what tasks this unit can do
-$unitDesc = explode('<-->', file_get_contents($gamePath.'/units.desc'));
+$unitDesc = explode('<-->', file_get_contents($scnPath.'/units.desc'));
 $unitTasks = explode(',', $unitDesc[$unitDat[10]*9+8]);
 
 // Load task file to get list of tasks that can be done by this unit
-$jobDesc = explode('<->', file_get_contents($gamePath.'/jobs.desc'));
+$jobDesc = explode('<->', file_get_contents($scnPath.'/jobs.desc'));
 
 // Check to see if the unit is in a city
 $mapSlot = floor($unitDat[2]/120)*120+floor($unitDat[1]/120);

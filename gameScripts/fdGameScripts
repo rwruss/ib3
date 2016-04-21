@@ -113,6 +113,7 @@
             <File name="E:\websites\IB3\public_html\taskFunctions.php" />
             <File name="E:\websites\IB3\public_html\templates.js" />
             <File name="E:\websites\IB3\public_html\ib3styles.css" />
+            <File name="E:\websites\ib3\public_html\cityClass.php" />
             <Folder name="rivers">
                 <File name="E:\websites\IB3\public_html\rivers\loadRivers_v2.php" />
             </Folder>
@@ -123,7 +124,14 @@
                 <File name="E:\websites\ib3\test\slots\eventSlotTest.php" />
             </Folder>
         </Folder>
-        <Folder name="scenarios" />
+        <Folder name="scenarios">
+            <File name="E:\websites\ib3\scenarios\1\buildings.desc" />
+            <File name="E:\websites\ib3\scenarios\1\equip.desc" />
+            <File name="E:\websites\ib3\scenarios\1\jobs.desc" />
+            <File name="E:\websites\ib3\scenarios\1\resources.desc" />
+            <File name="E:\websites\ib3\scenarios\1\tasks.desc" />
+            <File name="E:\websites\ib3\scenarios\1\units.desc" />
+        </Folder>
     </Project>
     <Project name="portfolio" />
 </NotepadPlus>
