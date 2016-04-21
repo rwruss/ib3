@@ -3,6 +3,11 @@
 include('c:/websites/ib3/public_html/slotFunctions.php');
 
 $testFile = fopen('testslot.slt', 'r+b');
+fseek($testFile, 200);
+echo 'Test:<br>';
+print_r(unpack('N*', fread($testFile, 40)));
+echo '<p>';
+
 fseek($testFile, 404*10-4);
 fwrite($testFile, pack('i', 0));
 
@@ -23,7 +28,7 @@ for ($i=1; $i<sizeof($testSlot->slotData); $i+=2) {
   }
 }
 
-echo 'Add target os '.$addTarget.'<br>';
+echo 'Add target is '.$addTarget.'<p>';
 $testSlot->addItem($testFile, $sendData, $addTarget);
 print_r($testSlot->slotData);
 
