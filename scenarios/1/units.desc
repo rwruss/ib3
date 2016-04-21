@@ -1,0 +1,4 @@
+Name<-->ID,category,tier<-->Build Points<-->Building PreReqs Qty<-->Rsc ID/Amt/Rsc ID/Amt<-->Unit Descrption<-->Limit<-->Stats<-->Jobs<-->
+Peasant Militia<-->1,1,1<-->500<-->1<-->1/1000/2/2000/3/3000<-->Description of peasant militia<-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->1,2,3,4,5,6,7,8,9,10<-->
+Spear Warband<-->1,1,1<-->500<-->1<-->1/1000/2/2000/3/3000<-->Description of Spear Warband<-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->1,2<-->
+Sword Warband<-->1,1,1<-->500<-->1<-->1/1000/2/2000/3/3000<-->Description of Sword Warband<-->1<-->1,1,1,1,1,1,1,1,1,1,1

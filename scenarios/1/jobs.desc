@@ -1,0 +1,11 @@
+Job ID<->Job Type,subType<->Name<->Description
+<->1<->1<->Forage for Food<->Scour the area for some food.
+<->2<->3,2<->Construction<->Build Stuff
+<->3<->3<->Forage for Stone<->Scour the area for some food.
+<->4<->4<->Forage for Something Else<->Scour the area for some food.
+<->5<->5<->Forage for Stuff<->Scour the area for some food.
+<->6<->2<->Farm for Food<->Gather from a farm.
+<->7<->2<->Gather from timber camp<->Gather from a farm.
+<->8<->2<->Work at Stone Mine<->Gather from a farm.
+<->9<->2<->Work at Iron Mine<->Gather from a farm.
+<->10<->2<->Work at Silver Mine<->Gather from a farm.

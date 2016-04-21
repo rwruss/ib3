@@ -1,0 +1,9 @@
+Name<-->ID,category,tier,(upgrade, upgrade)<-->Build Points,tasks,tasks,...<-->Prereq,Prereq Qty<-->Rsc ID/Amt/Rsc ID/Amt<-->Building Descrption<-->Limit
+<-->Chief's Hall<-->1,1,1,7<-->500,5.1,5.2,5.3<--><-->1/1000/2/2000/3/3000<-->Description of this building<-->1
+<-->Housing<-->2,2,1<-->10000,2<-->1,1<-->1/1000/2/2000/3/3000<-->Description of this building<-->1
+<-->Building #3<-->3,1,1<-->10000,2<-->2,1<-->1/1000/2/2000/3/3000<-->Description of this building<-->1
+<-->Building #4<-->4,1,1<-->10000,2<-->1,1,2,1<-->1/1000/2/2000/3/3000<-->Description of this building<-->1
+<-->Building #5<-->5,1,1<-->10000,2<-->1,1,2,1,3,1,4,1<-->1/1000/2/2000/3/3000<-->Description of this building<-->1
+<-->Building #6<-->6,1,1<-->10000<-->1,5,2,4,3,2,4,1<-->1/1000/2/2000/3/3000<-->Description of this building<-->1
+<-->Building #7<-->7,1,1<-->10000<-->1,5,2,4,3,2,4,1<-->1/1000/2/2000/3/3000<-->Description of this building<-->1
+<-->Player resource store<-->8,2,2<-->10000<--><-->1/1000/2/2000/3/3000<-->Description of this building<-->1
