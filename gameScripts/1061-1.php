@@ -43,7 +43,7 @@ for ($i=0; $i=sizeof($terrainArray); $i++) {
 // Load the map effects informatuion for the affected area
 echo 'Load map effects<br>';
 $mapSlot = floor($unitDat[2]/120)*120+floor($unitDat[1]/120);
-$mapEffects = new mapEventSlot($mapSlot, $meSlotFile, 404); //$start, $slotFile, $size
+$mapEffects = new blockSlot($mapSlot, $meSlotFile, 404); //$start, $slotFile, $size
 
 $now = time();
 
@@ -147,7 +147,7 @@ if ($foundKey) $unitMod = $unitBoosts[$foundKey+1];
 $expBoost = 1.0;
 if ($unitDat[14] > 0) {
 $unitSlotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-$unitExp = new mapEventSlot($unitDat[14], $unitSlotFile, 40);
+$unitExp = new blockSlot($unitDat[14], $unitSlotFile, 40);
 
 	// Adjust the production rate based on experience
 	for ($i=2; $i<sizeof($unitExp->slotData); $i+=2) {
@@ -176,7 +176,7 @@ $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addT
 
 // Save resources collected to unit slot
 $carried = 0;
-$unitRSC = new mapEventSlot($unitDat[30], $unitSlotFile, 40);
+$unitRSC = new blockSlot($unitDat[30], $unitSlotFile, 40);
 $rscStart = [0,0];
 for ($i=3; $i<=sizeof($unitRSC->slotData); $i+=2) {
 	if ($unitRSC->slotData[$i] == $postVals[1]) {
@@ -190,9 +190,9 @@ if ($carried < $unitDat[29]) {
 	$space = $unitDat[29] - $carried;
 	$location = sizeof($unitRSC->slotData);
 	if ($rscStart[0]>0) $location = $rscStart[0];
-
+	
 	$unitRSC->addItem($unitSlotFile, pack('i*', $postVals[1], $rscStart[1]+min($space, $collected)), $location);
-} else {
+} else { 
 	echo 'Can not carry any more<br>'
 }
 
