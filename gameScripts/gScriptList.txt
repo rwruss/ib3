@@ -74,6 +74,7 @@
 1065 - Process city to parent city resource transfer
 1066 - Leave a city
 1067 - Establish a permanant city
+1068 - Dialogue and option to leave town
 
 // Manual Override Functions
 2001 - Add Resources to a city

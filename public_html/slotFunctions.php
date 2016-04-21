@@ -28,7 +28,7 @@ class dataSlot {
 			$this->dataString .= substr($tmpDat, 4);
 			$tmpA = unpack("N", $tmpDat);
 			$nextSlot = $tmpA[1];
-			echo 'seek to '.$seekto.' for next slot '.$nextSlot.'<br>';
+			//echo 'seek to '.$seekto.' for next slot '.$nextSlot.'<br>';
 		}
 	}
 
