@@ -16,10 +16,11 @@ $gameID = $_GET['gid'];
 if ($gameID != $_SESSION['instance']) {echo "<script>alert('Game mismatch')</script>";exit;}
 if (!isset($_SESSION['gameIDs'][$gameID])) echo "<script>window.location.replace('./index.php')</script>";
 
-if (!isset($_SESSION['game_'.$gameID]) {
+if (!isset($_SESSION['game_'.$gameID])) {
 	$paramFile = fopen('../games/'.$gameID.'/params.ini', 'rb');
 	$params = unpack('i*', fread($paramFile, 40));
 	$_SESSION['game_'.$gameID]['scenario'] = $params[8];
+	$_SESSION['game_'.$gameID]['scenario'] = 1;
 	fclose($paramFile);
 }
 $pGameID = $_SESSION['gameIDs'][$gameID];
