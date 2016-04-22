@@ -19,6 +19,6 @@ Now: '.date('d/m/y h:i:s', time()).'
 <span onclick="move(11)">Clear</span>
 <span onclick="orderMove()">Send Order</span>
 
-Object Type 6';
+Object Type '.$unitDat[10];
 
 ?>
