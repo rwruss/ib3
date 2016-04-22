@@ -65,18 +65,18 @@ class city {
 	}
 }
 
-function newTown($id, $townFile, $slotFile) {
-	global $defaultBlockSize, $gameSlot, $pGameID, $startLocation, $gamePath, $postVals;
+function newTown($id, $townFile, $slotFile, $townDtls) {
+	global $defaultBlockSize, $gameSlot, $pGameID, $startLocation, $gamePath;
 
 	$townData = array_fill(1, 100, 0);
-	$townData[1] = $startLocation[0];
-	$townData[2] = $startLocation[1];
+	$townData[1] = $townDtls[0]; // X loc
+	$townData[2] = $townDtls[1]; // Y Loc
 	$townData[3] = 1;
 	$townData[4] = 1;
-	$townData[5] = $pGameID;
-	$townData[6] = $pGameID;
+	$townData[5] = $townDtls[2]; // pgameId
+	$townData[6] = $townDtls[2]; // pgameID
 	$townData[7] = 1;
-	$townData[8] = $postVals[1];
+	$townData[8] = $townDtls[3]; // Culture
 
 	//fseek($unitFile, $townID*$defaultBlockSize);
 	//fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,1,$pGameID, $pGameID,1,$postVals[1],0));

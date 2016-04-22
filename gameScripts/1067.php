@@ -21,7 +21,8 @@ if (flock($unitFile, LOCK_EX)) {
 	fseek($unitFile, $size*$defaultblocksize-4);
 	fwrite($unitFile, pack('i', 0));
 	
-	function newTown($newCityId, $unitFile, $slotFile); //($id, $townFile, $slotFile)
+	$townInf = [$unitDat[1], $untiDat[2], $pGameID, $_SESSION['game_'.$gameID]['culture']];
+	function newTown($newCityId, $unitFile, $slotFile, $townInf); //($id, $townFile, $slotFile)
 	
 	flock($unitFile, LOCK_UN); // release the lock  on the player File	
 }

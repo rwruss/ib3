@@ -98,11 +98,23 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	if ($startTown) {
 		$townID = $unitIndex;
 		$unitIndex +=4;
-		$townData = newTown($townID, $unitFile, $gameSlot);
+		$townDtls[$startLocation[1], $startLocation[2], $pGameID, $postVals[1]];
+		$townData = newTown($townID, $unitFile, $gameSlot, $townDtls);
 
 		// Record first city location in a new settlments slot
 		$townSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
 		$mapSlot->addItem($townID, $mapSlotFile); // value, file
+	} else {
+		// Create a new army unit for the items to be grouped into
+		$armyID = $unitIndex;
+		$unitIndex += 4;
+		
+		$armySlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
+		fseek($unitFile, $armyID*$defaultBlockSize + 12);
+		fwrite($unitFile, pack('i', $armySlot));
+		
+		$mapSlot->addItem($armyID, $mapSlotFile); // value, file
+		$armySlot = new itemSlot($armySlot, $gameSlot, 40);
 	}
 
 	// This records data in the player's data
@@ -135,6 +147,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 	// Create units based on the following unit IDs
 	$unitSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
+	$unitList = new itemSlot($unitSlot, $gameSlot, 40);
 	$unitInf = explode("<->", file_get_contents($scnPath.'/units.desc'));
 	$makeTypes = [1, 2];
 	for($i=0; $i<sizeof($makeTypes); $i++) {
@@ -152,9 +165,11 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
 		fwrite($unitFile, pack("i", 9990));
 
-		addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
+		//addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
+		$unitSlot->addItem($newId, $gameSlot);
 		if (!$startTown) {
-			$mapSlot->addItem($newId, $mapSlotFile); // value, file
+			$armySlot->addItem($newID, $gameSlot);
+			//$mapSlot->addItem($newId, $mapSlotFile); // value, file
 		} else {
 			//addDataToSlot($gamePath."/gameSlots.slt", $townUnitSlot, pack("i", $newId), $gameSlot);
 		}

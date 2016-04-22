@@ -396,6 +396,11 @@
    font-weight:bold;
 }
 
+.stdContainer {
+	display:block;
+	width:100%;
+}
+
 .taskTabHolder {
 	display:inline;
 	position:absolute;

@@ -16,16 +16,23 @@ if (sizeof($unitList)>0) {
 		
 		fseek($unitFile, $unitID*$defaultBlockSize);
 		$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
-		//echo '<div onclick="passClick(\'1034,'.$unitID.'\', \'rtPnl\');">Unit #'.$unitID.'</div>';
-		$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
-		echo '
-
-		newUnitDetail('.$unitID.', "militaryContent");
-		//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
-		document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
-		document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {passClick("1034,'.$unitID.'", "rtPnl")});
-		setUnitAction('.$unitID.', '.($actionPoints/1000).');
-		setUnitExp('.$unitID.', 0.5);';
+		if ($unitDat[4] == 3) {
+			echo 'addDiv("armyList_'.$unitID.'", "stdContainer", "militaryContent");
+			textBlob("desc", "armyList_'.$unitID.'", "Army Information")';
+		} else {
+			//echo '<div onclick="passClick(\'1034,'.$unitID.'\', \'rtPnl\');">Unit #'.$unitID.'</div>';
+			$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
+			if ($unitDat[15] == 0) $dtlTarget = 'militaryContent';
+			else $dtlTarget = 'armyList_'.$unitDat[15];
+			
+			echo '
+			newUnitDetail('.$unitID.', "'.$dtlTarget.'");
+			//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
+			document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
+			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {passClick("1034,'.$unitID.'", "rtPnl")});
+			setUnitAction('.$unitID.', '.($actionPoints/1000).');
+			setUnitExp('.$unitID.', 0.5);';
+		}
 	}
 	
 } else {
