@@ -3,9 +3,6 @@
 class unit {
 	protected $linkFile, $unitBin, $id, $attrList;
 
-	/*
-
-	*/
 	function __construct($id, $file, $size) {
 		global $defaultBlockSize;
 
@@ -48,10 +45,23 @@ class unit {
 	}
 }
 
+class battle extends unit {
+	function __construct($id, $file, $size) {
+		parent::__construct($id, $file, $size);
+		
+		$this->attrList['battleType'] = 10;
+		$this->attrList['baseUnit_1'] = 11;
+		$this->attrList['baseUnit_2'] = 12;
+		$this->attrList['timeStarted'] = 13;
+		$this->attrList['resolveTime'] = 14;
+		$this->attrList['sideList_1'] = 15;
+		$this->attrList['sideList_2'] = 16;
+	}
+}
+
 class warband extends unit {
 	function __construct($id, $file, $size) {
 		parent::__construct($id, $file, $size);
-
 
 		$this->attrList['troopType'] = 10;
 		$this->attrList['currentTask'] = 11;
@@ -76,8 +86,8 @@ class warband extends unit {
 		$this->attrList['carrySlot'] = 30;
 		$this->attrList['battleID'] = 31;
 
-		echo 'MAKE WARBAND ('.sizeof($this->attrList).')';
-		print_r($this->attrList);
+		//echo 'MAKE WARBAND ('.sizeof($this->attrList).')';
+		//print_r($this->attrList);
 		}
 }
 

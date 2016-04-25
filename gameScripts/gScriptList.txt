@@ -77,6 +77,8 @@
 1068 - Dialogue and option to leave town
 1069 - Unit Upgrade Options
 1070 - Process unit upgrade
+1071 - Join battle dialog box
+1072 - Process joining a battle
 
 // Manual Override Functions
 2001 - Add Resources to a city

@@ -1,10 +1,17 @@
 <?php
 
 // Diplomacy functions
-
-
-
-function getDiplomacySpecific($targetReligion) { // $targetValues = []
+function compareOrgs($unit1, $unit2, $slotFile) {
+	
 }
+
+function parentTree($player, $unitFile) {
+		
+}
+
+function unitParentTree($unitID, $unitFile) {
+	
+}
+
 
 ?>

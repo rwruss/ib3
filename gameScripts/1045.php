@@ -231,12 +231,23 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 
 									if (sizeof($foundWars) > 0) {
 										// Start a battle at this location.  This will affect all of the common wars found.
-										startNewBattle($postVals[1], $collisionID, $foundWars, $unitFile, $mapSlotFile, $newLoc);
+										$battleID = startNewBattle($postVals[1], $collisionID, $unitFile);
+										
+										// Record battle ID for each unit
+										fseek($unitFile, $postVals[1]*$defaultBlockSize+120);
+										fwrite($unitFile, pack('i', $battleID));
+										
+										fseek($unitFile, $collisionID*$defaultBlockSize+120);
+										fwrite($unitFile, pack('i', $battleID));
+										
 										goto endMove;
 									}
 									break; // break case 6
 
 								case 12:  // a battle
+									// Create a dialoge box for joining the battle
+									echo '<script>makeBox("battleInfo", "1071,'.$collisionID.'", 500, 500, 200, 50)</script>';
+								
 									break; // end case 12
 								}
 						} else {
@@ -395,7 +406,7 @@ function joinBattle() {
 
 }
 
-function startNewBattle($unit1, $unit2, $warList, $unitFile, $mapSlotFile, $location) {
+function startNewBattle($unit1, $unit2, $unitFile) {
 	global $defaultBlockSize;
 
 	// Create a battle slot with location, start time, affected wars, etc.
@@ -403,13 +414,19 @@ function startNewBattle($unit1, $unit2, $warList, $unitFile, $mapSlotFile, $loca
 		// Get new id for battle
 		fseek($unitFile, 0, SEEK_END);
 		$size = ftell($unitFile);
-		$newID = $size/$defaultBlockSize;
+		$battleID = $size/$defaultBlockSize;
 
-		fseek($unitFile, $newID*$defaultBlockSize+96);
+		fseek($unitFile, $battleID*$defaultBlockSize+96);
 		fwrite($unitFile, pack('i', 0));
 
 		flock($unitFile, LOCK_UN); // release dat lock
 	}
+	
+	// Add the two starting units to the war list
+	fseek($unitFile, $battleID*$defaultBlockSize+40);
+	fwrite($unitFile, pack('i*', $unit1, $unit2, time(), time()+86400));
+	
+	return $battleID;
 	/*
 	// Remove the two units from the map slot file and add a battle icon
 	$mapSlotItem = new itemSlot(, $mapSlotFile, 404);

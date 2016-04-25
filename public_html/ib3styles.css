@@ -402,6 +402,12 @@
 	width:100%;
 }
 
+.halfContain {
+	display:inline-block;
+	overflow:auto;
+	width:50%;
+}
+
 .taskTabHolder {
 	display:inline;
 	position:absolute;

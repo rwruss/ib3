@@ -76,6 +76,11 @@
             <File name="1065.php" />
             <File name="1066.php" />
             <File name="1067.php" />
+            <File name="1068.php" />
+            <File name="1069.php" />
+            <File name="1070.php" />
+            <File name="1071.php" />
+            <File name="1072.php" />
             <File name="2001.php" />
             <File name="2002.php" />
             <File name="cl255.php" />
@@ -114,14 +119,19 @@
             <File name="E:\websites\IB3\public_html\templates.js" />
             <File name="E:\websites\IB3\public_html\ib3styles.css" />
             <File name="E:\websites\ib3\public_html\cityClass.php" />
+            <File name="E:\websites\ib3\public_html\unitClass.php" />
             <Folder name="rivers">
                 <File name="E:\websites\IB3\public_html\rivers\loadRivers_v2.php" />
             </Folder>
+            <File name="E:\websites\ib3\public_html\dipFunctions.php" />
         </Folder>
         <Folder name="other" />
         <Folder name="test">
             <Folder name="slots">
                 <File name="E:\websites\ib3\test\slots\eventSlotTest.php" />
+            </Folder>
+            <Folder name="units">
+                <File name="E:\websites\ib3\test\classes\unitClassTest.php" />
             </Folder>
         </Folder>
         <Folder name="scenarios">
