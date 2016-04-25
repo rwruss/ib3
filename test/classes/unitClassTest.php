@@ -1,5 +1,7 @@
 <?php
 
+include('c:/websites/ib3/public_html/unitClass.php');
+
 $testList['xLoc'] = 1;
 $testList['yLoc'] = 2;
 $testList['icon'] = 3;
@@ -27,7 +29,7 @@ $testList['item7'] = 24;
 $testList['item8'] = 25;
 $testList['currentSlot'] = 26;
 $testList['updateTime'] = 27;
-$testList['visionDist'] = 28;		
+$testList['visionDist'] = 28;
 $testList['carryCap'] = 29;
 $testList['carrySlot'] = 30;
 $testList['battleID'] = 31;
@@ -45,17 +47,19 @@ fwrite($testFile, $binDat);
 
 $testUnit = new warband(1, $testFile, 400);
 
+$count = 0;
 foreach($testList as $key=>$value) {
 	echo $key.' has a start value of '.$testUnit->get($key);
-	$testUnit->save($key, 100);
-	echo ' and a new value of '.$testUnit->get($key).'<br>';	
+	$testUnit->save($key, 100+$count);
+	++$count;
+	echo ' and a new value of '.$testUnit->get($key).'<br>';
 }
 
 echo '<p>Reload and recheck.<p>';
 
 $nextTest = new warband(1, $testFile, 400);
 foreach($testList as $key=>$value) {
-	echo $key.' has a start value of '.$testUnit->get($key);
+	echo $key.' has a start value of '.$testUnit->get($key).'<br>';
 }
 
 

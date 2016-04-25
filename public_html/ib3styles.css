@@ -397,7 +397,8 @@
 }
 
 .stdContainer {
-	display:block;
+	display:inline-block;
+	overflow:auto;
 	width:100%;
 }
 

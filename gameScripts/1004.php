@@ -92,13 +92,17 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	$mapSlot = new itemSlot($mapSlotNum, $mapSlotFile, 404); /// start, file, size
 
 
+	$unitSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
+	$unitList = new itemSlot($unitSlot, $gameSlot, 40);
+
 	// Create a new town
 	$townID = 0;
+	$armyID = 0;
 	$townSlot = 0;
 	if ($startTown) {
 		$townID = $unitIndex;
 		$unitIndex +=4;
-		$townDtls[$startLocation[1], $startLocation[2], $pGameID, $postVals[1]];
+		$townDtls = [$startLocation[1], $startLocation[2], $pGameID, $postVals[1]];
 		$townData = newTown($townID, $unitFile, $gameSlot, $townDtls);
 
 		// Record first city location in a new settlments slot
@@ -108,15 +112,18 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		// Create a new army unit for the items to be grouped into
 		$armyID = $unitIndex;
 		$unitIndex += 4;
-		
+
 		$armySlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
-		fseek($unitFile, $armyID*$defaultBlockSize + 12);
+		fseek($unitFile, $armyID*$defaultBlockSize);
+		fwrite($unitFile, pack('i*', $startLocation[0],$startLocation[1],1,3,$pGameID, $pGameID,1,$postVals[1],0));
+		fseek($unitFile, $armyID*$defaultBlockSize + 52);
 		fwrite($unitFile, pack('i', $armySlot));
-		
+
 		$mapSlot->addItem($armyID, $mapSlotFile); // value, file
 		$armySlot = new itemSlot($armySlot, $gameSlot, 40);
+		$unitList->addItem($armyID, $gameSlot);
 	}
-
+	echo 'Army ID is '.$armyID.'<p>';
 	// This records data in the player's data
 	fseek($unitFile, $pGameID*$defaultBlockSize);
 	fwrite($unitFile, pack("i*", 1, $postVals[1], $postVals[1])); // Status, Race, Culture
@@ -146,14 +153,14 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	writeBlocktoSlot($gamePath.'/gameSlots.slt', $positionSlot, $newDat, $gameSlot, 40); // writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize)
 
 	// Create units based on the following unit IDs
-	$unitSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
-	$unitList = new itemSlot($unitSlot, $gameSlot, 40);
+
 	$unitInf = explode("<->", file_get_contents($scnPath.'/units.desc'));
 	$makeTypes = [1, 2];
 	for($i=0; $i<sizeof($makeTypes); $i++) {
+
 		$newId = $unitIndex;
 		$unitIndex +=4;;
-
+		echo 'Make unit type '.$makeTypes[$i].' at unit #'.$newId.'<br>';
 		$thisDtl = explode('<-->', $unitInf[$makeTypes[$i]]);
 		$typeParams = explode(",", $thisDtl[1]);
 
@@ -165,10 +172,13 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
 		fwrite($unitFile, pack("i", 9990));
 
+		fseek($unitFile, ($newId)*$defaultBlockSize+56);
+		fwrite($unitFile, pack('i', $armyID));
+
 		//addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
-		$unitSlot->addItem($newId, $gameSlot);
+		$unitList->addItem($newId, $gameSlot);
 		if (!$startTown) {
-			$armySlot->addItem($newID, $gameSlot);
+			$armySlot->addItem($newId, $gameSlot);
 			//$mapSlot->addItem($newId, $mapSlotFile); // value, file
 		} else {
 			//addDataToSlot($gamePath."/gameSlots.slt", $townUnitSlot, pack("i", $newId), $gameSlot);
@@ -191,7 +201,8 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
 		fwrite($unitFile, pack("i", 9990));
 
-		addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
+		//addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
+		$unitList->addItem($newId, $gameSlot);
 		if (!$startTown) {
 			$mapSlot->addItem($newId, $mapSlotFile); // value, file
 		} else {

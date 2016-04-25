@@ -233,9 +233,9 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 										// Start a battle at this location.  This will affect all of the common wars found.
 										startNewBattle($postVals[1], $collisionID, $foundWars, $unitFile, $mapSlotFile, $newLoc);
 										goto endMove;
-									} 
+									}
 									break; // break case 6
-									
+
 								case 12:  // a battle
 									break; // end case 12
 								}
@@ -378,7 +378,7 @@ function checkCollisions($slotNumber, $location, &$loadedSlots, &$unitList) {
 function compareWarLists(&$shortList, &$longList) {
 	echo 'Coparing war lists<br>';
 	$returnList = [];
-	
+
 	// List format is war #, side #
 	for($w=1; $w<=sizeof($shortList); $w+=2) {
 		$matchKey = array_search($shortList[$w], $longList);
@@ -391,49 +391,50 @@ function compareWarLists(&$shortList, &$longList) {
 	return $returnList;
 }
 
-function joinBattle(); {
-	
+function joinBattle() {
+
 }
 
 function startNewBattle($unit1, $unit2, $warList, $unitFile, $mapSlotFile, $location) {
 	global $defaultBlockSize;
-	
+
 	// Create a battle slot with location, start time, affected wars, etc.
 	if (flock($unitFile, LOCK_EX)) {
 		// Get new id for battle
 		fseek($unitFile, 0, SEEK_END);
 		$size = ftell($unitFile);
 		$newID = $size/$defaultBlockSize;
-		
+
 		fseek($unitFile, $newID*$defaultBlockSize+96);
 		fwrite($unitFile, pack('i', 0));
-		
+
 		flock($unitFile, LOCK_UN); // release dat lock
 	}
-		
+	/*
 	// Remove the two units from the map slot file and add a battle icon
 	$mapSlotItem = new itemSlot(, $mapSlotFile, 404);
-	
+
 	$u1_pos = array_search($unit1, $mapSlotItem->slotData);
 	$mapSlotItem->deleteItem($u1_pos, $mapSlotFile);
-	
+
 	$u2_pos = array_search($unit2, $mapSlotItem->slotData);
 	$mapSlotItem->deleteItem($u2_pos, $mapSlotFile);
-	
+
 	$mapSlotItem->addItem($newID, $mapSlotFile);
 
 	// Adjust the status and battle ID for each unit to set it for battle
 	fseek($unitFile, $unit1*$defaultBlockSize + 24);
 	fwrite($unitFile, pack('i', 2));
-	
+
 	fseek($unitFile, $unit1*$defaultBlockSize + 120);
 	fwrite($unitFile, pack('i', $newID));
-	
+
 	fseek($unitFile, $unit2*$defaultBlockSize + 24);
 	fwrite($unitFile, pack('i', 2));
-	
+
 	fseek($unitFile, $unit2*$defaultBlockSize + 120);
 	fwrite($unitFile, pack('i', $newID));
+	*/
 }
 
 ?>

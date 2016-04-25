@@ -1,40 +1,47 @@
 <?php
 
 class unit {
-	global $defaultBlockSize;
-	private $linkFile, $unitBin, $id, $attrList;
-	
-	$attrList['xLoc'] = 1;
-	$attrList['yLoc'] = 2;
-	$attrList['icon'] = 3;
-	$attrList['uType'] = 4;
-	$attrList['owner'] = 5;
-	$attrList['controller'] = 6;
-	$attrList['status'] = 7;
-	$attrList['culture'] = 8;
-	$attrList['religion'] = 9;
-	
+	protected $linkFile, $unitBin, $id, $attrList;
+
+	/*
+
+	*/
 	function __construct($id, $file, $size) {
-		$linkFile = $file;
-		fseek($linkFile, $id*$defaultBlockSize);
-		$unitBin = fread($linkFile, $size);
-		$unitDat = unpack('i*', $unitBin);
+		global $defaultBlockSize;
+
+		$this->linkFile = $file;
+		fseek($this->linkFile, $id*$defaultBlockSize);
+		$unitBin = fread($this->linkFile, $size);
+		$this->unitDat = unpack('i*', $unitBin);
+
+		$this->attrList = [];
+		$this->attrList['xLoc'] = 1;
+		$this->attrList['yLoc'] = 2;
+		$this->attrList['icon'] = 3;
+		$this->attrList['uType'] = 4;
+		$this->attrList['owner'] = 5;
+		$this->attrList['controller'] = 6;
+		$this->attrList['status'] = 7;
+		$this->attrList['culture'] = 8;
+		$this->attrList['religion'] = 9;
 	}
-	
+
 	function get($desc) {
-		if (array_key_exists($desc, $attrList) {
-			return $attrList[$desc];
+		if (array_key_exists($desc, $this->attrList)) {
+			return $this->attrList[$desc];
 		} else {
 			return false;
 		}
 	}
-	
+
 	function save($desc, $val) {
-		if (array_key_exists($desc, $attrList) {
-			fseek($this->linkFile, $this->$id*$defaultBlockSize + $attrList[$desc]*4);
+		global $defaultBlockSize;
+
+		if (array_key_exists($desc, $this->attrList)) {
+			fseek($this->linkFile, $this->id*$defaultBlockSize + $this->attrList[$desc]*4);
 			fwrite($this->linkFile, pack('i', $val));
-			
-			$attrList[$desc] = $val;
+
+			$this->attrList[$desc] = $val;
 		} else {
 			return false;
 		}
@@ -44,29 +51,33 @@ class unit {
 class warband extends unit {
 	function __construct($id, $file, $size) {
 		parent::__construct($id, $file, $size);
-		
-		$attrList['troopType'] = 10;
-		$attrList['currentTask'] = 11;
-		$attrList['currentLoc'] = 12;
-		$attrList['timeStarted'] = 13;
-		$attrList['expSlot'] = 14;
-		$attrList['armyID'] = 15;
-		$attrList['energy'] = 16;
-		$attrList['enRegen'] = 17;
-		$attrList['item1'] = 18;
-		$attrList['item2'] = 19;
-		$attrList['item3'] = 20;
-		$attrList['item4'] = 21;
-		$attrList['item5'] = 22;
-		$attrList['item6'] = 23;
-		$attrList['item7'] = 24;
-		$attrList['item8'] = 25;
-		$attrList['currentSlot'] = 26;
-		$attrList['updateTime'] = 27;
-		$attrList['visionDist'] = 28;		
-		$attrList['carryCap'] = 29;
-		$attrList['carrySlot'] = 30;
-		$attrList['battleID'] = 31;
+
+
+		$this->attrList['troopType'] = 10;
+		$this->attrList['currentTask'] = 11;
+		$this->attrList['currentLoc'] = 12;
+		$this->attrList['timeStarted'] = 13;
+		$this->attrList['expSlot'] = 14;
+		$this->attrList['armyID'] = 15;
+		$this->attrList['energy'] = 16;
+		$this->attrList['enRegen'] = 17;
+		$this->attrList['item1'] = 18;
+		$this->attrList['item2'] = 19;
+		$this->attrList['item3'] = 20;
+		$this->attrList['item4'] = 21;
+		$this->attrList['item5'] = 22;
+		$this->attrList['item6'] = 23;
+		$this->attrList['item7'] = 24;
+		$this->attrList['item8'] = 25;
+		$this->attrList['currentSlot'] = 26;
+		$this->attrList['updateTime'] = 27;
+		$this->attrList['visionDist'] = 28;
+		$this->attrList['carryCap'] = 29;
+		$this->attrList['carrySlot'] = 30;
+		$this->attrList['battleID'] = 31;
+
+		echo 'MAKE WARBAND ('.sizeof($this->attrList).')';
+		print_r($this->attrList);
 		}
 }
 
