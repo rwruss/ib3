@@ -2,10 +2,11 @@
 
 class city {
 	public $cityData, $rscSlot, $slotFile;
-	private $cityID;
+	private $cityID, $cityDatStr;
 
 	function __construct($id, $file) {
-		$this->init($start, $slotFile, $size);
+		//$this->init($start, $slotFile, $size);
+		$this->init($id, $file);
 		$this->cityID = $id;
 		//$this->slotFile = $file;
 	}
@@ -16,8 +17,13 @@ class city {
 
 	function init($id, $file) {
 		fseek($file, $id*100);
+<<<<<<< HEAD
 		$cityDatStr = fread($file, 400);
 		$this->cityData = unpack('i*', $this->$cityDatStr);
+=======
+		$this->cityDatStr = fread($file, 400);
+		$cityData = unpack('i*', $this->cityDatStr);
+>>>>>>> origin/master
 	}
 
 	function addRsc($id, $amount) {
@@ -78,15 +84,10 @@ function newTown($id, $townFile, $slotFile, $townDtls) {
 	$townData[7] = 1;
 	$townData[8] = $townDtls[3]; // Culture
 
-	//fseek($unitFile, $townID*$defaultBlockSize);
-	//fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,1,$pGameID, $pGameID,1,$postVals[1],0));
-	//fseek($unitFile, $townID*$defaultBlockSize+$unitBlockSize-4);
-	//fwrite($unitFile, pack("i", 9990));
+
 
 	// Create a credential list for the town and record this player as having full cred.
 	$credListSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");
-	//fseek($unitFile, $townID*$defaultBlockSize+72);
-	//fwrite($unitFile, pack('i', $credListSlot));
 	$townData[19] = $credListSlot;
 
 	echo 'credintial slot:'.$credListSlot.'<br>';
@@ -94,29 +95,21 @@ function newTown($id, $townFile, $slotFile, $townDtls) {
 
 	// Make a chars slot for the new town and record the player's faction leader as the town's leader
 	$townCharSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");
-	//fseek($unitFile, $townID*$defaultBlockSize+48);
-	//fwrite($unitFile, pack('i', $townCharSlot));
 	echo 'Town Char Slot is '.$townCharSlot.'<br>';
 	$townData[13] = $townCharSlot;
 
 	// Make a units slot for the new town
 	$townUnitSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");
-	//fseek($unitFile, $townID*$defaultBlockSize+68);
-	//fwrite($unitFile, pack('i', $townUnitSlot));
 	echo 'Town Unit Slot is '.$townUnitSlot.'<br>';
 	$townData[18] = $townUnitSlot;
 
 	// Make a resource slot for the new town
 	$rscSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");
-	//fseek($unitFile, $townID*$defaultBlockSize+40);
-	//fwrite($unitFile, pack('i', $rscSlot));
 	echo 'Town RSC Slot is '.$rscSlot.'<br>';
 	$towndata[11] = $rscSlot;
 
 	// Make a task slot for the new town
 	$taskSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");
-	//fseek($unitFile, $townID*$defaultBlockSize+80);
-	//fwrite($unitFile, pack('i', $taskSlot));
 	echo 'Town task Slot is '.$taskSlot.'<br>';
 	$townData[21] = $taskSlot;
 
