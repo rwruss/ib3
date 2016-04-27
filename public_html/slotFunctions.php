@@ -136,7 +136,7 @@ class itemSlot extends dataSlot {
 		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos);
 		fwrite($file, pack('i', $value));
 
-		$this->slotData[$postion] = $value;
+		$this->slotData[$position] = $value;
 	}
 
 	function deleteByValue() {
