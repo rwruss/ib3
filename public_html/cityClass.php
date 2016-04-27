@@ -17,7 +17,7 @@ class city {
 	function init($id, $file) {
 		fseek($file, $id*100);
 		$cityDatStr = fread($file, 400);
-		$cityData = unpack('i*', $this->$cityDatStr);
+		$this->cityData = unpack('i*', $this->$cityDatStr);
 	}
 
 	function addRsc($id, $amount) {

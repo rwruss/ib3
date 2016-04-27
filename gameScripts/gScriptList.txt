@@ -79,6 +79,11 @@
 1070 - Process unit upgrade
 1071 - Join battle dialog box
 1072 - Process joining a battle
+1073 - Query for leaving city
+1074 - Character Details and options
+1075 - Character plot options
+1076 - Character skills
+1077 - Character traits
 
 // Manual Override Functions
 2001 - Add Resources to a city

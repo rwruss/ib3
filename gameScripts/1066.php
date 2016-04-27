@@ -31,11 +31,10 @@ if ($approved) {
 		if ($target) $childCityList->deleteItem($target, $slotFile);
 	}
 	
-	// Change the child city to a resource cart/moving group object
-	
+	// Change the child city to a resource cart/moving group object	
 	/// Save location of the unit to match that of the city and adjust unit types
 	fseek($unitFile, $_SESSION['selectedItem']*$defaultblocksize);
-	fwrite($unitFile, pack('i*', $parCityDat[1], $parCityDat[2], 10, 10));
+	fwrite($unitFile, pack('i*', $parCityDat[1], $parCityDat[2], 10, 10, $pGameID, $pGameID, 1, 1, 1));
 	
 	/// Update last change time
 	fseek($unitFile, $_SESSION['selectedItem']*$defaultblocksize+104);
