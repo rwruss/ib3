@@ -1,10 +1,10 @@
 <?php
 
-echo 'Equipment options for unit '.$_SESSION['selectedUnit'];
+echo 'Equipment options for unit '.$_SESSION['selectedItem'];
 
 // Get unit data for current items
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $_SESSION['selectedUnit']*$defaultBlockSize);
+fseek($unitFile, $_SESSION['selectedItem']*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Get item descriptions

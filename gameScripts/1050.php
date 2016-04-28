@@ -7,13 +7,13 @@ include("./taskFunctions.php");
 $cityID = $_SESSION['selectedItem'];
 echo 'Construct a building in '.$cityID.' - Building Type is '.$postVals[1].'<br>';
 // Verify that the person giving the order has the proper credintials
-$unitFile = fopen($gamePath.'/unitDat.dat' ,'rb');
+$unitFile = fopen($gamePath.'/unitDat.dat' ,'r+b');
 fseek($unitFile, $cityID*$defaultBlockSize);
 $cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 //print_r($cityDat);
 
-$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 $credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
 $approved = array_search($pGameID, $credList);
 echo 'Approved level '.$approved.'<br>
@@ -172,8 +172,8 @@ if ($buildingCat[1] == 1) {
 		if ($postVals[2] > 0) { // This is an upgrade to an existing building
 			$buildingPoints = explode(',', $buildingInfo[$postVals[1]*8+2]);
 			// Create a new task to be processed.
-			$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
-			$taskIndex = fopen($gamePath.'/tasks.tix', 'rb');
+			$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
+			$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
 			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),$buildingPoints[0],0,5,$cityID,0, $cityID, $postVals[2], $postVals[1]);
 			$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 			fclose($taskFile);
@@ -235,8 +235,8 @@ if ($buildingCat[1] == 1) {
 
 			// add a task to the town as an "in progress" task
 			// Create a new task to be processed.
-			$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
-			$taskIndex = fopen($gamePath.'/tasks.tix', 'rb');
+			$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
+			$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
 			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),1000,0,2,$cityID,0, $cityID, $newID, $postVals[1]);
 			$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 			fclose($taskFile);

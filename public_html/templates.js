@@ -238,6 +238,13 @@ unitTaskOpt = function(id, target, desc) {
 	thisOpt.addEventListener("click", function () {makeBox("taskDtl", "1060,"+id, 500, 500, 200, 50);});
 }
 
+charTaskOpt = function(id, target, desc) {
+	var thisOpt = addDiv("utOpt_"+id, "tdHolder", document.getElementById(target));
+	thisOpt.innerHTML = desc;
+
+	thisOpt.addEventListener("click", function () {makeBox("taskDtl", "1078,"+id, 500, 500, 200, 50);});
+}
+
 newUnitDetail = function(id, target) {
 
 	var holderDiv = document.createElement("div")

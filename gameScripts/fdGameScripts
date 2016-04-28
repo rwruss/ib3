@@ -107,6 +107,11 @@
                 <File name="objects\obj_8.php" />
                 <File name="objects\bldg_1.php" />
             </Folder>
+            <File name="1074a.php" />
+            <File name="1074c.php" />
+            <File name="1075.php" />
+            <File name="1078.php" />
+            <File name="1079.php" />
         </Folder>
         <Folder name="public_html">
             <File name="E:\websites\IB3\public_html\glFunctions.js" />

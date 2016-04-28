@@ -8,7 +8,7 @@ $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 print_r($unitDat);
 
 //echo 'Unit Detail for unit #'.$postVals[1];
-$_SESSION['selectedUnit'] = $postVals[1];
+$_SESSION['selectedItem'] = $postVals[1];
 echo 'Unit #'.$postVals[1].', Type '.$unitDat[4].'/'.$unitDat[10].'<br>';
 if ($unitDat[5] == $pGameID) {
 	// Get information for the owner with full and true information

@@ -1,7 +1,7 @@
 <?php
 
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $_SESSION['selectedUnit']*$defaultBlockSize);
+fseek($unitFile, $_SESSION['selectedItem']*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 $unitDesc = explode("<->", file_get_contents($scnPath.'/units.desc'));

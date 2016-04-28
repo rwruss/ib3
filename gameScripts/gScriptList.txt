@@ -82,8 +82,10 @@
 1073 - Query for leaving city
 1074 - Character Details and options
 1075 - Character plot options
-1076 - Character skills
-1077 - Character traits
+1076 - Character skills detail
+1077 - Character traits detail
+1078 - Character plot details
+1079 - Process adding a plot (task)
 
 // Manual Override Functions
 2001 - Add Resources to a city
