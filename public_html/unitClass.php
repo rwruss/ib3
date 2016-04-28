@@ -25,7 +25,7 @@ class unit {
 
 	function get($desc) {
 		if (array_key_exists($desc, $this->attrList)) {
-			return $this->attrList[$desc];
+			return $this->unitDat[$this->attrList[$desc]];
 		} else {
 			return false;
 		}
@@ -48,7 +48,7 @@ class unit {
 class battle extends unit {
 	function __construct($id, $file, $size) {
 		parent::__construct($id, $file, $size);
-		
+
 		$this->attrList['battleType'] = 10;
 		$this->attrList['baseUnit_1'] = 11;
 		$this->attrList['baseUnit_2'] = 12;
@@ -57,6 +57,12 @@ class battle extends unit {
 		$this->attrList['sideList_1'] = 15;
 		$this->attrList['sideList_2'] = 16;
 	}
+}
+
+class char extends unit {
+		function __construct($id, $file, $size) {
+			parent::__construct($id, $file, $size);
+		}
 }
 
 class warband extends unit {

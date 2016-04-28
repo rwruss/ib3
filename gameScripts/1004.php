@@ -66,8 +66,8 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	$newCharID = $unitIndex;
 	$unitIndex +=4;
 	fseek($unitFile, $newCharID*$defaultBlockSize);
-	fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1, 1, $postVals[1], $postVals[1], 0)); //x, y, icon, type, status, race, culture
-	fseek($unitFile, $newCharID*$defaultBlockSize+36);
+	fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1, 4, $postVals[1], $postVals[1], 1, 0, 0, 1));
+	//fseek($unitFile, $newCharID*$defaultBlockSize+36);
 	//fwrite($unitFile, pack("i*", , 1, 1, $pGameID, $pGameID, 1, 1, 1)); // first name, second name, honoriffic, A controller, R controller, x Loc, yLoc
 	fseek($unitFile, $newCharID*$defaultBlockSize+$unitBlockSize-1);
 	fwrite($unitFile, pack("C", 0));
@@ -75,6 +75,8 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	// Add character to player slot
 	$charSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
 	addDataToSlot($gamePath."/gameSlots.slt", $charSlot, pack("N", $newCharID), $gameSlot);
+
+	echo 'Char slot is '.$charSlot.'<br>';
 
 	// Make a position slot to hold this character's leadership position in the town
 	$positionSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
@@ -262,7 +264,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fclose($mapSlotFile);
 }
 
-//echo "<script>window.location.replace('./play.php?gameID=".$gameID."')</script>";
+echo "<script>window.location.replace('./play.php?gameID=".$gameID."')</script>";
 
 
 

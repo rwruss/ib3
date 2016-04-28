@@ -1,12 +1,19 @@
 <?php
+
+include('./unitClass.php');
+
 $_SESSION['selectedUnit'] = $postVals[1];
-echo 'Details for character '.$postVals[1].' of type '.$postVals[10].'
+$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
+
+$thisChar = new char($postVals[1], $unitFile, 400);
+//print_r($thisChar->attrList);
+echo 'Details for character '.$postVals[1].' of type '.$unitDat[10].'
 
 <script>
 resetMove();
 
 newUnitDetail('.$postVals[1].', "rtPnl");
-newMoveBox('.$postVals[1].', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
+newMoveBox('.$postVals[1].', '.$thisChar->get("xLoc").', '.$thisChar->get("yLoc").', "rtPnl");
 document.getElementById("Udtl_'.$postVals[1].'_name").innerHTML = "unitName";
 setUnitAction('.$postVals[1].', '.($actionPoints/1000).');
 setUnitExp('.$postVals[1].', 0.5);
@@ -23,5 +30,5 @@ var traits = addDiv("unitEquip", "stdFloatDiv", document.getElementById("rtPnl")
 traits.innerHTML = "Character Traits";
 traits.addEventListener("click", function () {makeBox("traits", "1077,'.$postVals[1].'", 500, 500, 200, 50)});
 </script>';
-
+fclose($unitFile);
 ?>
