@@ -3,9 +3,8 @@ addDiv = function(id, useClassName, target) {
 	var newDiv = document.createElement("div");
 	newDiv.className = useClassName;
 	newDiv.id = id;
-	//alert(target + ' = ' + id);
 	target.appendChild(newDiv);
-	//alert(target)
+
 	return newDiv;
 }
 
@@ -112,11 +111,8 @@ messageBox = function (msg, trg) {
 	var boxHolder = addDiv("confirmBox", "cBox", document.getElementsByTagName('body')[0]);
 	var boxMsg = addDiv("confirmBox", "cBoxM", boxHolder)
 	var dButton = addDiv("optionDecline", "cBoxD", boxHolder);
-	//var acceptButton = addDiv("optionAccept", "cBoxA", boxHolder);
 
 	boxMsg.innerHTML = msg;
-	//acceptButton.innerHTML = "Accept";
-	//acceptButton.addEventListener("click", function() {scrMod(prm)});
 	dButton.innerHTML = "OK";
 	dButton.addEventListener("click", function() {
 		this.parentNode.parentNode.removeChild(this.parentNode)});
@@ -136,9 +132,9 @@ reqBox = function (src, trg, have, need) {
 }
 
 resourceBox = function (id, qty, target) {
-	rBox = addDiv(id, "rscQty", document.getElementById(target));	
+	rBox = addDiv(id, "rscQty", document.getElementById(target));
 	rBox.innerHTML = id + ' = ' + qty;
-	
+
 	return rBox;
 }
 

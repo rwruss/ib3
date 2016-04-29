@@ -8,11 +8,11 @@ $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 $thisChar = new char($postVals[1], $unitFile, 400);
 
 if ($thisChar->get('owner') == $pGameID) {
-	include ('./1074a.php');
+	include('../gameScripts/1074a.php');
 }
-else if ($thisChar->get('controller') == $pGameID {
-	include ('./1074b.php');
+else if ($thisChar->get('controller') == $pGameID) {
+	include('../gameScripts/1074b.php');
 }
-else include ('.1074c.php');
+else include('../gameScripts/1074c.php');
 
 ?>

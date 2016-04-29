@@ -21,6 +21,7 @@ class unit {
 		$this->attrList['status'] = 7;
 		$this->attrList['culture'] = 8;
 		$this->attrList['religion'] = 9;
+		$this->attrList['updateTime'] = 27;
 	}
 
 	function get($desc) {
@@ -62,6 +63,17 @@ class battle extends unit {
 class char extends unit {
 		function __construct($id, $file, $size) {
 			parent::__construct($id, $file, $size);
+
+			$this->attrList['subType'] = 10;
+			$this->attrList['currentTask'] = 11;
+			$this->attrList['currentLoc'] = 12;
+			$this->attrList['positionSlot'] = 13;
+			$this->attrList['titleSlot'] = 14;
+			$this->attrList['traitSlot'] = 15;
+			$this->attrList['energy'] = 16;
+			$this->attrList['regen'] = 17;
+			$this->attrList['publicReligion'] = 18;
+			$this->attrList['experience'] = 18;
 		}
 }
 

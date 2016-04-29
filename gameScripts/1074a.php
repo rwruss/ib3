@@ -1,7 +1,9 @@
 <?php
 
 //print_r($thisChar->attrList);
-echo 'Details for character '.$postVals[1].' of type '.$unitDat[10].'
+$actionPoints = min(1000, $thisChar->get("energy") + floor((time()-$thisChar->get("updateTime"))/1));
+
+echo 'Details for character '.$postVals[1].' of type '.$thisChar->get("uType").'
 
 <script>
 resetMove();
