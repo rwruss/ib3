@@ -1,0 +1,182 @@
+
+<link rel='stylesheet' type='text/css' href='e:\websites\ib3\public_html\ib3styles.css'>
+<script type='text/javascript' src='e:\websites\ib3\public_html\templates.js'></script>
+
+<html>
+<body>
+</body>
+</html>
+
+<script>
+
+var observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    console.log(mutation.type + ' at ' + mutation.target);
+  });    
+});
+
+var config = { attributes: true, childList: true, characterData: true, subtree: true };
+
+function deleteObj() {
+	console.log('delete something');
+	holder2.parentNode.removeChild(holder2);
+	//this.parentNode.parentNode.removeChild(this.parentNode);
+}
+
+function addition () {
+	useList["unit_1"].str ++;
+	useList.changeItem(1, {attr : "str",value : useList["unit_1"].str});
+	//unit.str += 1;
+	//unit.changeAttr({attr : "str",value : unit.str});
+}
+
+function warBand( options ) {
+	this.type = options.unitType || 'unknown';
+	this.unitName = options.unitName || 'unnamed';
+	this.str = options.str || 0;
+	this.status = options.status || 0;
+	this.unitID = options.unitID;
+	
+	//this.watch("str", function () {console.log("I see you!")})
+	//this.divArray = [];
+}
+
+function char( options ) {
+	this.type = options.unitType || 'unknown';
+	this.unitName = options.unitName || 'unnamed';
+	this.status = options.status || 0;
+}
+
+function unitList () {}
+unitList.prototype.newList = function createList () {
+	//this.list = [];
+}
+unitList.prototype.newUnit  = function createUnit (id, options) {
+	console.log(this);
+	this["unit_"+id] = myDetailFactory.newDetail(options);
+	console.log(this);
+}
+unitList.prototype.render = function newRender(id) {
+	if (this["unit_"+id]) {
+		this["unit_"+id].renderObj(holder1);
+	}
+}
+unitList.prototype.changeItem = function newChange(id, options) {
+	if (this["unit_"+id]) {
+		this["unit_"+id].changeAttr(options);
+	}
+}
+
+function detailFactory() {}
+detailFactory.prototype.newDetail = function createDetail( options ) {
+  var parentClass = null;
+  
+  if( options.unitType === 'warband' ) {
+    parentClass = warBand;
+  } else if( options.unitType === 'char' ) {
+    parentClass = char;
+  }
+  
+  if( parentClass === null ) {
+    return false;
+  }
+  
+  return new parentClass( options );
+}
+
+warBand.prototype.changeAttr = function changeDetail (options) {
+	this[options.attr] = options.value;
+	//console.log(this.divArray.length);
+	/* THIS WORKS
+	for (n=0; n<this.divArray.length; n++) {
+		for (i=0; i<this.divArray[n].childNodes.length; i++) {
+			if (this.divArray[n].childNodes[i].getAttribute("data-boxName") == options.attr) {
+				this.divArray[n].childNodes[i].innerHTML = this[options.attr];
+			}		
+		}
+	}	
+	*/
+	
+	objList = document.body.querySelectorAll(".stdContain");
+	//console.log(objList.length);
+	for (n=0; n<objList.length; n++) {
+		if (objList[n].getAttribute("data-unitID") == 1) {
+			//console.log("found 1" + objList[n].childNodes );
+			for (i=0; i<objList[n].childNodes.length; i++) {
+				//console.log("check " + i + " of " + objList[n].childNodes.length)
+				if (objList[n].childNodes[i].getAttribute("data-boxName") == options.attr) {
+					objList[n].childNodes[i].innerHTML = this[options.attr];
+				}
+			}
+		} else {
+			//console.log (n + ": " + objList[n].getAttribute("data-unitID"))
+		}
+	}
+}
+
+warBand.prototype.renderObj = function renderThis (target) {
+	thisDiv = addDiv(null, 'stdContain', target);
+	thisDiv.setAttribute("data-unitID", this.unitID);
+	
+	nameDiv = addDiv("asdf", "stdContain", thisDiv);
+	nameDiv.setAttribute("data-boxName", "unitName");
+	
+	strDiv = addDiv("asdf", "stdContain", thisDiv);
+	strDiv.setAttribute("data-boxName", "str");
+	strDiv.innerHTML = this.str;
+	//observer.observe(strDiv, config);
+	
+	nameDiv.innerHTML = this.unitName;
+	console.log('render')
+	console.log(this);
+	//this.divArray.push(thisDiv) ;
+}
+
+var useList = new unitList();
+var myDetailFactory = new detailFactory();
+useList.newList;
+useList.newUnit(1, {unitID : 1,	unitType : "warband",	str : 100,	status : 1});
+console.log(useList["unit_1"]);
+useList["unit_1"].watch("str", function () {console.log("I see you");});
+/*
+var unit = myDetailFactory.newDetail({
+	unitID : 1,
+	unitType : "warband",
+	str : 100,
+	status : 1
+});
+
+var unit2 = myDetailFactory.newDetail({
+	unitID : 2,
+	unitType : "warband",
+	unitName : "test Unit",
+	str : 75,
+	status : 1
+});
+
+var char = myDetailFactory.newDetail({
+	unitType : "char",
+	status : 2
+});
+*/
+var holder1 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+var holder2 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+/*
+unit.renderObj(holder1);
+unit2.renderObj(holder1);
+unit.renderObj(holder2);
+
+unit.changeAttr({attr : "unitName",value : 3});
+console.log(unit);
+
+trackList = {unit_1 :unit, unit_2:unit2};
+console.log(trackList);
+trackList.unit_2.changeAttr({attr : "unitName",value : "shutup"});
+
+unit3.changeAttr({attr : "unitName",value : "shutup"});
+*/
+useList.render(1);
+</script>
+
+<div onclick='deleteObj()'>Delete</div>
+<div onclick='addition()'>Add</div>

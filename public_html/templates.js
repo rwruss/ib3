@@ -4,7 +4,7 @@ addDiv = function(id, useClassName, target) {
 	newDiv.className = useClassName;
 	newDiv.id = id;
 	target.appendChild(newDiv);
-
+	console.log(target);
 	return newDiv;
 }
 
@@ -282,6 +282,8 @@ newUnitDetail = function(id, target) {
 	holderDiv.appendChild(uDGoto);
 
 	document.getElementById(target).appendChild(holderDiv);
+	
+	return 
 }
 
 setBarSize = function(id, pct, full) {

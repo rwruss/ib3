@@ -1,0 +1,51 @@
+<link rel='stylesheet' type='text/css' href='e:\websites\ib3\public_html\ib3styles.css'>
+<script type='text/javascript' src='e:\websites\ib3\public_html\templates.js'></script>
+
+<html>
+<body>
+</body>
+</html>
+
+<script>
+
+function testDiv(name) {
+	let newDiv = document.createElement("div");
+	newDiv.className = "tdHolder";
+	newDiv.setAttribute("data-name", name);
+	document.getElementsByTagName('body')[0].appendChild(newDiv);
+	return newDiv;
+}
+var thisBox = testDiv("unit_1");
+var thisBox = testDiv("unit_2");
+//console.log(thisBox.getAttribute("data-name"));
+//console.log(thisBox);
+
+
+class Message {
+  constructor(text) {
+    this.text = text;
+    this.element = addDiv(null, 'tdHolder', document.getElementsByTagName('body')[0]);
+    this.element.innerHTML = text;
+	this.setAttribute("data-name", )
+  }
+  updateText(newText) {
+    this.element.innerHTML = newText;
+  }
+  appendMessage(selector) {
+	alert('append');
+    let target = document.body.querySelector(selector);
+    target.appendChild(this.element);
+  }
+}
+
+
+
+objList = document.body.querySelectorAll(".tdHolder");
+
+for (i=0; i<objList.length; i++) {
+	objList[i].style.top = 500;
+	console.log(objList[i]);
+	console.log(objList[i].getAttribute("data-name"));
+}
+</script>
+
