@@ -140,6 +140,7 @@
             <Folder name="units">
                 <File name="E:\websites\ib3\test\classes\unitClassTest.php" />
             </Folder>
+            <Folder name="JS" />
         </Folder>
         <Folder name="scenarios">
             <File name="E:\websites\ib3\scenarios\1\buildings.desc" />
