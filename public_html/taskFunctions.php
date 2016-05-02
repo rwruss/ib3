@@ -1,11 +1,24 @@
 <?php
 
-function lookForWorkers() {
-	
-}
 
-function createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile) {
+function createTask($taskFile, $parameters) {
+	clearstatcache();
+	if (flock($taskFile, LOCK_EX) {
+		fseek($taskFile, 0, seek_end);
+		$endPos = ftell($taskFile);
+		//$newTaskID = floor(max(1,filesize($gamePath.'/tasks.tdt')/200));
+		$newTaskID = $endPos/200;
+		fseek($taskFile, $newTaskID*200);
+		fwrite($taskFile, $parameters);
+		if (strlen($parameters < 200) {
+			fseek($taskFile, $newTaskID*200+196);
+			fwrite($taskFile, pack('i', 0));
+		}
+		
+	return $newTaskID;
+	}
 	
+	/*
 	// Save task
 	clearstatcache();
 	if (strlen($parameters>200)) {
@@ -58,6 +71,7 @@ function createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $s
 		addDataToSlot($gamePath."/gameSlots.slt", $newSlot, pack("N", $indexTime), $slotFile);
 	}
 	return $newTaskID;
+	*/
 }
 
 /*

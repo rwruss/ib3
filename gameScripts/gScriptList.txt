@@ -86,6 +86,9 @@
 1077 - Character traits detail
 1078 - Character plot details
 1079 - Process adding a plot (task)
+1080 - Menu for inviting character to plot
+1081 - Plot Detail
+1082 - Add character to plot
 
 // Manual Override Functions
 2001 - Add Resources to a city

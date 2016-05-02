@@ -1,8 +1,68 @@
 <NotepadPlus>
-    <Project name="gameScript">
+    <Project name="portfolio" />
+    <Project name="IB#">
+        <Folder name="doc">
+            <Folder name="org">
+                <File name="E:\websites\ib3\doc\org\baseView.html" />
+                <File name="E:\websites\ib3\doc\org\blank.html" />
+                <File name="E:\websites\ib3\doc\org\charDetail.html" />
+                <File name="E:\websites\ib3\doc\org\charManage.html" />
+                <File name="E:\websites\ib3\doc\org\cityBuild.html" />
+                <File name="E:\websites\ib3\doc\org\cityForage.html" />
+                <File name="E:\websites\ib3\doc\org\cityManage.html" />
+                <File name="E:\websites\ib3\doc\org\cityPlayers.html" />
+                <File name="E:\websites\ib3\doc\org\cityResources.html" />
+                <File name="E:\websites\ib3\doc\org\orgWorkspace.txt" />
+                <File name="E:\websites\ib3\doc\org\rscInfo.html" />
+                <File name="E:\websites\ib3\doc\org\tech.html" />
+                <File name="E:\websites\ib3\doc\org\unitDetail.html" />
+                <File name="E:\websites\ib3\doc\org\unitForage.html" />
+                <File name="E:\websites\ib3\doc\org\unitManage.html" />
+                <File name="E:\websites\ib3\doc\org\unitMove.html" />
+                <File name="E:\websites\ib3\doc\org\unitRecruitment.html" />
+                <File name="E:\websites\ib3\doc\org\unitSelect.html" />
+            </Folder>
+            <File name="E:\websites\ib3\doc\Diplomacy calculations.docx" />
+            <File name="E:\websites\ib3\doc\gameNotes.docx" />
+            <File name="E:\websites\ib3\doc\newRSCcalc.xlsx" />
+            <File name="E:\websites\ib3\doc\resourceCollection.xlsx" />
+            <File name="E:\websites\ib3\doc\territoryOverlay.xlsx" />
+            <File name="E:\websites\ib3\doc\blockSlotOffsets.xlsx" />
+            <File name="E:\websites\ib3\doc\gameInf.xls" />
+        </Folder>
         <Folder name="gameScripts">
+            <Folder name="objects">
+                <File name="objects\obj_2.php" />
+                <File name="objects\bldg_1.php" />
+                <File name="objects\obj_8.php" />
+                <File name="objects\obj_1.php" />
+                <File name="objects\obj_10.php" />
+                <File name="objects\obj_3.php" />
+                <File name="objects\obj_6.php" />
+            </Folder>
+            <Folder name="tasks">
+                <File name="tasks\td_1.php" />
+                <File name="tasks\td_2.php" />
+                <File name="tasks\to_1.php" />
+                <File name="tasks\ts_1.php" />
+                <File name="tasks\to_4.php" />
+                <File name="tasks\td_5.php" />
+                <File name="tasks\to_5.php" />
+                <File name="tasks\ta_2.php" />
+                <File name="tasks\pDtl_2.php" />
+                <File name="tasks\pDtl_1.php" />
+            </Folder>
+            <Folder name="units">
+                <File name="units\wbsc_1.php" />
+                <File name="units\wbsc_5.php" />
+                <File name="units\wbsc_6.php" />
+                <File name="units\wbsc_8.php" />
+            </Folder>
             <File name="1001.php" />
             <File name="1002.php" />
+            <File name="1002a.php" />
+            <File name="1002b.php" />
+            <File name="1002c.php" />
             <File name="1003.php" />
             <File name="1004.php" />
             <File name="1005.php" />
@@ -39,6 +99,7 @@
             <File name="1035.php" />
             <File name="1036.php" />
             <File name="1037.php" />
+            <File name="1038.php" />
             <File name="1039.php" />
             <File name="1040.php" />
             <File name="1041.php" />
@@ -50,7 +111,6 @@
             <File name="1047.php" />
             <File name="1048.php" />
             <File name="1049.php" />
-            <File name="1050.php" />
             <File name="1051.php" />
             <File name="1052.php" />
             <File name="1053.php" />
@@ -59,16 +119,17 @@
             <File name="1056.php" />
             <File name="1057.php" />
             <File name="1058.php" />
-            <File name="1059.php" />
             <File name="1059-6.php" />
             <File name="1059-8.php" />
-            <File name="1060.php" />
             <File name="1060-1.php" />
+            <File name="1061-2.php" />
+            <File name="1050.php" />
+            <File name="1059.php" />
+            <File name="1060.php" />
             <File name="1060-2.php" />
             <File name="1060-3.php" />
             <File name="1061.php" />
             <File name="1061-1.php" />
-            <File name="1061-2.php" />
             <File name="1061-3.php" />
             <File name="1062.php" />
             <File name="1063.php" />
@@ -83,73 +144,123 @@
             <File name="1072.php" />
             <File name="1073.php" />
             <File name="1074.php" />
-            <File name="2001.php" />
-            <File name="2002.php" />
-            <File name="cl255.php" />
-            <File name="gScriptList.txt" />
-            <Folder name="units">
-                <File name="units\wbsc_1.php" />
-                <File name="units\wbsc_5.php" />
-                <File name="units\wbsc_6.php" />
-                <File name="units\wbsc_8.php" />
-            </Folder>
-            <Folder name="tasks">
-                <File name="tasks\ta_2.php" />
-                <File name="tasks\td_1.php" />
-                <File name="tasks\td_2.php" />
-                <File name="tasks\to_1.php" />
-                <File name="tasks\ts_1.php" />
-            </Folder>
-            <Folder name="objects">
-                <File name="objects\obj_1.php" />
-                <File name="objects\obj_2.php" />
-                <File name="objects\obj_6.php" />
-                <File name="objects\obj_8.php" />
-                <File name="objects\bldg_1.php" />
-            </Folder>
             <File name="1074a.php" />
             <File name="1074c.php" />
             <File name="1075.php" />
             <File name="1078.php" />
             <File name="1079.php" />
+            <File name="2001.php" />
+            <File name="2002.php" />
+            <File name="cl255.php" />
+            <File name="traits.desc" />
+            <File name="gScriptList.txt" />
+            <File name="fdGameScripts" />
         </Folder>
         <Folder name="public_html">
-            <File name="E:\websites\IB3\public_html\glFunctions.js" />
-            <File name="E:\websites\IB3\public_html\glMatrix-0.9.5.min.js" />
-            <File name="E:\websites\IB3\public_html\webgl-utils.js" />
-            <File name="E:\websites\IB3\public_html\director.php" />
-            <File name="E:\websites\IB3\public_html\gameScr.php" />
-            <File name="E:\websites\IB3\public_html\index.php" />
-            <File name="E:\websites\IB3\public_html\play.php" />
-            <File name="E:\websites\IB3\public_html\slotFunctions.php" />
-            <File name="E:\websites\IB3\public_html\taskFunctions.php" />
-            <File name="E:\websites\IB3\public_html\templates.js" />
-            <File name="E:\websites\IB3\public_html\ib3styles.css" />
-            <File name="E:\websites\ib3\public_html\cityClass.php" />
-            <File name="E:\websites\ib3\public_html\unitClass.php" />
             <Folder name="rivers">
-                <File name="E:\websites\IB3\public_html\rivers\loadRivers_v2.php" />
+                <File name="E:\websites\ib3\public_html\rivers\loadRivers_v2.php" />
             </Folder>
+            <File name="E:\websites\ib3\public_html\checkSlot.php" />
+            <File name="E:\websites\ib3\public_html\director.php" />
+            <File name="E:\websites\ib3\public_html\glFunctions.js" />
+            <File name="E:\websites\ib3\public_html\glMatrix-0.9.5.min.js" />
+            <File name="E:\websites\ib3\public_html\taskFunctions.php" />
+            <File name="E:\websites\ib3\public_html\webgl-utils.js" />
+            <File name="E:\websites\ib3\public_html\bldgObjects.php" />
+            <File name="E:\websites\ib3\public_html\play.php" />
+            <File name="E:\websites\ib3\public_html\index.php" />
+            <File name="E:\websites\ib3\public_html\gameScr.php" />
+            <File name="E:\websites\ib3\public_html\ib3styles.css" />
             <File name="E:\websites\ib3\public_html\dipFunctions.php" />
+            <File name="E:\websites\ib3\public_html\slotFunctions.php" />
+            <File name="E:\websites\ib3\public_html\cityClass.php" />
+            <File name="E:\websites\ib3\public_html\templates.js" />
+            <File name="E:\websites\ib3\public_html\unitClass.php" />
+            <File name="E:\websites\ib3\public_html\factoryTest3.html" />
         </Folder>
-        <Folder name="other" />
+        <Folder name="scripts">
+            <File name="E:\websites\ib3\scripts\1000.php" />
+            <File name="E:\websites\ib3\scripts\1001.php" />
+            <File name="E:\websites\ib3\scripts\1003.php" />
+            <File name="E:\websites\ib3\scripts\1004.php" />
+            <File name="E:\websites\ib3\scripts\1005.php" />
+            <File name="E:\websites\ib3\scripts\1006.php" />
+            <File name="E:\websites\ib3\scripts\1007.php" />
+            <File name="E:\websites\ib3\scripts\1008.php" />
+            <File name="E:\websites\ib3\scripts\1009.php" />
+            <File name="E:\websites\ib3\scripts\1010.php" />
+            <File name="E:\websites\ib3\scripts\1011.php" />
+            <File name="E:\websites\ib3\scripts\1012.php" />
+            <File name="E:\websites\ib3\scripts\1013.php" />
+            <File name="E:\websites\ib3\scripts\1014.php" />
+            <File name="E:\websites\ib3\scripts\createPlayer.php" />
+            <File name="E:\websites\ib3\scripts\scriptList.txt" />
+            <File name="E:\websites\ib3\scripts\1002.php" />
+        </Folder>
+        <Folder name="newFolder">
+            <File name="E:\websites\ib3\newFolder\newFile.txt" />
+        </Folder>
+        <Folder name="newFolder2" />
         <Folder name="test">
             <Folder name="slots">
+                <File name="E:\websites\ib3\test\slots\itemSlot.slt" />
+                <File name="E:\websites\ib3\test\slots\itemSlotTest.php" />
                 <File name="E:\websites\ib3\test\slots\eventSlotTest.php" />
+                <File name="E:\websites\ib3\test\slots\blockSlotTest.php" />
+                <File name="E:\websites\ib3\test\slots\testslot.slt" />
             </Folder>
-            <Folder name="units">
+            <Folder name="classes">
                 <File name="E:\websites\ib3\test\classes\unitClassTest.php" />
+                <File name="E:\websites\ib3\test\classes\unitClasstest.dat" />
             </Folder>
-            <Folder name="JS" />
+            <Folder name="JS">
+                <File name="E:\websites\ib3\test\JS\factoryTest.html" />
+                <File name="E:\websites\ib3\test\JS\factoryTest2.html" />
+                <File name="E:\websites\ib3\test\JS\factoryTest3.html" />
+            </Folder>
         </Folder>
         <Folder name="scenarios">
-            <File name="E:\websites\ib3\scenarios\1\buildings.desc" />
-            <File name="E:\websites\ib3\scenarios\1\equip.desc" />
-            <File name="E:\websites\ib3\scenarios\1\jobs.desc" />
-            <File name="E:\websites\ib3\scenarios\1\resources.desc" />
-            <File name="E:\websites\ib3\scenarios\1\tasks.desc" />
-            <File name="E:\websites\ib3\scenarios\1\units.desc" />
+            <Folder name="1">
+                <File name="E:\websites\ib3\scenarios\1\buildings.desc" />
+                <File name="E:\websites\ib3\scenarios\1\chars.dat" />
+                <File name="E:\websites\ib3\scenarios\1\culture.txt" />
+                <File name="E:\websites\ib3\scenarios\1\dipFile.dip" />
+                <File name="E:\websites\ib3\scenarios\1\equip.desc" />
+                <File name="E:\websites\ib3\scenarios\1\events.evd" />
+                <File name="E:\websites\ib3\scenarios\1\events.evt" />
+                <File name="E:\websites\ib3\scenarios\1\gameSlots.slt" />
+                <File name="E:\websites\ib3\scenarios\1\intel.slt" />
+                <File name="E:\websites\ib3\scenarios\1\jobChange.log" />
+                <File name="E:\websites\ib3\scenarios\1\jobs.desc" />
+                <File name="E:\websites\ib3\scenarios\1\mapEffects.slt" />
+                <File name="E:\websites\ib3\scenarios\1\mapObjects.map" />
+                <File name="E:\websites\ib3\scenarios\1\mapSlotFile.slt" />
+                <File name="E:\websites\ib3\scenarios\1\moveUpdates.dat" />
+                <File name="E:\websites\ib3\scenarios\1\openJobs.job" />
+                <File name="E:\websites\ib3\scenarios\1\orgTree.org" />
+                <File name="E:\websites\ib3\scenarios\1\params.ini" />
+                <File name="E:\websites\ib3\scenarios\1\players.plr" />
+                <File name="E:\websites\ib3\scenarios\1\randomLongFile.lmf" />
+                <File name="E:\websites\ib3\scenarios\1\randomMoveFile.mvf" />
+                <File name="E:\websites\ib3\scenarios\1\resources.desc" />
+                <File name="E:\websites\ib3\scenarios\1\tasks.desc" />
+                <File name="E:\websites\ib3\scenarios\1\tasks.tdt" />
+                <File name="E:\websites\ib3\scenarios\1\tasks.tix" />
+                <File name="E:\websites\ib3\scenarios\1\towns.tn" />
+                <File name="E:\websites\ib3\scenarios\1\unitDat.dat" />
+                <File name="E:\websites\ib3\scenarios\1\units.desc" />
+                <File name="E:\websites\ib3\scenarios\1\plots.desc" />
+            </Folder>
+            <Folder name="common">
+                <File name="E:\websites\ib3\scenarios\common\elMoveFile.dat" />
+                <File name="E:\websites\ib3\scenarios\common\terMoveFile.dat" />
+                <File name="E:\websites\ib3\scenarios\common\terrainDat.dat" />
+            </Folder>
+            <File name="E:\websites\ib3\scenarios\Book2.csv" />
         </Folder>
+        <File name="E:\websites\ib3\README.md" />
+        <File name="E:\websites\ib3\.gitignore" />
+        <File name="E:\websites\ib3\resetAll.php" />
+        <File name="E:\websites\ib3\resetGame.php" />
     </Project>
-    <Project name="portfolio" />
 </NotepadPlus>

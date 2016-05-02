@@ -88,6 +88,26 @@ optionButton = function (prm, trg, src) {
 	return newButton;
 }
 
+plotSummary = function (obj, trg) {
+	var newPlot = document.createElement("div");
+	newPlot.style.className = "tdHolder";
+	
+	var descBox = addDiv("", "tdHolder", newPlot);
+	descBox.innerHTML = obj.desc;
+	
+	var descBox = addDiv("", "tdHolder", newPlot);
+	descBox.innerHTML = obj.dtl;
+	var prm = "1081,"+obj.id;
+	descBox.addEventListener("click", function () {makeBox("plotDtl", prm, 500, 500, 200, 50)});
+	
+	var newButton = addDiv("button", "cBoxA", newPlot);
+	newButton.innerHTML = obj.button;
+	var prm = "1082,"+obj.id;
+	newButton.addEventListener("click", function () {confirmBox("Are you sure you want to invite this person to this plot?", prm,"", 2, "Yes", "No")})
+	
+	trg.appendChild(newPlot);
+}
+
 newTabMenu = function(target) {
 	var tabHolder = document.getElementById(target+"_tabs");
 	tabHolder.currentSelection = 1;

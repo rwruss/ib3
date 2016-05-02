@@ -14,9 +14,13 @@ document.getElementById("Udtl_'.$postVals[1].'_name").innerHTML = "unitName";
 setUnitAction('.$postVals[1].', '.($actionPoints/1000).');
 setUnitExp('.$postVals[1].', 0.5);
 
-var plot = addDiv("unitEquip", "stdFloatDiv", document.getElementById("rtPnl"));
+var plot = addDiv("", "stdFloatDiv", document.getElementById("rtPnl"));
 plot.innerHTML = "Character Plots";
 plot.addEventListener("click", function () {makeBox("plot", "1075,'.$postVals[1].'", 500, 500, 200, 50)});
+
+var plot = addDiv("", "stdFloatDiv", document.getElementById("rtPnl"));
+plot.innerHTML = "Invite to Plot";
+plot.addEventListener("click", function () {makeBox("plotInvite", "1080,'.$postVals[1].'", 500, 500, 200, 50)});
 
 var skills = addDiv("unitEquip", "stdFloatDiv", document.getElementById("rtPnl"));
 skills.innerHTML = "Character Skills";
