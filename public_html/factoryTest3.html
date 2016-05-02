@@ -1,6 +1,6 @@
 
-<link rel='stylesheet' type='text/css' href='./ib3styles.css'>
-<script type='text/javascript' src='./templates.js'></script>
+<link rel='stylesheet' type='text/css' href='ib3styles.css'>
+<script type='text/javascript' src='templates.js'></script>
 
 <html>
 <body>
@@ -9,11 +9,6 @@
 
 <script>
 
-var observer = new MutationObserver(function(mutations) {
-  mutations.forEach(function(mutation) {
-    console.log(mutation.type + ' at ' + mutation.target);
-  });
-});
 
 var config = { attributes: true, childList: true, characterData: true, subtree: true };
 
@@ -24,24 +19,51 @@ function deleteObj() {
 }
 
 function addition () {
-	useList["unit_1"].str ++;
-	useList.changeItem(1, {attr : "str",value : useList["unit_1"].str});
-	//unit.str += 1;
-	//unit.changeAttr({attr : "str",value : unit.str});
+	useList.changeItem(1, {attr : "actionBar",value : 1});
 }
 
 function warBand( options ) {
-	this.type = options.unitType || 'unknown';
-	this.unitName = options.unitName || 'unnamed';
-	this.str = options.str || 0;
-	this.status = options.status || 0;
+	this.type = options.unitType || 'unknown',
+	this.unitName = options.unitName || 'unnamed',
+	this.aps = options.actionPoints || 0,
+	this.status = options.status || 0,
+  this.experience = options.exp || 0,
 	this.unitID = options.unitID;
 
-  set str() {
-    console.log("i c u");
-  }
-  //this.watch("str", function () {console.log("I see you!")})
-	//this.divArray = [];
+  Object.defineProperties(this, {"actionBar": {
+    set (x) {this.aps = Math.min(this.aps+x, 100);
+      setBar(this.unitID, "apBar", this.aps);
+    }
+  }});
+
+  Object.defineProperties(this, {"expBar": {
+    set (x) {this.experience = Math.min(this.experience+x, 100);
+      setBar(this.unitID, "expBar", this.experience);
+    }
+  }});
+
+
+}
+
+function setBar(id, desc, pct) {
+  objList = document.body.querySelectorAll(".udHolder");
+
+	for (n=0; n<objList.length; n++) {
+		if (objList[n].getAttribute("data-unitID") == id) {
+			//console.log("found 1" + objList[n].childNodes );
+			for (i=0; i<objList[n].childNodes.length; i++) {
+				//console.log("check " + i + " of " + objList[n].childNodes.length)
+				if (objList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+					//console.log("found it - " + desc);
+          objList[n].childNodes[i].style.width = pct + "%";
+          objList[n].childNodes[i].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
+          //console.log("rgb("+parseInt((100-pct)*2.55)+", 0, "+parseInt(pct*2.55)+")");
+				}
+			}
+		} else {
+			//console.log (n + ": " + objList[n].getAttribute("data-unitID"))
+		}
+	}
 }
 
 function char( options ) {
@@ -54,10 +76,10 @@ function unitList () {}
 unitList.prototype.newList = function createList () {
 	//this.list = [];
 }
-unitList.prototype.newUnit  = function createUnit (id, options) {
-	console.log(this);
-	this["unit_"+id] = myDetailFactory.newDetail(options);
-	console.log(this);
+unitList.prototype.newUnit  = function createUnit (options) {
+	//console.log("start with " + this);
+	this["unit_"+options.unitID] = myDetailFactory.newDetail(options);
+	//console.log("end with " + this);
 }
 unitList.prototype.render = function newRender(id) {
 	if (this["unit_"+id]) {
@@ -88,17 +110,9 @@ detailFactory.prototype.newDetail = function createDetail( options ) {
 }
 
 warBand.prototype.changeAttr = function changeDetail (options) {
+  //console.log("set " + options.attr + " to " + options.value);
 	this[options.attr] = options.value;
-	//console.log(this.divArray.length);
-	/* THIS WORKS
-	for (n=0; n<this.divArray.length; n++) {
-		for (i=0; i<this.divArray[n].childNodes.length; i++) {
-			if (this.divArray[n].childNodes[i].getAttribute("data-boxName") == options.attr) {
-				this.divArray[n].childNodes[i].innerHTML = this[options.attr];
-			}
-		}
-	}
-	*/
+  //console.log(this);
 
 	objList = document.body.querySelectorAll(".stdContain");
 	//console.log(objList.length);
@@ -118,50 +132,32 @@ warBand.prototype.changeAttr = function changeDetail (options) {
 }
 
 warBand.prototype.renderObj = function renderThis (target) {
-	thisDiv = addDiv(null, 'stdContain', target);
+	thisDiv = addDiv(null, 'udHolder', target);
 	thisDiv.setAttribute("data-unitID", this.unitID);
 
 	nameDiv = addDiv("asdf", "stdContain", thisDiv);
 	nameDiv.setAttribute("data-boxName", "unitName");
 
-	strDiv = addDiv("asdf", "stdContain", thisDiv);
-	strDiv.setAttribute("data-boxName", "str");
-	strDiv.innerHTML = this.str;
-	//observer.observe(strDiv, config);
+	actDiv = addDiv("asdf", "udAct", thisDiv);
+	actDiv.setAttribute("data-boxName", "apBar");
+
+  expDiv = addDiv("asdf", "udExp", thisDiv);
+  expDiv.setAttribute("data-boxName", "expBar");
 
 	nameDiv.innerHTML = this.unitName;
-	console.log('render')
-	console.log(this);
+  this.changeAttr({attr : "actionBar",value : 1})
+	//console.log('render')
+	//console.log(this);
 	//this.divArray.push(thisDiv) ;
 }
 
 var useList = new unitList();
 var myDetailFactory = new detailFactory();
-useList.newList;
-useList.newUnit(1, {unitID : 1,	unitType : "warband",	str : 100,	status : 1});
-console.log(useList["unit_1"]);
-//useList["unit_1"].watch("str", function () {console.log("I see you");});
-/*
-var unit = myDetailFactory.newDetail({
-	unitID : 1,
-	unitType : "warband",
-	str : 100,
-	status : 1
-});
+//useList.newList;
+useList.newUnit({unitID : 1,	unitType : "warband",	actionPoints : 50,	status : 1, unitName : "hello"});
+useList.newUnit({unitID : 2,	unitType : "warband",	actionPoints : 50,	status : 1});
+//console.log(useList["unit_1"]);
 
-var unit2 = myDetailFactory.newDetail({
-	unitID : 2,
-	unitType : "warband",
-	unitName : "test Unit",
-	str : 75,
-	status : 1
-});
-
-var char = myDetailFactory.newDetail({
-	unitType : "char",
-	status : 2
-});
-*/
 var holder1 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
 var holder2 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
 /*
@@ -179,7 +175,9 @@ trackList.unit_2.changeAttr({attr : "unitName",value : "shutup"});
 unit3.changeAttr({attr : "unitName",value : "shutup"});
 */
 useList.render(1);
+useList.render(2);
+useList.render(1);
 </script>
 
 <div onclick='deleteObj()'>Delete</div>
-<div onclick='addition()'>Add</div>
+<div onclick='addition()'>Str</div>
