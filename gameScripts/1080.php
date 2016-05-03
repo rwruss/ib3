@@ -1,5 +1,9 @@
 <?php
 
+include('./slotFunctions.php');
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+
+
 // Get list of known plots
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 fseek($unitFile, $pGameID*$defaultBlockSize);
@@ -16,5 +20,6 @@ for ($i=0; $i<sizeof($plotList->slotData); $i++) {
 echo '</script>';
 
 fclose($unitFile);
+fclose($slotFile);
 
 ?>

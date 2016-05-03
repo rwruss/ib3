@@ -32,5 +32,10 @@ function parentTree($player, $unitFile) {
 	return $parentList;
 }
 
+class intel {
+	function __construct($id, $file) {
+		
+	}
+}
 
 ?>
