@@ -1,0 +1,202 @@
+
+<link rel='stylesheet' type='text/css' href='ib3styles.css'>
+<script type='text/javascript' src='templates.js'></script>
+
+<html>
+<body>
+</body>
+</html>
+
+<script>
+
+
+var config = { attributes: true, childList: true, characterData: true, subtree: true };
+
+function deletethis() {
+	console.log('delete something');
+	holder2.parentNode.removeChild(holder2);
+	//this.parentNode.parentNode.removeChild(this.parentNode);
+}
+
+function addition () {
+	useList.changeItem(1, {attr : "actionBar",value : 1});
+}
+
+function char( options ) {
+	this.avatar = options.avatar || 0;
+	unitthis(this, options);
+
+ }
+
+function warBand( options ) {
+	console.log('make warband');
+	unitthis(this, options);
+	/*
+	this.type = options.unitType || 'unknown',
+	this.unitName = options.unitName || 'unnamed',
+	this.aps = options.actionPoints || 0,
+	this.status = options.status || 0,
+	this.experience = options.exp || 0,
+	this.unitID = options.unitID;
+
+  thisect.defineProperties(this, {"actionBar": {
+    set (x) {this.aps = Math.min(this.aps+x, 100);
+      setBar(this.unitID, "apBar", this.aps);
+    }
+  }});
+
+  thisect.defineProperties(this, {"expBar": {
+    set (x) {this.experience = Math.min(this.experience+x, 100);
+      setBar(this.unitID, "expBar", this.experience);
+    }
+  }});
+  */
+  console.log('unit this set ' + this.unitID);
+ }
+ 
+ function unitobj(this, options) {
+	console.log(options);
+	this.type = options.unitType || 'unknown',
+	this.unitName = options.unitName || 'unnamed',
+	this.aps = options.actionPoints || 0,
+	this.status = options.status || 0,
+	this.experience = options.exp || 0,
+	this.unitID = options.unitID;
+
+  Object.defineProperties(this, {"actionBar": {
+    set (x) {this.aps = Math.min(this.aps+x, 100);
+      setBar(this.unitID, "apBar", this.aps);
+    }
+  }});
+
+  Object.defineProperties(this, {"expBar": {
+    set (x) {this.experience = Math.min(this.experience+x, 100);
+      setBar(this.unitID, "expBar", this.experience);
+    }
+  }});
+  
+  console.log('unit this set ' + this.unitID);
+ }
+ 
+
+function setBar(id, desc, pct) {
+  thisList = document.body.querySelectorAll(".udHolder");
+
+	for (n=0; n<thisList.length; n++) {
+		if (thisList[n].getAttribute("data-unitID") == id) {
+			//console.log("found 1" + thisList[n].childNodes );
+			for (i=0; i<thisList[n].childNodes.length; i++) {
+				//console.log("check " + i + " of " + thisList[n].childNodes.length)
+				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+					//console.log("found it - " + desc);
+          thisList[n].childNodes[i].style.width = pct + "%";
+          thisList[n].childNodes[i].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
+          //console.log("rgb("+parseInt((100-pct)*2.55)+", 0, "+parseInt(pct*2.55)+")");
+				}
+			}
+		} else {
+			//console.log (n + ": " + thisList[n].getAttribute("data-unitID"))
+		}
+	}
+}
+
+function char( options ) {
+	this.type = options.unitType || 'unknown';
+	this.unitName = options.unitName || 'unnamed';
+	this.status = options.status || 0;
+}
+
+function unitList () {}
+unitList.prototype.newList = function createList () {
+}
+unitList.prototype.newUnit  = function createUnit (options) {
+	this["unit_"+options.unitID] = myDetailFactory.newDetail(options);
+	console.log('Just made ' + this["unit_"+options.unitID].type);
+}
+unitList.prototype.render = function newRender(id) {
+	
+	if (this["unit_"+id]) {
+		console.log('Render id ' + this["unit_"+id].type);
+		this["unit_"+id].renderthis(holder1);
+	}
+}
+unitList.prototype.changeItem = function newChange(id, options) {
+	if (this["unit_"+id]) {
+		this["unit_"+id].changeAttr(options);
+	}
+}
+
+function detailFactory() {}
+detailFactory.prototype.newDetail = function createDetail( options ) {
+  var parentClass = null;
+	console.log('new item ' + options.unitID);
+  if( options.unitType === 'warband' ) {
+    parentClass = warBand;
+  } else if( options.unitType === 'char' ) {
+    parentClass = char;
+  }
+
+  if( parentClass === null ) {
+    return false;
+  }
+
+  return new parentClass( options );
+}
+
+unitthis.prototype.something = function () {}
+
+warBand.prototype.changeAttr = function changeDetail (options) {
+  //console.log("set " + options.attr + " to " + options.value);
+	this[options.attr] = options.value;
+  //console.log(this);
+
+	thisList = document.body.querySelectorAll(".stdContain");
+	//console.log(thisList.length);
+	for (n=0; n<thisList.length; n++) {
+		if (thisList[n].getAttribute("data-unitID") == 1) {
+			//console.log("found 1" + thisList[n].childNodes );
+			for (i=0; i<thisList[n].childNodes.length; i++) {
+				//console.log("check " + i + " of " + thisList[n].childNodes.length)
+				if (thisList[n].childNodes[i].getAttribute("data-boxName") == options.attr) {
+					thisList[n].childNodes[i].innerHTML = this[options.attr];
+				}
+			}
+		} else {
+			//console.log (n + ": " + thisList[n].getAttribute("data-unitID"))
+		}
+	}
+}
+
+warBand.prototype.renderthis = function renderThis (target) {
+	console.log('draw ' + this.type)
+	thisDiv = addDiv(null, 'udHolder', target);
+	thisDiv.setAttribute("data-unitID", this.unitID);
+
+	nameDiv = addDiv("asdf", "stdContain", thisDiv);
+	nameDiv.setAttribute("data-boxName", "unitName");
+
+	actDiv = addDiv("asdf", "udAct", thisDiv);
+	actDiv.setAttribute("data-boxName", "apBar");
+
+	expDiv = addDiv("asdf", "udExp", thisDiv);
+	expDiv.setAttribute("data-boxName", "expBar");
+
+	nameDiv.innerHTML = this.unitName;
+	this.changeAttr({attr : "actionBar",value : 1})
+}
+
+var useList = new unitList();
+var myDetailFactory = new detailFactory();
+useList.newUnit({unitID : 1, unitType : "warband",	actionPoints : 50,	status : 1, unitName : "hello"});
+useList.newUnit({unitID : 2, unitType : "warband",	actionPoints : 50,	status : 1});
+
+var holder1 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+var holder2 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+
+useList.render(1);
+useList.render(2);
+useList.render(1);
+</script>
+
+<div onclick='deletethis()'>Delete</div>
+<div onclick='addition()'>Str</div>

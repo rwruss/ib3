@@ -26,44 +26,60 @@ for ($i=1; $i<=sizeof($plotChars->slotData); $i++) {
 	if (array_search($plotChars->slotData[$i], $playerChars->slotData)) {
 		// Player controls a char involved in the plot and can view the details
 		$hideDtl = false;
-		echo 'Details on this plot....';
-		
-		// Show basics of the plot (type, start time, progress, etc....)
-		
-		// Look up information that you have about this plot....
-		$intelFile = fopen($gameScr.'/plotIntel.dat', 'rb');
-		$plotIntel = new itemSlot($playerData[34], $intelFile, 404);
-		for ($i=1; $i<=sizeof($plotIntel->slotData); $i+=5) {
-			if ($plotIntel->slotData[$i] == $postVals[1]) {
-				switch ($plotIntel->slotData[$i+1]) {
-					case 1: // Character involved
-						echo 'Character #'.$plotIntel->slotData[$i+2].' is reported to be involved';
-						break;
-						
-					case 2: // Total Progress
-						echo 'Progress of '.$plotIntel->slotData[$i+2].' is reported by character '.$plotIntel->slotData[$i+3].' at '.$plotIntel->slotData[$i+4];
-						break;
-						
-					case 3: // Target
-						break;
-						
-					case 4: // Founder 
-						break;
-				}
-			}
-		}
-		
-		fclose($intelFile);
-		
-		// Show the known informaiton on this plot
-		
+		$target = $plotDat[8];
+		fseek($unitFile, $target*$defaultBlockSize);
+		$targetDat = unpack('i*', fread($unitFile, 200));
+		echo 'Details on this plot....<script>
+		plotSummary();
+		progressBox = addDiv("", "tdHolder", document.getElementById("plotContent"));
+		charBox = addDiv("", "tdHolder", document.getElementById("plotContent"));
+		otherBox = addDiv("", "tdHolder", document.getElementById("plotContent"));
+		unitList.newUnit({unitID : '.$targetDat.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
+		unitList.renderSum(1, document.getElementById("plot_'.$postVals[1].'_targets"));
+		document.getElementById("plot_'.$postVals[1].'progress").innerHTML = "'.$plotDat[6].'"
+		';
+	break;
 	}
 }
 
 if ($hideDtl) {
-	echo 'You have no information on this plot';
+	// Show plot object but only fill with known items
+	echo '<script>
+		plotSummary();
+		progressBox = addDiv("", "tdHolder", document.getElementById("plotContent"));
+		charBox = addDiv("", "tdHolder", document.getElementById("plotContent"));
+		otherBox = addDiv("", "tdHolder", document.getElementById("plotContent"));
+		';
 }
 
+// Look up intel you have about this plot
+$intelFile = fopen($gameScr.'/plotIntel.dat', 'rb');
+$plotIntel = new itemSlot($playerData[34], $intelFile, 404);
+for ($i=1; $i<=sizeof($plotIntel->slotData); $i+=5) {
+	if ($plotIntel->slotData[$i] == $postVals[1]) {
+		switch ($plotIntel->slotData[$i+1]) {
+			case 1: // Character involved
+				// get char detail
+				fseek($unitFile, $plotIntel->slotData[$i+2]*$defaultBlockSize);
+				$charDat = unpack('i*', fread($unitFile, 200));
+				echo 'unitList.newUnit({unitID : '.$plotIntel->slotData[$i+2].', unitType : "warband", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
+				unitList.renderSum(1, charBox);';
+				break;
+				
+			case 2: // Total Progress
+				echo 'Progress of '.$plotIntel->slotData[$i+2].' is reported by character '.$plotIntel->slotData[$i+3].' at '.$plotIntel->slotData[$i+4];
+				break;
+				
+			case 3: // Target
+				break;
+				
+			case 4: // Founder 
+				break;
+		}
+	}
+}
+
+fclose($intelFile);
 fclose($taskFile);
 fclose($unitFile);
 fclose($slotFile);

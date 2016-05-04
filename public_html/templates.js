@@ -4,7 +4,6 @@ addDiv = function(id, useClassName, target) {
 	newDiv.className = useClassName;
 	newDiv.id = id;
 	target.appendChild(newDiv);
-	console.log(target);
 	return newDiv;
 }
 
@@ -304,6 +303,21 @@ newUnitDetail = function(id, target) {
 	document.getElementById(target).appendChild(holderDiv);
 	
 	return 
+}
+
+plotSummary = function (id, target) {
+	var holder = document.createElement("div");
+	holder.className = "tdHolder";
+	
+	var targets = document.createElement("div");
+	targets.className = "stdContain";
+	targets.id = "plot_"+id+"_targets";
+
+	var progress = document.createElement("div");
+	progress.className = "stdContain";
+	progress.id = "plot_"+id+"_progress";
+	
+	document.getElementById(target).appendChild(holder);
 }
 
 setBarSize = function(id, pct, full) {

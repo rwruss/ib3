@@ -1,0 +1,196 @@
+
+<link rel='stylesheet' type='text/css' href='ib3styles.css'>
+<script type='text/javascript' src='templates.js'></script>
+
+<html>
+<body>
+</body>
+</html>
+
+<script>
+
+
+var config = { attributes: true, childList: true, characterData: true, subtree: true };
+
+function deletethis() {
+	console.log('delete something');
+	holder2.parentNode.removeChild(holder2);
+	//this.parentNode.parentNode.removeChild(this.parentNode);
+}
+
+function addition () {
+	useList.changeItem(1, {attr : "actionBar",value : 1});
+}
+
+function unitList () {
+}
+unitList.prototype.newUnit = function (object) {
+	if (this["unit_" + object.unitID]) {
+		console.log("already exists");
+	} else {
+		if (object.unitType == "warband") {
+			this["unit_" + object.unitID] = new warband(object);
+		}
+		else if (object.unitType == "character") {
+			this["unit_" + object.unitID] = new character(object);
+		}
+		console.log("Made " + this["unit_" + object.id]);
+	}
+}
+unitList.prototype.renderSum = function (id, target) {
+	if (this["unit_"+id]) {
+		console.log("render " + id);
+		this["unit_"+id].renderSummary(target);
+	} else {
+		console.log("not found");
+	}
+}
+unitList.prototype.change = function (id, desc, value) {
+	if (this["unit_"+id]) {
+		console.log("change " + id);
+		this["unit_"+id].changeAttr(id, desc, value);
+	} else {
+		console.log("not found for change");
+	}
+}
+
+function unit (options) {
+	console.log(options);
+	this.type = options.unitType || 'unknown',
+	this.unitName = options.unitName || 'unnamed',
+	this.aps = options.actionPoints || 0,
+	this.status = options.status || 0,
+	this.experience = options.exp || 0,
+	this.unitID = options.unitID;
+
+   Object.defineProperties(this, {"actionBar": {
+    set (x) {this.aps = Math.min(x, 100);
+      setBar(this.unitID, "apBar", this.aps);
+    }
+  }});
+
+  Object.defineProperties(this, {"expBar": {
+    set (x) {this.experience = Math.min(x, 100);
+	console.log("set exp bar to " + x);
+      setBar(this.unitID, "expBar", this.experience);
+    }
+  }});
+}
+
+unit.prototype.changeAttr = function (id, desc, value) {
+	//console.log("set " + options.attr + " to " + options.value);
+	this[desc] = value;
+	//console.log(this);
+
+	thisList = document.body.querySelectorAll(".udHolder");
+	//console.log(thisList.length);
+	for (n=0; n<thisList.length; n++) {
+		console.log(thisList[n].getAttribute("data-unitid"))
+		if (thisList[n].getAttribute("data-unitid") == id) {
+			console.log("found 1" + thisList[n].childNodes );
+			for (i=0; i<thisList[n].childNodes.length; i++) {
+				//console.log("check " + i + " of " + thisList[n].childNodes.length)
+				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+					thisList[n].childNodes[i].innerHTML = this[desc];
+				}
+			}
+		} else {
+			//console.log (n + ": " + thisList[n].getAttribute("data-unitID"))
+		}
+	}
+}
+
+function warband (options) {
+	this.base = unit;
+	this.base(options);
+}
+warband.prototype = Object.create(unit.prototype);
+warband.prototype.renderSummary = function (target) {
+	console.log('draw ' + this.type)
+	thisDiv = addDiv(null, 'udHolder', target);
+	thisDiv.setAttribute("data-unitid", this.unitID);
+
+	nameDiv = addDiv("asdf", "stdContain", thisDiv);
+	nameDiv.setAttribute("data-boxName", "unitName");
+
+	actDiv = addDiv("asdf", "udAct", thisDiv);
+	actDiv.setAttribute("data-boxName", "apBar");
+
+	expDiv = addDiv("asdf", "udExp", thisDiv);
+	expDiv.setAttribute("data-boxName", "expBar");
+	
+	dtlButton = addDiv("", "sumDtlBut", thisDiv);
+	dtlButton.addEventListener("click", function () {console.log("show detail")});
+
+	nameDiv.innerHTML = this.unitName;
+	//this.changeAttr(this.unitId, "actionBar", .50)
+}
+
+function character (options) {
+	this.base = unit;
+	this.base(options);
+}
+character.prototype = Object.create(unit.prototype);
+character.prototype.renderSummary = function (target) {
+	console.log('draw ' + this.type)
+	thisDiv = addDiv(null, 'udHolder', target);
+	thisDiv.setAttribute("data-unitid", this.unitID);
+
+	nameDiv = addDiv("asdf", "sumName", thisDiv);
+	nameDiv.setAttribute("data-boxName", "unitName");
+	
+	imgDiv = addDiv("", "sumImg", thisDiv);
+
+	actDiv = addDiv("asdf", "sumAct", thisDiv);
+	actDiv.setAttribute("data-boxName", "apBar");
+
+	expDiv = addDiv("asdf", "sumStr", thisDiv);
+	expDiv.setAttribute("data-boxName", "expBar");
+	
+	dtlButton = addDiv("", "sumDtlBut", thisDiv);
+	dtlButton.addEventListener("click", function () {console.log("show detail")});
+
+	nameDiv.innerHTML = this.unitName;
+	this.changeAttr(this.unitId, "actionBar", 50)
+	this.changeAttr(this.unitId, "expBar", 100)
+}
+
+
+function setBar(id, desc, pct) {
+  thisList = document.body.querySelectorAll(".udHolder");
+
+	for (n=0; n<thisList.length; n++) {
+		if (thisList[n].getAttribute("data-unitID") == id) {
+			//console.log("found 1" + thisList[n].childNodes );
+			for (i=0; i<thisList[n].childNodes.length; i++) {
+				//console.log("check " + i + " of " + thisList[n].childNodes.length)
+				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+					console.log("found it - " + desc + ", us set ti " + pct);
+				  thisList[n].childNodes[i].style.width = pct*125/100;
+				  thisList[n].childNodes[i].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
+				  //console.log("rgb("+parseInt((100-pct)*2.55)+", 0, "+parseInt(pct*2.55)+")");
+				}
+			}
+		} else {
+			//console.log (n + ": " + thisList[n].getAttribute("data-unitID"))
+		}
+	}
+}
+
+unitList = new unitList();
+unitList.newUnit({unitID : 1, unitType : "warband", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
+unitList.newUnit({unitID : 2, unitType : "character", actionPoints : 50, status : 1, unitName : "character name", exp: 100});
+unitList.newUnit({unitID : 1, unitType : "warband", actionPoints : 50, status : 1, exp : 500});
+
+console.log(unitList);
+var holder1 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+var holder2 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+
+unitList.renderSum(1, holder1);
+unitList.renderSum(1, holder1);
+unitList.renderSum(2, holder2);
+
+//unitList.change(1, "unitName", "something else");
+//unitList.add(1, "actionBar", 1);
+
+</script>
