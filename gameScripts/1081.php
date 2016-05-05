@@ -9,7 +9,7 @@ $taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
 
 // Get plot Data
 fseek($taskFile, $postVals[1]*200);
-$plotDat = unpack('i*', fread($taskFile));
+$plotDat = unpack('i*', fread($taskFile, 200));
 
 // Look up chars affiliated with the task
 $plotChars = new itemSlot($plotDat[11], $slotFile, 40);
@@ -44,7 +44,7 @@ for ($i=1; $i<=sizeof($plotChars->slotData); $i++) {
 
 if ($hideDtl) {
 	// Show plot object but only fill with known items
-	echo '<script>
+	echo 'Details:<script>
 		plotSummary();
 		progressBox = addDiv("", "tdHolder", document.getElementById("plotContent"));
 		charBox = addDiv("", "tdHolder", document.getElementById("plotContent"));
@@ -65,15 +65,15 @@ for ($i=1; $i<=sizeof($plotIntel->slotData); $i+=5) {
 				echo 'unitList.newUnit({unitID : '.$plotIntel->slotData[$i+2].', unitType : "warband", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
 				unitList.renderSum(1, charBox);';
 				break;
-				
+
 			case 2: // Total Progress
 				echo 'Progress of '.$plotIntel->slotData[$i+2].' is reported by character '.$plotIntel->slotData[$i+3].' at '.$plotIntel->slotData[$i+4];
 				break;
-				
+
 			case 3: // Target
 				break;
-				
-			case 4: // Founder 
+
+			case 4: // Founder
 				break;
 		}
 	}

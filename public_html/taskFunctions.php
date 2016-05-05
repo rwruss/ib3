@@ -3,21 +3,21 @@
 
 function createTask($taskFile, $parameters) {
 	clearstatcache();
-	if (flock($taskFile, LOCK_EX) {
-		fseek($taskFile, 0, seek_end);
+	if (flock($taskFile, LOCK_EX)) {
+		fseek($taskFile, 0, SEEK_END);
 		$endPos = ftell($taskFile);
 		//$newTaskID = floor(max(1,filesize($gamePath.'/tasks.tdt')/200));
 		$newTaskID = $endPos/200;
 		fseek($taskFile, $newTaskID*200);
 		fwrite($taskFile, $parameters);
-		if (strlen($parameters < 200) {
+		if (strlen($parameters < 200)) {
 			fseek($taskFile, $newTaskID*200+196);
 			fwrite($taskFile, pack('i', 0));
 		}
-		
+
 	return $newTaskID;
 	}
-	
+
 	/*
 	// Save task
 	clearstatcache();
@@ -39,11 +39,11 @@ function createTask($taskFile, $parameters) {
 		fseek($taskFile, $newTaskID*200+196);
 		fwrite($taskFile, pack('i', 0));
 	}
-	
+
 	// Get base Time
 	fseek($taskFile, 0);
 	$lastTime = unpack('i', fread($taskFile, 4));
-	
+
 	// Add task to list of tasks at expected completion time (per minute)
 	if ($lastTime[1] <= 0) {
 		date_default_timezone_set('America/Chicago');
@@ -55,9 +55,9 @@ function createTask($taskFile, $parameters) {
 	if ($duration > 0) {
 		$now = floor(time()/60);
 		$indexTime = $now+$duration-$baseTime;
-		
-		
-		
+
+
+
 		if (filesize($gamePath.'/tasks.tix') < $indexTime*4+4) {
 			$newSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");
 			fseek($taskIndex, $indexTime*4);
@@ -89,7 +89,7 @@ function createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath) {
 		fseek($taskIndex, $indexTime*4);
 		$index = unpack('i', fread($taskIndex, 4));
 		$checkTask = $index[1];
-		
+
 		fseek($taskFile, $checkTask*200);
 		$taskDat = unpack('i*', fread($taskFile, 200));
 		//$nextTask = $taskDat[2];
@@ -97,12 +97,12 @@ function createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath) {
 			do {
 				$nextTask = $taskDat[1];
 				fseek($taskFile, $nextTask*200);
-				$taskDat = unpack('i*', fread($taskFile, 200));				
+				$taskDat = unpack('i*', fread($taskFile, 200));
 			} while ($taskDat[4] > $endTime);
 		// Record the last checked ID as the previous task for the new task
 		fseek($taskFile, $newTaskID*200);
 		fwrite($taskFile, pack('i', $nextTask));
-		
+
 		// Record the new task in the previous and next tasks as well
 		fseek($taskFile, $nextTask*200+4);
 		fwrite($taskFile, pack('i', $newTaskID));

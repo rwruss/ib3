@@ -88,22 +88,21 @@ optionButton = function (prm, trg, src) {
 }
 
 plotSummary = function (obj, trg) {
+	alert(trg);
 	var newPlot = document.createElement("div");
 	newPlot.style.className = "tdHolder";
-	
+
 	var descBox = addDiv("", "tdHolder", newPlot);
 	descBox.innerHTML = obj.desc;
-	
-	var descBox = addDiv("", "tdHolder", newPlot);
-	descBox.innerHTML = obj.dtl;
-	var prm = "1081,"+obj.id;
-	descBox.addEventListener("click", function () {makeBox("plotDtl", prm, 500, 500, 200, 50)});
-	
+	var prm1 = "1081,"+obj.id;
+	descBox.addEventListener("click", function () {makeBox("plotDtl", prm1, 500, 500, 200, 50)});
+
+
 	var newButton = addDiv("button", "cBoxA", newPlot);
 	newButton.innerHTML = obj.button;
 	var prm = "1082,"+obj.id;
 	newButton.addEventListener("click", function () {confirmBox("Are you sure you want to invite this person to this plot?", prm,"", 2, "Yes", "No")})
-	
+
 	trg.appendChild(newPlot);
 }
 
@@ -301,14 +300,14 @@ newUnitDetail = function(id, target) {
 	holderDiv.appendChild(uDGoto);
 
 	document.getElementById(target).appendChild(holderDiv);
-	
-	return 
+
+	return
 }
 
-plotSummary = function (id, target) {
+plotSum = function (id, target) {
 	var holder = document.createElement("div");
 	holder.className = "tdHolder";
-	
+
 	var targets = document.createElement("div");
 	targets.className = "stdContain";
 	targets.id = "plot_"+id+"_targets";
@@ -316,7 +315,7 @@ plotSummary = function (id, target) {
 	var progress = document.createElement("div");
 	progress.className = "stdContain";
 	progress.id = "plot_"+id+"_progress";
-	
+
 	document.getElementById(target).appendChild(holder);
 }
 

@@ -2,7 +2,7 @@
 
 include('./unitClass.php');
 
-$_SESSION['selectedUnit'] = $postVals[1];
+$_SESSION['selectedItem'] = $postVals[1];
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 
 $thisChar = new char($postVals[1], $unitFile, 400);
