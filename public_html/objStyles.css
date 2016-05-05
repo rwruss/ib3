@@ -1,0 +1,62 @@
+.sumDtlBut {
+	position:absolute;
+	right:0;
+	top:0;
+	width:25;
+	height:25;
+	border:1px solid black;
+}
+
+.sumImg {
+	position:absolute;
+	left:0;
+	top:0;
+	width:75;
+	height:75;
+	border:1px solid black;
+}
+
+.sumName {
+	position:absolute;
+	left:0;
+	bottom:0;
+	width:150;
+	height:20;
+	border:1px solid black;
+}
+
+.sumAct {
+	position:absolute;
+	left:25;
+	top:110;
+	height:8;
+}
+
+.sumStr {
+	position:absolute;
+	left:25;
+	top:90;
+	height:8;
+}
+
+.stdContainer {
+	display:inline-block;
+	overflow:auto;
+	width:100%;
+}
+
+.tdHolder {
+	position:relative;
+	float:left;
+	width:99%;
+	height:150;
+	border: 1px solid black;
+}
+
+.udHolder {
+	position:relative;
+	float:left;
+	width:150;
+	height:150;
+	border: 1px solid black;
+}

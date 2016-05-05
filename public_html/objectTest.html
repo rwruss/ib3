@@ -3,9 +3,7 @@
 <script type='text/javascript' src='templates.js'></script>
 
 <html>
-<body>
-</body>
-</html>
+
 
 <script>
 
@@ -13,20 +11,20 @@
 var config = { attributes: true, childList: true, characterData: true, subtree: true };
 
 function deletethis() {
-	console.log('delete something');
 	holder2.parentNode.removeChild(holder2);
 	//this.parentNode.parentNode.removeChild(this.parentNode);
 }
 
 function addition () {
-	useList.changeItem(1, {attr : "actionBar",value : 1});
+	var trg = document.getElementById("objNum").value;
+	var amt = document.getElementById("amt").value;
+	unitList.add(trg, "strength", amt);
 }
 
 function unitList () {
 }
 unitList.prototype.newUnit = function (object) {
 	if (this["unit_" + object.unitID]) {
-		console.log("already exists");
 	} else {
 		if (object.unitType == "warband") {
 			this["unit_" + object.unitID] = new warband(object);
@@ -34,68 +32,66 @@ unitList.prototype.newUnit = function (object) {
 		else if (object.unitType == "character") {
 			this["unit_" + object.unitID] = new character(object);
 		}
-		console.log("Made " + this["unit_" + object.id]);
 	}
 }
 unitList.prototype.renderSum = function (id, target) {
 	if (this["unit_"+id]) {
-		console.log("render " + id);
 		this["unit_"+id].renderSummary(target);
 	} else {
-		console.log("not found");
 	}
 }
 unitList.prototype.change = function (id, desc, value) {
 	if (this["unit_"+id]) {
-		console.log("change " + id);
 		this["unit_"+id].changeAttr(id, desc, value);
 	} else {
-		console.log("not found for change");
+	}
+}
+unitList.prototype.add = function (id, desc, value) {
+	if (this["unit_"+id]) {
+		value = parseInt(value) +  this["unit_"+id][desc];
+		this["unit_"+id].changeAttr(id, desc, value);
+	} else {
 	}
 }
 
 function unit (options) {
-	console.log(options);
 	this.type = options.unitType || 'unknown',
 	this.unitName = options.unitName || 'unnamed',
 	this.aps = options.actionPoints || 0,
 	this.status = options.status || 0,
-	this.experience = options.exp || 0,
+	this.exp = options.exp || 0,
+	this.str = options.str || 0,
 	this.unitID = options.unitID;
 
-   Object.defineProperties(this, {"actionBar": {
-    set (x) {this.aps = Math.min(x, 100);
-      setBar(this.unitID, "apBar", this.aps);
-    }
-  }});
+   Object.defineProperties(this, {"actionPoints": {
+    set (x) {
+		this.aps = Math.max(0, Math.min(x, 100));
+		setBar(this.unitID, "apBar", this.aps);
+    },
+	get () {return this.aps;}
+  }
+  });
 
-  Object.defineProperties(this, {"expBar": {
-    set (x) {this.experience = Math.min(x, 100);
-	console.log("set exp bar to " + x);
-      setBar(this.unitID, "expBar", this.experience);
-    }
+  Object.defineProperties(this, {"strength": {
+    set (x) {this.str = Math.min(x, 100);
+      setBar(this.unitID, "strBar", this.str);
+    },
+	get () {return this.str;}
   }});
 }
 
 unit.prototype.changeAttr = function (id, desc, value) {
-	//console.log("set " + options.attr + " to " + options.value);
 	this[desc] = value;
-	//console.log(this);
-
+	//console.log("set " + desc + " to " + value)
 	thisList = document.body.querySelectorAll(".udHolder");
-	//console.log(thisList.length);
 	for (n=0; n<thisList.length; n++) {
-		console.log(thisList[n].getAttribute("data-unitid"))
 		if (thisList[n].getAttribute("data-unitid") == id) {
-			console.log("found 1" + thisList[n].childNodes );
 			for (i=0; i<thisList[n].childNodes.length; i++) {
-				//console.log("check " + i + " of " + thisList[n].childNodes.length)
 				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
 					thisList[n].childNodes[i].innerHTML = this[desc];
 				}
 			}
 		} else {
-			//console.log (n + ": " + thisList[n].getAttribute("data-unitID"))
 		}
 	}
 }
@@ -106,24 +102,25 @@ function warband (options) {
 }
 warband.prototype = Object.create(unit.prototype);
 warband.prototype.renderSummary = function (target) {
-	console.log('draw ' + this.type)
+	//console.log('draw ' + this.type)
 	thisDiv = addDiv(null, 'udHolder', target);
 	thisDiv.setAttribute("data-unitid", this.unitID);
 
-	nameDiv = addDiv("asdf", "stdContain", thisDiv);
+	nameDiv = addDiv("asdf", "sumName", thisDiv);
 	nameDiv.setAttribute("data-boxName", "unitName");
 
-	actDiv = addDiv("asdf", "udAct", thisDiv);
+	actDiv = addDiv("asdf", "sumAct", thisDiv);
 	actDiv.setAttribute("data-boxName", "apBar");
 
-	expDiv = addDiv("asdf", "udExp", thisDiv);
-	expDiv.setAttribute("data-boxName", "expBar");
+	expDiv = addDiv("asdf", "sumStr", thisDiv);
+	expDiv.setAttribute("data-boxName", "strBar");
 	
 	dtlButton = addDiv("", "sumDtlBut", thisDiv);
 	dtlButton.addEventListener("click", function () {console.log("show detail")});
 
 	nameDiv.innerHTML = this.unitName;
-	//this.changeAttr(this.unitId, "actionBar", .50)
+	this.changeAttr(this.unitId, "actionPoints", this.aps)
+	this.changeAttr(this.unitId, "strength", this.str)
 }
 
 function character (options) {
@@ -132,27 +129,27 @@ function character (options) {
 }
 character.prototype = Object.create(unit.prototype);
 character.prototype.renderSummary = function (target) {
-	console.log('draw ' + this.type)
+	//console.log('draw ' + this.type)
 	thisDiv = addDiv(null, 'udHolder', target);
 	thisDiv.setAttribute("data-unitid", this.unitID);
 
-	nameDiv = addDiv("asdf", "sumName", thisDiv);
+	nameDiv = addDiv("", "sumName", thisDiv);
 	nameDiv.setAttribute("data-boxName", "unitName");
 	
 	imgDiv = addDiv("", "sumImg", thisDiv);
 
-	actDiv = addDiv("asdf", "sumAct", thisDiv);
+	actDiv = addDiv("", "sumAct", thisDiv);
 	actDiv.setAttribute("data-boxName", "apBar");
 
-	expDiv = addDiv("asdf", "sumStr", thisDiv);
-	expDiv.setAttribute("data-boxName", "expBar");
+	expDiv = addDiv("", "sumStr", thisDiv);
+	expDiv.setAttribute("data-boxName", "strBar");
 	
 	dtlButton = addDiv("", "sumDtlBut", thisDiv);
 	dtlButton.addEventListener("click", function () {console.log("show detail")});
 
 	nameDiv.innerHTML = this.unitName;
-	this.changeAttr(this.unitId, "actionBar", 50)
-	this.changeAttr(this.unitId, "expBar", 100)
+	this.changeAttr(this.unitId, "actionPoints", this.aps)
+	this.changeAttr(this.unitId, "strength", this.str)
 }
 
 
@@ -165,7 +162,7 @@ function setBar(id, desc, pct) {
 			for (i=0; i<thisList[n].childNodes.length; i++) {
 				//console.log("check " + i + " of " + thisList[n].childNodes.length)
 				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
-					console.log("found it - " + desc + ", us set ti " + pct);
+					//console.log("found it - " + desc + ", us set ti " + pct);
 				  thisList[n].childNodes[i].style.width = pct*125/100;
 				  thisList[n].childNodes[i].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
 				  //console.log("rgb("+parseInt((100-pct)*2.55)+", 0, "+parseInt(pct*2.55)+")");
@@ -177,20 +174,31 @@ function setBar(id, desc, pct) {
 	}
 }
 
-unitList = new unitList();
-unitList.newUnit({unitID : 1, unitType : "warband", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
-unitList.newUnit({unitID : 2, unitType : "character", actionPoints : 50, status : 1, unitName : "character name", exp: 100});
-unitList.newUnit({unitID : 1, unitType : "warband", actionPoints : 50, status : 1, exp : 500});
+function init() {
+	unitList = new unitList();
+	unitList.newUnit({unitID : 1, unitType : "warband", actionPoints : 75, status : 1, unitName : "unit 1", exp : 10, str:100});
+	unitList.newUnit({unitID : 2, unitType : "character", actionPoints : 50, status : 1, unitName : "character 1", exp: 90, str:100});
+	unitList.newUnit({unitID : 3, unitType : "warband", actionPoints : 25, status : 1, unitName : "unit 3", exp : 65, str:100});
 
-console.log(unitList);
-var holder1 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
-var holder2 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	var holder1 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	var holder2 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
 
-unitList.renderSum(1, holder1);
-unitList.renderSum(1, holder1);
-unitList.renderSum(2, holder2);
+	unitList.renderSum(1, holder1);
+	unitList.renderSum(2, holder1);
+	unitList.renderSum(3, holder1);
+	unitList.renderSum(1, holder2);
+}
 
 //unitList.change(1, "unitName", "something else");
 //unitList.add(1, "actionBar", 1);
 
 </script>
+<body onload="init()">
+</body>
+</html>
+<div>Add to Object<br>
+Object #(1, 2, or 3) <input id='objNum' size=3 value=1><br>
+Amount (+1 or -1): <input id='amt' size=3 value=1><br>
+<button type="button" onclick="addition()">Go!</button>
+
+</div>

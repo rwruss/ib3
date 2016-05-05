@@ -165,7 +165,6 @@
             <File name="E:\websites\ib3\public_html\bldgObjects.php" />
             <File name="E:\websites\ib3\public_html\dipFunctions.php" />
             <File name="E:\websites\ib3\public_html\director.php" />
-            <File name="E:\websites\ib3\public_html\factoryTest3.html" />
             <File name="E:\websites\ib3\public_html\gameScr.php" />
             <File name="E:\websites\ib3\public_html\glFunctions.js" />
             <File name="E:\websites\ib3\public_html\glMatrix-0.9.5.min.js" />
@@ -177,6 +176,7 @@
             <File name="E:\websites\ib3\public_html\templates.js" />
             <File name="E:\websites\ib3\public_html\unitClass.php" />
             <File name="E:\websites\ib3\public_html\webgl-utils.js" />
+            <File name="E:\websites\ib3\public_html\objectTest.html" />
         </Folder>
         <Folder name="scripts">
             <File name="E:\websites\ib3\scripts\1000.php" />

@@ -1,0 +1,189 @@
+
+<link rel='stylesheet' type='text/css' href='objStyles.css'>
+<script type='text/javascript' src='objFunctions.js'></script>
+
+<html>
+<script>
+
+function addition () {
+	var trg = document.getElementById("objNum").value;
+	var amt = document.getElementById("amt").value;
+	itemList.add(trg, "rating", amt);
+}
+
+function itemList () {
+}
+itemList.prototype.newUnit = function (object) {
+	if (this["item_" + object.unitID]) {
+	} else {
+		if (object.unitType == "person") {
+			this["item_" + object.unitID] = new person(object);
+		}
+		else if (object.unitType == "place") {
+			this["item_" + object.unitID] = new place(object);
+		}
+	}
+}
+itemList.prototype.renderSum = function (id, target) {
+	if (this["item_"+id]) {
+		this["item_"+id].renderSummary(target);
+	} else {
+	}
+}
+itemList.prototype.change = function (id, desc, value) {
+	if (this["item_"+id]) {
+		this["item_"+id].changeAttr(id, desc, value);
+	} else {
+	}
+}
+itemList.prototype.add = function (id, desc, value) {
+	if (this["item_"+id]) {
+		value = parseInt(value) +  this["item_"+id][desc];
+		this["item_"+id].changeAttr(id, desc, value);
+	} else {
+	}
+}
+
+function unit (options) {
+	this.type = options.unitType || 'unknown',
+	this.unitName = options.unitName || 'unnamed',
+	this.rate = options.rating || 0,
+	this.status = options.status || 0,
+	this.price = options.cost || 0,
+	this.unitID = options.unitID;
+
+   Object.defineProperties(this, {"rating": {
+    set (x) {
+		console.log("Set Rating")
+		this.rate = Math.max(0, Math.min(x, 100));
+		setBar(this.unitID, "ratingBar", this.rate);
+    },
+	get () {return this.rate;}
+  }
+  });
+
+  Object.defineProperties(this, {"cost": {
+    set (x) {this.price = Math.min(x, 100);
+      setBar(this.unitID, "costBar", this.price);
+    }
+  }});
+}
+
+unit.prototype.changeAttr = function (id, desc, value) {
+	this[desc] = value;
+	console.log("set " + desc + " to " + value)
+	thisList = document.body.querySelectorAll(".udHolder");
+	for (n=0; n<thisList.length; n++) {
+		if (thisList[n].getAttribute("data-unitid") == id) {
+			for (i=0; i<thisList[n].childNodes.length; i++) {
+				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+					thisList[n].childNodes[i].innerHTML = this[desc];
+				}
+			}
+		} else {
+		}
+	}
+}
+
+function person (options) {
+	this.base = unit;
+	this.base(options);
+}
+person.prototype = Object.create(unit.prototype);
+person.prototype.renderSummary = function (target) {
+	thisDiv = addDiv(null, 'udHolder', target);
+	thisDiv.setAttribute("data-unitid", this.unitID);
+
+	nameDiv = addDiv("", "sumName", thisDiv);
+	nameDiv.setAttribute("data-boxName", "unitName");
+
+	actDiv = addDiv("", "sumAct", thisDiv);
+	actDiv.setAttribute("data-boxName", "ratingBar");
+
+	costDiv = addDiv("", "sumStr", thisDiv);
+	costDiv.setAttribute("data-boxName", "costBar");
+	
+	dtlButton = addDiv("", "sumDtlBut", thisDiv);
+	dtlButton.addEventListener("click", function () {console.log("show detail")});
+
+	nameDiv.innerHTML = this.unitName;
+	this.changeAttr(this.unitId, "rating", this.rate)
+	this.changeAttr(this.unitId, "cost", this.price)
+}
+
+function place (options) {
+	this.base = unit;
+	this.base(options);
+}
+place.prototype = Object.create(unit.prototype);
+place.prototype.renderSummary = function (target) {
+	//console.log('draw ' + this.type)
+	thisDiv = addDiv(null, 'udHolder', target);
+	thisDiv.setAttribute("data-unitid", this.unitID);
+
+	nameDiv = addDiv("", "sumName", thisDiv);
+	nameDiv.setAttribute("data-boxName", "unitName");
+	
+	imgDiv = addDiv("", "sumImg", thisDiv);
+
+	actDiv = addDiv("", "sumAct", thisDiv);
+	actDiv.setAttribute("data-boxName", "ratingBar");
+
+	costDiv = addDiv("", "sumStr", thisDiv);
+	costDiv.setAttribute("data-boxName", "costBar");
+	
+	dtlButton = addDiv("", "sumDtlBut", thisDiv);
+	dtlButton.addEventListener("click", function () {console.log("show detail")});
+
+	nameDiv.innerHTML = this.unitName;
+	this.changeAttr(this.unitId, "rating", this.rate)
+	this.changeAttr(this.unitId, "cost", this.price)
+}
+
+
+function setBar(id, desc, pct) {
+  thisList = document.body.querySelectorAll(".udHolder");
+
+	for (n=0; n<thisList.length; n++) {
+		if (thisList[n].getAttribute("data-unitID") == id) {
+			//console.log("found 1" + thisList[n].childNodes );
+			for (i=0; i<thisList[n].childNodes.length; i++) {
+				//console.log("check " + i + " of " + thisList[n].childNodes.length)
+				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+					//console.log("found it - " + desc + ", us set ti " + pct);
+				  thisList[n].childNodes[i].style.width = pct*125/100;
+				  thisList[n].childNodes[i].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
+				  //console.log("rgb("+parseInt((100-pct)*2.55)+", 0, "+parseInt(pct*2.55)+")");
+				}
+			}
+		} else {
+			//console.log (n + ": " + thisList[n].getAttribute("data-unitID"))
+		}
+	}
+}
+
+function init() {
+	itemList = new itemList();
+	itemList.newUnit({unitID : 1, unitType : "person", rating : 75, status : 1, unitName : "person 1", cost : 10});
+	itemList.newUnit({unitID : 2, unitType : "place", rating : 50, status : 1, unitName : "place 1", cost: 90});
+	itemList.newUnit({unitID : 3, unitType : "person", rating : 25, status : 1, unitName : "person 3", cost : 65});
+
+	var holder1 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	var holder2 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+
+	itemList.renderSum(1, holder1);
+	itemList.renderSum(2, holder1);
+	itemList.renderSum(3, holder1);
+	itemList.renderSum(1, holder2);
+}
+
+</script>
+<body onload="init()">
+</body>
+</html>
+<div>Add to Object<br>
+Object #(1, 2, or 3) <input id='objNum' size=3 value=1><br>
+Amount (+1 or -1): <input id='amt' size=3 value=1><br>
+<button type="button" onclick="addition()">Go!</button>
+
+</div>
