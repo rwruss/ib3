@@ -437,6 +437,35 @@
    font-weight:bold;
 }
 
+.plotDesc {
+	position:relative;
+	float:left;
+	width:99%;
+	border: 1px solid black;
+}
+
+.plotSummary {
+	position:relative;
+	float:left;
+	width:99%;
+	border: 1px solid black;
+}
+
+.plotTarget {
+	position:relative;
+	float:left;
+	width:150;
+	border: 1px solid black;
+}
+
+.plotDtl {
+	position:relative;
+	float:left;
+	height: 150;
+	width:340;
+	border: 1px solid black;
+}
+
 .stdContainer {
 	display:inline-block;
 	overflow:auto;
@@ -448,6 +477,8 @@
 	overflow:auto;
 	width:50%;
 }
+
+
 
 .taskTabHolder {
 	display:inline;

@@ -2626,6 +2626,8 @@ precision mediump float;
 		}
 
 	function webGLStart() {
+		unitList = new unitList();
+		//console.log(unitList);
 		setClick([0], 'auto')
     var canvas = document.getElementById('lesson03-canvas');
 		canvasInit();

@@ -87,23 +87,44 @@ optionButton = function (prm, trg, src) {
 	return newButton;
 }
 
-plotSummary = function (obj, trg) {
-	alert(trg);
+plotDetail = function (obj, trg) {
 	var newPlot = document.createElement("div");
-	newPlot.style.className = "tdHolder";
+	newPlot.className = "plotSummary";
 
-	var descBox = addDiv("", "tdHolder", newPlot);
+	var descBox = addDiv("descBox", "plotDesc", newPlot);
 	descBox.innerHTML = obj.desc;
 	var prm1 = "1081,"+obj.id;
 	descBox.addEventListener("click", function () {makeBox("plotDtl", prm1, 500, 500, 200, 50)});
 
+	var targetBox = addDiv("targetBox", "plotTarget", newPlot);
+	var dtlBox = addDiv("dtlBox", "plotDtl", newPlot);
 
+
+/*
 	var newButton = addDiv("button", "cBoxA", newPlot);
 	newButton.innerHTML = obj.button;
 	var prm = "1082,"+obj.id;
 	newButton.addEventListener("click", function () {confirmBox("Are you sure you want to invite this person to this plot?", prm,"", 2, "Yes", "No")})
-
+*/
 	trg.appendChild(newPlot);
+	return newPlot;
+}
+
+plotSummary = function (obj, trg) {
+	console.log("mk a plot sum");
+	var newPlot = document.createElement("div");
+	newPlot.className = "plotSummary";
+
+	var descBox = addDiv("descBox", "plotDesc", newPlot);
+	descBox.innerHTML = obj.desc;
+	var prm1 = "1081,"+obj.id;
+	descBox.addEventListener("click", function () {makeBox("plotDtl", prm1, 500, 500, 200, 50)});
+
+	var targetBox = addDiv("targetBox", "plotTarget", newPlot);
+	var dtlBox = addDiv("dtlBox", "plotDtl", newPlot);
+	console.log("attach the plot to " + trg);
+	trg.appendChild(newPlot);
+	return newPlot;
 }
 
 newTabMenu = function(target) {
@@ -425,4 +446,164 @@ warDetail = function(id, target) {
 	container.innerHTML = "War "+id;
 
 	container.addEventListener("click", function () {makeBox("warDtl", "1057,"+id, 500, 500, 200, 50);});
+}
+
+
+addtion = function () {
+	var trg = document.getElementById("objNum").value;
+	var amt = document.getElementById("amt").value;
+	unitList.add(trg, "strength", amt);
+}
+
+unitList = function () {
+}
+unitList.prototype.newUnit = function (object) {
+	if (this["unit_" + object.unitID]) {
+	} else {
+		if (object.unitType == "warband") {
+			this["unit_" + object.unitID] = new warband(object);
+		}
+		else if (object.unitType == "character") {
+			this["unit_" + object.unitID] = new character(object);
+		}
+	}
+}
+unitList.prototype.renderSum = function (id, target) {
+	if (this["unit_"+id]) {
+		this["unit_"+id].renderSummary(target);
+	} else {
+	}
+}
+unitList.prototype.change = function (id, desc, value) {
+	if (this["unit_"+id]) {
+		this["unit_"+id].changeAttr(id, desc, value);
+	} else {
+	}
+}
+unitList.prototype.add = function (id, desc, value) {
+	if (this["unit_"+id]) {
+		value = parseInt(value) +  this["unit_"+id][desc];
+		this["unit_"+id].changeAttr(id, desc, value);
+	} else {
+	}
+}
+
+unit = function (options) {
+	this.type = options.unitType || 'unknown',
+	this.unitName = options.unitName || 'unnamed',
+	this.aps = options.actionPoints || 0,
+	this.status = options.status || 0,
+	this.exp = options.exp || 0,
+	this.str = options.str || 0,
+	this.unitID = options.unitID;
+
+   Object.defineProperties(this, {"actionPoints": {
+    set (x) {
+		this.aps = Math.max(0, Math.min(x, 100));
+		setBar(this.unitID, "apBar", this.aps);
+    },
+	get () {return this.aps;}
+  }
+  });
+
+  Object.defineProperties(this, {"strength": {
+    set (x) {this.str = Math.min(x, 100);
+      setBar(this.unitID, "strBar", this.str);
+    },
+	get () {return this.str;}
+  }});
+}
+
+unit.prototype.changeAttr = function (id, desc, value) {
+	this[desc] = value;
+	//console.log("set " + desc + " to " + value)
+	thisList = document.body.querySelectorAll(".udHolder");
+	for (n=0; n<thisList.length; n++) {
+		if (thisList[n].getAttribute("data-unitid") == id) {
+			for (i=0; i<thisList[n].childNodes.length; i++) {
+				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+					thisList[n].childNodes[i].innerHTML = this[desc];
+				}
+			}
+		} else {
+		}
+	}
+}
+
+warband = function (options) {
+	this.base = unit;
+	this.base(options);
+}
+warband.prototype = Object.create(unit.prototype);
+warband.prototype.renderSummary = function (target) {
+	//console.log('draw ' + this.type)
+	thisDiv = addDiv(null, 'udHolder', target);
+	thisDiv.setAttribute("data-unitid", this.unitID);
+
+	nameDiv = addDiv("asdf", "sumName", thisDiv);
+	nameDiv.setAttribute("data-boxName", "unitName");
+
+	actDiv = addDiv("asdf", "sumAct", thisDiv);
+	actDiv.setAttribute("data-boxName", "apBar");
+
+	expDiv = addDiv("asdf", "sumStr", thisDiv);
+	expDiv.setAttribute("data-boxName", "strBar");
+
+	dtlButton = addDiv("", "sumDtlBut", thisDiv);
+	dtlButton.addEventListener("click", function () {console.log("show detail")});
+
+	nameDiv.innerHTML = this.unitName;
+	this.changeAttr(this.unitId, "actionPoints", this.aps)
+	this.changeAttr(this.unitId, "strength", this.str)
+}
+
+character = function (options) {
+	this.base = unit;
+	this.base(options);
+}
+character.prototype = Object.create(unit.prototype);
+character.prototype.renderSummary = function (target) {
+	console.log('draw ' + this.type + ' at ' + target)
+	thisDiv = addDiv(null, 'udHolder', target);
+	thisDiv.setAttribute("data-unitid", this.unitID);
+
+	nameDiv = addDiv("", "sumName", thisDiv);
+	nameDiv.setAttribute("data-boxName", "unitName");
+
+	imgDiv = addDiv("", "sumImg", thisDiv);
+
+	actDiv = addDiv("", "sumAct", thisDiv);
+	actDiv.setAttribute("data-boxName", "apBar");
+
+	expDiv = addDiv("", "sumStr", thisDiv);
+	expDiv.setAttribute("data-boxName", "strBar");
+
+	dtlButton = addDiv("", "sumDtlBut", thisDiv);
+	dtlButton.addEventListener("click", function () {console.log("show detail")});
+
+	nameDiv.innerHTML = this.unitName;
+	this.changeAttr(this.unitId, "actionPoints", this.aps)
+	this.changeAttr(this.unitId, "strength", this.str)
+}
+
+
+setBar = function (id, desc, pct) {
+  thisList = document.body.querySelectorAll(".udHolder");
+
+	for (n=0; n<thisList.length; n++) {
+		if (thisList[n].getAttribute("data-unitID") == id) {
+			//console.log("found 1" + thisList[n].childNodes );
+			for (i=0; i<thisList[n].childNodes.length; i++) {
+				//console.log("check " + i + " of " + thisList[n].childNodes.length)
+				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+					//console.log("found it - " + desc + ", us set ti " + pct);
+				  thisList[n].childNodes[i].style.width = pct*125/100;
+				  thisList[n].childNodes[i].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
+				  //console.log("rgb("+parseInt((100-pct)*2.55)+", 0, "+parseInt(pct*2.55)+")");
+				}
+			}
+		} else {
+			//console.log (n + ": " + thisList[n].getAttribute("data-unitID"))
+		}
+	}
 }

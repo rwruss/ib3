@@ -102,7 +102,7 @@ person.prototype.renderSummary = function (target) {
 
 	costDiv = addDiv("", "sumStr", thisDiv);
 	costDiv.setAttribute("data-boxName", "costBar");
-	
+
 	dtlButton = addDiv("", "sumDtlBut", thisDiv);
 	dtlButton.addEventListener("click", function () {console.log("show detail")});
 
@@ -123,7 +123,7 @@ place.prototype.renderSummary = function (target) {
 
 	nameDiv = addDiv("", "sumName", thisDiv);
 	nameDiv.setAttribute("data-boxName", "unitName");
-	
+
 	imgDiv = addDiv("", "sumImg", thisDiv);
 
 	actDiv = addDiv("", "sumAct", thisDiv);
@@ -131,7 +131,7 @@ place.prototype.renderSummary = function (target) {
 
 	costDiv = addDiv("", "sumStr", thisDiv);
 	costDiv.setAttribute("data-boxName", "costBar");
-	
+
 	dtlButton = addDiv("", "sumDtlBut", thisDiv);
 	dtlButton.addEventListener("click", function () {console.log("show detail")});
 
@@ -146,18 +146,13 @@ function setBar(id, desc, pct) {
 
 	for (n=0; n<thisList.length; n++) {
 		if (thisList[n].getAttribute("data-unitID") == id) {
-			//console.log("found 1" + thisList[n].childNodes );
 			for (i=0; i<thisList[n].childNodes.length; i++) {
-				//console.log("check " + i + " of " + thisList[n].childNodes.length)
 				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
-					//console.log("found it - " + desc + ", us set ti " + pct);
 				  thisList[n].childNodes[i].style.width = pct*125/100;
 				  thisList[n].childNodes[i].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
-				  //console.log("rgb("+parseInt((100-pct)*2.55)+", 0, "+parseInt(pct*2.55)+")");
 				}
 			}
 		} else {
-			//console.log (n + ": " + thisList[n].getAttribute("data-unitID"))
 		}
 	}
 }
