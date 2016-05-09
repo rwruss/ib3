@@ -149,6 +149,10 @@
             <File name="1075.php" />
             <File name="1078.php" />
             <File name="1079.php" />
+            <File name="1080.php" />
+            <File name="1081.php" />
+            <File name="1082.php" />
+            <File name="1083.php" />
             <File name="2001.php" />
             <File name="2002.php" />
             <File name="cl255.php" />
@@ -177,6 +181,7 @@
             <File name="E:\websites\ib3\public_html\unitClass.php" />
             <File name="E:\websites\ib3\public_html\webgl-utils.js" />
             <File name="E:\websites\ib3\public_html\objectTest.html" />
+            <File name="E:\websites\ib3\public_html\classObjects.html" />
         </Folder>
         <Folder name="scripts">
             <File name="E:\websites\ib3\scripts\1000.php" />
@@ -216,6 +221,7 @@
                 <File name="E:\websites\ib3\test\JS\factoryTest.html" />
                 <File name="E:\websites\ib3\test\JS\factoryTest2.html" />
                 <File name="E:\websites\ib3\test\JS\factoryTest3.html" />
+                <File name="E:\websites\ib3\test\JS\classObjects.html" />
             </Folder>
         </Folder>
         <Folder name="scenarios">

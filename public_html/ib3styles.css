@@ -81,6 +81,13 @@
 	padding:5px;
 }
 
+.fullBar {
+	position:relative;
+	float:left;
+	width:99%;
+	border: 1px solid black;
+}
+
 .sumDtlBut {
 	position:absolute;
 	right:0;

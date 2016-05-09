@@ -35,13 +35,12 @@ for ($i=1; $i<=sizeof($plotChars->slotData); $i++) {
 		$targetDat = unpack('i*', fread($unitFile, 200));
 		echo 'Details on this plot....('.$postVals[1].')<script>
 		var plotBox = plotSummary({desc: "plot #'.$postVals[1].'"}, document.getElementById("plotDetailContent"));
-		charBox = addDiv("charBox", "tdHolder", plotBox);
+		trgBox = addDiv("charBox", "tdHolder", plotBox);
 		unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
-		console.log(plotBox + " has " + plotBox.children.length + " child nodes");
 		unitList.renderSum('.$target.', plotBox.children[1]);
 
 		//document.getElementById("plot_'.$postVals[1].'progress").innerHTML = "'.$plotDat[6].'";
-		console.log(unitList);
+		buttonBox = addDiv("", "tdHolder", plotBox);
 		</script>
 		work options....';
 	break;
