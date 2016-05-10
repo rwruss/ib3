@@ -94,6 +94,13 @@ scrButton = function (prm, trg, src) {
 	return newButton;
 }
 
+killButton = function (trg, src) {
+	var newButton = addDiv("button", "button", trg);
+	newButton.addEventListener("click", function () {
+		this.parentNode.parentNode.removeChild(this.parentNode);
+		killBox(document.getElementById(trg))});	
+}
+
 plotDetail = function (obj, trg) {
 	var newPlot = document.createElement("div");
 	newPlot.className = "plotSummary";

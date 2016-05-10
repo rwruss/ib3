@@ -90,6 +90,7 @@
 1081 - Plot Detail
 1082 - Add character to plot
 1083 - List of plots character is involved in
+1084 - Character contribute to plot
 
 // Manual Override Functions
 2001 - Add Resources to a city

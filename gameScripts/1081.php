@@ -25,28 +25,34 @@ $playerChars = new itemSlot($playerData[19], $slotFile, 40);
 $hideDtl = true;
 echo 'Slot '.$plotDat[11].' chars';
 //print_r($plotChars->slotData);
-for ($i=1; $i<=sizeof($plotChars->slotData); $i++) {
-	if (array_search($plotChars->slotData[$i], $playerChars->slotData)) {
-		// Player controls a char involved in the plot and can view the details
+if (array_search($_SESSION['selectedItem'], $plotChars->slotData) {
+//for ($i=1; $i<=sizeof($plotChars->slotData); $i++) {
+	
+	// Player controls a char involved in the plot and can view the details
 
-		$hideDtl = false;
-		$target = $plotDat[8];
-		fseek($unitFile, $target*$defaultBlockSize);
-		$targetDat = unpack('i*', fread($unitFile, 200));
-		echo 'Details on this plot....('.$postVals[1].')<script>
-		var plotBox = plotSummary({desc: "plot #'.$postVals[1].'"}, document.getElementById("plotDetailContent"));
-		trgBox = addDiv("charBox", "tdHolder", plotBox);
-		unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
-		unitList.renderSum('.$target.', plotBox.children[1]);
+	$hideDtl = false;
+	$target = $plotDat[8];
+	fseek($unitFile, $target*$defaultBlockSize);
+	$targetDat = unpack('i*', fread($unitFile, 200));
+	echo 'Details on this plot....('.$postVals[1].')<script>
+	var plotBox = plotSummary({desc: "plot #'.$postVals[1].'"}, document.getElementById("plotDetailContent"));
+	trgBox = addDiv("charBox", "tdHolder", plotBox);
+	unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
+	unitList.renderSum('.$target.', plotBox.children[1]);
 
-		//document.getElementById("plot_'.$postVals[1].'progress").innerHTML = "'.$plotDat[6].'";
-		buttonBox = addDiv("", "fullBar", plotBox);
-		scrButton("1084", buttonBox, "button 1");
-		scrButton("1084", buttonBox, "button 2");
-		</script>
-		work options....';
-	break;
+	//document.getElementById("plot_'.$postVals[1].'progress").innerHTML = "'.$plotDat[6].'";
+	buttonBox = addDiv("", "fullBar", plotBox);
+	scrButton("1084", buttonBox, "10%");
+	scrButton("1084", buttonBox, "25%");
+	scrButton("1084", buttonBox, "50%");
+	scrButton("1084", buttonBox, "100%");';
+	
+	if ($plotDat[9] == $_SESSION['selectedItem']) {
+		echo 'scrButton("1084", buttonBox, "Execute");';
 	}
+	
+	echo '</script>
+	work options....';
 }
 
 if ($hideDtl) {
