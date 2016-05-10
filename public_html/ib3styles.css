@@ -6,6 +6,13 @@
 	border: 1px solid black;
 }
 
+.button {
+		position:relative;
+		padding: 5px;
+		display:inline-block;
+		text-align: center;
+}
+
 .bldgImg {
 	position:absolute;
 	left:0;
@@ -63,7 +70,7 @@
 	height:30;
 	background:#00F000;
 	padding:5px;
-	margin:5px;
+	margin:5px auto;
 }
 
 .cBoxD {
@@ -82,10 +89,13 @@
 }
 
 .fullBar {
+	margin: 0 auto;
+	height: auto;
+	text-align: center;
 	position:relative;
 	float:left;
 	width:99%;
-	border: 1px solid black;
+	//border: 1px solid black;
 }
 
 .sumDtlBut {
@@ -469,7 +479,7 @@
 	position:relative;
 	float:left;
 	height: 150;
-	width:340;
+	width:320;
 	border: 1px solid black;
 }
 

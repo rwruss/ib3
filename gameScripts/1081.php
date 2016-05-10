@@ -40,7 +40,9 @@ for ($i=1; $i<=sizeof($plotChars->slotData); $i++) {
 		unitList.renderSum('.$target.', plotBox.children[1]);
 
 		//document.getElementById("plot_'.$postVals[1].'progress").innerHTML = "'.$plotDat[6].'";
-		buttonBox = addDiv("", "tdHolder", plotBox);
+		buttonBox = addDiv("", "fullBar", plotBox);
+		scrButton("1084", buttonBox, "button 1");
+		scrButton("1084", buttonBox, "button 2");
 		</script>
 		work options....';
 	break;

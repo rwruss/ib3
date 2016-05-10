@@ -87,7 +87,12 @@ optionButton = function (prm, trg, src) {
 	return newButton;
 }
 
-scrButton = function () {}
+scrButton = function (prm, trg, src) {
+	var newButton = addDiv("button", "button", trg);
+	newButton.addEventListener("click", function () {scrMod(prm)})
+	newButton.innerHTML = src;
+	return newButton;
+}
 
 plotDetail = function (obj, trg) {
 	var newPlot = document.createElement("div");
@@ -129,8 +134,8 @@ plotSummary = function (obj, trg) {
 	var optBar = addDiv("", "fullBar", newPlot);
 
 	trg.appendChild(newPlot);
-	
-	
+
+
 	return newPlot;
 }
 
@@ -474,21 +479,21 @@ class unitList {
 			}
 		}
 	}
-	
+
 	renderSum(id, target) {
 		if (this["unit_"+id]) {
 			this["unit_"+id].renderSummary(target);
 		} else {
 		}
 	}
-	
+
 	change(id, desc, value) {
 		if (this["unit_"+id]) {
 			this["unit_"+id].changeAttr(id, desc, value);
 		} else {
 		}
 	}
-	
+
 	add(id, desc, value) {
 		if (this["unit_"+id]) {
 			value = parseInt(value) +  this["unit_"+id][desc];
@@ -558,25 +563,25 @@ class unit {
 		get () {return this.str;}
 	  }});*/
 	}
-	
+
 	set actionPoints(x) {
 		this.aps = Math.max(0, Math.min(x, 100));
 		setBar(this.unitID, "apBar", this.aps);
 	}
-	
+
 	get actionPoints() {
 		return this.aps;
 	}
-	
+
 	set strength(x) {
 		this.str = Math.min(x, 100);
 		setBar(this.unitID, "strBar", this.str);
 	}
-	
+
 	get strength() {
 		return this.str;
 	}
-	
+
 	changeAttr(id, desc, value) {
 		this[desc] = value;
 		//console.log("set " + desc + " to " + value)
