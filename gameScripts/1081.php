@@ -25,16 +25,16 @@ $playerChars = new itemSlot($playerData[19], $slotFile, 40);
 $hideDtl = true;
 echo 'Slot '.$plotDat[11].' chars';
 //print_r($plotChars->slotData);
-if (array_search($_SESSION['selectedItem'], $plotChars->slotData) {
+if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
 //for ($i=1; $i<=sizeof($plotChars->slotData); $i++) {
-	
+
 	// Player controls a char involved in the plot and can view the details
 
 	$hideDtl = false;
 	$target = $plotDat[8];
 	fseek($unitFile, $target*$defaultBlockSize);
 	$targetDat = unpack('i*', fread($unitFile, 200));
-	echo 'Details on this plot....('.$postVals[1].')<script>
+	echo 'Details on this plot....('.$postVals[1].').  Selected char '.$_SESSION['selectedItem'].', Leader char '.$plotDat[9].'<script>
 	var plotBox = plotSummary({desc: "plot #'.$postVals[1].'"}, document.getElementById("plotDetailContent"));
 	trgBox = addDiv("charBox", "tdHolder", plotBox);
 	unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
@@ -45,12 +45,13 @@ if (array_search($_SESSION['selectedItem'], $plotChars->slotData) {
 	scrButton("1084", buttonBox, "10%");
 	scrButton("1084", buttonBox, "25%");
 	scrButton("1084", buttonBox, "50%");
-	scrButton("1084", buttonBox, "100%");';
-	
-	if ($plotDat[9] == $_SESSION['selectedItem']) {
-		echo 'scrButton("1084", buttonBox, "Execute");';
+	boxButton("1084", buttonBox, "100%");';
+
+	if ($plotDat[9] == $pGameID) {
+		echo 'scrButton("1084", buttonBox, "Execute");
+		boxButton("1085", buttonBox, "ringleader");';
 	}
-	
+
 	echo '</script>
 	work options....';
 }

@@ -98,7 +98,14 @@ killButton = function (trg, src) {
 	var newButton = addDiv("button", "button", trg);
 	newButton.addEventListener("click", function () {
 		this.parentNode.parentNode.removeChild(this.parentNode);
-		killBox(document.getElementById(trg))});	
+		killBox(document.getElementById(trg))});
+}
+
+boxButton = function (prm, trg, src) {
+	var newButton = addDiv("button", "button", trg);
+	newButton.addEventListener("click", function () {makeBox("assignLeader", prm, 500, 500, 200, 50)})
+	newButton.innerHTML = src;
+	return newButton;
 }
 
 plotDetail = function (obj, trg) {
