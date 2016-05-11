@@ -1,6 +1,6 @@
 <?php
 
-// Process an job order given to a unit
+// Process an plot order given to a unit
 
 // Load unit data
 $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');

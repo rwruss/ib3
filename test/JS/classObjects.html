@@ -30,6 +30,13 @@ class itemList {
 		}
 	}
 	
+	renderSingleSum(id, target) {
+		while (target.firstChild) {
+			target.removeChild(target.firstChild);
+		}
+		this.renderSum(id, target);
+	}
+	
 	renderSum(id, target) {
 		if (this["item_"+id]) {
 			this["item_"+id].renderSummary(target);
@@ -119,7 +126,7 @@ class person extends unit {
 }
 
 
-class place extends unit {
+class place extends unit {	
 	renderSummary(target) {
 		//console.log('draw ' + this.type)
 		var thisDiv = addDiv(null, 'udHolder', target);
@@ -166,16 +173,35 @@ function init() {
 	itemList = new itemList();
 	
 	itemList.newUnit({unitID : 1, unitType : "person", rating : 75, status : 1, unitName : "person 1", cost : 10});
-	itemList.newUnit({unitID : 2, unitType : "place", rating : 50, status : 1, unitName : "place 1", cost: 90});
+	itemList.newUnit({unitID : 2, unitType : "place", rating : 50, status : 1, unitName : "place 2", cost: 90});
 	itemList.newUnit({unitID : 3, unitType : "person", rating : 25, status : 1, unitName : "person 3", cost : 65});
 
 	var holder1 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
 	var holder2 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	
+	
+	var objButton1 = addDiv("", "selectContain", document.getElementsByTagName('body')[0]);
+	var objButton2 = addDiv("", "selectContain", document.getElementsByTagName('body')[0]);
+	
+	var divList = {};
 
 	itemList.renderSum(1, holder1);
 	itemList.renderSum(2, holder1);
 	itemList.renderSum(3, holder1);
 	itemList.renderSum(1, holder2);
+	itemList.renderSum(1, objButton1);
+	itemList.renderSum(2, objButton2);
+	
+	var holder3 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	var holder4 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	
+	divList.leftHolder = holder3;
+	divList.rightHolder = holder4;
+	
+	console.log(divList);
+	
+	selectButton(objButton1, "hai", 1, [divList.leftHolder, divList.rightHolder]);
+	selectButton(objButton2, "hai", 2, [holder3, holder4]);
 		
 }
 

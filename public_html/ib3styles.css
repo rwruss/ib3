@@ -529,6 +529,14 @@
 	height:75;
 }
 
+.charHolder{
+	position:relative;
+	float:left;
+	width:150;
+	height:150;
+	border: 1px solid black;
+}
+
 .udHolder {
 	position:relative;
 	float:left;
@@ -563,7 +571,7 @@
 .udName {
 	position:absolute;
 	left:0;
-	top:125;
+	top:130;
 	width:150;
 	height:25;
 }

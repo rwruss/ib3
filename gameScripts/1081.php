@@ -48,7 +48,7 @@ if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
 	boxButton("1084", buttonBox, "100%");';
 
 	if ($plotDat[9] == $pGameID) {
-		echo 'scrButton("1084", buttonBox, "Execute");
+		echo 'scrButton("1086", buttonBox, "Execute");
 		boxButton("1085", buttonBox, "ringleader");';
 	}
 
