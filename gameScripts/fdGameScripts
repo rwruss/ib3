@@ -203,9 +203,6 @@
             <File name="E:\websites\ib3\scripts\createPlayer.php" />
             <File name="E:\websites\ib3\scripts\scriptList.txt" />
         </Folder>
-        <Folder name="newFolder">
-            <File name="E:\websites\ib3\newFolder\newFile.txt" />
-        </Folder>
         <Folder name="test">
             <Folder name="slots">
                 <File name="E:\websites\ib3\test\slots\itemSlot.slt" />
@@ -225,6 +222,7 @@
                 <File name="E:\websites\ib3\test\JS\classObjects.html" />
                 <File name="E:\websites\ib3\test\JS\objStyles.css" />
                 <File name="E:\websites\ib3\test\JS\objFunctions.js" />
+                <Folder name="dragDrop" />
             </Folder>
         </Folder>
         <Folder name="scenarios">

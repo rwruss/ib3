@@ -1,0 +1,82 @@
+<script>
+var bPos = [0,0];
+function makeBox(bName, val, h, w, x, y) {
+if (!document.getElementById(bName)) {
+	var newDiv = document.createElement('div');
+	newDiv.style.height = h;
+	newDiv.style.width = w;
+	newDiv.style.top = y;
+	newDiv.style.left = x;
+	newDiv.style.position = 'absolute';
+	newDiv.style.border = '1px solid #000000'
+	newDiv.style.background = '#F0F0F0'
+	newDiv.id = bName;
+	newDiv.draggable = "true";
+	newDiv.zIndex = 1;
+	newDiv.addEventListener("dragstart", function () {
+		console.log("start drag -> " + event.clientX + ", " + event.clientY);
+		bPos = [parseInt(this.style.left), parseInt(this.style.top), event.clientX, event.clientY]
+		this.style.zIndex = 100;
+	});
+	newDiv.addEventListener("drag", function () {
+		if (event.clientX > 0) {
+		this.style.left = bPos[0] - bPos[2] + event.clientX;
+		this.style.top = bPos[1] - bPos[3] + event.clientY;
+		if (event.clientX < 10) console.log("??? " + event.clientX + ", " + event.clientY);
+		}
+	});
+	newDiv.addEventListener("dragend", function () {
+
+		this.style.left = bPos[0] - bPos[2] + event.clientX;
+		this.style.top = bPos[1] - bPos[3] + event.clientY;
+	});
+	/*
+	var dragBar = document.createElement("div");
+	dragBar.style.height = 20;
+	dragBar.style.width = w;
+	dragBar.
+	*/
+	var killBut = document.createElement('div');
+	killBut.innerHTML = 'X';
+	killBut.onclick = closeBox;
+	killBut.style.top = 0;
+	killBut.style.right = 0;
+	killBut.style.position = 'absolute';
+	killBut.style.border = '1px solid #FFFFFF'
+
+	var newContent = document.createElement('div');
+	newContent.style.height = h-20;
+	newContent.style.width = w;
+	newContent.style.top = 20;
+	newContent.style.left = 0;
+	newContent.style.position = 'absolute';
+	newContent.id = bName + 'Content'
+	//newContent.innerHTML = '';
+	newContent.style.border = '1px solid #FF0000';
+	newContent.style.overflow = 'auto';
+
+	document.getElementsByTagName('body')[0].appendChild(newDiv);
+	newDiv.appendChild(killBut);
+	newDiv.appendChild(newContent);
+	}
+}
+		
+function closeBox() {
+		this.parentNode.parentNode.removeChild(this.parentNode);
+		}		
+
+
+var count=0;		
+function init() {
+	console.log("started");
+	makeBox("testBox_"+count, 0, 500, 500, 250, 250);
+	count++;
+}
+
+</script>
+
+<html>
+<body onload=init()>
+	<div onclick=init()>Make another</div>
+</body>
+</html>
