@@ -18,7 +18,8 @@ print_r($useList);
 echo '<script>
 trg = document.getElementById("plotInviteContent");';
 for ($i=1; $i<=sizeof($useList); $i++) {
-	echo 'plotSummary({desc : "What\'d you do, man?", button : "Invite", id:'.$useList[$i].'}, trg);';
+	echo 'var thisPlot = plotSummary({desc : "What\'d you do, man?", button : "Invite", id:'.$useList[$i].'}, trg);
+	confirmButton("Invite to Plot?", "1082,'.$useList[$i].'", thisPlot.childNodes[3], "invite - '.$i.'");';
 }
 echo '</script>';
 

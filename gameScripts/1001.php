@@ -10,7 +10,7 @@ $playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 // Read the character slot for the player
 echo 'Check slot '.$playerDat[19].'<br>';
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-$unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerDat[19], 40)));
+$unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerDat[19], 40)));
 
 print_r($unitList);
 echo '<hr><script>';

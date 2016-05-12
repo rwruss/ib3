@@ -35,7 +35,7 @@ if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
 	fseek($unitFile, $target*$defaultBlockSize);
 	$targetDat = unpack('i*', fread($unitFile, 200));
 	echo 'Details on this plot....('.$postVals[1].').  Selected char '.$_SESSION['selectedItem'].', Leader char '.$plotDat[9].'<script>
-	var plotBox = plotSummary({desc: "plot #'.$postVals[1].'"}, document.getElementById("plotDetailContent"));
+	var plotBox = plotSummary({desc: "plot #'.$postVals[1].'", id:'.$postVals[1].'}, document.getElementById("plotDtlContent"));
 	trgBox = addDiv("charBox", "tdHolder", plotBox);
 	unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
 	unitList.renderSum('.$target.', plotBox.children[1]);
@@ -49,7 +49,7 @@ if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
 
 	if ($plotDat[9] == $pGameID) {
 		echo 'scrButton("1086", buttonBox, "Execute");
-		boxButton("1085", buttonBox, "ringleader");';
+		boxButton("1085,'.$postVals[1].'", buttonBox, "ringleader");';
 	}
 
 	echo '</script>

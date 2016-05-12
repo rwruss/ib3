@@ -74,7 +74,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 	// Add character to player slot
 	$charSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
-	addDataToSlot($gamePath."/gameSlots.slt", $charSlot, pack("N", $newCharID), $gameSlot);
+	addDataToSlot($gamePath."/gameSlots.slt", $charSlot, pack("i", $newCharID), $gameSlot);
 
 	echo 'Char slot is '.$charSlot.'<br>';
 

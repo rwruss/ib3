@@ -29,7 +29,10 @@ confirmBox = function (msg, prm, type, trg, aSrc, dSrc) {
 		} else {
 			acceptButton.innerHTML = "Accept";
 		}
-		acceptButton.addEventListener("click", function() {scrMod(prm)});
+		acceptButton.addEventListener("click", function() {
+			console.log("accepted");
+			this.parentNode.parentNode.removeChild(this.parentNode);
+			scrMod(prm)});
 	}
 
 	if (type == 1 || 2) {
@@ -108,6 +111,14 @@ boxButton = function (prm, trg, src) {
 	return newButton;
 }
 
+confirmButton = function (msg, prm, trg, src) {
+	var newButton = addDiv("button", "button", trg);
+	newButton.addEventListener("click", function () {confirmBox(msg, prm, 2, document.getElementsByTagName('body')[0], "Yes", "No")});
+	//confirmBox = function (msg, prm, type, trg, aSrc, dSrc)
+	newButton.innerHTML = src;
+	return newButton;
+}
+
 plotDetail = function (obj, trg) {
 	var newPlot = document.createElement("div");
 	newPlot.className = "plotSummary";
@@ -132,14 +143,15 @@ plotDetail = function (obj, trg) {
 }
 
 plotSummary = function (obj, trg) {
-	console.log("mk a plot sum");
+	console.log("mk a plot sum - " + trg);
 	var newPlot = document.createElement("div");
 	newPlot.className = "plotSummary";
 
-	var descBox = addDiv("descBox", "plotDesc", newPlot);
-	descBox.innerHTML = obj.desc;
+	var dtlButton = addDiv("", "sumDtlBut", newPlot);
+	//var dtlBox = addDiv("descBox", "plotDesc", newPlot);
+	//descBox.innerHTML = obj.desc;
 	var prm1 = "1081,"+obj.id;
-	descBox.addEventListener("click", function () {makeBox("plotDtl", prm1, 500, 500, 200, 50)});
+	dtlButton.addEventListener("click", function () {makeBox("plotDtl", prm1, 500, 500, 200, 50)});
 
 	var targetBox = addDiv("targetBox", "plotTarget", newPlot);
 	var dtlBox = addDiv("dtlBox", "plotDtl", newPlot);
@@ -369,7 +381,7 @@ plotSum = function (id, target) {
 scrSelectBox = function (trg) {
 	if (selectedItem)	selectedItem.style.borderColor = "000000";
 	selectedItem = trg.parentNode;
-	trg.parentNode.style.borderColor = "#FF0000";	
+	trg.parentNode.style.borderColor = "#FF0000";
 	console.log(trg);
 }
 
@@ -377,7 +389,7 @@ var selectedItem;
 selectItem = function (trg) {
 	if (selectedItem)	selectedItem.style.borderColor = "000000";
 	selectedItem = trg.parentNode;
-	trg.parentNode.style.borderColor = "#FF0000";	
+	trg.parentNode.style.borderColor = "#FF0000";
 	console.log(trg);
 }
 
@@ -575,22 +587,6 @@ class unit {
 		this.exp = options.exp || 0,
 		this.str = options.str || 0,
 		this.unitID = options.unitID;
-		/*
-	   Object.defineProperties(this, {"actionPoints": {
-		set (x) {
-			this.aps = Math.max(0, Math.min(x, 100));
-			setBar(this.unitID, "apBar", this.aps);
-		},
-		get () {return this.aps;}
-	  }
-	  });
-
-	  Object.defineProperties(this, {"strength": {
-		set (x) {this.str = Math.min(x, 100);
-		  setBar(this.unitID, "strBar", this.str);
-		},
-		get () {return this.str;}
-	  }});*/
 	}
 
 	set actionPoints(x) {
@@ -627,49 +623,6 @@ class unit {
 		}
 	}
 }
-/*
-unit = function (options) {
-	this.type = options.unitType || 'unknown',
-	this.unitName = options.unitName || 'unnamed',
-	this.aps = options.actionPoints || 0,
-	this.status = options.status || 0,
-	this.exp = options.exp || 0,
-	this.str = options.str || 0,
-	this.unitID = options.unitID;
-
-   Object.defineProperties(this, {"actionPoints": {
-    set (x) {
-		this.aps = Math.max(0, Math.min(x, 100));
-		setBar(this.unitID, "apBar", this.aps);
-    },
-	get () {return this.aps;}
-  }
-  });
-
-  Object.defineProperties(this, {"strength": {
-    set (x) {this.str = Math.min(x, 100);
-      setBar(this.unitID, "strBar", this.str);
-    },
-	get () {return this.str;}
-  }});
-}
-
-unit.prototype.changeAttr = function (id, desc, value) {
-	this[desc] = value;
-	//console.log("set " + desc + " to " + value)
-	thisList = document.body.querySelectorAll(".udHolder");
-	for (n=0; n<thisList.length; n++) {
-		if (thisList[n].getAttribute("data-unitid") == id) {
-			for (i=0; i<thisList[n].childNodes.length; i++) {
-				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
-					thisList[n].childNodes[i].innerHTML = this[desc];
-				}
-			}
-		} else {
-		}
-	}
-}
-*/
 
 class warband extends unit {
 	renderSummary(target) {
@@ -694,34 +647,6 @@ class warband extends unit {
 		this.changeAttr(this.unitId, "strength", this.str)
 	}
 }
-/*
-warband = function (options) {
-	this.base = unit;
-	this.base(options);
-}
-warband.prototype = Object.create(unit.prototype);
-warband.prototype.renderSummary = function (target) {
-	//console.log('draw ' + this.type)
-	thisDiv = addDiv(null, 'udHolder', target);
-	thisDiv.setAttribute("data-unitid", this.unitID);
-
-	nameDiv = addDiv("asdf", "sumName", thisDiv);
-	nameDiv.setAttribute("data-boxName", "unitName");
-
-	actDiv = addDiv("asdf", "sumAct", thisDiv);
-	actDiv.setAttribute("data-boxName", "apBar");
-
-	expDiv = addDiv("asdf", "sumStr", thisDiv);
-	expDiv.setAttribute("data-boxName", "strBar");
-
-	dtlButton = addDiv("", "sumDtlBut", thisDiv);
-	dtlButton.addEventListener("click", function () {console.log("show detail")});
-
-	nameDiv.innerHTML = this.unitName;
-	this.changeAttr(this.unitId, "actionPoints", this.aps)
-	this.changeAttr(this.unitId, "strength", this.str)
-}
-*/
 
 class character extends unit {
 	renderSummary(target) {

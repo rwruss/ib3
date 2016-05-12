@@ -471,6 +471,7 @@
 .plotTarget {
 	position:relative;
 	float:left;
+	height:150;
 	width:150;
 	border: 1px solid black;
 }

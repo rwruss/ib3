@@ -17,8 +17,9 @@ if ($unitDat[35] > 0) {
   for ($i=1; $i<=sizeof($plotList->slotData); $i++) {
     //echo 'Check '.$i.' which has a value of '.$plotList->slotData[$i].'<br>';
     if ($plotList->slotData[$i] > 0) {
-      echo 'var item = plotSummary({desc: "plot #'.$plotList->slotData[$i].'"}, document.getElementById("plotListContent"));
-      item.addEventListener("click", function() {makeBox("plotDetail", "1081,'.$plotList->slotData[$i].'", 500, 500, 200, 50)});';
+      echo 'var item = plotSummary({desc: "plot #'.$plotList->slotData[$i].'", id:'.$plotList->slotData[$i].'}, document.getElementById("plotListContent"));
+      //item.addEventListener("click", function() {makeBox("plotDetail", "1081,'.$plotList->slotData[$i].'", 500, 500, 200, 50)});
+      ';
       //echo 'Plot '.$plotList->slotData[$i].'<br>';
     } else {
       //echo 'Failed on '.$plotList->slotData[$i].'<br>';
