@@ -10,6 +10,16 @@ $taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
 fseek($taskFile, $postVals[1]*200);
 $plotDat = unpack('i*', fread($taskFile, 200));
 
+// check if character is already in the plot
+
+if ($plotDat != 0) {
+  $plotChars = new blockSlot($plotDat[11], $slotFile, 40);
+  if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
+    echo 'Already in the plot';
+    exit;
+  }
+}
+
 if ($plotDat[11] == 0) {
   $plotDat[11] = startASlot($slotFile, $gamePath.'/gameSlots.slt');
   fseek($taskFile, $postVals[1]*200+40);
@@ -18,8 +28,15 @@ if ($plotDat[11] == 0) {
 
 echo 'Char slot for plot is '.$plotDat[11].'<br>';
 
-$plotChars = new itemSlot($plotDat[11], $slotFile, 40);
-$plotChars->addItem($_SESSION['selectedItem'], $slotFile);
+$plotChars = new blockSlot($plotDat[11], $slotFile, 40);
+$loc = sizeof($plotChars->slotData);
+for ($i=1; $i<=$plotChars->slotData; $i+=2) {
+  if ($plotChars->slotData[$i]==0) {
+    $loc = $i;
+    break;
+  }
+}
+$plotChars->addItem($slotFile, pack('i*', $_SESSION['selectedItem'], 1), $loc);
 
 
 echo 'Added character to plot at slot '.$plotDat[11];

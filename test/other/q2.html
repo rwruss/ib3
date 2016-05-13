@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>I'm Learning D3</title>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<style>
+		text {
+			font-family: "Open Sans", sans-serif;
+			font-size: 12px;
+		}
+	</style>
+</head>
+<body>
+	<!-- Location for page elements. -->
+	<script>
+		// Our D3 code will go here.
+		var ratData = [ 40, 90, 30, 60 ];
+
+		// Width and height of SVG
+		var h = 180;
+		var w = 160;
+
+		//Create SVG element
+		var svg = d3.select("body")
+			.append("svg")
+			.attr("width", w)
+			.attr("height", h);
+
+		// Select and generate rectangle elements
+		svg.selectAll( "rect" )
+			.data( ratData )
+			.enter()
+			.append("rect")
+			.attr( "x", function(d,i){
+				return i*25 + 30; // Set x coordinate of rectangle to index of data value (i)*25.
+			// Add 30 to account for our left margin.
+			})
+			.attr( "y", function(d){
+				return h - d; // Set y coordinate for each bar to height minus the data value
+			})
+			.attr( "width", 20 )
+			.attr( "height", function(d){
+				return d; // Set height of rectangle to data value
+			})
+			.attr( "fill", "steelblue");
+
+		// Create y-axis
+		svg.append("line")
+			.attr("x1", 30)
+			.attr("y1", 0)
+			.attr("x2", 30)
+			.attr("y2", h)
+			.attr("stroke-width", 2)
+			.attr("stroke", "black");
+
+			// Create x-axis
+		svg.append("line")
+			.attr("x1", 30)
+			.attr("y1", h)
+			.attr("x2", 130)
+			.attr("y2", h)
+			.attr("stroke-width", 2)
+			.attr("stroke", "black");
+
+		// Add a Label
+		// y-axis label
+		svg.append("text")
+			.attr("class", "y label")
+			.attr("text-anchor", "end")
+			.text("No. of Rats")
+			.attr("transform", "translate(20, 20) rotate(-90)");
+
+	</script>
+</body>
+</html>

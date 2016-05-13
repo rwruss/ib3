@@ -1,28 +1,28 @@
 <?php
 
 session_start();
-if (!isset($_SESSION['playerId'])) echo "<script>window.location.replace('./index.php')</script>";
-if (!isset($_GET['gameID'])) echo "<script>window.location.replace('./index.php')</script>";
+if (!isset($_SESSION["playerId"])) echo "<script>window.location.replace(./index.php)</script>";
+if (!isset($_GET["gameID"])) echo "<script>window.location.replace(./index.php)</script>";
 
 // Read game file to determine player number and status.
 
-$playerList = unpack("i*", file_get_contents("../games/".$_GET['gameID']."/players.dat"));
-$playerListLoc = array_search($_SESSION['playerId'], $playerList);
+$playerList = unpack("i*", file_get_contents("../games/".$_GET["gameID"]."/players.dat"));
+$playerListLoc = array_search($_SESSION["playerId"], $playerList);
 $pGameID = $playerList[$playerListLoc+1]*-1;
-$_SESSION['instance'] = $_GET['gameID'];
+$_SESSION["instance"] = $_GET["gameID"];
 //echo "PLAYER GAME ID IS ".$pGameID;
 if ($pGameID == FALSE) {
-	echo "<p><p><p><p>Not alrady in game(".$_SESSION['playerId'].")";
+	echo "<p><p><p><p>Not alrady in game(".$_SESSION["playerId"].")";
 	print_r($playerList);
 	include("../gameScripts/1003.php");
 
 	exit;}
 
-$_SESSION['gameIDs'][$_GET['gameID']] = $pGameID;
+$_SESSION["gameIDs"][$_GET["gameID"]] = $pGameID;
 
 
-$gamePath = "../games/".$_GET['gameID'];
-$gameID = $_GET['gameID'];
+$gamePath = "../games/".$_GET["gameID"];
+$gameID = $_GET["gameID"];
 // Read game parameters
 $paramDat = file_get_contents($gamePath."/params.ini");
 $mapBounds = unpack("S*", substr($paramDat, 100, 8));
@@ -31,7 +31,7 @@ $gameTimes = unpack("N*", substr($paramDat, 0, 8));
 // Read player info
 //$playerDat = file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*400, 400);
 
-$playerDat = unpack('i*', file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*100, 400));
+$playerDat = unpack("i*", file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*100, 400));
 /*
 $pStatus = unpack("C*", substr($playerDat, 0, 5));
 $playerOther = unpack("s*", substr($playerDat, 24, 42));
@@ -62,13 +62,13 @@ if ($leaderNameKeys[3] > 0) {
 else $charName[2] = "";
 */
 
-echo "
-<link rel='stylesheet' type='text/css' href='ib3styles.css'>
-<script type='text/javascript' src='glMatrix-0.9.5.min.js'></script>
-<script type='text/javascript' src='webgl-utils.js'></script>
-<script type='text/javascript' src='templates.js'></script>
+echo '
+<link rel="stylesheet" type="text/css" href="ib3styles.css">
+<script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="webgl-utils.js"></script>
+<script type="text/javascript" src="templates.js"></script>
 
-<script id='shader-fs' type='x-shader/x-fragment'>
+<script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
 
 	varying float ptElevation;
@@ -253,7 +253,7 @@ echo "
 		}
 </script>
 
-<script id='shader-vs' type='x-shader/x-vertex'>
+<script id="shader-vs" type="x-shader/x-vertex">
     attribute vec2 aVertexPosition;
 	attribute vec2 aTextureCoord;
 	attribute vec3 aVertexNormal;
@@ -366,7 +366,7 @@ echo "
 		}
 </script>
 
-<script id='buffer-fs' type='x-shader/x-fragment'>
+<script id="buffer-fs" type="x-shader/x-fragment">
 	precision mediump float;
 	varying float vTileNum;
 	varying vec2 vVertexPosition;
@@ -375,7 +375,7 @@ echo "
 		gl_FragColor = vec4(vTileNum, vVertexPosition.x, vVertexPosition.y, 1.0);
 		}
 </script>
-<script id='buffer-vs' type='x-shader/x-vertex'>
+<script id="buffer-vs" type="x-shader/x-vertex">
 	attribute vec2 aVertexPosition;
 	attribute vec2 aTextureCoord;
 
@@ -409,7 +409,7 @@ echo "
 		}
 </script>
 
-<script id='riverFS' type='x-shader/x-fragment'>
+<script id="riverFS" type="x-shader/x-fragment">
 	precision mediump float;
 
 	varying vec3 vVertexShade;
@@ -428,7 +428,7 @@ echo "
 	}
 
 </script>
-<script id='riverVS' type='x-shader/x-vertex'>
+<script id="riverVS" type="x-shader/x-vertex">
 	attribute vec2 aVertexPosition;
     attribute vec3 aVertexShade;
     attribute vec4 aVertexColor;
@@ -453,14 +453,14 @@ echo "
 		vRiverWidth = uRiverWidth;
     }
 </script>
-<script id='colorFS' type='x-shader/x-fragment'>
+<script id="colorFS" type="x-shader/x-fragment">
 precision mediump float;
 
 	void main(void) {
 		gl_FragColor = vec4(1.0,1.0,0.0,1.0);
 		}
 </script>
-<script id='colorVS' type='x-shader/x-vertex'>
+<script id="colorVS" type="x-shader/x-vertex">
 	attribute vec3 aVertexPosition;
 	uniform vec3 uMapScale;
 	uniform vec3 uMapOffset;
@@ -478,7 +478,7 @@ precision mediump float;
 		}
 </script>
 
-<script id='unitFS' type='x-shader/x-fragment'>
+<script id="unitFS" type="x-shader/x-fragment">
 precision mediump float;
 
 	varying vec3 vPosition;
@@ -488,7 +488,7 @@ precision mediump float;
 		gl_FragColor = vec4(uColor,1.0);
 		}
 </script>
-<script id='unitVS' type='x-shader/x-vertex'>
+<script id="unitVS" type="x-shader/x-vertex">
 	attribute vec3 aVertexPosition;
 	attribute vec3 aUnitLoc;
 	uniform vec3 uMapScale;
@@ -515,7 +515,7 @@ precision mediump float;
 		}
 </script>
 
-<script id='areaFS' type='x-shader/x-fragment'>
+<script id="areaFS" type="x-shader/x-fragment">
 precision mediump float;
 
     varying vec4 vColor;
@@ -536,7 +536,7 @@ precision mediump float;
 		//gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 		}
 </script>
-<script id='areaVS' type='x-shader/x-vertex'>
+<script id="areaVS" type="x-shader/x-vertex">
 	attribute vec3 aVertexPosition;
     attribute vec3 aCircleColor;
     attribute vec2 aCircleCenter;
@@ -568,7 +568,7 @@ precision mediump float;
     }
 </script>
 
-<script id='treeFS' type='x-shader/x-fragment'>
+<script id="treeFS" type="x-shader/x-fragment">
 precision mediump float;
 	varying float vHeight;
 	varying vec2 texPos;
@@ -581,7 +581,7 @@ precision mediump float;
 		//gl_FragColor = texColor;
 		}
 </script>
-<script id='treeVS' type='x-shader/x-vertex'>
+<script id="treeVS" type="x-shader/x-vertex">
 	attribute vec3 aVertexPosition;
 	attribute float aTreeOffset;
 
@@ -623,7 +623,7 @@ precision mediump float;
 		}
 </script>
 
-<script id='oceanFS' type='x-shader/x-fragment'>
+<script id="oceanFS" type="x-shader/x-fragment">
 	 precision mediump float;
 
 	uniform sampler2D uSampler;
@@ -639,7 +639,7 @@ precision mediump float;
 		//gl_FragColor = vec4(vPos.y, 0., 0.0, 1.0);
 		}
 </script>
-<script id='oceanVS' type='x-shader/x-vertex'>
+<script id="oceanVS" type="x-shader/x-vertex">
 	attribute vec2 aVertexPosition;
 
 	uniform sampler2D uSampler;
@@ -678,17 +678,17 @@ precision mediump float;
     }
 </script>
 
-<script type='text/javascript'>
+<script type="text/javascript">
 
 	function ncode_div(el_id) {
-         var x = document.getElementById(el_id).getElementsByTagName('script');
+         var x = document.getElementById(el_id).getElementsByTagName("script");
          for(var i=0;i<x.length;i++) {
                  eval(x[i].text);
 							   }
          }
 
 	function ncode_general(data) {
-         var x = data.getElementsByTagName('script');
+         var x = data.getElementsByTagName("script");
          for(var i=0;i<x.length;i++) {
                  eval(x[i].text);
 
@@ -703,13 +703,13 @@ precision mediump float;
 			if (groupList[i] == selNum) {
 				dupe = true;
 				groupList.splice(i, 1);
-				document.getElementById('selOpt_'+selNum).className='unselected';
+				document.getElementById("selOpt_"+selNum).className="unselected";
 				break;
 			}
 		}
 		if (!dupe) {
 			groupList.push(selNum);
-			document.getElementById('selOpt_'+selNum).className='selected';
+			document.getElementById("selOpt_"+selNum).className="selected";
 		}
 	}
 
@@ -757,9 +757,8 @@ precision mediump float;
 			mag,mag+lineWidth,-lineWidth,
 			0,0,0);
 		} else {
-			//alert(val + ', ' + moveString.length + '/' + moveString);
+			//alert(val + ", " + moveString.length + "/" + moveString);
 			if (val == 10 && moveString.length > 2) {
-				//alert('back');
 				lastMove = moveString.pop();
 				//moveString = moveString.slice(0,-1);
 				umList = umList.slice(0,-12);
@@ -787,8 +786,7 @@ precision mediump float;
 
 	function loadMove(startA, steps, times) {
 		lineWidth = 0.25;
-		//alert('loadMove - ' + steps);
-		//alert(times);
+
 		//rpList = new Array();
 		//umFauxVerts = new Array();
 		//resetCount=0;
@@ -830,27 +828,25 @@ precision mediump float;
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, moveVerts);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(umFauxVerts), gl.STATIC_DRAW);
-		//alert('Move Length of ' + moveLength);
+
 	}
 
 	function orderMove() {
 		//alert(moveString.toString());
-		var sendString = '';
+		var sendString = "";
 		for (var i=1; i<moveString.length; i++) {
 			sendString = sendString + moveString[i];
 		}
 		//alert(sendString);
-		scrMod('1045,'+moveString[0]+','+sendString);
+		scrMod("1045,"+moveString[0]+","+sendString);
 	}
 
 
 	function passClick(val, trg) {
-		params = 'val1='+val;
+		params = "val1="+val;
 		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.open('POST', 'gameScr.php?gid=".$_GET['gameID']."', true);
-		xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		//xmlhttp.setRequestHeader('Content-length', params.length);
-		//xmlhttp.setRequestHeader('Connection', 'close');
+		xmlhttp.open("POST", "gameScr.php?gid='.$_GET['gameID'].'", true);
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -863,17 +859,15 @@ precision mediump float;
 		}
 
 	function scrMod(val) {
-		params = 'val1='+val;
+		params = "val1="+val;
 		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.open('POST', 'gameScr.php?gid=".$_GET['gameID']."', true);
-		xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		//xmlhttp.setRequestHeader('Content-length', params.length);
-		//xmlhttp.setRequestHeader('Connection', 'close');
+		xmlhttp.open("POST", "gameScr.php?gid='.$_GET['gameID'].'", true);
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				document.getElementById('scrBox').innerHTML = xmlhttp.response;
-				ncode_div('scrBox');
+				document.getElementById("scrBox").innerHTML = xmlhttp.response;
+				ncode_div("scrBox");
 				}
 			}
 
@@ -884,43 +878,70 @@ precision mediump float;
 
 		}
 
+		var zCount=0;
 	function makeBox(bName, val, h, w, x, y) {
+		//console.log("make a box");
 		if (!document.getElementById(bName)) {
-			var newDiv = document.createElement('div');
+			var newDiv = document.createElement("div");
 			newDiv.style.height = h;
 			newDiv.style.width = w;
 			newDiv.style.top = y;
 			newDiv.style.left = x;
-			newDiv.style.position = 'absolute';
-			newDiv.style.border = '1px solid #FFFFFF'
-			newDiv.style.background = '#FFFFFF'
+			newDiv.style.position = "absolute";
+			newDiv.style.border = "1px solid #000000";
+			newDiv.style.background = "#B0B0B0";
 			newDiv.id = bName;
+			newDiv.draggable = "true";
+			zCount++;
+			newDiv.style.zIndex = zCount;
 
-			var killBut = document.createElement('div');
-			killBut.innerHTML = 'X';
+			newDiv.addEventListener("click", function () {this.style.zIndex = zCount++;})
+			newDiv.addEventListener("dragstart", function () {
+				this.style.zIndex = zCount++;
+				//console.log("start drag -> " + event.clientX + ", " + event.clientY);
+				bPos = [parseInt(this.style.left), parseInt(this.style.top), event.clientX, event.clientY]
+
+			});
+			newDiv.addEventListener("drag", function () {
+
+				if (event.clientX > 0) {
+				this.style.left = bPos[0] - bPos[2] + event.clientX;
+				this.style.top = bPos[1] - bPos[3] + event.clientY;
+				if (event.clientX < 10) console.log("??? " + event.clientX + ", " + event.clientY);
+				}
+			});
+			newDiv.addEventListener("dragend", function () {
+
+				this.style.left = bPos[0] - bPos[2] + event.clientX;
+				this.style.top = bPos[1] - bPos[3] + event.clientY;
+			});
+
+			var killBut = document.createElement("div");
+			killBut.innerHTML = "X";
 			killBut.onclick = closeBox;
 			killBut.style.top = 0;
 			killBut.style.right = 0;
-			killBut.style.position = 'absolute';
-			killBut.style.border = '1px solid #FFFFFF'
+			killBut.style.position = "absolute";
+			killBut.style.border = "1px solid #FFFFFF";
 
-			var newContent = document.createElement('div');
+			var newContent = document.createElement("div");
 			newContent.style.height = h-20;
 			newContent.style.width = w;
 			newContent.style.top = 20;
 			newContent.style.left = 0;
-			newContent.style.position = 'absolute';
-			newContent.id = bName + 'Content'
-			//newContent.innerHTML = '';
-			newContent.style.border = '1px solid #FFFFFF'
-			newContent.style.overflow = 'auto'
+			newContent.style.position = "absolute";
+			newContent.id = bName + "Content"
 
-			document.getElementsByTagName('body')[0].appendChild(newDiv);
+			//newContent.style.border = "1px solid #FFFFFF";
+			newContent.style.background = "#D0D0D0";
+			newContent.style.overflow = "auto";
+
+			document.getElementsByTagName("body")[0].appendChild(newDiv);
 			newDiv.appendChild(killBut);
 			newDiv.appendChild(newContent);
 			}
 
-		passClick(val, bName + 'Content');
+		passClick(val, bName + "Content");
 		}
 
 	function closeBox() {
@@ -928,14 +949,14 @@ precision mediump float;
 		}
 
 	function killBox(trg) {
-		if (trg.nodeName == 'DIV') {
+		if (trg.nodeName == "DIV") {
 			testNode = trg;
-			//alert('trg is ' + trg)
+
 		} else {
-			//alert('this is ' + this)
+
 			testNode = this;
 		}
-		while (testNode.parentNode.nodeName != 'BODY') {
+		while (testNode.parentNode.nodeName != "BODY") {
 			//1alert(testNode.parentNode.nodeName);
 			testNode = testNode.parentNode;
 		}
@@ -955,36 +976,33 @@ precision mediump float;
 
     function initGL(canvas) {
         try {
-            gl = canvas.getContext('webgl');
+            gl = canvas.getContext("webgl");
             gl.viewportWidth = canvas.width;
             gl.viewportHeight = canvas.height;
-			ANGLEia = gl.getExtension('ANGLE_instanced_arrays'); // Vendor prefixes may apply!
+			ANGLEia = gl.getExtension("ANGLE_instanced_arrays"); // Vendor prefixes may apply!
         } catch (e) {
         }
         if (!gl) {
-            alert('Could not initialise WebGL, sorry :-(');
+            alert("Could not initialise WebGL, sorry :-(");
         }
     }
 	var tileDat;
 	function getData(rTrg, prm, tTrg)
 		{
 		var tot_length = 0;
-		params = 'val1='+prm.join();
+		params = "val1="+prm.join();
 		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.open('POST', rTrg, true);
+		xmlhttp.open("POST", rTrg, true);
 
-		xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		//xmlhttp.setRequestHeader('Content-length', params.length);
-		//xmlhttp.setRequestHeader('Connection', 'close');
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-		xmlhttp.responseType = 'arraybuffer';
+		xmlhttp.responseType = "arraybuffer";
 
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 
 				loadRivers(prm, xmlhttp.response, tTrg);
 				}
-			//return '903';
 			}
 		xmlhttp.send(params);
 		//return xmlhttp.response.byteLength;
@@ -1001,7 +1019,7 @@ precision mediump float;
 	function handleMapTextures(texture, x, y, tileNum) {
 		var imageDat = ctx.getImageData(x, y, 128, 128);
 		var pixDat = imageDat.data;
-		//alert(tileNum + ', ' + x + ', ' + y);
+
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 
@@ -1047,8 +1065,7 @@ precision mediump float;
     var tileTextures = new Array();
 	var textureList = new Array();
     function mapTextures(i, x, y) {
-		//alert(i)
-		//alert(x + ', ' + y);
+
         tileTextures[i] = gl.createTexture();
 		handleMapTextures(tileTextures[i], x, y, i);
         tileTextures.image = tileCanvas;
@@ -1061,12 +1078,12 @@ precision mediump float;
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.bindTexture(gl.TEXTURE_2D, null);
-		//alert('loaded ' + texture.image.src);
+
 		}
 	var loadedImages = 0;
 	var requiredImages = 0;
 	function loadTexture(textureNumber, src) {
-		//alert('load texture ' + textureNumber);
+
 		requiredImages++;
 		textureList[textureNumber].image = new Image();
         textureList[textureNumber].image.onload = function () {
@@ -1084,7 +1101,7 @@ precision mediump float;
             return null;
         }
 
-        var str = '';
+        var str = "";
         var k = shaderScript.firstChild;
         while (k) {
             if (k.nodeType == 3) {
@@ -1094,9 +1111,9 @@ precision mediump float;
         }
 
         var shader;
-        if (shaderScript.type == 'x-shader/x-fragment') {
+        if (shaderScript.type == "x-shader/x-fragment") {
             shader = gl.createShader(gl.FRAGMENT_SHADER);
-        } else if (shaderScript.type == 'x-shader/x-vertex') {
+        } else if (shaderScript.type == "x-shader/x-vertex") {
             shader = gl.createShader(gl.VERTEX_SHADER);
         } else {
             return null;
@@ -1127,106 +1144,106 @@ precision mediump float;
 
 		// <--- ocean program --->
 
-		var fragShader = getShader(gl, 'oceanFS');
-        var vertShader = getShader(gl, 'oceanVS');
+		var fragShader = getShader(gl, "oceanFS");
+        var vertShader = getShader(gl, "oceanVS");
 		oceanTexProgram = gl.createProgram();
         gl.attachShader(oceanTexProgram, vertShader);
         gl.attachShader(oceanTexProgram, fragShader);
         gl.linkProgram(oceanTexProgram);
 
         if (!gl.getProgramParameter(oceanTexProgram, gl.LINK_STATUS)) {
-            alert('Could not initialise shaders - ocean');
+            alert("Could not initialise shaders - ocean");
         }
 		gl.useProgram(oceanTexProgram);
-		oceanTexProgram.vertexPositionAttribute = gl.getAttribLocation(oceanTexProgram, 'aVertexPosition');
+		oceanTexProgram.vertexPositionAttribute = gl.getAttribLocation(oceanTexProgram, "aVertexPosition");
         gl.enableVertexAttribArray(oceanTexProgram.vertexPositionAttribute);
 
-		oceanTexProgram.samplerUniform = gl.getUniformLocation(oceanTexProgram, 'uSampler');
-		//oceanTexProgram.samplerUniformf = gl.getUniformLocation(oceanTexProgram, 'uSampler2');
-		oceanTexProgram.timeUniform = gl.getUniformLocation(oceanTexProgram, 'uTime');
+		oceanTexProgram.samplerUniform = gl.getUniformLocation(oceanTexProgram, "uSampler");
+		//oceanTexProgram.samplerUniformf = gl.getUniformLocation(oceanTexProgram, "uSampler2");
+		oceanTexProgram.timeUniform = gl.getUniformLocation(oceanTexProgram, "uTime");
 
 
 		// <--- buffer program --->
 
-		var fragShader = getShader(gl, 'buffer-fs');
-        var vertShader = getShader(gl, 'buffer-vs');
+		var fragShader = getShader(gl, "buffer-fs");
+        var vertShader = getShader(gl, "buffer-vs");
 		bufferProgram = gl.createProgram();
         gl.attachShader(bufferProgram, vertShader);
         gl.attachShader(bufferProgram, fragShader);
         gl.linkProgram(bufferProgram);
 
         if (!gl.getProgramParameter(bufferProgram, gl.LINK_STATUS)) {
-            alert('Could not initialise shaders - buffer');
+            alert("Could not initialise shaders - buffer");
         }
 		gl.useProgram(bufferProgram);
-        bufferProgram.VPAttribute = gl.getAttribLocation(bufferProgram, 'aVertexPosition');
+        bufferProgram.VPAttribute = gl.getAttribLocation(bufferProgram, "aVertexPosition");
         gl.enableVertexAttribArray(bufferProgram.VPAttribute);
 
-		bufferProgram.textureCoordAttribute = gl.getAttribLocation(bufferProgram, 'aTextureCoord');
+		bufferProgram.textureCoordAttribute = gl.getAttribLocation(bufferProgram, "aTextureCoord");
         gl.enableVertexAttribArray(bufferProgram.textureCoordAttribute);
 
-        bufferProgram.pMatrixUniform = gl.getUniformLocation(bufferProgram, 'uPMatrix');
-        bufferProgram.mvMatrixUniform = gl.getUniformLocation(bufferProgram, 'uMVMatrix');
+        bufferProgram.pMatrixUniform = gl.getUniformLocation(bufferProgram, "uPMatrix");
+        bufferProgram.mvMatrixUniform = gl.getUniformLocation(bufferProgram, "uMVMatrix");
 
-		bufferProgram.samplerUniform = gl.getUniformLocation(bufferProgram, 'uSampler');
-		bufferProgram.tileNumberUniform = gl.getUniformLocation(bufferProgram, 'uTileNum');
-		bufferProgram.scaleUniform = gl.getUniformLocation(bufferProgram, 'uMapScale');
-		bufferProgram.offsetUniform = gl.getUniformLocation(bufferProgram, 'uMapOffset');
+		bufferProgram.samplerUniform = gl.getUniformLocation(bufferProgram, "uSampler");
+		bufferProgram.tileNumberUniform = gl.getUniformLocation(bufferProgram, "uTileNum");
+		bufferProgram.scaleUniform = gl.getUniformLocation(bufferProgram, "uMapScale");
+		bufferProgram.offsetUniform = gl.getUniformLocation(bufferProgram, "uMapOffset");
 
 		// <--- tree program --->
 
-		var fragShader = getShader(gl, 'treeFS');
-        var vertShader = getShader(gl, 'treeVS');
+		var fragShader = getShader(gl, "treeFS");
+        var vertShader = getShader(gl, "treeVS");
 		treeProgram = gl.createProgram();
         gl.attachShader(treeProgram, vertShader);
         gl.attachShader(treeProgram, fragShader);
         gl.linkProgram(treeProgram);
 
         if (!gl.getProgramParameter(treeProgram, gl.LINK_STATUS)) {
-            alert('Could not initialise shaders - tree');
+            alert("Could not initialise shaders - tree");
         }
 		gl.useProgram(treeProgram);
-        treeProgram.VPAttribute = gl.getAttribLocation(treeProgram, 'aVertexPosition');
+        treeProgram.VPAttribute = gl.getAttribLocation(treeProgram, "aVertexPosition");
         gl.enableVertexAttribArray(treeProgram.VPAttribute);
 
-		treeProgram.tOAttribute = gl.getAttribLocation(treeProgram, 'aTreeOffset');
+		treeProgram.tOAttribute = gl.getAttribLocation(treeProgram, "aTreeOffset");
         gl.enableVertexAttribArray(treeProgram.tOAttribute);
 
-        treeProgram.pMatrixUniform = gl.getUniformLocation(treeProgram, 'uPMatrix');
-        treeProgram.mvMatrixUniform = gl.getUniformLocation(treeProgram, 'uMVMatrix');
+        treeProgram.pMatrixUniform = gl.getUniformLocation(treeProgram, "uPMatrix");
+        treeProgram.mvMatrixUniform = gl.getUniformLocation(treeProgram, "uMVMatrix");
 
-		treeProgram.samplerUniform = gl.getUniformLocation(treeProgram, 'uSampler');
-		treeProgram.treeSampler = gl.getUniformLocation(treeProgram, 'uTSampler');
-		treeProgram.scaleUniform = gl.getUniformLocation(treeProgram, 'uMapScale');
-		treeProgram.offsetUniform = gl.getUniformLocation(treeProgram, 'uMapOffset');
+		treeProgram.samplerUniform = gl.getUniformLocation(treeProgram, "uSampler");
+		treeProgram.treeSampler = gl.getUniformLocation(treeProgram, "uTSampler");
+		treeProgram.scaleUniform = gl.getUniformLocation(treeProgram, "uMapScale");
+		treeProgram.offsetUniform = gl.getUniformLocation(treeProgram, "uMapOffset");
 
-		var fragShader = getShader(gl, 'buffer-fs');
-        var vertShader = getShader(gl, 'buffer-vs');
+		var fragShader = getShader(gl, "buffer-fs");
+        var vertShader = getShader(gl, "buffer-vs");
 		bufferProgram = gl.createProgram();
         gl.attachShader(bufferProgram, vertShader);
         gl.attachShader(bufferProgram, fragShader);
         gl.linkProgram(bufferProgram);
 
         if (!gl.getProgramParameter(bufferProgram, gl.LINK_STATUS)) {
-            alert('Could not initialise shaders - buffer');
+            alert("Could not initialise shaders - buffer");
         }
 		gl.useProgram(bufferProgram);
-        bufferProgram.VPAttribute = gl.getAttribLocation(bufferProgram, 'aVertexPosition');
+        bufferProgram.VPAttribute = gl.getAttribLocation(bufferProgram, "aVertexPosition");
         gl.enableVertexAttribArray(bufferProgram.VPAttribute);
 
-		bufferProgram.textureCoordAttribute = gl.getAttribLocation(bufferProgram, 'aTextureCoord');
+		bufferProgram.textureCoordAttribute = gl.getAttribLocation(bufferProgram, "aTextureCoord");
         gl.enableVertexAttribArray(bufferProgram.textureCoordAttribute);
 
-        bufferProgram.pMatrixUniform = gl.getUniformLocation(bufferProgram, 'uPMatrix');
-        bufferProgram.mvMatrixUniform = gl.getUniformLocation(bufferProgram, 'uMVMatrix');
+        bufferProgram.pMatrixUniform = gl.getUniformLocation(bufferProgram, "uPMatrix");
+        bufferProgram.mvMatrixUniform = gl.getUniformLocation(bufferProgram, "uMVMatrix");
 
-		bufferProgram.samplerUniform = gl.getUniformLocation(bufferProgram, 'uSampler');
-		bufferProgram.tileNumberUniform = gl.getUniformLocation(bufferProgram, 'uTileNum');
-		bufferProgram.scaleUniform = gl.getUniformLocation(bufferProgram, 'uMapScale');
-		bufferProgram.offsetUniform = gl.getUniformLocation(bufferProgram, 'uMapOffset');
+		bufferProgram.samplerUniform = gl.getUniformLocation(bufferProgram, "uSampler");
+		bufferProgram.tileNumberUniform = gl.getUniformLocation(bufferProgram, "uTileNum");
+		bufferProgram.scaleUniform = gl.getUniformLocation(bufferProgram, "uMapScale");
+		bufferProgram.offsetUniform = gl.getUniformLocation(bufferProgram, "uMapOffset");
 
-        var fragmentShader = getShader(gl, 'shader-fs');
-        var vertexShader = getShader(gl, 'shader-vs');
+        var fragmentShader = getShader(gl, "shader-fs");
+        var vertexShader = getShader(gl, "shader-vs");
 
         shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);
@@ -1234,49 +1251,49 @@ precision mediump float;
         gl.linkProgram(shaderProgram);
 
         if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-            alert('Could not initialise shaders');
+            alert("Could not initialise shaders");
         }
 		gl.useProgram(shaderProgram);
-        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
         gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
 
-		shaderProgram.tileNumberUniform = gl.getUniformLocation(shaderProgram, 'uTileNum');
-		shaderProgram.scaleUniform = gl.getUniformLocation(shaderProgram, 'uMapScale');
-		shaderProgram.offsetUniform = gl.getUniformLocation(shaderProgram, 'uMapOffset');
+		shaderProgram.tileNumberUniform = gl.getUniformLocation(shaderProgram, "uTileNum");
+		shaderProgram.scaleUniform = gl.getUniformLocation(shaderProgram, "uMapScale");
+		shaderProgram.offsetUniform = gl.getUniformLocation(shaderProgram, "uMapOffset");
 
-        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, 'uPMatrix');
-        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, 'uMVMatrix');
-        shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, 'uNMatrix');
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+        shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
 
-		shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, 'aTextureCoord');
+		shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
         gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
 
-		shaderProgram.normalAttribute = gl.getAttribLocation(shaderProgram, 'aVertexNormal');
+		shaderProgram.normalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
     gl.enableVertexAttribArray(shaderProgram.normalAttribute);
 
-    shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, 'uSampler');
-    shaderProgram.hexPatternSampler = gl.getUniformLocation(shaderProgram, 'uHexPSampler');
-    shaderProgram.terrainSampler = gl.getUniformLocation(shaderProgram, 'uTSampler');
-    shaderProgram.oceanSampler = gl.getUniformLocation(shaderProgram, 'uOSampler');
-    shaderProgram.areaSampler = gl.getUniformLocation(shaderProgram, 'uAreaSampler');
-    shaderProgram.borderSampler = gl.getUniformLocation(shaderProgram, 'uBSampler');
-    shaderProgram.roadSampler = gl.getUniformLocation(shaderProgram, 'uRoadSampler');
-    shaderProgram.plainsSampler = gl.getUniformLocation(shaderProgram, 'uPlainsSampler');
-    shaderProgram.grassSampler = gl.getUniformLocation(shaderProgram, 'uGrassSampler');
-		shaderProgram.mover = gl.getUniformLocation(shaderProgram, 'uOffset');
-		shaderProgram.hexOn = gl.getUniformLocation(shaderProgram, 'uHexOn');
-		shaderProgram.useOn = gl.getUniformLocation(shaderProgram, 'uUseColor');
-		shaderProgram.hexMap = gl.getUniformLocation(shaderProgram, 'uHexMap');
+    shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+    shaderProgram.hexPatternSampler = gl.getUniformLocation(shaderProgram, "uHexPSampler");
+    shaderProgram.terrainSampler = gl.getUniformLocation(shaderProgram, "uTSampler");
+    shaderProgram.oceanSampler = gl.getUniformLocation(shaderProgram, "uOSampler");
+    shaderProgram.areaSampler = gl.getUniformLocation(shaderProgram, "uAreaSampler");
+    shaderProgram.borderSampler = gl.getUniformLocation(shaderProgram, "uBSampler");
+    shaderProgram.roadSampler = gl.getUniformLocation(shaderProgram, "uRoadSampler");
+    shaderProgram.plainsSampler = gl.getUniformLocation(shaderProgram, "uPlainsSampler");
+    shaderProgram.grassSampler = gl.getUniformLocation(shaderProgram, "uGrassSampler");
+		shaderProgram.mover = gl.getUniformLocation(shaderProgram, "uOffset");
+		shaderProgram.hexOn = gl.getUniformLocation(shaderProgram, "uHexOn");
+		shaderProgram.useOn = gl.getUniformLocation(shaderProgram, "uUseColor");
+		shaderProgram.hexMap = gl.getUniformLocation(shaderProgram, "uHexMap");
 
-		shaderProgram.timeUniform = gl.getUniformLocation(shaderProgram, 'uTime');
-		shaderProgram.bumpUniform = gl.getUniformLocation(shaderProgram, 'uBumpSampler');
-		shaderProgram.fBumpUniform = gl.getUniformLocation(shaderProgram, 'ufBumpSampler');
-		shaderProgram.noiseUniform = gl.getUniformLocation(shaderProgram, 'uNoiseSampler');
-		shaderProgram.maskUniform = gl.getUniformLocation(shaderProgram, 'uMaskSampler');
+		shaderProgram.timeUniform = gl.getUniformLocation(shaderProgram, "uTime");
+		shaderProgram.bumpUniform = gl.getUniformLocation(shaderProgram, "uBumpSampler");
+		shaderProgram.fBumpUniform = gl.getUniformLocation(shaderProgram, "ufBumpSampler");
+		shaderProgram.noiseUniform = gl.getUniformLocation(shaderProgram, "uNoiseSampler");
+		shaderProgram.maskUniform = gl.getUniformLocation(shaderProgram, "uMaskSampler");
 
 		//////
-		var fragmentShader = getShader(gl, 'riverFS');
-        var vertexShader = getShader(gl, 'riverVS');
+		var fragmentShader = getShader(gl, "riverFS");
+        var vertexShader = getShader(gl, "riverVS");
 		riverProgram = gl.createProgram();
 
         gl.attachShader(riverProgram, vertexShader);
@@ -1284,27 +1301,27 @@ precision mediump float;
         gl.linkProgram(riverProgram);
 
         if (!gl.getProgramParameter(riverProgram, gl.LINK_STATUS)) {
-            alert('Could not initialise shaders - river');
+            alert("Could not initialise shaders - river");
 			}
 
         gl.useProgram(riverProgram);
-		riverProgram.pMatrixUniform = gl.getUniformLocation(riverProgram, 'uPMatrix');
-        riverProgram.mvMatrixUniform = gl.getUniformLocation(riverProgram, 'uMVMatrix');
+		riverProgram.pMatrixUniform = gl.getUniformLocation(riverProgram, "uPMatrix");
+        riverProgram.mvMatrixUniform = gl.getUniformLocation(riverProgram, "uMVMatrix");
 
-		riverProgram.vertexPositionAttribute = gl.getAttribLocation(riverProgram, 'aVertexPosition');
+		riverProgram.vertexPositionAttribute = gl.getAttribLocation(riverProgram, "aVertexPosition");
         gl.enableVertexAttribArray(riverProgram.vertexPositionAttribute);
 
-		riverProgram.shadePoints = gl.getAttribLocation(riverProgram, 'aVertexShade');
+		riverProgram.shadePoints = gl.getAttribLocation(riverProgram, "aVertexShade");
         gl.enableVertexAttribArray(riverProgram.shadePoints);
 
-		riverProgram.scaleUniform = gl.getUniformLocation(riverProgram, 'uMapScale');
-		riverProgram.offsetUniform = gl.getUniformLocation(riverProgram, 'uMapOffset');
-		riverProgram.widthUniform = gl.getUniformLocation(riverProgram, 'uRiverWidth');
+		riverProgram.scaleUniform = gl.getUniformLocation(riverProgram, "uMapScale");
+		riverProgram.offsetUniform = gl.getUniformLocation(riverProgram, "uMapOffset");
+		riverProgram.widthUniform = gl.getUniformLocation(riverProgram, "uRiverWidth");
 
 
 		///// - color Program
-		var fragmentShader = getShader(gl, 'colorFS');
-        var vertexShader = getShader(gl, 'colorVS');
+		var fragmentShader = getShader(gl, "colorFS");
+        var vertexShader = getShader(gl, "colorVS");
 		colorProgram = gl.createProgram();
 
         gl.attachShader(colorProgram, vertexShader);
@@ -1312,24 +1329,24 @@ precision mediump float;
         gl.linkProgram(colorProgram);
 
         if (!gl.getProgramParameter(colorProgram, gl.LINK_STATUS)) {
-            alert('Could not initialise shaders');
+            alert("Could not initialise shaders");
 			}
 
         gl.useProgram(colorProgram);
-		colorProgram.pMatrixUniform = gl.getUniformLocation(colorProgram, 'uPMatrix');
-        colorProgram.mvMatrixUniform = gl.getUniformLocation(colorProgram, 'uMVMatrix');
+		colorProgram.pMatrixUniform = gl.getUniformLocation(colorProgram, "uPMatrix");
+        colorProgram.mvMatrixUniform = gl.getUniformLocation(colorProgram, "uMVMatrix");
 
-		colorProgram.vertexPositionAttribute = gl.getAttribLocation(colorProgram, 'aVertexPosition');
+		colorProgram.vertexPositionAttribute = gl.getAttribLocation(colorProgram, "aVertexPosition");
         gl.enableVertexAttribArray(colorProgram.vertexPositionAttribute);
 
-		colorProgram.scaleUniform = gl.getUniformLocation(colorProgram, 'uMapScale');
-		colorProgram.offsetUniform = gl.getUniformLocation(colorProgram, 'uMapOffset');
+		colorProgram.scaleUniform = gl.getUniformLocation(colorProgram, "uMapScale");
+		colorProgram.offsetUniform = gl.getUniformLocation(colorProgram, "uMapOffset");
 
-		colorProgram.mover = gl.getUniformLocation(colorProgram, 'uOffset');
+		colorProgram.mover = gl.getUniformLocation(colorProgram, "uOffset");
 
 		///// - UNIT Program
-		var fragmentShader = getShader(gl, 'unitFS');
-    var vertexShader = getShader(gl, 'unitVS');
+		var fragmentShader = getShader(gl, "unitFS");
+    var vertexShader = getShader(gl, "unitVS");
 		unitProgram = gl.createProgram();
 
         gl.attachShader(unitProgram, vertexShader);
@@ -1337,31 +1354,31 @@ precision mediump float;
         gl.linkProgram(unitProgram);
 
         if (!gl.getProgramParameter(unitProgram, gl.LINK_STATUS)) {
-            alert('Could not unit shaders');
+            alert("Could not unit shaders");
 			}
 
         gl.useProgram(unitProgram);
 
 
-		unitProgram.vertexPositionAttribute = gl.getAttribLocation(unitProgram, 'aVertexPosition');
+		unitProgram.vertexPositionAttribute = gl.getAttribLocation(unitProgram, "aVertexPosition");
         gl.enableVertexAttribArray(unitProgram.vertexPositionAttribute);
 
-		unitProgram.pointLocation = gl.getAttribLocation(unitProgram, 'aUnitLoc');
+		unitProgram.pointLocation = gl.getAttribLocation(unitProgram, "aUnitLoc");
 		gl.enableVertexAttribArray(unitProgram.pointLocation);
 
-		//unitProgram.dummyLocation = gl.getAttribLocation(unitProgram, 'aDummyThing');
+		//unitProgram.dummyLocation = gl.getAttribLocation(unitProgram, "aDummyThing");
 		//gl.enableVertexAttribArray(unitProgram.dummyLocation);
 
-		unitProgram.scaleUniform = gl.getUniformLocation(unitProgram, 'uMapScale');
-		unitProgram.offsetUniform = gl.getUniformLocation(unitProgram, 'uMapOffset');
-		unitProgram.pMatrixUniform = gl.getUniformLocation(unitProgram, 'uPMatrix');
-        unitProgram.mvMatrixUniform = gl.getUniformLocation(unitProgram, 'uMVMatrix');
+		unitProgram.scaleUniform = gl.getUniformLocation(unitProgram, "uMapScale");
+		unitProgram.offsetUniform = gl.getUniformLocation(unitProgram, "uMapOffset");
+		unitProgram.pMatrixUniform = gl.getUniformLocation(unitProgram, "uPMatrix");
+        unitProgram.mvMatrixUniform = gl.getUniformLocation(unitProgram, "uMVMatrix");
 
 
 		// < --- AREA PROGRAM --- >
 
-		var fragmentShader = getShader(gl, 'areaFS');
-    var vertexShader = getShader(gl, 'areaVS');
+		var fragmentShader = getShader(gl, "areaFS");
+    var vertexShader = getShader(gl, "areaVS");
 
     areaProgram = gl.createProgram();
     gl.attachShader(areaProgram, vertexShader);
@@ -1369,24 +1386,24 @@ precision mediump float;
     gl.linkProgram(areaProgram);
 
     if (!gl.getProgramParameter(areaProgram, gl.LINK_STATUS)) {
-        alert('Could not initialise shaders');
+        alert("Could not initialise shaders");
     }
 
     gl.useProgram(areaProgram);
 
-    areaProgram.vertexPositionAttribute = gl.getAttribLocation(areaProgram, 'aVertexPosition');
+    areaProgram.vertexPositionAttribute = gl.getAttribLocation(areaProgram, "aVertexPosition");
     gl.enableVertexAttribArray(areaProgram.vertexPositionAttribute);
 
-		areaProgram.circleCenterAttribute = gl.getAttribLocation(areaProgram, 'aCircleCenter');
+		areaProgram.circleCenterAttribute = gl.getAttribLocation(areaProgram, "aCircleCenter");
     gl.enableVertexAttribArray(areaProgram.circleCenterAttribute);
 
-		areaProgram.circleColorAttribute = gl.getAttribLocation(areaProgram, 'aCircleColor');
+		areaProgram.circleColorAttribute = gl.getAttribLocation(areaProgram, "aCircleColor");
     gl.enableVertexAttribArray(areaProgram.circleColorAttribute);
 
-    areaProgram.pMatrixUniform = gl.getUniformLocation(areaProgram, 'uPMatrix');
-    areaProgram.mvMatrixUniform = gl.getUniformLocation(areaProgram, 'uMVMatrix');
-		areaProgram.scaleUniform = gl.getUniformLocation(areaProgram, 'uMapScale');
-		areaProgram.offsetUniform = gl.getUniformLocation(areaProgram, 'uMapOffset');
+    areaProgram.pMatrixUniform = gl.getUniformLocation(areaProgram, "uPMatrix");
+    areaProgram.mvMatrixUniform = gl.getUniformLocation(areaProgram, "uMVMatrix");
+		areaProgram.scaleUniform = gl.getUniformLocation(areaProgram, "uMapScale");
+		areaProgram.offsetUniform = gl.getUniformLocation(areaProgram, "uMapOffset");
 
 		//tick();
 		}
@@ -1612,7 +1629,7 @@ precision mediump float;
 		for (var i=0; i<36; i++) {
 			tileForrests[i] = treeBuffer;
 			}
-		getData('../public_html/rivers/loadRivers_v2.php', [zoomLvl, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
+		getData("../public_html/rivers/loadRivers_v2.php", [zoomLvl, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
 		tick();
 		}
 
@@ -1642,7 +1659,7 @@ precision mediump float;
 
     function drawScene() {
 		drawNum = Math.round((rY - Math.floor(rY/(2*3.141592654))*2*3.141592654)/0.7854);
-		document.getElementById('drawNum').value = drawNum;
+		document.getElementById("drawNum").value = drawNum;
 		mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 500.0, pMatrix);
 		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -1656,19 +1673,19 @@ precision mediump float;
 
 		/* <--------------
 		gl.useProgram(bufferProgram);
-    bufferProgram.VPAttribute = gl.getAttribLocation(bufferProgram, 'aVertexPosition');
+    bufferProgram.VPAttribute = gl.getAttribLocation(bufferProgram, "aVertexPosition");
     gl.enableVertexAttribArray(bufferProgram.VPAttribute);
 
-		bufferProgram.textureCoordAttribute = gl.getAttribLocation(bufferProgram, 'aTextureCoord');
+		bufferProgram.textureCoordAttribute = gl.getAttribLocation(bufferProgram, "aTextureCoord");
     gl.enableVertexAttribArray(bufferProgram.textureCoordAttribute);
 
-    bufferProgram.pMatrixUniform = gl.getUniformLocation(bufferProgram, 'uPMatrix');
-    bufferProgram.mvMatrixUniform = gl.getUniformLocation(bufferProgram, 'uMVMatrix');
+    bufferProgram.pMatrixUniform = gl.getUniformLocation(bufferProgram, "uPMatrix");
+    bufferProgram.mvMatrixUniform = gl.getUniformLocation(bufferProgram, "uMVMatrix");
 
-		bufferProgram.samplerUniform = gl.getUniformLocation(bufferProgram, 'uSampler');
-		bufferProgram.tileNumberUniform = gl.getUniformLocation(bufferProgram, 'uTileNum');
-		bufferProgram.scaleUniform = gl.getUniformLocation(bufferProgram, 'uMapScale');
-		bufferProgram.offsetUniform = gl.getUniformLocation(bufferProgram, 'uMapOffset');
+		bufferProgram.samplerUniform = gl.getUniformLocation(bufferProgram, "uSampler");
+		bufferProgram.tileNumberUniform = gl.getUniformLocation(bufferProgram, "uTileNum");
+		bufferProgram.scaleUniform = gl.getUniformLocation(bufferProgram, "uMapScale");
+		bufferProgram.offsetUniform = gl.getUniformLocation(bufferProgram, "uMapOffset");
 		-----------> */
 
 		// <--- Draw ocean shading texture --->
@@ -1832,7 +1849,7 @@ precision mediump float;
 		if (moveLength > 0)		gl.drawArrays(gl.TRIANGLE_STRIP, 0, moveLength);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		//End Draw Unit Moves
-		document.getElementById('moveLength').value = moveLength;
+		document.getElementById("moveLength").value = moveLength;
 
 		//draw trees
 		/*
@@ -1904,12 +1921,12 @@ precision mediump float;
 		//gl.bindTexture(gl.TEXTURE_2D, textureList[12]);
 		//gl.uniform1i(shaderProgram.grassSampler, 10);
 
-		if (document.getElementById('showMask').checked) {
+		if (document.getElementById("showMask").checked) {
 			gl.uniform1f(shaderProgram.hexOn, 1.0);
 			}
 		else gl.uniform1f(shaderProgram.hexOn, 0.0);
 
-		if (document.getElementById('showUseColor').checked) {
+		if (document.getElementById("showUseColor").checked) {
 			gl.uniform1f(shaderProgram.useOn, 1.0);
 			}
 		else gl.uniform1f(shaderProgram.useOn, 0.0);
@@ -1995,15 +2012,15 @@ precision mediump float;
 		setColorUniforms();
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 8);
 		*/
-		document.getElementById('zVal').value = zoomLvl;
-		document.getElementById('landRot').value = 45-(zoomRot[zoomLvl]+mapScale-1)*5;
-		document.getElementById('locX').value = locTr[0];
-		document.getElementById('locY').value = locTr[1];
-		document.getElementById('zLvl').value = zoomLvl;
-		document.getElementById('baseMap').value = baseMap[0] + ', ' + baseMap[1];
-		document.getElementById('locLock').value = locTr[0] + ',' + locTr[1] + ',' + locTr[4];
-		document.getElementById('unitLength').value = totalUnits;
-		document.getElementById('mapScale').value = mapScale;
+		document.getElementById("zVal").value = zoomLvl;
+		document.getElementById("landRot").value = 45-(zoomRot[zoomLvl]+mapScale-1)*5;
+		document.getElementById("locX").value = locTr[0];
+		document.getElementById("locY").value = locTr[1];
+		document.getElementById("zLvl").value = zoomLvl;
+		document.getElementById("baseMap").value = baseMap[0] + ", " + baseMap[1];
+		document.getElementById("locLock").value = locTr[0] + "," + locTr[1] + "," + locTr[4];
+		document.getElementById("unitLength").value = totalUnits;
+		document.getElementById("mapScale").value = mapScale;
 	}
 
 	var lastTime = 0;
@@ -2065,7 +2082,7 @@ precision mediump float;
 			zoomLvl /= 2;
 			locTr[0] = 0;
 			locTr[1] = 0;
-			document.getElementById('baseOff').value = baseOffset[0]+', '+baseOffset[1];
+			document.getElementById("baseOff").value = baseOffset[0]+", "+baseOffset[1];
 			}
 		else if (switchOption == 5) {
 			loadTiles();
@@ -2075,7 +2092,7 @@ precision mediump float;
 			zoomLvl *= 2;
 			locTr[0] = 0;
 			locTr[1] = 0;
-			document.getElementById('baseOff').value = baseOffset[0]+', '+baseOffset[1];
+			document.getElementById("baseOff").value = baseOffset[0]+", "+baseOffset[1];
 			}
 		else if (switchOption == 6) loadTiles();
 		}
@@ -2096,7 +2113,7 @@ precision mediump float;
 			dSin = Math.sin(rY);
 			rotShift[0] = dist*dSin;
 			rotShift[1] = dist*dCos;
-			document.getElementById('rotate').value = rY + ',' + rotShift[0] + ',' + rotShift[1];
+			document.getElementById("rotate").value = rY + "," + rotShift[0] + "," + rotShift[1];
 
 			baseMap[0] += 120*(-zSpeed*elapsed*Math.sin(rY)+xSpeed*elapsed*Math.cos(rY))*zoomLvl;
 			baseMap[1] += 120*(zSpeed*elapsed*Math.cos(rY)+xSpeed*elapsed*Math.sin(rY))*zoomLvl;
@@ -2145,7 +2162,7 @@ precision mediump float;
 				switchOption = 3;
 				initTiles(baseTile[0], baseTile[1], zoomLvl, [30,31,32,33,34,35], [0,1,2,3,4,5])
 				}
-			document.getElementById('baseTile').value = baseTile[0]+', '+baseTile[1];
+			document.getElementById("baseTile").value = baseTile[0]+", "+baseTile[1];
 			}
 		cycleAdj = (timeNow/10000)%1.0;
         lastTime = timeNow;
@@ -2163,7 +2180,7 @@ precision mediump float;
 		}
 
 	function handleKeys() {
-		//alert('set speed');
+		//alert("set speed");
 		if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
 
 			// Left cursor key or A
@@ -2217,13 +2234,13 @@ precision mediump float;
 	var loadTarg = 0;
 	function checkLoad() {
 		loaded++;
-		//alert(num + ': ' + src);
-		document.getElementById('loadedQty').value = 'fok u'
+		//alert(num + ": " + src);
+		document.getElementById("loadedQty").value = "fok u"
 		if (loaded >= loadTarg) loadTiles(x, y, z);
 		}
 
 	function initTiles(x, y, z, initList, trgList) {
-		//alert('init');
+		//alert("init");
 		loaded = 0;
 		loadTarg = 2*initList.length;
 		//alert(initList);
@@ -2245,36 +2262,36 @@ precision mediump float;
 			tmpY = y+initY[initList[i]];
 			elList[drawOrder[trgList[i]]] = new Image();
 			elList[drawOrder[trgList[i]]].onload = function () {loaded++;
-				document.getElementById('loadedQty').value = loaded;
+				document.getElementById("loadedQty").value = loaded;
 				if (loaded>=loadTarg) {
 					tileSwitch();
 					}
 				}
-			elList[drawOrder[trgList[i]]].onerror = function () {alert('Elevation Load error')}
-			elList[drawOrder[trgList[i]]].src = './imgTiles/el/'+z+'/s'+z+'_'+tmpX+'_'+tmpY+'.png'
+			elList[drawOrder[trgList[i]]].onerror = function () {alert("Elevation Load error")}
+			elList[drawOrder[trgList[i]]].src = "./imgTiles/el/"+z+"/s"+z+"_"+tmpX+"_"+tmpY+".png"
 
 			terList[drawOrder[trgList[i]]] = new Image();
 			terList[drawOrder[trgList[i]]].onload = function () {loaded++;
-				document.getElementById('loadedQty').value = loaded;
+				document.getElementById("loadedQty").value = loaded;
 				if (loaded>=loadTarg) {
 					tileSwitch();
 					}
 				}
-			terList[drawOrder[trgList[i]]].onerror = function () {alert('terrain Load error')}
-			terList[drawOrder[trgList[i]]].src = './imgTiles/ter/'+z+'/s'+z+'_'+tmpX+'_'+tmpY+'.png'
+			terList[drawOrder[trgList[i]]].onerror = function () {alert("terrain Load error")}
+			terList[drawOrder[trgList[i]]].src = "./imgTiles/ter/"+z+"/s"+z+"_"+tmpX+"_"+tmpY+".png"
 			}
 
 		// generate terrain ownership texture
 		}
 
 	function loadTiles() {
-		//alert('draw');
-		tileCanvas = document.getElementById('tCanvas');
-		ctx = tileCanvas.getContext('2d');
+		//alert("draw");
+		tileCanvas = document.getElementById("tCanvas");
+		ctx = tileCanvas.getContext("2d");
 
-		//document.getElementById('tileRef').value = x + ', ' +y
+		//document.getElementById("tileRef").value = x + ", " +y
 		ctx.clearRect(0, 0, 128*6+1, 128*6+1);
-		ctx.globalCompositeOperation = 'lighten';
+		ctx.globalCompositeOperation = "lighten";
 		//alert(terList[35].src);
 		for (var i=0; i<6; i++) {
 			for (var j=0; j<6; j++) {
@@ -2326,9 +2343,9 @@ precision mediump float;
 				baseTile[0] = Math.round(baseMap[0]/(120*zoomLvl/2))
 				baseTile[1] = Math.round(baseMap[1]/(120*zoomLvl/2));
 
-				document.getElementById('baseTile').value = baseTile[0]+', '+baseTile[1];
+				document.getElementById("baseTile").value = baseTile[0]+", "+baseTile[1];
 				switchOption = 4;
-				getData('../public_html/rivers/loadRivers_v2.php', [zoomLvl/2, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
+				getData("../public_html/rivers/loadRivers_v2.php", [zoomLvl/2, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
 				//drawOrder = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35];
 				initTiles(baseTile[0], baseTile[1], zoomLvl/2, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
 
@@ -2346,9 +2363,9 @@ precision mediump float;
 
 				baseTile[0] = Math.round(baseMap[0]/(120*zoomLvl*2));
 				baseTile[1] = Math.round(baseMap[1]/(120*zoomLvl*2));
-				document.getElementById('baseTile').value = baseTile[0]+', '+baseTile[1];
+				document.getElementById("baseTile").value = baseTile[0]+", "+baseTile[1];
 				switchOption = 5;
-				getData('../public_html/rivers/loadRivers_v2.php', [zoomLvl*2, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
+				getData("../public_html/rivers/loadRivers_v2.php", [zoomLvl*2, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
 				initTiles(baseTile[0], baseTile[1], zoomLvl*2, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
 				//drawOrder = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35];
 				}
@@ -2391,7 +2408,7 @@ precision mediump float;
 
 	function loadRivers(tiles, rData, rivTargets) {
 		lineWidth = 0.75;
-		//alert('load Rivers');
+		//alert("load Rivers");
 		headDat = new Uint16Array(rData.slice(0, 2*(tiles.length-3)));
 		segStart = false;
 		reset = false;
@@ -2410,7 +2427,7 @@ precision mediump float;
 			fauxVerts = new Array();
 			resetCount=0;
 			if (test.length > 0) {
-				//alert(test[0] + ', ' + test[1]);
+				//alert(test[0] + ", " + test[1]);
 				for (var j=0; j<test.length/2-2; j++) {
 				if (test[j*2+2] != 0 && test[j*2+3] != 0) {
 					dirX = test[j*2+2]-test[j*2];
@@ -2457,7 +2474,7 @@ precision mediump float;
 				else {
 					rpList.push(rpList[rpList.length-2], rpList[rpList.length-1]);
 					fauxVerts.push(0,0,0);
-					//alert(rpList[rpList.length-4] +', ' + rpList[rpList.length-3] + ', ' + rpList[rpList.length-2] +', '+ rpList[rpList.length-1]);
+					//alert(rpList[rpList.length-4] +", " + rpList[rpList.length-3] + ", " + rpList[rpList.length-2] +", "+ rpList[rpList.length-1]);
 					reset = true;
 					j++;
 					}
@@ -2508,16 +2525,16 @@ precision mediump float;
 		}
 
 	function updateUnitPosition(unitID, X, Y) {
-		//alert('update position');
+		//alert("update position");
 		idCheck: {
 			for (var i=0; i<36; i++) {
 				for (var j=2; j<gridUnitLists[i].length; j+=3) {
 					if (gridUnitLists[i][j] == unitID) {
-						//alert('spot found: ' + j + ', Old length: ' + gridUnitLists[i].length);
+						//alert("spot found: " + j + ", Old length: " + gridUnitLists[i].length);
 						//alert(gridUnitLists[i]);
 						gridUnitLists[i][j-2] = X;
 						gridUnitLists[i][j-1] = Y;
-						//alert('New length: ' + gridUnitLists[i].length);
+						//alert("New length: " + gridUnitLists[i].length);
 						//alert(gridUnitLists[i]);
 						gl.bindBuffer(gl.ARRAY_BUFFER, gridUniforms[i]);
 						gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(gridUnitLists[i]), gl.STATIC_DRAW);
@@ -2539,14 +2556,14 @@ precision mediump float;
 	drawList[7] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35];
 	drawList[8] = drawList[0];
 	var clickParams = [];
-	var clickTarg = '';
+	var clickTarg = "";
 	function handleClick(event)	{
-		//alert(testParam + ',' + clickParams);
-		document.body.style.cursor = 'auto';
+		//alert(testParam + "," + clickParams);
+		document.body.style.cursor = "auto";
 		var loc = findPos(this);
 		var rect = this.getBoundingClientRect();
-		var cpos = [(event.clientX - loc[0]), (document.getElementById('lesson03-canvas').height - (event.clientY - loc[1]))];
-		//alert(cpos[0] + ', ' + cpos[1]);
+		var cpos = [(event.clientX - loc[0]), (document.getElementById("lesson03-canvas").height - (event.clientY - loc[1]))];
+		//alert(cpos[0] + ", " + cpos[1]);
 
 		var pixelValues = new Uint8Array(4);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, rttFramebuffer);
@@ -2554,35 +2571,35 @@ precision mediump float;
 		gl.readPixels(cpos[0], cpos[1], 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		if (pixelValues[0] > 36) {
-			sendStr = '1019,'+pixelValues[0]+','+pixelValues[1]+','+pixelValues[2]+','+clickParams;
-			//makeBox('unit', sendStr, 500, 500, 200, 50);
-			passClick(sendStr, 'rtPnl');
+			sendStr = "1019,"+pixelValues[0]+","+pixelValues[1]+","+pixelValues[2]+","+clickParams;
+			//makeBox("unit", sendStr, 500, 500, 200, 50);
+			passClick(sendStr, "rtPnl");
 		}
 		else {
 			clickY = Math.floor(pixelValues[0]/6.0);
 			clickX = pixelValues[0] - clickY*6;
 			longitude = (baseTile[0] + clickX-3)*zoomLvl + pixelValues[1]*zoomLvl/255-30;
 			latitude = 90 - ((baseTile[1]-3+clickY)*zoomLvl+zoomLvl*pixelValues[2]/255);
-			//alert(pixelValues[0] + ', ' + pixelValues[1] + ',' + pixelValues[2] + 'base: ' + baseTile[0] + ', ' + baseTile[1] + '/' + clickX + ', ' + clickY + ' = ' + longitude+'/'+latitude);
-			document.getElementById('clickLat').value = latitude;
-			document.getElementById('clickLong').value = longitude;
-			sendStr = clickParams + ','+pixelValues+','+baseTile+','+zoomLvl;
+			//alert(pixelValues[0] + ", " + pixelValues[1] + "," + pixelValues[2] + "base: " + baseTile[0] + ", " + baseTile[1] + "/" + clickX + ", " + clickY + " = " + longitude+"/"+latitude);
+			document.getElementById("clickLat").value = latitude;
+			document.getElementById("clickLong").value = longitude;
+			sendStr = clickParams + ","+pixelValues+","+baseTile+","+zoomLvl;
 			if (clickParams[0] != 0) {
 				passClick(sendStr, clickTarg);
-				//alert('blah ' + baseTile);
+				//alert("blah " + baseTile);
 			}
-			//else passClick(sendStr, 'rtPnl');
+			//else passClick(sendStr, "rtPnl");
 		}
 
 	clickParams = [0];
-	clickTarg = '';
+	clickTarg = "";
 	}
 
 	function setClick(params, style, trg) {
 
 		clickParams=params;
 		clickTarg = trg;
-		//alert(params + ' ==> ' + clickParams + ', ' + style);
+		//alert(params + " ==> " + clickParams + ", " + style);
 
 		document.body.style.cursor = style;
 	}
@@ -2599,10 +2616,10 @@ precision mediump float;
 		}
 
 	function canvasInit() {
-		var new_canvas = document.getElementById('lesson03-canvas');
+		var new_canvas = document.getElementById("lesson03-canvas");
 
 		new_canvas.onclick = handleClick;
-		//new_canvas.addEventListener('onclick', handleClick(event));
+		//new_canvas.addEventListener("onclick", handleClick(event));
 
 		new_canvas.style.width = 1200;
 		new_canvas.style.height = 700;
@@ -2628,45 +2645,45 @@ precision mediump float;
 	function webGLStart() {
 		unitList = new unitList();
 		//console.log(unitList);
-		setClick([0], 'auto')
-    var canvas = document.getElementById('lesson03-canvas');
+		setClick([0], "auto")
+    var canvas = document.getElementById("lesson03-canvas");
 		canvasInit();
 
     initGL(canvas);
 		textureList[0] = gl.createTexture();
-		loadTexture(0, './textures/terrainTex3.png');
+		loadTexture(0, "./textures/terrainTex3.png");
 		textureList[1] = gl.createTexture();
-		loadTexture(1, './textures/borderMask.png');
+		loadTexture(1, "./textures/borderMask.png");
 		textureList[2] = gl.createTexture();
-		loadTexture(2, './textures/waterTex3.png');
+		loadTexture(2, "./textures/waterTex3.png");
 		textureList[3] = gl.createTexture();
-		loadTexture(3, './textures/riverScreen1.png');
+		loadTexture(3, "./textures/riverScreen1.png");
 		textureList[4] = gl.createTexture();
-		loadTexture(4, './textures/hexPattern.png');
+		loadTexture(4, "./textures/hexPattern.png");
 		textureList[5] = gl.createTexture();
-		loadTexture(5, './textures/roadScreens.png');
+		loadTexture(5, "./textures/roadScreens.png");
 		textureList[6] = gl.createTexture();
-		loadTexture(6, './textures/hexMap.png');
+		loadTexture(6, "./textures/hexMap.png");
 		textureList[7] = gl.createTexture();
-		loadTexture(7, './textures/treeTex.png');
+		loadTexture(7, "./textures/treeTex.png");
 		textureList[8] = gl.createTexture();
-		loadTexture(8, './textures/PerlinExample_256.png');
+		loadTexture(8, "./textures/PerlinExample_256.png");
 		//////textureList[9] = gl.createTexture();
-		//////loadTexture(9, './textures/PerlinExample_256f.png');
+		//////loadTexture(9, "./textures/PerlinExample_256f.png");
 		textureList[10] = gl.createTexture();
-		loadTexture(10, './textures/bump_water.jpg');
+		loadTexture(10, "./textures/bump_water.jpg");
 		//////textureList[11] = gl.createTexture();
-		//////loadTexture(11, './textures/grass_256.jpg');
+		//////loadTexture(11, "./textures/grass_256.jpg");
 		//////textureList[12] = gl.createTexture();
-		//////loadTexture(12, './textures/plains_256.jpg');
+		//////loadTexture(12, "./textures/plains_256.jpg");
 		//////textureList[13] = gl.createTexture();
-		//////loadTexture(13, './textures/forestBump_256.png');
+		//////loadTexture(13, "./textures/forestBump_256.png");
 		textureList[14] = gl.createTexture();
-		loadTexture(14, './textures/forestBump1_256.jpg');
+		loadTexture(14, "./textures/forestBump1_256.jpg");
 		textureList[15] = gl.createTexture();
-		loadTexture(15, './textures/PerlinExample_256.png');
+		loadTexture(15, "./textures/PerlinExample_256.png");
 		textureList[16] = gl.createTexture();
-		loadTexture(16, './textures/borderMask3.png');
+		loadTexture(16, "./textures/borderMask3.png");
 
 		initTiles(baseTile[0], baseTile[1], zoomLvl, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
 		//loadTiles(baseTile[0], baseTile[1], zoomLvl);
@@ -2693,18 +2710,18 @@ precision mediump float;
 		rttFramebuffer = gl.createFramebuffer();
 		initTextureFramebuffer(rttFramebuffer, rttTexture, 1200, 700);
 
-		document.getElementById('baseOff').value = baseOffset[0]+', '+baseOffset[1];
-		document.getElementById('baseTile').value = baseTile[0]+', '+baseTile[1];
+		document.getElementById("baseOff").value = baseOffset[0]+", "+baseOffset[1];
+		document.getElementById("baseTile").value = baseTile[0]+", "+baseTile[1];
 		if (canvas.addEventListener) {
 			// IE9, Chrome, Safari, Opera
-			canvas.addEventListener('mousewheel', MouseWheelHandler, false);
+			canvas.addEventListener("mousewheel", MouseWheelHandler, false);
 			// Firefox
-			canvas.addEventListener('DOMMouseScroll', MouseWheelHandler, false);
+			canvas.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
 			}
 		// IE 6/7/8
-		else canvas.attachEvent('onmousewheel', MouseWheelHandler);
+		else canvas.attachEvent("onmousewheel", MouseWheelHandler);
 		//alert(baseTile[0]);
-		//getData('../public_html/rivers/loadRivers_v2.php', [zoomLvl, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
+		//getData("../public_html/rivers/loadRivers_v2.php", [zoomLvl, baseTile[0], baseTile[1], 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]);
 
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.enable(gl.DEPTH_TEST);
@@ -2716,81 +2733,81 @@ precision mediump float;
 		}
 
 	function showDiagnostics() {
-		if (document.getElementById('diagCB').checked) document.getElementById('diagBox').style.width = '300';
-		else  document.getElementById('diagBox').style.width = 0;
+		if (document.getElementById("diagCB").checked) document.getElementById("diagBox").style.width = "300";
+		else  document.getElementById("diagBox").style.width = 0;
 	}
 
 	function sendValue(src, dst) {
-		//alert('source has a value of ' + document.getElementById(src).value);
-		dst = dst + ','+document.getElementById(src).value;
+		//alert("source has a value of " + document.getElementById(src).value);
+		dst = dst + ","+document.getElementById(src).value;
 		alert(dst);
-		makeBox('someBox', dst, 500, 500, 200, 50);
+		makeBox("someBox", dst, 500, 500, 200, 50);
 	}
 
 	function getDescription(trg, info, src) {
-		info = info  + ','+document.getElementById(src).value;
+		info = info  + ","+document.getElementById(src).value;
 		passClick(info, trg);
 	}
 
 </script>
 
 	<html>
-	<body onload='webGLStart();'>
-	<div id='ltPnl' style='position:absolute; top:15; left:10; height:675; width:100; border:1px solid #000000'>
-		Culture: ".$playerDat[3]."<br>
-		<a href='javascript:void(0);' onclick=\x22makeBox('charList', 1001, 500, 500, 200, 50)\x22>Faction chars</a>
-		<a href='javascript:void(0);' onclick=\x22makeBox('fOrders', 1005, 500, 500, 200, 50)\x22>Lands</a><br>
-		<a href='javascript:void(0);' onclick=\x22makeBox('laws', 1007, 500, 500, 200, 50)\x22>Faction Laws</a><br>
-		<a href='javascript:void(0);' onclick=\x22makeBox('diplomacy', 1008, 500, 500, 200, 50)\x22>Diplomacy</a><br>
-		<a href='javascript:void(0);' onclick=\x22makeBox('intrigue', 1009, 500, 500, 200, 50)\x22>Intrigue</a><br>
-		<a href='javascript:void(0);' onclick=\x22makeBox('military', 1011, 500, 500, 200, 50)\x22>Military</a><br>
-		<a href='javascript:void(0);' onclick=\x22passClick('1012,0' , 'infoBar')\x22>Rule</a><br>
-		<a href='javascript:void(0);' onclick=\x22makeBox('economy', 1015, 500, 500, 200, 50)\x22>Economy</a><br>
-		<a href='javascript:void(0);' onclick=\x22makeBox('tech', 1017, 500, 500, 200, 50)\x22>Advances</a><br>
-		<a href='./index.php' style='position:absolute; bottom:0'>Back to Main</a>
+	<body onload="webGLStart();">
+	<div id="ltPnl" style="position:absolute; top:15; left:10; height:675; width:100; border:1px solid #000000">
+		Culture: '.$playerDat[3].'<br>
+		<a href="javascript:void(0);" onclick="makeBox(\'charList\', 1001, 500, 500, 200, 50)">Faction chars</a>
+		<a href="javascript:void(0);" onclick="makeBox(\'fOrders\', 1005, 500, 500, 200, 50)">Lands</a><br>
+		<a href="javascript:void(0);" onclick="makeBox(\'laws\', 1007, 500, 500, 200, 50)">Faction Laws</a><br>
+		<a href="javascript:void(0);" onclick="makeBox(\'diplomacy\', 1008, 500, 500, 200, 50)">Diplomacy</a><br>
+		<a href="javascript:void(0);" onclick="makeBox(\'intrigue\', 1009, 500, 500, 200, 50)">Intrigue</a><br>
+		<a href="javascript:void(0);" onclick="makeBox(\'military\', 1011, 500, 500, 200, 50)">Military</a><br>
+		<a href="javascript:void(0);" onclick="passClick(\'1012,0\' , "infoBar")">Rule</a><br>
+		<a href="javascript:void(0);" onclick="makeBox(\'economy\', 1015, 500, 500, 200, 50)">Economy</a><br>
+		<a href="javascript:void(0);" onclick="makeBox(\'tech\', 1017, 500, 500, 200, 50)">Advances</a><br>
+		<a href="./index.php" style="position:absolute; bottom:0">Back to Main</a>
 	</div>
-	<div id='infoBar' style='position:absolute; top:640; left:110; height:50; width:1200; border:1px solid #000000'>infoBar</div>
-	<div id='rtPnl' style='position:absolute; top:15; left:1310; height:675; width:200; border:1px solid #000000; display:inline;'></div>
-	<div id='botPnl' style='position:absolute; top:690; left:10; height:40; width:1400; border:1px solid #000000'></div>
-	<div id='gmPnl' style='position:absolute; top:15; left:110; height:675; width:1200; border:1px solid #000000; overflow:hidden'>
-		<canvas style='position:absolute' id='lesson03-canvas' style='border: none; ' width=1200 height=700></canvas>
+	<div id="infoBar" style="position:absolute; top:640; left:110; height:50; width:1200; border:1px solid #000000">infoBar</div>
+	<div id="rtPnl" style="position:absolute; top:15; left:1310; height:675; width:200; border:1px solid #000000; display:inline;"></div>
+	<div id="botPnl" style="position:absolute; top:690; left:10; height:40; width:1400; border:1px solid #000000"></div>
+	<div id="gmPnl" style="position:absolute; top:15; left:110; height:675; width:1200; border:1px solid #000000; overflow:hidden">
+		<canvas style="position:absolute" id="lesson03-canvas" style="border: none; " width=1200 height=700></canvas>
 	</div>
 
-	<div id='scrBox' style='width:0; height:0; overflow:hidden;'>
+	<div id="scrBox" style="width:0; height:0; overflow:hidden;">
 	</div>
-	<div style='width:0; height:0; overflow:hidden;'>
-		<div style='position:absolute;  overflow:hidden; width:0; height:0; left:1210; top:150;'><canvas id='tCanvas' style='border: 1px solid black;' width=720 height=720></canvas></div>
-		<div id='pointDat' style='position:absolute; right:0; bottom:0;'></div>
-		<div id='diagBox' style='position:absolute; right:50; top:0; width:0; overflow:hidden;'>
+	<div style="width:0; height:0; overflow:hidden;">
+		<div style="position:absolute;  overflow:hidden; width:0; height:0; left:1210; top:150;"><canvas id="tCanvas" style="border: 1px solid black;" width=720 height=720></canvas></div>
+		<div id="pointDat" style="position:absolute; right:0; bottom:0;"></div>
+		<div id="diagBox" style="position:absolute; right:50; top:0; width:0; overflow:hidden;">
 			<table>
-				<tr><td>Lat:</td><td><input id='clickLat' value='0'></td></tr>
-				<tr><td>Long:</td><td><input id='clickLong' value='0'></td></tr>
-				<tr><td>Mask:</td><td><input type='checkbox' id='showMask'></td></tr>
-				<tr><td>UseColor:</td><td><input type='checkbox' id='showUseColor'></td></tr>
-				<tr><td>zVal:</td><td><input id='zVal'></td></tr>
-				<tr><td>locX:</td><td><input id='locX'></td></tr>
-				<tr><td>locY:</td><td><input id='locY'></td></tr>
-				<tr><td>zLvl:</td><td><input id='zLvl'></td></tr>
-				<tr><td>baseMap:</td><td><input id='baseMap'></td></tr>
-				<tr><td>tileRef:</td><td><input id='tileRef'></td></tr>
-				<tr><td>rivTargs:</td><td><input id='rivTargs'></td></tr>
-				<tr><td>rivTiles:</td><td><input id='rivTiles'></td></tr>
-				<tr><td>baseOff:</td><td><input id='baseOff'></td></tr>
-				<tr><td>lookAt:</td><td><input id='lookAt'></td></tr>
-				<tr><td>rotate:</td><td><input id='rotate'></td></tr>
-				<tr><td>drawNum:</td><td><input id='drawNum'></td></tr>
-				<tr><td>loadedQty:</td><td><input id='loadedQty'></td></tr>
-				<tr><td>locLock:</td><td><input id='locLock'></td></tr>
-				<tr><td>baseTile:</td><td><input id='baseTile'></td></tr>
-				<tr><td>landRot:</td><td><input id='landRot'></td></tr>
-				<tr><td>unitLength:</td><td><input id='unitLength'></td></tr>
-				<tr><td>mapScale:</td><td><input id='mapScale'></td></tr>
-				<tr><td>moveLength:</td><td><input id='moveLength'></td></tr>
+				<tr><td>Lat:</td><td><input id="clickLat" value="0"></td></tr>
+				<tr><td>Long:</td><td><input id="clickLong" value="0"></td></tr>
+				<tr><td>Mask:</td><td><input type="checkbox" id="showMask"></td></tr>
+				<tr><td>UseColor:</td><td><input type="checkbox" id="showUseColor"></td></tr>
+				<tr><td>zVal:</td><td><input id="zVal"></td></tr>
+				<tr><td>locX:</td><td><input id="locX"></td></tr>
+				<tr><td>locY:</td><td><input id="locY"></td></tr>
+				<tr><td>zLvl:</td><td><input id="zLvl"></td></tr>
+				<tr><td>baseMap:</td><td><input id="baseMap"></td></tr>
+				<tr><td>tileRef:</td><td><input id="tileRef"></td></tr>
+				<tr><td>rivTargs:</td><td><input id="rivTargs"></td></tr>
+				<tr><td>rivTiles:</td><td><input id="rivTiles"></td></tr>
+				<tr><td>baseOff:</td><td><input id="baseOff"></td></tr>
+				<tr><td>lookAt:</td><td><input id="lookAt"></td></tr>
+				<tr><td>rotate:</td><td><input id="rotate"></td></tr>
+				<tr><td>drawNum:</td><td><input id="drawNum"></td></tr>
+				<tr><td>loadedQty:</td><td><input id="loadedQty"></td></tr>
+				<tr><td>locLock:</td><td><input id="locLock"></td></tr>
+				<tr><td>baseTile:</td><td><input id="baseTile"></td></tr>
+				<tr><td>landRot:</td><td><input id="landRot"></td></tr>
+				<tr><td>unitLength:</td><td><input id="unitLength"></td></tr>
+				<tr><td>mapScale:</td><td><input id="mapScale"></td></tr>
+				<tr><td>moveLength:</td><td><input id="moveLength"></td></tr>
 			</table>
 		</div>
 	</div>
-	<div style='position:absolute; right:0; bottom:5;'>Show diagnostics? <input id='diagCB' type='checkbox' onchange='showDiagnostics()'></div>
+	<div style="position:absolute; right:0; bottom:5;">Show diagnostics? <input id="diagCB" type="checkbox" onchange="showDiagnostics()"></div>
 	</body>
-	</html>";
+	</html>';
 
 ?>

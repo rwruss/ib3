@@ -13,12 +13,18 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerDat[19], 40)));
 
 print_r($unitList);
-echo '<hr><script>';
+echo '<hr><script>
+var thisDiv = document.getElementById("charListContent");';
 
 foreach ($unitList as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);
 	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 	$actionPoints = 150;
+	echo '
+
+		unitList.newUnit({unitType:"character", unitID:'.$unitID.', unitName:"char name", actionPoints:100, strength:75});
+		unitList.renderSum('.$unitID.', thisDiv);';
+	/*
 	echo '
 			newUnitDetail('.$unitID.', "charListContent");
 			//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
@@ -26,7 +32,7 @@ foreach ($unitList as $unitID) {
 			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {passClick("1074,'.$unitID.'", "rtPnl")});
 			setUnitAction('.$unitID.', '.($actionPoints/1000).');
 			setUnitExp('.$unitID.', 0.5);';
-	//print_r($unitDat);
+	//print_r($unitDat);*/
 }
 echo '</script>';
 

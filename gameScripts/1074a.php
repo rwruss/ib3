@@ -7,13 +7,16 @@ echo 'Details for character '.$postVals[1].' of type '.$thisChar->get("uType").'
 
 <script>
 resetMove();
-
+unitList.newUnit({unitType:"character", unitID:'.$postVals[1].', unitName:"char name"});
+unitList.renderSum('.$postVals[1].', document.getElementById("rtPnl"));
+/*
 newUnitDetail('.$postVals[1].', "rtPnl");
-newMoveBox('.$postVals[1].', '.$thisChar->get("xLoc").', '.$thisChar->get("yLoc").', "rtPnl");
+
 document.getElementById("Udtl_'.$postVals[1].'_name").innerHTML = "unitName";
 setUnitAction('.$postVals[1].', '.($actionPoints/1000).');
 setUnitExp('.$postVals[1].', 0.5);
-
+*/
+newMoveBox('.$postVals[1].', '.$thisChar->get("xLoc").', '.$thisChar->get("yLoc").', "rtPnl");
 var plot = addDiv("", "stdFloatDiv", document.getElementById("rtPnl"));
 plot.innerHTML = "Plot against char";
 plot.addEventListener("click", function () {makeBox("plot", "1075,'.$postVals[1].'", 500, 500, 200, 50)});

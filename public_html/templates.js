@@ -17,6 +17,8 @@ addImg = function(id, useClassName, target) {
 
 confirmBox = function (msg, prm, type, trg, aSrc, dSrc) {
 	var boxHolder = addDiv("confirmBox", "cBox", document.getElementsByTagName('body')[0]);
+	boxHolder.style.zIndex = zCount+9999;
+	zCount++;
 	var boxMsg = addDiv("confirmBox", "cBoxM", boxHolder)
 	var dButton = addDiv("optionDecline", "cBoxD", boxHolder);
 
@@ -160,8 +162,6 @@ plotSummary = function (obj, trg) {
 	var optBar = addDiv("", "fullBar", newPlot);
 
 	trg.appendChild(newPlot);
-
-
 	return newPlot;
 }
 
@@ -509,6 +509,7 @@ addtion = function () {
 }
 
 class unitList {
+
 	newUnit (object) {
 		if (this["unit_" + object.unitID]) {
 		} else {
@@ -543,40 +544,6 @@ class unitList {
 		}
 	}
 }
-/*
-unitList = function () {
-}
-unitList.prototype.newUnit = function (object) {
-	if (this["unit_" + object.unitID]) {
-	} else {
-		if (object.unitType == "warband") {
-			this["unit_" + object.unitID] = new warband(object);
-		}
-		else if (object.unitType == "character") {
-			this["unit_" + object.unitID] = new character(object);
-		}
-	}
-}
-unitList.prototype.renderSum = function (id, target) {
-	if (this["unit_"+id]) {
-		this["unit_"+id].renderSummary(target);
-	} else {
-	}
-}
-unitList.prototype.change = function (id, desc, value) {
-	if (this["unit_"+id]) {
-		this["unit_"+id].changeAttr(id, desc, value);
-	} else {
-	}
-}
-unitList.prototype.add = function (id, desc, value) {
-	if (this["unit_"+id]) {
-		value = parseInt(value) +  this["unit_"+id][desc];
-		this["unit_"+id].changeAttr(id, desc, value);
-	} else {
-	}
-}
-*/
 
 class unit {
 	constructor(options) {
@@ -585,7 +552,7 @@ class unit {
 		this.aps = options.actionPoints || 0,
 		this.status = options.status || 0,
 		this.exp = options.exp || 0,
-		this.str = options.str || 0,
+		this.str = options.strength || 0,
 		this.unitID = options.unitID;
 	}
 
@@ -650,7 +617,6 @@ class warband extends unit {
 
 class character extends unit {
 	renderSummary(target) {
-		console.log('draw ' + this.type + ' at ' + target)
 		var thisDiv = addDiv(null, 'udHolder', target);
 		thisDiv.setAttribute("data-unitid", this.unitID);
 
@@ -666,44 +632,14 @@ class character extends unit {
 		expDiv.setAttribute("data-boxName", "strBar");
 
 		var dtlButton = addDiv("", "sumDtlBut", thisDiv);
-		dtlButton.addEventListener("click", function () {console.log("show detail")});
+		var prm = "1074,"+this.unitID;
+		dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
 		nameDiv.innerHTML = this.unitName;
 		this.changeAttr(this.unitId, "actionPoints", this.aps)
 		this.changeAttr(this.unitId, "strength", this.str)
 	}
 }
-
-/*
-character = function (options) {
-	this.base = unit;
-	this.base(options);
-}
-character.prototype = Object.create(unit.prototype);
-character.prototype.renderSummary = function (target) {
-	console.log('draw ' + this.type + ' at ' + target)
-	thisDiv = addDiv(null, 'udHolder', target);
-	thisDiv.setAttribute("data-unitid", this.unitID);
-
-	nameDiv = addDiv("", "sumName", thisDiv);
-	nameDiv.setAttribute("data-boxName", "unitName");
-
-	imgDiv = addDiv("", "sumImg", thisDiv);
-
-	actDiv = addDiv("", "sumAct", thisDiv);
-	actDiv.setAttribute("data-boxName", "apBar");
-
-	expDiv = addDiv("", "sumStr", thisDiv);
-	expDiv.setAttribute("data-boxName", "strBar");
-
-	dtlButton = addDiv("", "sumDtlBut", thisDiv);
-	dtlButton.addEventListener("click", function () {console.log("show detail")});
-
-	nameDiv.innerHTML = this.unitName;
-	this.changeAttr(this.unitId, "actionPoints", this.aps)
-	this.changeAttr(this.unitId, "strength", this.str)
-}
-*/
 
 setBar = function (id, desc, pct) {
   thisList = document.body.querySelectorAll(".udHolder");
@@ -721,7 +657,7 @@ setBar = function (id, desc, pct) {
 				}
 			}
 		} else {
-			//console.log (n + ": " + thisList[n].getAttribute("data-unitID"))
+
 		}
 	}
 }

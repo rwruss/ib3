@@ -42,6 +42,7 @@ if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
 
 	//document.getElementById("plot_'.$postVals[1].'progress").innerHTML = "'.$plotDat[6].'";
 	buttonBox = addDiv("", "fullBar", plotBox);
+	scrButton("1087", buttonBox, "Leave Plot");
 	scrButton("1084", buttonBox, "10%");
 	scrButton("1084", buttonBox, "25%");
 	scrButton("1084", buttonBox, "50%");

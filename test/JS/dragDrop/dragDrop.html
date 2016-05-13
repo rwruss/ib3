@@ -1,5 +1,6 @@
 <script>
 var bPos = [0,0];
+var zCount = 0;
 function makeBox(bName, val, h, w, x, y) {
 if (!document.getElementById(bName)) {
 	var newDiv = document.createElement('div');
@@ -12,13 +13,18 @@ if (!document.getElementById(bName)) {
 	newDiv.style.background = '#F0F0F0'
 	newDiv.id = bName;
 	newDiv.draggable = "true";
-	newDiv.zIndex = 1;
+	zCount++;
+	newDiv.style.zIndex = zCount;
+
+	newDiv.addEventListener("click", function () {this.style.zIndex = zCount++;})
 	newDiv.addEventListener("dragstart", function () {
+		this.style.zIndex = zCount++;
 		console.log("start drag -> " + event.clientX + ", " + event.clientY);
 		bPos = [parseInt(this.style.left), parseInt(this.style.top), event.clientX, event.clientY]
-		this.style.zIndex = 100;
+
 	});
 	newDiv.addEventListener("drag", function () {
+
 		if (event.clientX > 0) {
 		this.style.left = bPos[0] - bPos[2] + event.clientX;
 		this.style.top = bPos[1] - bPos[3] + event.clientY;
@@ -60,13 +66,13 @@ if (!document.getElementById(bName)) {
 	newDiv.appendChild(newContent);
 	}
 }
-		
+
 function closeBox() {
 		this.parentNode.parentNode.removeChild(this.parentNode);
-		}		
+		}
 
 
-var count=0;		
+var count=0;
 function init() {
 	console.log("started");
 	makeBox("testBox_"+count, 0, 500, 500, 250, 250);
