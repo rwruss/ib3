@@ -1,0 +1,256 @@
+
+<link rel='stylesheet' type='text/css' href='objStyles.css'>
+<script type='text/javascript' src='objFunctions.js'></script>
+
+<style>
+.hPane {
+	height:250;
+	width:500;
+	top:250;
+	left:250;
+	position:absolute;
+	border:1px Solid #000000;
+	background: #B0B0B0;
+}
+
+.regPane {
+	height:500;
+	width:500;
+	top:250;
+	left:250;
+	position:absolute;
+	border:1px Solid #000000;
+	background: #B0B0B0;
+}
+
+.paneCloseButton {
+	position:absolute;
+	height:20;
+	right:0;
+	top:0;
+	border: 1px solid #FFFFFF;
+}
+
+.paneContent {
+	position:absolute;
+	height: calc(100% - 20px);
+	top:20;
+	width:100%;
+	background:#F0F0F0;
+	border:1px solid #00FF00;
+}
+</style>
+
+<html>
+<script>
+
+function addition () {
+	var trg = document.getElementById("objNum").value;
+	var amt = document.getElementById("amt").value;
+	itemList.add(trg, "rating", amt);
+}
+
+class newClass {
+	constructor () {
+		console.log("Make a new Class");
+	}
+}
+
+class itemList {
+	newUnit(object) {
+		if (this["item_" + object.unitID]) {
+		} else {
+			if (object.unitType == "person") {
+				this["item_" + object.unitID] = new person(object);
+			}
+			else if (object.unitType == "place") {
+				this["item_" + object.unitID] = new place(object);
+			}
+		}
+	}
+	
+	renderSingleSum(id, target) {
+		while (target.firstChild) {
+			target.removeChild(target.firstChild);
+		}
+		this.renderSum(id, target);
+	}
+	
+	renderSum(id, target) {
+		if (this["item_"+id]) {
+			this["item_"+id].renderSummary(target);
+		} else {
+		}
+	}
+	
+	change(id, desc, value) {
+		if (this["item_"+id]) {
+			this["item_"+id].changeAttr(id, desc, value);
+		} else {
+		}
+	}
+	
+	add(id, desc, value) {
+		if (this["item_"+id]) {
+			value = parseInt(value) +  this["item_"+id][desc];
+			this["item_"+id].changeAttr(id, desc, value);
+		} else {
+		}
+	}
+}
+
+class unit {
+	constructor(options) {
+		this.type = options.unitType || 'unknown',
+		this.unitName = options.unitName || 'unnamed',
+		this.rate = options.rating || 0,
+		this.status = options.status || 0,
+		this.price = options.cost || 0,
+		this.unitID = options.unitID;
+	}
+	
+	get rating() {
+		return this.rate;
+	}		
+	set rating(x) {
+		console.log("Set Rating")
+		this.rate = Math.max(0, Math.min(x, 100));
+		setBar(this.unitID, "ratingBar", this.rate);
+	}
+	
+	set cost(x) {
+		this.price = Math.min(x, 100);
+		setBar(this.unitID, "costBar", this.price);
+	}
+	
+	changeAttr(id, desc, value) {
+		this[desc] = value;
+		console.log("set " + desc + " to " + value)
+		thisList = document.body.querySelectorAll(".udHolder");
+		for (n=0; n<thisList.length; n++) {
+			if (thisList[n].getAttribute("data-unitid") == id) {
+				for (i=0; i<thisList[n].childNodes.length; i++) {
+					if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+						thisList[n].childNodes[i].innerHTML = this[desc];
+					}
+				}
+			} else {
+			}
+		}
+	}
+}
+
+
+class person extends unit {
+	renderSummary(target) {
+		var thisDiv = addDiv(null, 'udHolder', target);
+		thisDiv.setAttribute("data-unitid", this.unitID);
+
+		var nameDiv = addDiv("", "sumName", thisDiv);
+		nameDiv.setAttribute("data-boxName", "unitName");
+
+		var actDiv = addDiv("", "sumAct", thisDiv);
+		actDiv.setAttribute("data-boxName", "ratingBar");
+
+		var costDiv = addDiv("", "sumStr", thisDiv);
+		costDiv.setAttribute("data-boxName", "costBar");
+
+		var dtlButton = addDiv("", "sumDtlBut", thisDiv);
+		dtlButton.addEventListener("click", function () {console.log("show detail")});
+
+		nameDiv.innerHTML = this.unitName;
+		this.changeAttr(this.unitId, "rating", this.rate)
+		this.changeAttr(this.unitId, "cost", this.price)
+	}
+}
+
+
+class place extends unit {	
+	renderSummary(target) {
+		//console.log('draw ' + this.type)
+		var thisDiv = addDiv(null, 'udHolder', target);
+		thisDiv.setAttribute("data-unitid", this.unitID);
+
+		var nameDiv = addDiv("", "sumName", thisDiv);
+		nameDiv.setAttribute("data-boxName", "unitName");
+
+		var imgDiv = addDiv("", "sumImg", thisDiv);
+
+		var actDiv = addDiv("", "sumAct", thisDiv);
+		actDiv.setAttribute("data-boxName", "ratingBar");
+
+		var costDiv = addDiv("", "sumStr", thisDiv);
+		costDiv.setAttribute("data-boxName", "costBar");
+
+		var dtlButton = addDiv("", "sumDtlBut", thisDiv);
+		dtlButton.addEventListener("click", function () {console.log("show detail")});
+
+		nameDiv.innerHTML = this.unitName;
+		this.changeAttr(this.unitId, "rating", this.rate)
+		this.changeAttr(this.unitId, "cost", this.price)
+	}
+}
+
+
+function setBar(id, desc, pct) {
+  thisList = document.body.querySelectorAll(".udHolder");
+
+	for (n=0; n<thisList.length; n++) {
+		if (thisList[n].getAttribute("data-unitID") == id) {
+			for (i=0; i<thisList[n].childNodes.length; i++) {
+				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
+				  thisList[n].childNodes[i].style.width = pct*125/100;
+				  thisList[n].childNodes[i].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
+				}
+			}
+		} else {
+		}
+	}
+}
+
+function init() {
+	itemList = new itemList();
+	
+	itemList.newUnit({unitID : 1, unitType : "person", rating : 75, status : 1, unitName : "person 1", cost : 10});
+	itemList.newUnit({unitID : 2, unitType : "place", rating : 50, status : 1, unitName : "place 2", cost: 90});
+	itemList.newUnit({unitID : 3, unitType : "person", rating : 25, status : 1, unitName : "person 3", cost : 65});
+
+	var holder1 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	var holder2 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	
+	
+	var objButton1 = addDiv("", "selectContain", document.getElementsByTagName('body')[0]);
+	var objButton2 = addDiv("", "selectContain", document.getElementsByTagName('body')[0]);
+	
+	var divList = {};
+
+	itemList.renderSum(1, holder1);
+	itemList.renderSum(2, holder1);
+	itemList.renderSum(3, holder1);
+	itemList.renderSum(1, holder2);
+	itemList.renderSum(1, objButton1);
+	itemList.renderSum(2, objButton2);
+	
+	var holder3 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	var holder4 = addDiv(null, 'stdContain', document.getElementsByTagName('body')[0]);
+	
+	divList.leftHolder = holder3;
+	divList.rightHolder = holder4;
+	
+	console.log(divList);
+	
+	selectButton(objButton1, "hai", 1, [divList.leftHolder, divList.rightHolder]);
+	selectButton(objButton2, "hai", 2, [holder3, holder4]);
+		
+}
+
+</script>
+<body onload="init()">
+</body>
+</html>
+<div>Add to Object<br>
+Object #(1, 2, or 3) <input id='objNum' size=3 value=1><br>
+Amount (+1 or -1): <input id='amt' size=3 value=1><br>
+<button type="button" onclick="addition()">Go!</button>
+
+</div>

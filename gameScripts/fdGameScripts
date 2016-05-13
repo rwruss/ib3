@@ -222,7 +222,9 @@
                 <File name="E:\websites\ib3\test\JS\classObjects.html" />
                 <File name="E:\websites\ib3\test\JS\objStyles.css" />
                 <File name="E:\websites\ib3\test\JS\objFunctions.js" />
-                <Folder name="dragDrop" />
+                <Folder name="dragDrop">
+                    <File name="E:\websites\ib3\test\JS\dragDrop\dragDrop.html" />
+                </Folder>
             </Folder>
         </Folder>
         <Folder name="scenarios">

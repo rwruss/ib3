@@ -1,0 +1,196 @@
+<style>
+.hPane {
+	height:250;
+	width:500;
+	top:250;
+	left:250;
+	position:absolute;
+	border:1px Solid #000000;
+	background: #B0B0B0;
+	
+}
+
+.regPane {
+	height:500;
+	width:500;
+	top:250;
+	left:250;
+	position:absolute;
+	border:1px Solid #000000;
+	background: #B0B0B0;
+}
+
+.paneCloseButton {
+	position:absolute;
+	height:20;
+	right:0;
+	top:0;
+	border: 1px solid #FFFFFF;
+}
+
+.paneContent {
+	position:absolute;
+	height: calc(100% - 20px);
+	top:20;
+	width:100%;
+	background:#F0F0F0;
+	border:1px solid #00FF00;
+}
+</style>
+
+<script>
+var bPos = [0,0];
+function makeBox(bName, val, h, w, x, y) {
+	var newDiv = document.createElement('div');
+	//newDiv.draggable = "true";
+	
+	newDiv.addEventListener("drag", function () {
+		if (event.clientX > 0) {
+		this.style.left = bPos[0] - bPos[2] + event.clientX;
+		this.style.top = bPos[1] - bPos[3] + event.clientY;
+		}
+	});
+	newDiv.addEventListener("dragend", function () {
+
+		this.style.left = bPos[0] - bPos[2] + event.clientX;
+		this.style.top = bPos[1] - bPos[3] + event.clientY;
+	});
+	
+	var killBut = document.createElement('div');
+	killBut.className = "paneCloseButton";
+	killBut.innerHTML = 'X';
+	
+	var newContent = document.createElement('div');
+	newContent.className = "paneContent"
+
+	document.getElementsByTagName('body')[0].appendChild(newDiv);
+	newDiv.appendChild(killBut);
+	newDiv.appendChild(newContent);
+	return newDiv;
+	
+}
+
+function closeBox() {
+		this.parentNode.parentNode.removeChild(this.parentNode);
+		}
+
+
+var useDeskTop;
+
+function init(desc) {
+	useDeskTop = new deskTop;
+	makePane();	
+}
+
+function makePane () {
+	useDeskTop.newPane(document.getElementById("newDesc").value);
+}
+
+class pane {
+	constructor (desc, desktop) {
+		console.log("Make a pane " + this);
+		this.element = makeBox(desc, 0, 500, 500, 250, 250);
+		console.log(this.element.childNodes);
+		this.desc = desc;
+		this.desktop = desktop;
+		this.element.childNodes[0].parentObj = this;
+		this.element.parentObj = this;	
+		this.desktop.arrangePanes();
+		
+		this.element.addEventListener("click", function() {this.parentObj.toTop()});
+		this.element.childNodes[0].addEventListener("click", function () {
+			this.parentObj.destroyWindow();
+			event.stopPropagation();
+			});
+		this.element.addEventListener("dragstart", function () {
+			this.parentObj.toTop();
+			bPos = [parseInt(this.offsetLeft), parseInt(this.offsetTop), event.clientX, event.clientY];
+			console.log(bPos);
+		});
+	}
+	
+	destroyWindow() {
+		console.log("remove " + this.desc)
+		this.element.remove();
+		this.desktop.removePane(this);
+		console.log("final " + Object.keys(this.desktop.paneList));
+	}
+	
+	toTop() {
+		this.desktop.paneToTop(this);
+	}
+}
+
+class hPane extends pane {
+	constructor(desc, desktop) {
+		super(desc, desktop);
+		console.log("set hPane style for " + this.element);
+		this.element.className = "hPane";
+	}
+}
+
+class regPane extends pane {
+	constructor(desc, desktop) {
+		super(desc, desktop);
+		console.log("set hPane style for " + this.element);
+		this.element.className = "regPane";
+	}
+}
+
+class deskTop {
+	constructor () {
+		this.paneList = {};
+		console.log("make list " + this.paneList);
+		console.log("List keys " + Object.keys(this.paneList))
+		this.id = "a desktop";
+	}
+	
+	newPane (desc, type) {
+		console.log("start list " + Object.keys(this.paneList))
+		if (this.paneList[desc]) {
+			console.log("already made: " + this.constructor.name + " -> " + Object.keys(this.paneList));
+		} else {
+
+			if (type == "hPane") {
+				var mkPane = new hPane(desc, this);
+				this.paneList[desc] = mkPane;
+				console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
+			} else {
+				var mkPane = new regPane(desc, this);
+				this.paneList[desc] = mkPane;
+				console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
+			}
+			
+		}
+	}
+	
+	removePane (thisPane) {
+		console.log("Base array " + Object.keys(this.paneList));
+		console.log("remove from " + this.constructor.name + " looking for " + thisPane.desc);
+		delete this.paneList[thisPane.desc];
+		console.log("current List " + Object.keys(this.paneList));
+	}
+	
+	paneToTop(thisPane) {
+		console.log("to top");
+		delete this.paneList[thisPane.desc];
+		this.paneList[thisPane.desc] = thisPane;
+		this.arrangePanes();
+	}
+	
+	arrangePanes() {
+		var count = 1;
+		for (var item in this.paneList) {
+			this.paneList[item].element.style.zIndex = count;
+			count++;
+		}
+	}
+}
+</script>
+
+<html>
+<body onload=init("boo")>
+	<div onclick=makePane()>Make another</div>
+	<input id="newDesc" value="pane1">
+</body>
+</html>
