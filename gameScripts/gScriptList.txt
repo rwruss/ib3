@@ -92,7 +92,7 @@
 1083 - List of plots character is involved in
 1084 - Character contribute to plot
 1085 - Assign RingLeader to a Plot
-1086 - Execute a plot 
+1086 - Run a plot 
 1087 - Process assign ringleader to a Plot
 
 // Manual Override Functions

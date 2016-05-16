@@ -55,7 +55,8 @@ $charPlots = new itemSlot($unitDat[35], $slotFile, 40);
 $charPlots->addItem($postVals[1], $slotFile);
 
 // Send a message to the player that he has a char invited to a new plot
-sendMessage([$pGameId, $unitDat[6], time(), 1, 0, $postVals[1], $_SESSION['selectedItem']], ""); 
+$trgList[] = $unitDat[6];
+sendMessage([$pGameId, $unitDat[6], time(), 1, 0, $postVals[1], $_SESSION['selectedItem']], "", $trgList); 
 
 fclose($slotFile);
 fclose($unitFile);
