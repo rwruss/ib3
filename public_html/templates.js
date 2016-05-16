@@ -165,6 +165,23 @@ plotSummary = function (obj, trg) {
 	return newPlot;
 }
 
+plotDtlWork = function (obj, trg) {
+	console.log("work options for " + obj.unitID);
+	var plotBox = plotSummary({desc: "plot #'.$postVals[1].'", id:'.$postVals[1].'}, document.getElementById("plotDtlContent"));
+	trgBox = addDiv("charBox", "tdHolder", plotBox);
+	//unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
+	//unitList.renderSum('.$target.', plotBox.children[1]);
+
+	buttonBox = addDiv("", "fullBar", plotBox);
+	buttonBox2 = addDiv("", "fullBar", plotBox);
+	confirmButton("Leave this plot?", "", buttonBox2, "Leave Plot");
+	scrButton("1087", buttonBox, "Leave Plot");
+	scrButton("1084,6,"+ obj.unitID+",1", buttonBox, "10%");
+	scrButton("1084,6,"+ obj.unitID+",2", buttonBox, "25%");
+	scrButton("1084,6,"+ obj.unitID+",3", buttonBox, "50%");
+	scrButton("1084,6,"+ obj.unitID+",4", buttonBox, "100%");
+}
+
 newTabMenu = function(target) {
 	var tabHolder = document.getElementById(target+"_tabs");
 	tabHolder.currentSelection = 1;
@@ -519,12 +536,29 @@ class unitList {
 			else if (object.unitType == "character") {
 				this["unit_" + object.unitID] = new character(object);
 			}
+			else if (object.unitType == "plot") {
+				this["unit_" + object.unitID] = new plot(object);
+			}
 		}
 	}
 
 	renderSum(id, target) {
 		if (this["unit_"+id]) {
 			this["unit_"+id].renderSummary(target);
+		} else {
+		}
+	}
+
+	renderDtl(id, target) {
+		if (this["unit_"+id]) {
+			this["unit_"+id].renderDetail(target);
+		} else {
+		}
+	}
+
+	renderDtlWork(id, target) {
+		if (this["unit_"+id]) {
+			this["unit_"+id].renderDetalWork(target);
 		} else {
 		}
 	}
@@ -557,8 +591,10 @@ class unit {
 	}
 
 	set actionPoints(x) {
-		this.aps = Math.max(0, Math.min(x, 100));
-		setBar(this.unitID, "apBar", this.aps);
+
+		this.aps = Math.max(0, Math.min(x, 1000));
+		console.log("set aps to " + this.aps);
+		setBar(this.unitID, "apBar", this.aps/10);
 	}
 
 	get actionPoints() {
@@ -576,7 +612,7 @@ class unit {
 
 	changeAttr(id, desc, value) {
 		this[desc] = value;
-		//console.log("set " + desc + " to " + value)
+		console.log("set " + desc + " to " + value)
 		thisList = document.body.querySelectorAll(".udHolder");
 		for (n=0; n<thisList.length; n++) {
 			if (thisList[n].getAttribute("data-unitid") == id) {
@@ -641,7 +677,73 @@ class character extends unit {
 	}
 }
 
+class plot extends unit {
+
+	constructor (object) {
+		console.log("make a plot");
+		super(object);
+		this.target = object.target || null;
+		console.log("plot target = " + this.target)
+	}
+
+	renderSummary(target) {
+
+		console.log("draw plot = " + this);
+
+		var plotBox = plotSummary({desc: "uhhh", id:1}, target);
+
+		//var trgBox = addDiv("charBox", "tdHolder", plotBox);
+		console.log("draw " + this.target);
+		unitList.renderSum(this.target, plotBox.childNodes[1]);
+
+		var actDiv = addDiv("", "plotPoints", plotBox.childNodes[2]);
+		actDiv.setAttribute("data-boxName", "apBar");
+
+
+		//var dtlButton = addDiv("", "sumDtlBut", plotBox.childNodes[2]);
+		//var prm = "1074,"+this.unitID;
+		//dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
+
+
+
+		this.changeAttr(this.unitId, "actionPoints", this.aps);
+		return plotBox;
+		//this.changeAttr(this.unitId, "strength", this.str)
+	}
+
+	renderDetalWork(target) {
+		plotDtlWork(this, target);
+		/*
+		console.log("draw plot work opts = " + this);
+
+		var trg = document.getElementById("plotDtlContent");
+		//unitList.newUnit({unitType:"plot", unitID:'.$postVals[1].', actionPoints:500, target:20000});
+		var thisSum = unitList.renderSum('.$postVals[1].', trg);
+		console.log("add buttons to " + thisSum)
+		//var plotBox = plotSummary({desc: "plot #'.$postVals[1].'", id:'.$postVals[1].'}, document.getElementById("plotDtlContent"));
+		//trgBox = addDiv("charBox", "tdHolder", plotBox);
+		//unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
+		//unitList.renderSum('.$target.', plotBox.children[1]);
+
+
+		buttonBox = addDiv("", "fullBar", thisSum);
+		buttonBox2 = addDiv("", "fullBar", thisSum);
+		//confirmButton("Leave this plot?", "", buttonBox2, "Leave Plot");
+		//scrButton("1087", buttonBox, "Leave Plot");
+		//scrButton("1084,6,'.$postVals[1].',1", buttonBox, "10%");
+		//scrButton("1084,6,'.$postVals[1].',2", buttonBox, "25%");
+		//scrButton("1084,6,'.$postVals[1].',3", buttonBox, "50%");
+		//scrButton("1084,6,'.$postVals[1].',4", buttonBox, "100%");';
+
+
+			scrButton("1086", buttonBox2, "Carry Out Plot");
+			boxButton("1085,'.$postVals[1].'", buttonBox2, "ringleader");
+			*/
+	}
+}
+
 setBar = function (id, desc, pct) {
+	console.log("setting " + desc + " to " + pct)
   thisList = document.body.querySelectorAll(".udHolder");
 
 	for (n=0; n<thisList.length; n++) {

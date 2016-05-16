@@ -461,6 +461,13 @@
 	border: 1px solid black;
 }
 
+.plotPoints {
+	position: absolute;
+	height:20;
+	left:20;
+	top:20;
+}
+
 .plotSummary {
 	position:relative;
 	float:left;
@@ -480,7 +487,7 @@
 	position:relative;
 	float:left;
 	height: 150;
-	width:320;
+	width: calc (100% - 150px);
 	border: 1px solid black;
 }
 

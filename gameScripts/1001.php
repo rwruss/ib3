@@ -22,7 +22,7 @@ foreach ($unitList as $unitID) {
 	$actionPoints = 150;
 	echo '
 
-		unitList.newUnit({unitType:"character", unitID:'.$unitID.', unitName:"char name", actionPoints:100, strength:75});
+		unitList.newUnit({unitType:"character", unitID:'.$unitID.', unitName:"char name", actionPoints:1000, strength:75});
 		unitList.renderSum('.$unitID.', thisDiv);';
 	/*
 	echo '

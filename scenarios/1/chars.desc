@@ -1,0 +1,7 @@
+Name<-->ID,category,tier,type<-->Build Points,Upgrade Exp<-->Building PreReqs Qty<-->Creation Cost Rsc ID/Amt/Rsc ID/Amt<-->Unit Descrption<-->Limit<-->Stats<-->Jobs<-->Upgrade To<->
+Peasants<-->1,1,1,8<-->500<-->1,1<-->1/1000/2/2000/3/3000<-->Description of peasants<-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->1,2,3,4,5,6,7,8,9,10<-->2<->
+Peasant Militia<-->2,1,2,8<-->500, 100<-->1<-->1/1000/2/2000/3/3000<-->Description of <-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->1,2,3,4,5,6,7,8,9,10<-->2<->
+Woodsmen<-->3,1,2,8<-->500, 100<-->1,1<-->1/1000/2/2000/3/3000<-->Description of <-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->1,2,3,4,5,6,7,8,9,10<-->2<->
+Spear Warband<-->1,1,1,6<-->500<-->1,1<-->1/1000/2/2000/3/3000<-->Description of Spear Warband<-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->1,2<-->2<->
+Sword Warband<-->1,1,1,6<-->500<-->1,1<-->1/1000/2/2000/3/3000<-->Description of Sword Warband<-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->2<->
+Resource Cart<-->6,1,1,10<-->0,0<--><--><-->All of your stuff!<-->1<-->1,1,1,1,1,1,1,1,1,1<--><-->2<->

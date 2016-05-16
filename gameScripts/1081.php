@@ -35,24 +35,15 @@ if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
 	fseek($unitFile, $target*$defaultBlockSize);
 	$targetDat = unpack('i*', fread($unitFile, 200));
 	echo 'Details on this plot....('.$postVals[1].').  Selected char '.$_SESSION['selectedItem'].', Leader char '.$plotDat[9].'<script>
-	var plotBox = plotSummary({desc: "plot #'.$postVals[1].'", id:'.$postVals[1].'}, document.getElementById("plotDtlContent"));
-	trgBox = addDiv("charBox", "tdHolder", plotBox);
-	unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
-	unitList.renderSum('.$target.', plotBox.children[1]);
-
-	//document.getElementById("plot_'.$postVals[1].'progress").innerHTML = "'.$plotDat[6].'";
-	buttonBox = addDiv("", "fullBar", plotBox);
-	scrButton("1087", buttonBox, "Leave Plot");
-	scrButton("1084", buttonBox, "10%");
-	scrButton("1084", buttonBox, "25%");
-	scrButton("1084", buttonBox, "50%");
-	boxButton("1084", buttonBox, "100%");';
-
+	var trg = document.getElementById("plotDtlContent");
+	unitList.newUnit({unitType:"plot", unitID:'.$postVals[1].', actionPoints:500, target:20000});
+	unitList.renderDtlWork('.$postVals[1].', trg);';
+	/*
 	if ($plotDat[9] == $pGameID) {
-		echo 'scrButton("1086", buttonBox, "Execute");
-		boxButton("1085,'.$postVals[1].'", buttonBox, "ringleader");';
+		echo 'scrButton("1086", buttonBox2, "Carry Out Plot");
+		boxButton("1085,'.$postVals[1].'", buttonBox2, "ringleader");';
 	}
-
+	*/
 	echo '</script>
 	work options....';
 }
