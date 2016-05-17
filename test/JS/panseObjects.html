@@ -87,6 +87,7 @@ function init(desc) {
 }
 
 function makePane () {
+	console.log("make a pane.");
 	useDeskTop.newPane(document.getElementById("newDesc").value);
 }
 
@@ -94,7 +95,7 @@ class pane {
 	constructor (desc, desktop) {
 		console.log("Make a pane " + this);
 		this.element = makeBox(desc, 0, 500, 500, 250, 250);
-		console.log(this.element.childNodes);
+		//console.log(this.element.childNodes);
 		this.desc = desc;
 		this.desktop = desktop;
 		this.element.childNodes[0].parentObj = this;
@@ -109,15 +110,15 @@ class pane {
 		this.element.addEventListener("dragstart", function () {
 			this.parentObj.toTop();
 			bPos = [parseInt(this.offsetLeft), parseInt(this.offsetTop), event.clientX, event.clientY];
-			console.log(bPos);
+			//console.log(bPos);
 		});
 	}
 	
 	destroyWindow() {
-		console.log("remove " + this.desc)
+		//console.log("remove " + this.desc)
 		this.element.remove();
 		this.desktop.removePane(this);
-		console.log("final " + Object.keys(this.desktop.paneList));
+		//console.log("final " + Object.keys(this.desktop.paneList));
 	}
 	
 	toTop() {
@@ -128,7 +129,7 @@ class pane {
 class hPane extends pane {
 	constructor(desc, desktop) {
 		super(desc, desktop);
-		console.log("set hPane style for " + this.element);
+		//console.log("set hPane style for " + this.element);
 		this.element.className = "hPane";
 	}
 }
@@ -136,7 +137,7 @@ class hPane extends pane {
 class regPane extends pane {
 	constructor(desc, desktop) {
 		super(desc, desktop);
-		console.log("set hPane style for " + this.element);
+		//console.log("set hPane style for " + this.element);
 		this.element.className = "regPane";
 	}
 }
@@ -144,25 +145,23 @@ class regPane extends pane {
 class deskTop {
 	constructor () {
 		this.paneList = {};
-		console.log("make list " + this.paneList);
-		console.log("List keys " + Object.keys(this.paneList))
 		this.id = "a desktop";
 	}
 	
 	newPane (desc, type) {
-		console.log("start list " + Object.keys(this.paneList))
+		//console.log("start list " + Object.keys(this.paneList))
 		if (this.paneList[desc]) {
-			console.log("already made: " + this.constructor.name + " -> " + Object.keys(this.paneList));
+			//console.log("already made: " + this.constructor.name + " -> " + Object.keys(this.paneList));
 		} else {
 
 			if (type == "hPane") {
 				var mkPane = new hPane(desc, this);
 				this.paneList[desc] = mkPane;
-				console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
+				//console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
 			} else {
 				var mkPane = new regPane(desc, this);
 				this.paneList[desc] = mkPane;
-				console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
+				//console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
 			}
 			
 		}
@@ -183,17 +182,17 @@ class deskTop {
 	}
 	
 	paneToTop(thisPane) {
-		console.log("to top");
+		//console.log("to top");
 		delete this.paneList[thisPane.desc];
 		this.paneList[thisPane.desc] = thisPane;
 		this.arrangePanes();
 	}
 	
 	removePane (thisPane) {
-		console.log("Base array " + Object.keys(this.paneList));
-		console.log("remove from " + this.constructor.name + " looking for " + thisPane.desc);
+		//console.log("Base array " + Object.keys(this.paneList));
+		//console.log("remove from " + this.constructor.name + " looking for " + thisPane.desc);
 		delete this.paneList[thisPane.desc];
-		console.log("current List " + Object.keys(this.paneList));
+		//console.log("current List " + Object.keys(this.paneList));
 	}
 }
 
@@ -205,7 +204,7 @@ function addition () {
 
 class newClass {
 	constructor () {
-		console.log("Make a new Class");
+		//console.log("Make a new Class");
 	}
 }
 
@@ -266,7 +265,7 @@ class unit {
 		return this.rate;
 	}		
 	set rating(x) {
-		console.log("Set Rating")
+		//console.log("Set Rating")
 		this.rate = Math.max(0, Math.min(x, 100));
 		setBar(this.unitID, "ratingBar", this.rate);
 	}
@@ -278,7 +277,7 @@ class unit {
 	
 	changeAttr(id, desc, value) {
 		this[desc] = value;
-		console.log("set " + desc + " to " + value)
+		//console.log("set " + desc + " to " + value)
 		thisList = document.body.querySelectorAll(".udHolder");
 		for (n=0; n<thisList.length; n++) {
 			if (thisList[n].getAttribute("data-unitid") == id) {
@@ -395,7 +394,7 @@ function init() {
 	divList.leftHolder = holder3;
 	divList.rightHolder = holder4;
 	
-	console.log(divList);
+	//console.log(divList);
 	
 	selectButton(objButton1, "hai", 1, [divList.leftHolder, divList.rightHolder]);
 	selectButton(objButton2, "hai", 2, [holder3, holder4]);

@@ -170,14 +170,16 @@ plotDtlWork = function (obj, trg) {
 	var plotBox = plotSummary({desc: "plot #'.$postVals[1].'", id:'.$postVals[1].'}, document.getElementById("plotDtlContent"));
 	trgBox = addDiv("charBox", "tdHolder", plotBox);
 
-	buttonBox = addDiv("", "fullBar", plotBox);
-	buttonBox2 = addDiv("", "fullBar", plotBox);
-	confirmButton("Leave this plot?", "", buttonBox2, "Leave Plot");
-	scrButton("1087", buttonBox, "Leave Plot");
-	scrButton("1084,6,"+ obj.unitID+",1", buttonBox, "10%");
-	scrButton("1084,6,"+ obj.unitID+",2", buttonBox, "25%");
-	scrButton("1084,6,"+ obj.unitID+",3", buttonBox, "50%");
-	scrButton("1084,6,"+ obj.unitID+",4", buttonBox, "100%");
+	plotBox.buttonBox = addDiv("", "fullBar", plotBox);
+	plotBox.buttonBox2 = addDiv("", "fullBar", plotBox);
+	confirmButton("Leave this plot?", "1088,"+obj.unitID, plotBox.buttonBox2, "Leave Plot");
+	scrButton("1087", plotBox.buttonBox, "Leave Plot");
+	scrButton("1084,6,"+ obj.unitID+",1", plotBox.buttonBox, "10%");
+	scrButton("1084,6,"+ obj.unitID+",2", plotBox.buttonBox, "25%");
+	scrButton("1084,6,"+ obj.unitID+",3", plotBox.buttonBox, "50%");
+	scrButton("1084,6,"+ obj.unitID+",4", plotBox.buttonBox, "100%");
+	
+	return plotBox;
 }
 
 newTabMenu = function(target) {
@@ -399,7 +401,7 @@ scrSelectBox = function (trg) {
 	trg.parentNode.style.borderColor = "#FF0000";
 	console.log(trg);
 }
-
+/*
 var selectedItem;
 selectItem = function (trg) {
 	if (selectedItem)	selectedItem.style.borderColor = "000000";
@@ -407,7 +409,7 @@ selectItem = function (trg) {
 	trg.parentNode.style.borderColor = "#FF0000";
 	console.log(trg);
 }
-
+*/
 setBarSize = function(id, pct, full) {
 	if (document.getElementById(id)) {
 		document.getElementById(id).style.width = full * pct;
@@ -675,6 +677,8 @@ class character extends unit {
 
 		target.parentNode.objList.push(this.unitID);
 		console.log(target.parentNode.objList);
+		
+		
 	}
 }
 
@@ -714,6 +718,8 @@ class plot extends unit {
 
 	renderDetalWork(target) {
 		plotDtlWork(this, target);
+		this.detailEl = thisDiv;
+		
 		/*
 		console.log("draw plot work opts = " + this);
 
@@ -737,9 +743,9 @@ class plot extends unit {
 		//scrButton("1084,6,'.$postVals[1].',4", buttonBox, "100%");';
 
 
-			scrButton("1086", buttonBox2, "Carry Out Plot");
-			boxButton("1085,'.$postVals[1].'", buttonBox2, "ringleader");
-			*/
+		scrButton("1086", buttonBox2, "Carry Out Plot");
+		boxButton("1085,'.$postVals[1].'", buttonBox2, "ringleader");
+		*/
 	}
 }
 
@@ -762,5 +768,133 @@ setBar = function (id, desc, pct) {
 		} else {
 
 		}
+	}
+}
+
+
+class pane {
+	constructor (desc, desktop) {
+		console.log("Make a pane " + this);
+		this.element = makeBox(desc, 0, 500, 500, 250, 250);
+		console.log(this.element.childNodes);
+		this.desc = desc;
+		this.desktop = desktop;
+		this.element.childNodes[0].parentObj = this;
+		this.element.parentObj = this;	
+		this.desktop.arrangePanes();
+		
+		this.element.addEventListener("click", function() {this.parentObj.toTop()});
+		this.element.childNodes[0].addEventListener("click", function () {
+			this.parentObj.destroyWindow();
+			event.stopPropagation();
+			});
+		this.element.addEventListener("dragstart", function () {
+			this.parentObj.toTop();
+			bPos = [parseInt(this.offsetLeft), parseInt(this.offsetTop), event.clientX, event.clientY];
+			console.log(bPos);
+		});
+	}
+	
+	destroyWindow() {
+		console.log("remove " + this.desc)
+		this.element.remove();
+		this.desktop.removePane(this);
+		console.log("final " + Object.keys(this.desktop.paneList));
+	}
+	
+	toTop() {
+		this.desktop.paneToTop(this);
+	}
+}
+
+class hPane extends pane {
+	constructor(desc, desktop) {
+		super(desc, desktop);
+		console.log("set hPane style for " + this.element);
+		this.element.className = "hPane";
+	}
+}
+
+class regPane extends pane {
+	constructor(desc, desktop) {
+		super(desc, desktop);
+		console.log("set hPane style for " + this.element);
+		this.element.className = "regPane";
+	}
+}
+
+class deskTop {
+	constructor () {
+		this.paneList = {};
+		console.log("make list " + this.paneList);
+		console.log("List keys " + Object.keys(this.paneList))
+		this.id = "a desktop";
+	}
+	
+	newPane (desc, type) {
+		console.log("start list " + Object.keys(this.paneList))
+		if (this.paneList[desc]) {
+			console.log("already made: " + this.constructor.name + " -> " + Object.keys(this.paneList));
+		} else {
+
+			if (type == "hPane") {
+				var mkPane = new hPane(desc, this);
+				this.paneList[desc] = mkPane;
+				console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
+			} else {
+				var mkPane = new regPane(desc, this);
+				this.paneList[desc] = mkPane;
+				console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
+			}
+			
+		}
+	}
+	
+	arrangePanes() {
+		var count = 1;
+		for (var item in this.paneList) {
+			this.paneList[item].element.style.zIndex = count;
+			count++;
+		}
+	}
+	
+	getPane(desc) {
+		if (this.paneList[desc]) {
+			return this.paneList[desc].element.childNodes[1];
+		}
+	}
+	
+	paneToTop(thisPane) {
+		console.log("to top");
+		delete this.paneList[thisPane.desc];
+		this.paneList[thisPane.desc] = thisPane;
+		this.arrangePanes();
+	}
+	
+	removePane (thisPane) {
+		console.log("Base array " + Object.keys(this.paneList));
+		console.log("remove from " + this.constructor.name + " looking for " + thisPane.desc);
+		delete this.paneList[thisPane.desc];
+		console.log("current List " + Object.keys(this.paneList));
+	}
+}
+
+selectButton = function (trg, src, id, others) {
+	var newButton = addDiv("button", "button", trg);
+	newButton.addEventListener("click", function () {
+		selectItem(this, id, others);
+		})
+	newButton.innerHTML = src;
+	//return newButton;
+}
+
+var selectedItem;
+selectItem = function (trg, id, others) {
+	if (selectedItem)	selectedItem.style.borderColor = "000000";
+	selectedItem = trg.parentNode;
+	trg.parentNode.style.borderColor = "#FF0000";	
+	console.log(others[0]);
+	for (var i=0; i<others.length; i++) {
+		itemList.renderSingleSum(id, others[i]);
 	}
 }

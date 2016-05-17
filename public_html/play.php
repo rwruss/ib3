@@ -2657,12 +2657,13 @@ precision mediump float;
 
 		return texture;
 		}
-
+	
+	
 	function webGLStart() {
+		useDeskTop = new deskTop;
 		unitList = new unitList();
-		//console.log(unitList);
 		setClick([0], "auto")
-    var canvas = document.getElementById("lesson03-canvas");
+		var canvas = document.getElementById("lesson03-canvas");
 		canvasInit();
 
     initGL(canvas);

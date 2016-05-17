@@ -94,6 +94,7 @@
 1085 - Assign RingLeader to a Plot
 1086 - Run a plot 
 1087 - Process assign ringleader to a Plot
+1088 - Leave a plot
 
 // Manual Override Functions
 2001 - Add Resources to a city

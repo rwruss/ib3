@@ -12,7 +12,7 @@ $plotDat = unpack('i*', fread($taskFile, 200));
 
 // check if character is already in the plot
 
-if ($plotDat != 0) {
+if ($plotDat[11] != 0) {
   $plotChars = new blockSlot($plotDat[11], $slotFile, 40);
   if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
     echo 'Already in the plot';
@@ -36,22 +36,25 @@ for ($i=1; $i<=$plotChars->slotData; $i+=2) {
     break;
   }
 }
-$plotChars->addItem($slotFile, pack('i*', $_SESSION['selectedItem'], 1), $loc);
 
-
-echo 'Added character to plot at slot '.$plotDat[11];
-
-// Record plot in list of char plots
+// Record plot in list of plaayer plots
 fseek($unitFile, $_SESSION['selectedItem']*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, 200));
 
+//$plotChars->addItem($slotFile, pack('i*', $_SESSION['selectedItem'], 1), $loc);
+$plotChars->addItem($slotFile, pack('i*', $pGameID, 1), $loc);
+
+//echo 'Added character to plot at slot '.$plotDat[11];
+fseek($unitFile, $unitDat[6]*$defaultBlockSize);
+$controllerDat = unpack('i*', fread($unitFile, 200));
+
 echo 'Record plot in slot '.$unitDat[35].' for the unit';
-if ($unitDat[35] == 0) {
-  $unitDat[35] = startASlot($slotFile, $gamePath.'/gameSlots.slt');
+if ($controllerDat[20] == 0) {
+  $controllerDat[20] = startASlot($slotFile, $gamePath.'/gameSlots.slt');
   fseek($unitFile, $_SESSION['selectedItem']*$defaultBlockSize+136);
-  fwrite($unitFile, pack('i', $unitDat[35]));
+  fwrite($unitFile, pack('i', $controllerDat[20]));
 }
-$charPlots = new itemSlot($unitDat[35], $slotFile, 40);
+$charPlots = new itemSlot($controllerDat[20], $slotFile, 40);
 $charPlots->addItem($postVals[1], $slotFile);
 
 // Send a message to the player that he has a char invited to a new plot

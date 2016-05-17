@@ -607,3 +607,50 @@
 	width:25;
 	height:25;
 }
+
+.hPane {
+	height:250;
+	width:500;
+	top:250;
+	left:250;
+	position:absolute;
+	border:1px Solid #000000;
+	background: #B0B0B0;
+}
+
+.regPane {
+	height:500;
+	width:500;
+	top:250;
+	left:250;
+	position:absolute;
+	border:1px Solid #000000;
+	background: #B0B0B0;
+}
+
+.paneCloseButton {
+	position:absolute;
+	height:20;
+	right:0;
+	top:0;
+	border: 1px solid #FFFFFF;
+}
+
+.paneContent {
+	position:absolute;
+	height: calc(100% - 20px);
+	top:20;
+	width:100%;
+	background:#F0F0F0;
+	border:1px solid #00FF00;
+}
+
+.selectContain {
+	position:relative;
+	float:left;
+	width:160;
+	height:180;
+	border: 1px solid black;
+	text-align:center;
+	margin:5;
+}
