@@ -169,8 +169,6 @@ plotDtlWork = function (obj, trg) {
 	console.log("work options for " + obj.unitID);
 	var plotBox = plotSummary({desc: "plot #'.$postVals[1].'", id:'.$postVals[1].'}, document.getElementById("plotDtlContent"));
 	trgBox = addDiv("charBox", "tdHolder", plotBox);
-	//unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
-	//unitList.renderSum('.$target.', plotBox.children[1]);
 
 	buttonBox = addDiv("", "fullBar", plotBox);
 	buttonBox2 = addDiv("", "fullBar", plotBox);
@@ -672,8 +670,11 @@ class character extends unit {
 		dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
 		nameDiv.innerHTML = this.unitName;
-		this.changeAttr(this.unitId, "actionPoints", this.aps)
-		this.changeAttr(this.unitId, "strength", this.str)
+		this.changeAttr(this.unitId, "actionPoints", this.aps);
+		this.changeAttr(this.unitId, "strength", this.str);
+
+		target.parentNode.objList.push(this.unitID);
+		console.log(target.parentNode.objList);
 	}
 }
 

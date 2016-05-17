@@ -939,14 +939,26 @@ precision mediump float;
 			document.getElementsByTagName("body")[0].appendChild(newDiv);
 			newDiv.appendChild(killBut);
 			newDiv.appendChild(newContent);
+			newDiv.objList = [];
 			}
 
 		passClick(val, bName + "Content");
 		}
 
 	function closeBox() {
-		this.parentNode.parentNode.removeChild(this.parentNode);
+		/*
+		//this.parentNode.parentNode.removeChild(this.parentNode);
+		var scanBox = this.parentNode.contentBox;
+		//console.log("check " + this.parentNode.contentBox.id);
+		for (i=0; i<=scanBox.childNodes.length; i++) {
+			console.log(typeof(scanBox.childNodes[i]));
+			//if (scanBox.childNodes[i].hasAttribute("data-unitid")) console.log("found");
 		}
+
+		*/
+		this.parentNode.remove();
+		//this.remove();
+	}
 
 	function killBox(trg) {
 		if (trg.nodeName == "DIV") {
@@ -960,7 +972,11 @@ precision mediump float;
 			//1alert(testNode.parentNode.nodeName);
 			testNode = testNode.parentNode;
 		}
-		testNode.parentNode.removeChild(testNode);
+		//testNode.parentNode.removeChild(testNode);
+		for (i=0; i<=testNode.childNodes.length; i++) {
+			console.log("Check child nodes");
+		}
+		testnode.remove();
 	}
 
 	var taskList = new Array();
