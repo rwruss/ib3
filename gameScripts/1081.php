@@ -38,17 +38,17 @@ if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
 	var trg = document.getElementById("plotDtlContent");
 	unitList.newUnit({unitType:"plot", unitID:'.$postVals[1].', actionPoints:500, target:20000});
 	unitList.renderDtlWork('.$postVals[1].', trg);';
-	
+
 	if ($plotDat[9] == $pGameID) {
-		echo echo 'scrButton("1086", unitList["unit_'.$postVals[1].'"].buttonBox2, "Carry Out Plot");
-		boxButton("1085,'.$postVals[1].'", unitList["unit_'.$postVals[1].'"].buttonBox2, "ringleader");';
+		echo 'scrButton("1086", unitList["unit_'.$postVals[1].'"].detailEl.buttonBox2, "Carry Out Plot");
+		scrButton("1085,'.$postVals[1].'", unitList["unit_'.$postVals[1].'"].detailEl.buttonBox2, "ringleader");';
 		//'unitList["unit_'.$postVals[1].'"]';
 		/*
 		echo 'scrButton("1086", buttonBox2, "Carry Out Plot");
 		boxButton("1085,'.$postVals[1].'", buttonBox2, "ringleader");';
 		*/
 	}
-	
+
 	echo '</script>
 	work options....';
 }
