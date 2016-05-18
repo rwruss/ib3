@@ -401,6 +401,15 @@ scrSelectBox = function (trg) {
 	trg.parentNode.style.borderColor = "#FF0000";
 	console.log(trg);
 }
+
+selectionHead = function (trg) {
+	var container = addDiv("", "stdContainer", trg);
+	var container.left = addDiv("", "stdContainer", trg);
+	var container.right = addDiv("", "stdContainer", trg);
+	
+	container.left.style.width = "50%";
+	container.right.style.width = "50%";	
+}
 /*
 var selectedItem;
 selectItem = function (trg) {

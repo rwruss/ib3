@@ -156,6 +156,9 @@
             <File name="1083.php" />
             <File name="1084.php" />
             <File name="1085.php" />
+            <File name="1086.php" />
+            <File name="1087.php" />
+            <File name="1088.php" />
             <File name="2001.php" />
             <File name="2002.php" />
             <File name="cl255.php" />
@@ -224,6 +227,7 @@
                 <File name="E:\websites\ib3\test\JS\classObjects.html" />
                 <File name="E:\websites\ib3\test\JS\objStyles.css" />
                 <File name="E:\websites\ib3\test\JS\objFunctions.js" />
+                <File name="E:\websites\ib3\test\JS\panseObjects.html" />
                 <Folder name="dragDrop">
                     <File name="E:\websites\ib3\test\JS\dragDrop\dragDrop.html" />
                 </Folder>

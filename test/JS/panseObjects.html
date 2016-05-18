@@ -86,9 +86,14 @@ function init(desc) {
 	
 }
 
+function testPrm(prm, other) {
+	console.log(prm);
+}
+
 function makePane () {
 	console.log("make a pane.");
 	useDeskTop.newPane(document.getElementById("newDesc").value);
+	testPrm("1234,"+bPos[0], "yuay");
 }
 
 class pane {
