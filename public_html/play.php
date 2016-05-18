@@ -859,6 +859,7 @@ precision mediump float;
 		}
 
 	function scrMod(val) {
+		console.log("SCR MOD " + val);
 		params = "val1="+val;
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.open("POST", "gameScr.php?gid='.$_GET['gameID'].'", true);
@@ -2657,8 +2658,8 @@ precision mediump float;
 
 		return texture;
 		}
-	
-	
+
+
 	function webGLStart() {
 		useDeskTop = new deskTop;
 		unitList = new unitList();
