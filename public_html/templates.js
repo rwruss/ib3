@@ -405,11 +405,13 @@ scrSelectBox = function (trg) {
 
 selectionHead = function (trg) {
 	var container = addDiv("", "stdContainer", trg);
-	var container.left = addDiv("", "stdContainer", trg);
-	var container.right = addDiv("", "stdContainer", trg);
-	
+	container.left = addDiv("", "stdContainer", container);
+	container.right = addDiv("", "stdContainer", container);
+
 	container.left.style.width = "50%";
-	container.right.style.width = "50%";	
+	container.right.style.width = "50%";
+
+	return container;
 }
 /*
 var selectedItem;
@@ -617,6 +619,13 @@ class unitList {
 		} else {
 		}
 	}
+
+	renderSingleSum(id, target) {
+		if (this["unit_"+id]) {
+			console.log(this);
+			this["unit_"+id].renderSingleSummary(target);
+		}
+	}
 }
 
 class unit {
@@ -665,6 +674,14 @@ class unit {
 			}
 		}
 	}
+
+
+	renderSingleSummary(target) {
+		while (target.firstChild) {
+			target.removeChild(target.firstChild);
+		}
+		this.renderSummary(target);
+	}
 }
 
 class warband extends unit {
@@ -689,6 +706,7 @@ class warband extends unit {
 		this.changeAttr(this.unitId, "actionPoints", this.aps)
 		this.changeAttr(this.unitId, "strength", this.str)
 	}
+
 }
 
 class character extends unit {
@@ -742,48 +760,14 @@ class plot extends unit {
 		var actDiv = addDiv("", "plotPoints", plotBox.childNodes[2]);
 		actDiv.setAttribute("data-boxName", "apBar");
 
-
-		//var dtlButton = addDiv("", "sumDtlBut", plotBox.childNodes[2]);
-		//var prm = "1074,"+this.unitID;
-		//dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
-
-
-
 		this.changeAttr(this.unitId, "actionPoints", this.aps);
 		return plotBox;
-		//this.changeAttr(this.unitId, "strength", this.str)
 	}
 
 	renderDetailWork(target) {
 		var thisDiv = plotDtlWork(this, target);
 		this.detailEl = thisDiv;
 
-		/*
-		console.log("draw plot work opts = " + this);
-
-		var trg = document.getElementById("plotDtlContent");
-		//unitList.newUnit({unitType:"plot", unitID:'.$postVals[1].', actionPoints:500, target:20000});
-		var thisSum = unitList.renderSum('.$postVals[1].', trg);
-		console.log("add buttons to " + thisSum)
-		//var plotBox = plotSummary({desc: "plot #'.$postVals[1].'", id:'.$postVals[1].'}, document.getElementById("plotDtlContent"));
-		//trgBox = addDiv("charBox", "tdHolder", plotBox);
-		//unitList.newUnit({unitID : '.$target.', unitType : "character", actionPoints : 50, status : 1, unitName : "unit name", exp : 500});
-		//unitList.renderSum('.$target.', plotBox.children[1]);
-
-
-		buttonBox = addDiv("", "fullBar", thisSum);
-		buttonBox2 = addDiv("", "fullBar", thisSum);
-		//confirmButton("Leave this plot?", "", buttonBox2, "Leave Plot");
-		//scrButton("1087", buttonBox, "Leave Plot");
-		//scrButton("1084,6,'.$postVals[1].',1", buttonBox, "10%");
-		//scrButton("1084,6,'.$postVals[1].',2", buttonBox, "25%");
-		//scrButton("1084,6,'.$postVals[1].',3", buttonBox, "50%");
-		//scrButton("1084,6,'.$postVals[1].',4", buttonBox, "100%");';
-
-
-		scrButton("1086", buttonBox2, "Carry Out Plot");
-		boxButton("1085,'.$postVals[1].'", buttonBox2, "ringleader");
-		*/
 	}
 }
 
@@ -933,6 +917,6 @@ selectItem = function (trg, id, others) {
 	trg.parentNode.style.borderColor = "#FF0000";
 	console.log(others[0]);
 	for (var i=0; i<others.length; i++) {
-		itemList.renderSingleSum(id, others[i]);
+		unitList.renderSingleSum(id, others[i]);
 	}
 }

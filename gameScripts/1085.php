@@ -22,29 +22,19 @@ $plotDat = unpack('i*', fread($taskFile, 100));
 
 echo '<script>
 useDeskTop.newPane("ringLeader");
-<<<<<<< HEAD
 selectedItem = false;
 var selectHead = selectionHead(useDeskTop.getPane("ringLeader"));
-scrButton("1087,"+selectedItem, buttonBox, "100%");';
-for($i=1; $i<=sizeof($charList->slotData); $i++) {
-	echo 'unitList.newUnit({unitID : '.$charList->slotData[$i].', unitType : "character", rating : 50, status : 1, unitName : "char '.$charList->slotData[$i].'", cost: 90});
-	objButton = addDiv("", "selectContain", useDeskTop.getPane("ringLeader"));
-	itemList.renderSum('.$charList->slotData[$i].', objButton);
-	selectButton(objButton, "hai", 1, [selectHead.left]);';
-	/*
-	echo 'unitList.newUnit({unitID : '.$charList->slotData[$i].', unitType : "character", rating : 50, status : 1, unitName : "char '.$charList->slotData[$i].'", cost: 90});
-	scrSelectBox('.$charList->slotData[$i].', "1086.'.$charList->slotData[$i].','.$postVals[1].'", "Select This Char");';
-	*/
-=======
-selectedItem = false;';
+console.log("place in " + selectHead);
+//addDiv("", "selectContain", selectHead.left);
+scrButton("1087,"+selectedItem, selectHead.right, "100%");';
 
 for($i=1; $i<=sizeof($charList->slotData); $i++) {
-	echo 'unitList.newUnit({unitID : '.$charList->slotData[$i].', unitType : "character", rating : 50, status : 1, unitName : "char '.$charList->slotData[$i].'", cost: 90});
-	objButton = addDiv("", "selectContain", useDeskTop.getPane("ringLeader"));
-	unitList.renderSum('.$charList->slotData[$i].', objButton);
-	selectButton(objButton, "hai", 1, []);';
-
->>>>>>> origin/master
+	if ($charList->slotData[$i] > 0) {
+		echo 'unitList.newUnit({unitID : '.$charList->slotData[$i].', unitType : "character", rating : 50, status : 1, unitName : "char '.$charList->slotData[$i].'", cost: 90});
+		objButton = addDiv("", "selectContain", useDeskTop.getPane("ringLeader"));
+		unitList.renderSum('.$charList->slotData[$i].', objButton);
+		selectButton(objButton, "hai", '.$charList->slotData[$i].', [selectHead.left]);';
+	}
 }
 
 echo '</script>';
