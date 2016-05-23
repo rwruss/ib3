@@ -2,7 +2,7 @@
 
 include('./slotFunctions.php');
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-
+$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
 
 // Get list of known plots
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
@@ -17,10 +17,13 @@ $useList = array_filter($plotList->slotData);
 print_r($useList);
 echo '<script>
 trg = document.getElementById("plotInviteContent");';
-for ($i=1; $i<=sizeof($useList); $i++) {
-
-	echo 'unitList.newUnit({unitType:"plot", unitID:'.$useList[$i].', actionPoints:500, target:20000});
-		unitList.renderSum('.$useList[$i].', trg);';
+foreach ($useList as $plotID) {
+	fseek($taskFile, $plotID*200);
+	$plotDat = unpack('i*', fread($taskFile, 200));
+	echo 'unitList.newUnit({unitType:"plot", unitID:'.$plotID.', unitName:"Plot #'.$plotID.'", actionPoints:'.$plotDat[6].', target:0, tResist:10});
+		var thisSum = unitList.renderSum('.$plotID.', trg);
+		confirmButton("Invite to Plot?", "1082,'.$plotID.'", thisSum.childNodes[3], "invite - '.$plotID.'");
+		';
 	/*
 	echo 'var thisPlot = plotSummary({desc : "What\'d you do, man?", id:'.$useList[$i].'}, trg);
 	confirmButton("Invite to Plot?", "1082,'.$useList[$i].'", thisPlot.childNodes[3], "invite - '.$i.'");';*/
@@ -29,5 +32,6 @@ echo '</script>';
 
 fclose($unitFile);
 fclose($slotFile);
+fclose($taskFile);
 
 ?>

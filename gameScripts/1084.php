@@ -72,7 +72,8 @@ if (array_search($postVals[1], $charTasks) !== false) {
 	$unitDat[16] = $actionPoints;
 
 	fclose($taskFile);
-echo '<script>unitList.change('.$unitID.', "actionPoints", '.$unitDat[16].')</script>';
+echo '<script>unitList.change('.$unitID.', "actionPoints", '.$unitDat[16].');
+unitList.add('.$postVals[2].', "actionPoints", '.$spentPoints.')</script>';
 } else {
 	echo 'This unit cannot perfrom this task';
 }

@@ -22,7 +22,7 @@ $plotData = explode('<->', file_get_contents($scnPath.'/plots.desc'));
 echo '<script>';
 for ($i=1; $i<sizeof($plotData); $i++) {
 	$plotItem = explode('<-->', $plotData[$i]);
-	echo 'charTaskOpt('.$i.', "plotContent", "'.$plotItem[1].'");';
+	echo 'charTaskOpt('.$plotItem[0].', "plotContent", "'.$plotItem[1].'");';
 }
 echo '</script>';
 ?>

@@ -25,7 +25,7 @@ $playerChars = new itemSlot($playerData[19], $slotFile, 40);
 $hideDtl = true;
 echo 'Slot '.$plotDat[11].' chars';
 //print_r($plotChars->slotData);
-if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
+if (array_search($pGameID, $plotChars->slotData)) {
 //for ($i=1; $i<=sizeof($plotChars->slotData); $i++) {
 
 	// Player controls a char involved in the plot and can view the details
@@ -36,21 +36,15 @@ if (array_search($_SESSION['selectedItem'], $plotChars->slotData)) {
 	$targetDat = unpack('i*', fread($unitFile, 200));
 	echo 'Details on this plot....('.$postVals[1].').  Selected char '.$_SESSION['selectedItem'].', Leader char '.$plotDat[9].'<script>
 	var trg = document.getElementById("plotDtlContent");
-	unitList.newUnit({unitType:"plot", unitID:'.$postVals[1].', actionPoints:500, target:20000});
+	//unitList.newUnit({unitType:"plot", unitID:'.$postVals[1].', actionPoints:'.$plotDat[6].', target:0, unitName:"Plot #'.$postVals[1].', tResist:10"});
 	unitList.renderDtlWork('.$postVals[1].', trg);';
 
 	if ($plotDat[9] == $pGameID) {
 		echo 'scrButton("1086", unitList["unit_'.$postVals[1].'"].detailEl.buttonBox2, "Carry Out Plot");
 		scrButton("1085,'.$postVals[1].'", unitList["unit_'.$postVals[1].'"].detailEl.buttonBox2, "ringleader");';
-		//'unitList["unit_'.$postVals[1].'"]';
-		/*
-		echo 'scrButton("1086", buttonBox2, "Carry Out Plot");
-		boxButton("1085,'.$postVals[1].'", buttonBox2, "ringleader");';
-		*/
 	}
 
-	echo '</script>
-	work options....';
+	echo '</script>';
 }
 
 if ($hideDtl) {
