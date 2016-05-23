@@ -1,0 +1,185 @@
+<html>
+<script>
+
+function init() {
+	obj1 = new item({stat1:10, stat2:20, stat3:30, stat4:40, stat5:50, stat6:600});
+	obj2 = new item({stat1:60, stat2:50, stat3:40, stat4:30, stat5:20, stat6:10});
+	console.log(obj1);
+	compare(obj1, obj2, ["stat1", "stat3", "stat6"], document.getElementById("useBox"));
+	compare2(obj1, obj2, ["stat1", "stat2", "stat3", "stat4", "stat5", "stat6"], document.getElementById("useBox2"));
+}
+
+
+function compare(item1, item2, itemList, trg) {
+	trg.innerHTML = "";
+	for (let i=0; i<itemList.length; i++) {
+		console.log(item1[itemList[i]]);
+		setCompareBar(item1[itemList[i]], item2[itemList[i]], trg);
+	}	
+}
+
+
+
+function setCompareBar (s1, s2, trg) {
+	var newBar = document.createElement("div");
+	newBar.className = "barHolder";
+	
+	var barIcon = document.createElement("div");
+	barIcon.className = "barIcon";
+	
+	var barTop = document.createElement("div");
+	barTop.className = "barTopBar";
+	barTop.style.width = s1;
+	barTop.style.backgroundColor = "#FF0000";
+	
+	var barBot = document.createElement("div");
+	barBot.className = "barBotBar";
+	barBot.style.width = s2;
+	barBot.style.backgroundColor = "#00FF00";
+	
+	newBar.appendChild(barIcon);
+	newBar.appendChild(barTop);
+	newBar.appendChild(barBot);
+	trg.appendChild(newBar);
+}
+
+function compare2(item1, item2, itemList, trg) {
+	trg.innerHTML = "";
+	var delta;
+	for (let i=0; i<itemList.length; i++) {
+		console.log(item1[itemList[i]]);
+		delta = item2[itemList[i]] - item1[itemList[i]];
+		setCompareBar2(Math.min(delta,0), Math.max(delta,0), trg);
+	}	
+}
+
+function setCompareBar2 (s1, s2, trg) {
+	var newBar = document.createElement("div");
+	newBar.className = "barHolder";
+	
+	var barIcon = document.createElement("div");
+	barIcon.className = "barIconCtr";
+	//barIcon.innerHTML = "X";
+	
+	var barLeft = document.createElement("div");
+	barLeft.className = "barLeftBar";
+	barLeft.style.width = Math.min(90,-s1);
+	barLeft.style.backgroundColor = "#FF0000";
+	
+	var barRight = document.createElement("div");
+	barRight.className = "barRightBar";
+	barRight.style.width = Math.min(90,s2);
+	barRight.style.backgroundColor = "#00FF00";
+	
+	newBar.appendChild(barIcon);
+	newBar.appendChild(barLeft);
+	newBar.appendChild(barRight);
+	
+	console.log(s1 + ", " + s2);
+	if (s2 > 0) {
+		newBar.qtyRight = document.createElement("div");
+		newBar.qtyRight.className = "qtyRight";
+		newBar.qtyRight.innerHTML = "+"+s2;
+		newBar.appendChild(newBar.qtyRight);
+	} else {	
+		newBar.qtyLeft = document.createElement("div");
+		newBar.qtyLeft.className = "qtyLeft";
+		newBar.qtyLeft.innerHTML = s1;
+		newBar.appendChild(newBar.qtyLeft);
+	}
+	
+	
+	trg.appendChild(newBar);
+}
+
+class item {
+	constructor (object) {
+		this.stat1 = object.stat1 || 0,
+		this.stat2 = object.stat2 || 0,
+		this.stat3 = object.stat3 || 0,
+		this.stat4 = object.stat4 || 0,
+		this.stat5 = object.stat5 || 0,
+		this.stat6 = object.stat6 || 0;
+		}
+}
+
+</script>
+
+<style>
+
+.barHolder {
+	position:relative;
+	width:100%;
+	height:20;
+	border:1px solid green;
+}
+
+.barIcon {
+	position:absolute;
+	left:0;
+	top:0;
+	height:20;
+	width:20;
+}
+
+.barTopBar {
+	position:absolute;
+	height:10;
+	left:20;
+	top:0;	
+}
+
+.barBotBar {
+	position:absolute;
+	height:10;
+	left:20;
+	top:10;	
+}
+
+.barLeftBar {
+	position:absolute;
+	top:5;
+	height:10;
+	right:110;
+}
+
+.barRightBar{
+	position:absolute;
+	top:5;
+	height:10;
+	left:110;
+}
+
+.barIconCtr {
+	height:20;
+	width:20;
+	border:1px solid pink;
+	margin:auto;
+}
+
+.qtyRight {
+	position:absolute;
+	top:2;
+	right:5;
+}
+
+.qtyLeft {
+	position:absolute;
+	top:2;
+	left:5;
+}
+
+.holder {
+	position:relatove;
+	width:200;
+	height:200;
+	border:1px solid blue;
+}
+
+</style>
+
+<body onload="init()">
+<div id="useBox" class="holder"></div>
+<div id="useBox2" class="holder"></div>
+</body>
+</html>
