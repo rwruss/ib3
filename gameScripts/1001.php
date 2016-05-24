@@ -14,14 +14,19 @@ $unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerDat[19], 40
 
 //print_r($unitList);
 echo '<script>
-var thisDiv = document.getElementById("charListContent");';
+useDeskTop.newPane("characters");
+thisDiv = useDeskTop.getPane("characters");
+addCharButton = addDiv("", "button", thisDiv);
+addCharButton.innerHTML = "Get new chars";
+addCharButton.addEventListener("click", function () {scrMod(1089)});
+//var thisDiv = document.getElementById("charListContent");';
 
 foreach ($unitList as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);
 	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 	$actionPoints = 150;
 	echo '
-
+		
 		unitList.newUnit({unitType:"character", unitID:'.$unitID.', unitName:"char name", actionPoints:1000, strength:75});
 		unitList.renderSum('.$unitID.', thisDiv);';
 	/*

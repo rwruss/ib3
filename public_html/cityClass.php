@@ -117,4 +117,15 @@ function newTown($id, $townFile, $slotFile, $townDtls) {
 	return $townData;
 }
 
+function checkCred($trg, $credSlotDat) {
+	$approved = false;
+	for ($i=1; $i<=sizeof($credSlotDat); $i++) {
+		if ($credSlotDat[$i+1] == $trg) {
+			$approved = $credSlotDat[$i];
+			break;
+		}
+	}
+	return $approved;
+}
+
 ?>

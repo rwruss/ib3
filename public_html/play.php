@@ -2772,7 +2772,7 @@ precision mediump float;
 	<body onload="webGLStart();">
 	<div id="ltPnl" style="position:absolute; top:15; left:10; height:675; width:100; border:1px solid #000000">
 		Culture: '.$playerDat[3].'<br>
-		<a href="javascript:void(0);" onclick="makeBox(\'charList\', 1001, 500, 500, 200, 50)">Faction chars</a>
+		<a href="javascript:void(0);" onclick="scrMod(1001)">Faction chars</a>
 		<a href="javascript:void(0);" onclick="makeBox(\'fOrders\', 1005, 500, 500, 200, 50)">Lands</a><br>
 		<a href="javascript:void(0);" onclick="makeBox(\'laws\', 1007, 500, 500, 200, 50)">Faction Laws</a><br>
 		<a href="javascript:void(0);" onclick="makeBox(\'diplomacy\', 1008, 500, 500, 200, 50)">Diplomacy</a><br>

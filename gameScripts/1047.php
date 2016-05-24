@@ -1,6 +1,7 @@
 <?php
 
 include("./slotFunctions.php");
+include(".cityClass.php");
 
 // verify that user is ok to view this info
 $cityID = $_SESSION['selectedItem'];
@@ -14,7 +15,8 @@ $cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
-$approved = array_search($pGameID, $credList);
+//$approved = array_search($pGameID, $credList);
+$approved = checkCred($pGameID, $credList);
 echo 'Approved level '.$approved.'<br>
 Show buildings in slot '.$cityDat[17].'<br>';
 

@@ -180,6 +180,21 @@ plotDtlWork = function (obj, trg) {
 	return plotBox;
 }
 
+makeTabMenu = function(id, trg) {
+	var tabObject = addDiv(id+"_header", "taskHeader", trg);
+	var tabCM = addDiv(id+"_tabs", "centeredmenu", trg);
+	var tabUL = document.createElement("ul");
+	tabUL.id = id+"_tabs_ul";
+	tabCM.appendChild(tabUL);
+	addDiv("task_"+id+"_options", "taskOptions", trg);
+	
+	newTabMenu("task_"+id+"_tabs");
+	return tabObject;
+	//<div class="taskHeader" id="task_'.$postVals[1].'_header"></div>
+	//<div class="centeredmenu" id="task_'.$postVals[1].'_tabs"><ul id="task_'.$postVals[1].'_tabs_ul"></ul></div>
+	//<div class="taskOptions" id="task_'.$postVals[1].'_options"></div>';
+}
+
 newTabMenu = function(target) {
 	var tabHolder = document.getElementById(target+"_tabs");
 	tabHolder.currentSelection = 1;
@@ -197,6 +212,19 @@ newTab = function(target, count, desc) {
 	tabContent.className = "tabBox";
 	tabContent.id = target+"_tab"+count;
 	document.getElementById(target+"_options").appendChild(tabContent);
+	
+	return tabContent;
+}
+
+tabSelect = function(target, selection) {
+	var tabHolder = document.getElementById(target+"_tabs");
+	document.getElementById(target+"_tab"+selection).style.visibility =  "visible";
+	//alert(document.getElementById(target+"_tabs").style.visibility);
+	if (tabHolder.currentSelection != selection)	{
+		//alert("set " + target+"_tab"+tabHolder.currentSelection + "to 1");
+		document.getElementById(target+"_tab"+tabHolder.currentSelection).style.visibility =  "hidden";
+	}
+	tabHolder.currentSelection = selection;
 }
 
 messageBox = function (msg, trg) {
@@ -230,26 +258,7 @@ resourceBox = function (id, qty, target) {
 	return rBox;
 }
 
-tabSelect = function(target, selection) {
-	var tabHolder = document.getElementById(target+"_tabs");
-	document.getElementById(target+"_tab"+selection).style.visibility =  "visible";
-	//alert(document.getElementById(target+"_tabs").style.visibility);
-	if (tabHolder.currentSelection != selection)	{
-		//alert("set " + target+"_tab"+tabHolder.currentSelection + "to 1");
-		document.getElementById(target+"_tab"+tabHolder.currentSelection).style.visibility =  "hidden";
-	}
-	tabHolder.currentSelection = selection;
-	/*
-	document.getElementById(target+"_tab"+selection).style.zindex = 3;
-	if (tabHolder.currentSelection != selection)	{
-		//alert("set " + target+"_tab"+tabHolder.currentSelection + "to 1");
-		document.getElementById(target+"_tab"+tabHolder.currentSelection).style.zIndex = 1;
-	}
-	document.getElementById(target+"_tab"+selection).style.zIndex = 2;
-	tabHolder.currentSelection = selection;
-	*/
-	//alert("select " + selection)
-}
+
 
 taskOpt = function(id, target, prm, desc) {
 	var thisOpt = addDiv(id, "tdHolder", document.getElementById(target));
@@ -645,6 +654,7 @@ class unit {
 		this.status = options.status || 0,
 		this.exp = options.exp || 0,
 		this.str = options.strength || 0,
+		this.subType = options.subType || 0,
 		this.unitID = options.unitID;
 	}
 
@@ -702,19 +712,19 @@ class warband extends unit {
 		var thisDiv = addDiv(null, 'udHolder', target);
 		thisDiv.setAttribute("data-unitid", this.unitID);
 
-		var nameDiv = addDiv("asdf", "sumName", thisDiv);
+		thisDiv.nameDiv = addDiv("asdf", "sumName", thisDiv);
 		nameDiv.setAttribute("data-boxName", "unitName");
 
-		var actDiv = addDiv("asdf", "sumAct", thisDiv);
+		thisDiv.actDiv = addDiv("asdf", "sumAct", thisDiv);
 		actDiv.setAttribute("data-boxName", "apBar");
 
-		var expDiv = addDiv("asdf", "sumStr", thisDiv);
+		thisDiv.expDiv = addDiv("asdf", "sumStr", thisDiv);
 		expDiv.setAttribute("data-boxName", "strBar");
 
-		var dtlButton = addDiv("", "sumDtlBut", thisDiv);
+		thisDiv.dtlButton = addDiv("", "sumDtlBut", thisDiv);
 		dtlButton.addEventListener("click", function () {console.log("show detail")});
 
-		nameDiv.innerHTML = this.unitName;
+		thisDiv.nameDiv.innerHTML = this.unitName;
 		this.changeAttr(this.unitId, "actionPoints", this.aps)
 		this.changeAttr(this.unitId, "strength", this.str)
 	}

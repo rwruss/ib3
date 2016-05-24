@@ -6,9 +6,6 @@ echo "scrPane";
 
 // Find User Id
 $testName = strtolower(substr($postVals[1], 0, 30));
-$compareName = strtolower( "compareThis");
-
-
 
 $numNames = (filesize("../users/userNames.dat")-100)/40;
 $nameFile = fopen("../users/userNames.dat", "r+b");

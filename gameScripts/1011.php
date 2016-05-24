@@ -42,11 +42,8 @@ if (sizeof($unitList)>0) {
 
 	}
 echo 'armyItems = ['.implode(',', $armyItems).'];
-	//alert(armyItems);
 	for (var i=0; i<armyItems.length; i+=2) {
 		document.getElementById("armyList_"+armyItems[i]).appendChild(document.getElementById("Udtl_"+armyItems[i+1]));
-		//alert(document.getElementById("Udtl_"+armyItems[i+1]).parentNode.id);
-		//alert("armyList_"+armyItems[i]);
 	}';
 } else {
 	echo 'You don\'t controll any units at this time';

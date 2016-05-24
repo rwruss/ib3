@@ -95,6 +95,9 @@
 1086 - Run a plot 
 1087 - Process assign ringleader to a Plot
 1088 - Leave a plot
+1089 - Menu for character import
+1090 - Process import character
+1091 - Process purchasing a new character
 
 // Manual Override Functions
 2001 - Add Resources to a city
