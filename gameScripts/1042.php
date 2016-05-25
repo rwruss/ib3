@@ -1,6 +1,7 @@
 <?php
 
 include("./slotFunctions.php");
+include("./cityClass.php")
 echo 'This is the garrison at the town<br>';
 $cityID = $_SESSION['selectedItem'];
 // Verify selection is a town
@@ -12,8 +13,12 @@ if ($cityDat[4] == 1) {
 
 	// Verify credentials to view this town
 	$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
-	$credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
-	$approved = array_search($pGameID, $credList);
+	
+	//$credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
+	//$approved = array_search($pGameID, $credList);
+	
+	$credSlot = new itemSlot($cityDat[19], $slotFile, 40);
+	$approved = checkCred($pGameID, $credSlot->slotData);
 
 	// show units or show intelligence for town
 	if ($approved) {

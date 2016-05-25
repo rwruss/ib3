@@ -1,0 +1,26 @@
+<html>
+
+<script>
+
+function init() {
+	var newDiv = document.createElement("div");
+	newDiv.innerHTML = "scripted stuff";
+	document.getElementsByTagName("body")[0].appendChild(newDiv);
+	
+	checkItem("testDiv");
+	checkItem(newDiv);
+}
+
+function checkItem(desc) {
+	console.log(typeof(desc));
+	if (typeof(desc) == "string") trg = document.getElementById(desc);
+	else trg = desc;
+	
+	console.log(trg + "Found " + desc.innerHTML)
+}
+
+</script>
+<body onload="init()">
+<div id="testDiv">Some stuff</div>
+</body>
+</html>

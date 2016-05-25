@@ -1,9 +1,13 @@
 
 addDiv = function(id, useClassName, target) {
+	var trg;
+	if (typeof(target) == "string") trg = document.getElementById(target);
+	else trg = target;
+	
 	var newDiv = document.createElement("div");
 	newDiv.className = useClassName;
 	newDiv.id = id;
-	target.appendChild(newDiv);
+	trg.appendChild(newDiv);
 	return newDiv;
 }
 
@@ -258,9 +262,8 @@ resourceBox = function (id, qty, target) {
 	return rBox;
 }
 
-
-
 taskOpt = function(id, target, prm, desc) {
+	
 	var thisOpt = addDiv(id, "tdHolder", document.getElementById(target));
 	if (desc) thisOpt.innerHTML = desc;
 
@@ -269,7 +272,10 @@ taskOpt = function(id, target, prm, desc) {
 }
 
 textBlob = function (id, target, content) {
-	var thisBlob = addDiv(id, "textBlob", document.getElementById(target));
+	if (typeof(target) == "string") trg = document.getElementById(target);
+	else trg = target;
+	
+	var thisBlob = addDiv(id, "textBlob", trg);
 	thisBlob.innerHTML= content;
 	thisBlob.style.width = "100%";
 
@@ -297,7 +303,9 @@ newBldgSum = function(id, target, pctComplete, status) {
 	addImg("bldg_"+id+"_img", "tdImg", thisDetail);
 	document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
 
-	thisDetail.addEventListener("click", function() {makeBox("bldgDtl", "1048,"+id, 500, 500, 200, 50);});
+	thisDetail.addEventListener("click", function() {
+	scrMod("1048,"+id);
+		//makeBox("bldgDtl", "1048,"+id, 500, 500, 200, 50);});
 }
 
 newTaskDetail = function(id, target, pctComplete, killLink) {

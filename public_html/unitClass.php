@@ -10,6 +10,7 @@ class unit {
 		fseek($this->linkFile, $id*$defaultBlockSize);
 		$unitBin = fread($this->linkFile, $size);
 		$this->unitDat = unpack('i*', $unitBin);
+		$this->unitID = $id;
 
 		$this->attrList = [];
 		$this->attrList['xLoc'] = 1;
@@ -31,6 +32,12 @@ class unit {
 			return false;
 		}
 	}
+	
+	function set($desc, $val) {
+		if (array_key_exists($desc, $this->attrList) {
+			$this->attrList[$desc] = $val;
+		}
+	}
 
 	function save($desc, $val) {
 		global $defaultBlockSize;
@@ -43,6 +50,16 @@ class unit {
 		} else {
 			return false;
 		}
+	}
+	
+	function saveAll($file) {
+		// Pack the char data
+		$packStr = '';
+		foreach ($this->unitDat as $value) {
+			$packStr.=pack('i', $value);
+		}
+		fseek($file, $this->unitID*100);
+		fwrite($file, $packStr);
 	}
 }
 

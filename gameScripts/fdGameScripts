@@ -32,23 +32,23 @@
         </Folder>
         <Folder name="gameScripts">
             <Folder name="objects">
-                <File name="objects\obj_2.php" />
                 <File name="objects\bldg_1.php" />
-                <File name="objects\obj_8.php" />
                 <File name="objects\obj_1.php" />
-                <File name="objects\obj_10.php" />
+                <File name="objects\obj_2.php" />
                 <File name="objects\obj_3.php" />
                 <File name="objects\obj_6.php" />
+                <File name="objects\obj_8.php" />
+                <File name="objects\obj_10.php" />
             </Folder>
             <Folder name="tasks">
                 <File name="tasks\td_1.php" />
-                <File name="tasks\td_2.php" />
                 <File name="tasks\to_1.php" />
                 <File name="tasks\ts_1.php" />
+                <File name="tasks\ta_2.php" />
+                <File name="tasks\td_2.php" />
                 <File name="tasks\to_4.php" />
                 <File name="tasks\td_5.php" />
                 <File name="tasks\to_5.php" />
-                <File name="tasks\ta_2.php" />
                 <File name="tasks\pDtl_2.php" />
                 <File name="tasks\pDtl_1.php" />
             </Folder>
@@ -111,6 +111,7 @@
             <File name="1047.php" />
             <File name="1048.php" />
             <File name="1049.php" />
+            <File name="1050.php" />
             <File name="1051.php" />
             <File name="1052.php" />
             <File name="1053.php" />
@@ -159,6 +160,9 @@
             <File name="1086.php" />
             <File name="1087.php" />
             <File name="1088.php" />
+            <File name="1089.php" />
+            <File name="1090.php" />
+            <File name="1091.php" />
             <File name="2001.php" />
             <File name="2002.php" />
             <File name="cl255.php" />
@@ -188,6 +192,7 @@
             <File name="E:\websites\ib3\public_html\webgl-utils.js" />
             <File name="E:\websites\ib3\public_html\objectTest.html" />
             <File name="E:\websites\ib3\public_html\classObjects.html" />
+            <File name="E:\websites\ib3\public_html\charClass.php" />
         </Folder>
         <Folder name="scripts">
             <File name="E:\websites\ib3\scripts\1000.php" />

@@ -1,4 +1,4 @@
-Name<-->ID,category,tier,type<-->Build Points,Upgrade Exp<-->Building PreReqs Qty<-->Creation Cost Rsc ID/Amt/Rsc ID/Amt<-->Unit Descrption<-->Limit<-->Stats<-->Jobs<-->Upgrade To<->
+0 - Name<-->1 - ID,category,tier,type<-->2 - Build Points,Upgrade Exp<-->3 - Building PreReqs: ID, Qty<-->4 - Creation Cost Rsc ID/Amt/Rsc ID/Amt<-->5 - Unit Descrption<-->6 - Limit<-->7 - Stats<-->8 - Jobs<-->9 - Upgrade To<->
 Peasants<-->1,1,1,8<-->500<-->1,1<-->1/1000/2/2000/3/3000<-->Description of peasants<-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->1,2,3,4,5,6,7,8,9,10<-->2<->
 Peasant Militia<-->2,1,2,8<-->500, 100<-->1<-->1/1000/2/2000/3/3000<-->Description of <-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->1,2,3,4,5,6,7,8,9,10<-->2<->
 Woodsmen<-->3,1,2,8<-->500, 100<-->1,1<-->1/1000/2/2000/3/3000<-->Description of <-->1<-->1,1,1,1,1,1,1,1,1,1,1<-->1,2,3,4,5,6,7,8,9,10<-->2<->

@@ -1,6 +1,6 @@
-Task ID<->Task Title<->Task Description<->Other stuff for the task
-<->1<->Forage<->Forage for food and other resources<->null
-<->2<->Construct a Building<->Construct various types of buildings<->null
-<->3<->Work on a Building<->Repair a building<->null
-<->4<->Upgrade a building<->Repair a building<->null
-<->5<->Train a unit<->Repair a building<->null
+0 - Task ID<-->1 - Task Title<-->2 - Task Description<-->3 - Other stuff for the task
+<->1<-->Forage<-->Forage for food and other resources<-->null
+<->2<-->Construct a Building<-->Construct various types of buildings<-->null
+<->3<-->Work on a Building<-->Repair a building<-->null
+<->4<-->Upgrade a building<-->Repair a building<-->null
+<->5<-->Train a unit<-->Repair a building<-->null
