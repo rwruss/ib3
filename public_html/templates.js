@@ -186,9 +186,9 @@ makeTabMenu = function(id, trg) {
 	var tabUL = document.createElement("ul");
 	tabUL.id = id+"_tabs_ul";
 	tabCM.appendChild(tabUL);
-	addDiv("task_"+id+"_options", "taskOptions", trg);
-	
-	newTabMenu("task_"+id+"_tabs");
+	addDiv(id+"_options", "taskOptions", trg);
+
+	newTabMenu(id);
 	return tabObject;
 	//<div class="taskHeader" id="task_'.$postVals[1].'_header"></div>
 	//<div class="centeredmenu" id="task_'.$postVals[1].'_tabs"><ul id="task_'.$postVals[1].'_tabs_ul"></ul></div>
@@ -212,7 +212,7 @@ newTab = function(target, count, desc) {
 	tabContent.className = "tabBox";
 	tabContent.id = target+"_tab"+count;
 	document.getElementById(target+"_options").appendChild(tabContent);
-	
+
 	return tabContent;
 }
 
@@ -922,8 +922,8 @@ class deskTop {
 				this.paneList[desc] = mkPane;
 				//console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
 			}
-
 		}
+		console.log("created " + desc);
 	}
 
 	arrangePanes() {
@@ -948,10 +948,10 @@ class deskTop {
 	}
 
 	removePane (thisPane) {
-		console.log("Base array " + Object.keys(this.paneList));
-		console.log("remove from " + this.constructor.name + " looking for " + thisPane.desc);
+		//console.log("Base array " + Object.keys(this.paneList));
+		//console.log("remove from " + this.constructor.name + " looking for " + thisPane.desc);
 		delete this.paneList[thisPane.desc];
-		console.log("current List " + Object.keys(this.paneList));
+		//console.log("current List " + Object.keys(this.paneList));
 	}
 }
 

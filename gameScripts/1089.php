@@ -1,16 +1,16 @@
 <?php
 
-include('../slotFunctions.php');
-$uSlotFile = fopen();
+include('./slotFunctions.php');
+$uSlotFile = fopen('../users/userSlots.slt', 'rb');
 $pDatFile = fopen('../users/userDat.dat', 'rb');
-$pCharFile = fopen();
-$gameSlotFile = fopen();
+$pCharFile = fopen('../users/pChars.dat', 'rb');
+$gameSlotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 
 // Load list of available permanant characters
 
 fseek($pDatFile, $_SESSION['playerId']*500);
 $playerDat = fread($pDatFile, 500);
-$charList = new itemSlot(start Slot, $uSlotFile, 40);
+$charList = new itemSlot(0, $uSlotFile, 40);
 
 // Read list and times of chars that have been previously imported
 $usedList = new itemSlot($playerDat[35], $gameSlotFile, 40);
@@ -34,9 +34,9 @@ for ($i=1; $i<=sizeof($charList->slotData); $i++) {
 	// Load character information
 	fseek($pCharFile, $charList->slotData[$i]*200);
 	$pCharDat = unpack('i*', fread($pCharFile, 200));
-	
-	
-	
+
+
+
 	// Output char detail screen
 	// Output button to add this char (if allowed)
 	echo 'unitList.newUnit({unitID:"p'.$charList->slotData[$i].'", unitType:character, actionPoints:1000, status:9, exp:0, str:1, subType:0});
@@ -55,7 +55,7 @@ echo 'var objContain = addDiv("", "selectContain", newCharTabs_2);
 
 fclose($gameSlotFile);
 fclose($pDatFile);
-fclose($pDatFile);
+fclose($pCharFile);
 fclose($uSlotFile);
 
 /*

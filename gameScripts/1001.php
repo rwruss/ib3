@@ -13,12 +13,13 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerDat[19], 40)));
 
 //print_r($unitList);
+
 echo '<script>
 useDeskTop.newPane("characters");
 thisDiv = useDeskTop.getPane("characters");
 addCharButton = addDiv("", "button", thisDiv);
 addCharButton.innerHTML = "Get new chars";
-addCharButton.addEventListener("click", function () {scrMod(1089)});
+addCharButton.addEventListener("click", function () {console.log("run Func");scrMod(1089);});
 //var thisDiv = document.getElementById("charListContent");';
 
 foreach ($unitList as $unitID) {
@@ -26,7 +27,7 @@ foreach ($unitList as $unitID) {
 	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 	$actionPoints = 150;
 	echo '
-		
+
 		unitList.newUnit({unitType:"character", unitID:'.$unitID.', unitName:"char name", actionPoints:1000, strength:75});
 		unitList.renderSum('.$unitID.', thisDiv);';
 	/*
