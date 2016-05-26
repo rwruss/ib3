@@ -22,6 +22,8 @@ class unit {
 		$this->attrList['status'] = 7;
 		$this->attrList['culture'] = 8;
 		$this->attrList['religion'] = 9;
+		$this->attrList['troopType'] = 10;
+		$this->attrList['currentTask'] = 11;
 		$this->attrList['updateTime'] = 27;
 	}
 
@@ -35,7 +37,7 @@ class unit {
 	
 	function set($desc, $val) {
 		if (array_key_exists($desc, $this->attrList) {
-			$this->attrList[$desc] = $val;
+			$this->unitDat[$this->attrList[$desc]] = $val;
 		}
 	}
 

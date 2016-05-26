@@ -166,23 +166,7 @@ plotSummary = function (obj, trg) {
 	return newPlot;
 }
 
-plotDtlWork = function (obj, trg) {
-	//console.log("work options for " + obj.unitID);
-	console.log("dtl work " + obj)
-	var plotBox = plotSummary(obj, document.getElementById("plotDtlContent"));
-	trgBox = addDiv("charBox", "tdHolder", plotBox);
 
-	plotBox.buttonBox = addDiv("", "fullBar", plotBox);
-	plotBox.buttonBox2 = addDiv("", "fullBar", plotBox);
-	confirmButton("Leave this plot?", "1088,"+obj.unitID, plotBox.buttonBox2, "Leave Plot");
-	//scrButton("1087", plotBox.buttonBox, "Leave Plot");
-	scrButton("1084,6,"+ obj.unitID+",1", plotBox.buttonBox, "10%");
-	scrButton("1084,6,"+ obj.unitID+",2", plotBox.buttonBox, "25%");
-	scrButton("1084,6,"+ obj.unitID+",3", plotBox.buttonBox, "50%");
-	scrButton("1084,6,"+ obj.unitID+",4", plotBox.buttonBox, "100%");
-
-	return plotBox;
-}
 
 makeTabMenu = function(id, trg) {
 	var tabObject = addDiv(id+"_header", "taskHeader", trg);
@@ -790,6 +774,7 @@ class plot extends unit {
 		this.target = object.target || null;
 		this.tResist = object.tResist || 1;
 		this.lSkill = object.lSkill || 1;
+		this.plotType = object.plotType || 1;
 		//console.log("plot target = " + this.target)
 		console.log("Plot aps " + this.aps);
 	}
@@ -818,8 +803,19 @@ class plot extends unit {
 	}
 
 	renderDetailWork(target) {
-		var thisDiv = plotDtlWork(this, target);
-		this.detailEl = thisDiv;
+		var plotBox = plotSummary(this, target);
+		trgBox = addDiv("charBox", "tdHolder", plotBox);
+
+		plotBox.buttonBox = addDiv("", "fullBar", plotBox);
+		plotBox.buttonBox2 = addDiv("", "fullBar", plotBox);
+		confirmButton("Leave this plot?", "1088,"+this.unitID, plotBox.buttonBox2, "Leave Plot");
+		//scrButton("1087", plotBox.buttonBox, "Leave Plot");
+		scrButton("1084," + this.plotType + ","+ this.unitID+",1", plotBox.buttonBox, "10%");
+		scrButton("1084," + this.plotType + ","+ this.unitID+",2", plotBox.buttonBox, "25%");
+		scrButton("1084," + this.plotType + ","+ this.unitID+",3", plotBox.buttonBox, "50%");
+		scrButton("1084," + this.plotType + ","+ this.unitID+",4", plotBox.buttonBox, "100%");
+
+		this.detailEl = plotBox;
 		setBar(this.unitID, ".sumAct", 100*this.aps*this.lSkill/(1000*(this.tResist+this.lSkill)));
 	}
 }

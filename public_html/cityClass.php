@@ -69,6 +69,37 @@ class city {
 	}
 }
 
+class building {
+	public $bldgData, $rscSlot, $slotFile;
+	private $bldgID, $bldgDatStr;
+	
+	function __construct($id, $file) {
+		//$this->init($start, $slotFile, $size);
+		$this->init($id, $file);
+		$this->bldgID = $id;
+		//$this->slotFile = $file;
+	}
+	
+	function init($id, $file) {
+		fseek($file, $id*100);
+
+		$this->bldgDatStr = fread($file, 400);
+		$this->bldgData = unpack('i*', $this->bldgDatStr);
+		echo 'Loaded a new building<br>';
+		print_r($this->bldgData);
+	}
+	
+	function saveAll($file) {
+		// Pack the bldg data
+		$packStr = '';
+		foreach ($this->bldgData as $value) {
+			$packStr.=pack('i', $value);
+		}
+		fseek($file, $this->bldgID*100);
+		fwrite($file, $packStr);
+	}
+}
+
 function newTown($id, $townFile, $slotFile, $townDtls) {
 	global $defaultBlockSize, $gameSlot, $pGameID, $startLocation, $gamePath;
 
