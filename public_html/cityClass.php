@@ -19,7 +19,9 @@ class city {
 		fseek($file, $id*100);
 
 		$this->cityDatStr = fread($file, 400);
-		$cityData = unpack('i*', $this->cityDatStr);
+		$this->cityData = unpack('i*', $this->cityDatStr);
+		echo 'Created a new city<br>';
+		print_r($this->cityData);
 	}
 
 	function addRsc($id, $amount) {

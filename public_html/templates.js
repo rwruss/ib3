@@ -3,7 +3,7 @@ addDiv = function(id, useClassName, target) {
 	var trg;
 	if (typeof(target) == "string") trg = document.getElementById(target);
 	else trg = target;
-	
+
 	var newDiv = document.createElement("div");
 	newDiv.className = useClassName;
 	newDiv.id = id;
@@ -263,7 +263,7 @@ resourceBox = function (id, qty, target) {
 }
 
 taskOpt = function(id, target, prm, desc) {
-	
+
 	var thisOpt = addDiv(id, "tdHolder", document.getElementById(target));
 	if (desc) thisOpt.innerHTML = desc;
 
@@ -274,7 +274,7 @@ taskOpt = function(id, target, prm, desc) {
 textBlob = function (id, target, content) {
 	if (typeof(target) == "string") trg = document.getElementById(target);
 	else trg = target;
-	
+
 	var thisBlob = addDiv(id, "textBlob", trg);
 	thisBlob.innerHTML= content;
 	thisBlob.style.width = "100%";
@@ -305,7 +305,8 @@ newBldgSum = function(id, target, pctComplete, status) {
 
 	thisDetail.addEventListener("click", function() {
 	scrMod("1048,"+id);
-		//makeBox("bldgDtl", "1048,"+id, 500, 500, 200, 50);});
+		//makeBox("bldgDtl", "1048,"+id, 500, 500, 200, 50);
+	});
 }
 
 newTaskDetail = function(id, target, pctComplete, killLink) {

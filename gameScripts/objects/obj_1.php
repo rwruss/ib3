@@ -44,6 +44,6 @@ if ($approved) {
 	echo 'You are not authorized to view this city';
 }
 
-fclose($unitFile);
+
 fclose($slotFile);
 ?>

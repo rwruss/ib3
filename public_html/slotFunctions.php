@@ -130,6 +130,7 @@ class itemSlot extends dataSlot {
 		// Position is the key in the array that should be deleted.  slotData array starts with key [1];
 
 		// Determine which slot and position this is in
+		echo 'WriteSlot = floor(('.$position.'-1)*4)/('.$this->size.'-4)<br>';
 		$writeSlot = floor(($position-1)*4/($this->size-4));
 		$writePos = 4*$position - $writeSlot*($this->size-4);
 
