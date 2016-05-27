@@ -10,7 +10,7 @@ Post Vals 1 = Building ID, 2 = Production Slot #, 3 = %
 
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 
-// Get data for building producing the item
+// Get data for building in production
 $useBldg = new building($postVals[1], $unitFile);
 //fseek($unitFile, $postVals[1]*$defaultBlockSize);
 //$bldgDat = unpack('i*', fread($unitFile, 200));

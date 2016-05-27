@@ -33,6 +33,7 @@
         <Folder name="gameScripts">
             <Folder name="objects">
                 <File name="objects\bldg_1.php" />
+                <File name="objects\bldg_3.php" />
                 <File name="objects\obj_1.php" />
                 <File name="objects\obj_2.php" />
                 <File name="objects\obj_3.php" />
@@ -163,6 +164,7 @@
             <File name="1089.php" />
             <File name="1090.php" />
             <File name="1091.php" />
+            <File name="1092.php" />
             <File name="2001.php" />
             <File name="2002.php" />
             <File name="cl255.php" />

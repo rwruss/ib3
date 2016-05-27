@@ -113,8 +113,6 @@ function newTown($id, $townFile, $slotFile, $townDtls) {
 	$townData[7] = 1;
 	$townData[8] = $townDtls[3]; // Culture
 
-
-
 	// Create a credential list for the town and record this player as having full cred.
 	$credListSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");
 	$townData[19] = $credListSlot;

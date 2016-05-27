@@ -1,44 +1,67 @@
 <?php
 
-//$sentVal = explode('.', $postVals[1]);
-$unitType = $taskNum[1];
-$unitDesc = explode('<->', file_get_contents($gamePath.'/units.desc'));
-$typeDesc = explode('<-->', $unitDesc[$unitType]);
+include('./slotFunctions.php');
+$uSlotFile = fopen('../users/userSlots.slt', 'rb');
+$pDatFile = fopen('../users/userDat.dat', 'rb');
+$pCharFile = fopen('../users/pChars.dat', 'rb');
+$gameSlotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 
-// Verify if prerequsites are met
+// Load list of available permanant characters
 
-echo 'Train a character
+fseek($pDatFile, $_SESSION['playerId']*500);
+$playerDat = fread($pDatFile, 500);
+$charList = new itemSlot(0, $uSlotFile, 40);
 
-Show options for importing an existing character or training a new one....
-<script>
+// Read list and times of chars that have been previously imported
+$usedList = new itemSlot($playerDat[35], $gameSlotFile, 40);
 
-useDeskTop.newPane("makeChars");
-thisDiv = useDeskTop.getPane("makeChars");
+echo '<script>
 
+useDeskTop.newPane("addChars");
+thisDiv = useDeskTop.getPane("addChars");
 var newCharTabs = makeTabMenu("newChars", thisDiv);
-var newCharTabs_1 = newTab("newChars", 1, "New Chars");
-var newCharTabs_2 = newTab("newChars", 2, "My Chars");';
-
-for ($i=1; $i<=10; $i++) {
-	echo 'unitList.newUnit({unitID:"d'.$i.'", unitType:character, actionPoints:1000, status:9, exp:0, str:1, subType:0});
-		var objContain = addDiv("", "selectContain", newCharTabs_1);
-		unitList.renderSum("d'.$i.'", objContain);
-		var newButton = optionButton("", objContain, "Train Char");
-		newButton.objectID = d'.$i.';
-		newButton.addEventListener("click", function () {scrMod("1090,"+this.objectID)});';
+var newCharTabs_1 = newTab("newChars", 1, "My Chars");
+var newCharTabs_2 = newTab("newChars", 2, "New");
+';
+for ($i=1; $i<=sizeof($charList->slotData); $i++) {
+	$currentList[$charList->slotData[$i]] = 0;
+}
+for ($i=1; $i<=sizeof($usedList->slotData); $i+=2) {
+	$currentList[$usedList->slotData[$i]] = $usedList->slotData[$i+1];
 }
 
-// Load list of available permanant characters for the player to use
+for ($i=1; $i<=sizeof($charList->slotData); $i++) {
+	// Load character information
+	fseek($pCharFile, $charList->slotData[$i]*200);
+	$pCharDat = unpack('i*', fread($pCharFile, 200));
 
-echo '
-//confirmButtons("Confirm that you would like to train '.$typeDesc[0].'", "1089,'.$taskNum[0].','.$unitType.'", "taskDtlContent", 2, "Train");
-</script>
+
+
+	// Output char detail screen
+	// Output button to add this char (if allowed)
+	echo 'unitList.newUnit({unitID:"p'.$charList->slotData[$i].'", unitType:character, actionPoints:1000, status:9, exp:0, str:1, subType:0});
+		var objContain = addDiv("", "selectContain", newCharTabs_1);
+		unitList.renderSum("p'.$charList->slotData[$i].'", objContain);
+		var newButton = optionButton("", objContain, "Import Char");
+		newButton.objectID = '.$charList->slotData[$i].';
+		newButton.addEventListener("click", function () {scrMod("1090,"+this.objectID)});
 ';
+}
 
-// Create a new window for the character training
+echo 'var objContain = addDiv("", "selectContain", newCharTabs_2);
+	objContain.innerHTML = "SOmething new";
+	objContain.addEventListener("click", function () {scrMod("1091,1")});
+	</script>';
 
-// Show a tab for generic units that can be trained
+fclose($gameSlotFile);
+fclose($pDatFile);
+fclose($pCharFile);
+fclose($uSlotFile);
 
-// Show a tab for units that can be imported
+/*
+objButton = addDiv("", "selectContain", useDeskTop.getPane("ringLeader"));
+unitList.renderSum('.$charList->slotData[$i].', objButton);
+selectButton(objButton, "hai", '.$charList->slotData[$i].', [selectHead.right]);
+*/
 
 ?>

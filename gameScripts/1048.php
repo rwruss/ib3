@@ -33,7 +33,7 @@ switch ($targetBuilding->status) {
 	bldg_'.$postVals[1].'.tab_2 = newTab("bldg_'.$postVals[1].'", 2, "Tasks");
 	textBlob("", bldg_'.$postVals[1].'.tab_1, "Upgrade options");'
 	$upgrades = explode(',', $typeInfo[1]);
-	for ($i=3; $i<sizeof($upgrades); $i++) {
+	for ($i=4; $i<sizeof($upgrades); $i++) {
 		$upgradeInfo = explode('<-->', $bldgInfo[$upgrades[$i]]);
 		echo 'newBldgOpt("'.$upgrades[$i].'", '.$postVals[1].', bldg_'.$postVals[1].'.tab_1, "'.$upgradeInfo[5].'");';
 	}
@@ -47,8 +47,31 @@ switch ($targetBuilding->status) {
 		}
 	}
 	
-	// Show tasks in progress at this locaiton
-
+	// Show type dependent items in progress at this locaiton
+	echo 'var bldgQueue = addDiv("", "stdContain", thisDiv);';
+	if ($typeInfo[7] > 0)
+	for ($i=0; $i<$typeInfo[7]; $i++) {
+		if ($bldgDat[$i] != 0) {
+			// Get data on object being made
+			fseek($unitFile, $bldgDat[$i]*$defaultBlockSize);
+			$itemDat = unpack('i*', fread($unitFile, 400));
+			echo '
+			unitList.newUnit({unitType:"warband", unitID:'.$bldgDat[$i].', unitName:"Training", actionPoints:'.$itemDat[16].', strength:'.$itemDat[17].'});
+			var objContain = addDiv("", "selectContain", bldgQueue);
+			unitList.renderSum('.$bldgDat[18+$i].', objContain);
+			var newButton = optionButton("", objContain, "25%");
+			newButton.objectID = "'.$postVals[1].','.$i.',1";
+			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});
+			var newButton = optionButton("", objContain, "50%");
+			newButton.objectID = "'.$postVals[1].','.$i.',2";
+			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});
+			var newButton = optionButton("", objContain, "100%");
+			newButton.objectID = "'.$postVals[1].','.$i.',3";
+			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});';
+		}
+	}
+	break;
+}
 echo '</script>';
 
 //include('../gameScripts/objects/bldg_'.$bldgDat[10].'.php');
