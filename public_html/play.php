@@ -961,6 +961,7 @@ precision mediump float;
 	}
 
 	function killBox(trg) {
+		console.log(trg + " name is " + trg.nodeName)
 		if (trg.nodeName == "DIV") {
 			testNode = trg;
 
@@ -969,14 +970,10 @@ precision mediump float;
 			testNode = this;
 		}
 		while (testNode.parentNode.nodeName != "BODY") {
-			//1alert(testNode.parentNode.nodeName);
-			testNode = testNode.parentNode;
+			console.log(testNode.parentNode.nodeName);
+						testNode = testNode.parentNode;
 		}
-		//testNode.parentNode.removeChild(testNode);
-		for (i=0; i<=testNode.childNodes.length; i++) {
-			console.log("Check child nodes");
-		}
-		testnode.remove();
+		testNode.remove();
 	}
 
 	var taskList = new Array();

@@ -19,7 +19,7 @@ $cityRsc = array_fill(1, 100, 0);
 $rscDat = unpack("i*", readSlotData($slotFile, $cityDat[11], 40));
 $numHave = sizeof($rscDat)/2;
 
-echo '<p>City Resources: ';
+echo '<p>City Resources in slot '.$cityDat[11].': ';
 for ($i=1; $i<$numHave; $i++) {
 	$cityRsc[$rscDat[$i*2-1]] = $rscDat[$i*2];
 }

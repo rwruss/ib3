@@ -23,7 +23,7 @@ if ($approved) {
 	echo 'Options for construction of building type '.$postVals[1].' at location '.$_SESSION['selectedItem'];
 
 	// Load building Names and Costs
-	$buildingInfo = explode('<-->', file_get_contents($gamePath.'/buildings.desc'));
+	$buildingInfo = explode('<->', file_get_contents($gamePath.'/buildings.desc'));
 
 	if ($postVals[1] < 100) {
 		// This is a community owned building
@@ -86,12 +86,13 @@ if ($approved) {
 	// Compare the list of buildings in the $bldgNames list to what is here and can be constructed.
 	echo '<script>
 	addDiv("test", "reqHolder", document.getElementById("bldgStartContent"));';
-	$prereqs = explode(',', $buildingInfo[$postVals[1]*7+3]);
+	$selectedBldg = explode('<-->', $buildingInfo[$postVals[1]]);
+	$prereqs = explode(',', $selectedBldg[3]);
 	//echo 'Explode '.$buildingInfo[$postVals[1]*7+3].' ('.strlen($buildingInfo[$postVals[1]*7+3]).')';
 	//print_r($prereqs);
 	$preCheck = true;
 	$buildingsNeeded = [];
-	if (strlen($buildingInfo[$postVals[1]*7+3]) > 0) {
+	if ($prereqs[0] != '') {
 		for ($i=0; $i<sizeof($prereqs); $i+=2) {
 			echo 'reqBox("Pre '.$prereqs[$i].'", "test", '.$buildingsPresent[$prereqs[$i]].','.$prereqs[$i+1].');';
 			if ($buildingsPresent[$prereqs[$i]] < $prereqs[$i+1]) {
@@ -103,7 +104,7 @@ if ($approved) {
 
 	// Check for buildings in progress
 	$neededRsc = [];
-	$rscList = explode('/', $buildingInfo[$postVals[1]*7+4]);
+	$rscList = explode('/', $selectedBldg[4]);
 	$rscCheck = true;
 	for ($i=0; $i<sizeof($rscList); $i+=2) {
 		echo 'reqBox("RSC '.$rscList[$i].'", "test", '.$cityRsc[$rscList[$i]].', '.$rscList[$i+1].');';

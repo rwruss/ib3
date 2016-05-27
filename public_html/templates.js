@@ -85,7 +85,7 @@ confirmButtons = function (msg, prm, trg, opt, asrc, dsrc) {
 		} else {
 			dButton.innerHTML = "Decline";
 		}
-		dButton.addEventListener("click", killBox);
+		dButton.addEventListener("click", function () {killBox(dButton)});
 	}
 }
 
