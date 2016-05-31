@@ -25,13 +25,14 @@ if ($approved) {
 	echo 'Options for construction of building type '.$postVals[1].' at location '.$_SESSION['selectedItem'];
 
 	// Load building Names and Costs
-	$buildingInfo = explode('<-->', file_get_contents($scnPath.'/buildings.desc'));
-	$buildingCat = explode(',', $buildingInfo[$postVals[1]*7+1]);// Need to determine if this is a city building or a player building
+	$buildingInfo = explode('<->', file_get_contents($scnPath.'/buildings.desc'));
+	$bldgType = explode('<-->', $buildingInfo[$postVals[1]]);
+	$buildingCat = explode(',', $bldgType[1]);// Need to determine if this is a city building or a player building
 	//print_r($buildingInfo);
 	//$rscNames = explode('<-->', file_get_contents($scnPath.'/resources.desc'));
-print_r($buildingInfo);
+//print_r($buildingInfo);
 echo 'Building cat '.$buildingCat[1].'<br>';
-	
+
 $cityRsc = array_fill(0, 100, 0);
 
 
@@ -60,8 +61,8 @@ if ($buildingCat[1] == 1) {
 	if ($cityDat[29] > 0) {
 		fseek($unitFile, $cityDat[29]*$defaultBlockSize);
 		$parentDat = unpack('i*', fread($unitFile, 400));
-		
-		$bldgList = array_filter(unpack('i*', readSlotData($slotFile, $parentDat[17], 40));
+
+		$bldgList = array_filter(unpack('i*', readSlotData($slotFile, $parentDat[17], 40)));
 	}
 	foreach ($bldgList as $bldgID) {
 		fseek($unitFile, $bldgID*$defaultBlockSize);
@@ -72,68 +73,8 @@ if ($buildingCat[1] == 1) {
 		}
 	}
 }
-	/*
-	if ($buildingCat[1] == 1) {
-		// This is a community owned building
 
-		$cityRsc = array_fill(0, 100, 0);
-
-		// Load resources available in the city
-		$rscDat = unpack("i*", readSlotData($slotFile, $cityDat[11], 40));
-		//print_r($rscDat);
-		for ($i=1; $i<sizeof($rscDat); $i+=2) {
-			//echo $i.' - Resource '.$rscDat[$i].' qty is '.$rscDat[$i+1].'<br>';
-			$cityRsc[$rscDat[$i]] += $rscDat[$i+1];
-		}
-
-		// Load constructed buildings present to check for prereqs
-		//fseek($unitFile, $_SESSION['selectedItem']);
-		//$cityDat = unpack('i*', fread($unitFile, $defaultBlockSize));
-
-		$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
-		foreach ($bldgList as $bldgID) {
-			fseek($unitFile, $bldgID*$defaultBlockSize);
-			$bldgDat = unpack('i*', fread($unitFile, 100));
-
-			if ($bldgDat[7] == 1) {
-				// Building is complete - add to list
-				$buildingsPresent[$bldgDat[10]]++;
-			}
-		}
-	} else {
-		// This a a player controlled building (ID > 100)
-		$playerRscSlot = 0;
-		$cityRsc = array_fill(0, 100, 0);
-
-		// Load constructed buildings present to check for prereqs
-		//fseek($unitFile, $_SESSION['selectedItem']);
-		//$cityDat = unpack('i*', fread($unitFile, $defaultBlockSize));
-
-		$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
-		// Look for player controlled resource store building and load all other buildings
-		foreach ($bldgList as $bldgID) {
-			fseek($unitFile, $bldgID*$defaultBlockSize);
-			$bldgDat = unpack('i*', fread($unitFile, 100));
-			if ($bldgDat[5] == $pGameID) {
-				if ($bldgDat[7] == 1 ) {
-					// Building is complete - add to list
-					$buildingsPresent[$bldgDat[10]]++;
-					if ($bldgDat[10] == 1) $playerRscSlot = $bldgDat[11];
-				}
-			}
-		}
-
-		// Load resources available for the player
-		$rscDat = unpack("i*", readSlotData($slotFile, $playerRscSlot, 40));
-		for ($i=0; $i<sizeof($rscDat); $i+=2) {
-			$cityRsc[$rscDat[$i]] += $rscDat[$i+1];
-		}
-	}
-*/
-
-	// Compare the list of buildings in the $bldgNames list to what is here and can be constructed.
-
-	$prereqs = explode(',', $buildingInfo[$postVals[1]*7+3]);
+	$prereqs = explode(',', $bldgType[3]);
 	$preCheck = true;
 	$buildingsNeeded = [];
 	echo 'Buildings Required ('.sizeof($prereqs).')<br>';
@@ -152,7 +93,7 @@ if ($buildingCat[1] == 1) {
 	echo 'Resources required<br>';
 
 	$neededRsc = [];
-	$rscList = explode('/', $buildingInfo[$postVals[1]*7+4]);
+	$rscList = explode('/', $bldgType[4]);
 	$rscCheck = true;
 	for ($i=0; $i<sizeof($rscList); $i+=2) {
 		//echo 'Check for '.$rscList[$i+1].' of resource '.$rscList[$i].'. Have '.$cityRsc[$rscList[$i]];
@@ -170,12 +111,12 @@ if ($buildingCat[1] == 1) {
 
 		// Create a new building data space for this objects
 		if ($postVals[2] > 0) { // This is an upgrade to an existing building
-			$buildingPoints = explode(',', $buildingInfo[$postVals[1]*8+2]);
+			$buildingPoints = explode(',', $bldgType[2]);
 			// Create a new task to be processed.
 			$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
 			$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
-			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),$buildingPoints[0],0,5,$cityID,0, $cityID, $postVals[2], $postVals[1]);
-			$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
+			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),$buildingPoints[0],0,4,$cityID,0, $cityID, $postVals[2], $postVals[1]);
+			$newTask = createTask($taskFile, $parameters); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 			fclose($taskFile);
 			fclose($taskIndex);
 
@@ -200,7 +141,7 @@ if ($buildingCat[1] == 1) {
 			// Does this need to be adjust to add to player task list as well??
 
 		} else {
-
+			// This is not an upgrade to an existing building
 			if (flock($unitFile, LOCK_EX)) {
 
 				echo 'GOT LOCK<br>';
@@ -235,10 +176,11 @@ if ($buildingCat[1] == 1) {
 
 			// add a task to the town as an "in progress" task
 			// Create a new task to be processed.
+			$buildingPoints = explode(',', $bldgType[2]);
 			$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
 			$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
-			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),1000,0,2,$cityID,0, $cityID, $newID, $postVals[1]);
-			$newTask = createTask($taskFile, $taskIndex, 24*60, $parameters, $gamePath, $slotFile); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
+			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),$buildingPoints[0],0,2,$cityID,0, $cityID, $newID, $postVals[1]);
+			$newTask = createTask($taskFile, $parameters); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 			fclose($taskFile);
 			fclose($taskIndex);
 
@@ -253,8 +195,13 @@ if ($buildingCat[1] == 1) {
 				fseek($unitFile, $cityID*$defaultBlockSize+80);
 				fwrite($unitFile, pack('i', $cityDat[21]));
 			}
-
-			addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[21], pack('i', $newTask), $slotFile);
+			echo 'Record task ('.$newTask.') in slot '.$cityDat[21].'<br>';
+			$taskSlot = new itemSlot($cityDat[21], $slotFile, 40);
+			$taskSlot->addItem($newTask, $slotFile);
+			//addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[21], pack('i', $newTask), $slotFile);
+			$checkSlot = new itemSlot($cityDat[21], $slotFile, 40);
+			echo 'Result is:<p>';
+			print_r($checkSlot->slotData);
 			// this is for adding to a map slot -> addtoSlotGen($gamePath.'/gameSlots.slt', $cityDat[21], pack('i', $taskIndex), $slot_file, 40) // function addtoSlotGen($slot_handle, $check_slot, $addData, $slot_file, $slotSize)
 		}
 	} else {

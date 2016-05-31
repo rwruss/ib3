@@ -115,7 +115,7 @@ class itemSlot extends dataSlot {
 		$writeSlot = floor(($emptySpot*4-1)/($this->size-4));
 		$writePos = 4*$emptySpot - $writeSlot*($this->size-4);
 
-		echo 'Slot #'.$writeSlot.'Write Spot is '.$writePos.'<p>';
+		echo 'Slot #'.$writeSlot.' ('.$this->slotList[$writeSlot].').  Write Spot is '.$writePos.'<p>';
 		$this->slotData[$emptySpot] = $value;
 
 		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos);

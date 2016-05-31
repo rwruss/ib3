@@ -72,14 +72,14 @@ class city {
 class building {
 	public $bldgData, $rscSlot, $slotFile;
 	private $bldgID, $bldgDatStr;
-	
+
 	function __construct($id, $file) {
 		//$this->init($start, $slotFile, $size);
 		$this->init($id, $file);
 		$this->bldgID = $id;
 		//$this->slotFile = $file;
 	}
-	
+
 	function init($id, $file) {
 		fseek($file, $id*100);
 
@@ -88,7 +88,7 @@ class building {
 		echo 'Loaded a new building<br>';
 		print_r($this->bldgData);
 	}
-	
+
 	function saveAll($file) {
 		// Pack the bldg data
 		$packStr = '';
@@ -133,13 +133,16 @@ function newTown($id, $townFile, $slotFile, $townDtls) {
 	// Make a resource slot for the new town
 	$rscSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");
 	echo 'Town RSC Slot is '.$rscSlot.'<br>';
-	$towndata[11] = $rscSlot;
+	$townData[11] = $rscSlot;
 
 	// Make a task slot for the new town
 	$taskSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");
 	echo 'Town task Slot is '.$taskSlot.'<br>';
 	$townData[21] = $taskSlot;
 
+	echo 'Final town data:';
+	print_r($townData);
+	echo '<p>';
 	fseek($townFile, $id*$defaultBlockSize);
 	for ($i=1; $i<=sizeof($townData); $i++) {
 		fwrite($townFile, pack('i', $townData[$i]));

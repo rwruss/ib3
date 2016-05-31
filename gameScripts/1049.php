@@ -122,11 +122,11 @@ if ($approved) {
 	}
 
 	if ($preCheck && $rscCheck) {
-		if ($buildingProgress[$postVals[1]]+$buildingsPresent[$postVals[1]] < $buildingInfo[$postVals[1]*7+6]) {
+		if ($buildingProgress[$postVals[1]]+$buildingsPresent[$postVals[1]] < $selectedBldg[6]) {
 			// Give the option to Proceed with starting a task and construction of the building
 			echo 'confirmButtons("Confirm that you would like to construct this building", "1050,'.$postVals[1].','.$postVals[2].'", "bldgStartContent", 2, "Build It!");</script>';
 		} else {
-			echo 'reqBox("Allowed:", "test", '.$buildingInfo[$postVals[1]*7+6].', '.($buildingProgress[$postVals[1]]+$buildingsPresent[$postVals[1]]).');
+			echo 'reqBox("Allowed:", "test", '.$selectedBldg[6].', '.($buildingProgress[$postVals[1]]+$buildingsPresent[$postVals[1]]).');
 			confirmButtons("You cannot build anymore of the building", "", "bldgStartContent", 1, "", "OK :(");';
 		}
 	} else {

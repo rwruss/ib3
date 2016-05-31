@@ -7,7 +7,7 @@ function createTask($taskFile, $parameters) {
 		fseek($taskFile, 0, SEEK_END);
 		$endPos = ftell($taskFile);
 		//$newTaskID = floor(max(1,filesize($gamePath.'/tasks.tdt')/200));
-		$newTaskID = $endPos/200;
+		$newTaskID = max(1, $endPos/200);
 		fseek($taskFile, $newTaskID*200);
 		fwrite($taskFile, $parameters);
 		if (strlen($parameters < 200)) {

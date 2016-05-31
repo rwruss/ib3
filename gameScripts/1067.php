@@ -23,6 +23,7 @@ if (flock($unitFile, LOCK_EX)) {
 	fseek($unitFile, $size*$defaultBlockSize-4);
 	fwrite($unitFile, pack('i', 0));
 
+	echo 'New city aID is '.$newCityId.'<br>';
 	$townInf = [$unitDat[1], $unitDat[2], $pGameID, $_SESSION['game_'.$gameID]['culture']];
 	newTown($newCityId, $unitFile, $slotFile, $townInf); //($id, $townFile, $slotFile)
 
@@ -48,6 +49,7 @@ echo 'Add new city to map item List<br>';
 $mapSlot->addItem($newCityId, $mapSlotFile);
 
 // Add this player to the credential list for the city
+echo 'Open city '.$newCityId.'<br>';
 $thisCity = new city($newCityId, $unitFile);
 $cityCredentials = new blockSlot($thisCity->cityData[19], $slotFile, 40);
 $addLoc = array_search(0, $cityCredentials->slotData);
