@@ -29,7 +29,6 @@ $trgUnit = new unit($useBldg->bldgData[$postVals[2]], $unitFile, 400);
 $neededPts = $trgUnit->unitDat[17]-$trgUnit->unitDat[16];
 $usedPoints = min($usePoints, $neeedPoints);
 
-
 // Record new stats for unit production
 else if ($usedPoints > 0) {
 	// Updadate stats for producing building

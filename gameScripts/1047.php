@@ -48,7 +48,10 @@ if ($approved) {
 		$bldgTypeInfo = explode('<-->', $buildingInfo[$i]);
 		$bldgClass = explode(',', $bldgTypeInfo[1]);
 		//print_r($bldgClass);
-		if ($bldgClass[2] == 1)		echo 'newBldgOpt("'.$i.'", 0, "bldg_tab2", "'.$bldgTypeInfo[0].'");';
+		if ($bldgClass[3] == 1)	{
+			if (array_search($_SESSION['culture'], $bldgTypeInfo[9]) {
+				echo 'newBldgOpt("'.$i.'", 0, "bldg_tab2", "'.$bldgTypeInfo[0].'");';
+			}
 	}
 
 	// Generate a list of player buildings that can be built at this locaiton

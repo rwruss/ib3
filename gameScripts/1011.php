@@ -13,8 +13,10 @@ $unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->unitSl
 //print_r($unitList);
 $armyItems = [];
 if (sizeof($unitList)>0) {
-	echo '<script>';
-	echo 'addDiv("armyList_0", "stdContainer", document.getElementById("militaryContent"));
+	echo '<script>
+	useDeskTop.newPane("characters");
+	thisDiv = useDeskTop.getPane("characters");
+	addDiv("armyList_0", "stdContainer", thisDiv);
 	textBlob("desc", "armyList_0", "Unattached");
 	';
 	foreach ($unitList as $unitID) {
@@ -30,21 +32,23 @@ if (sizeof($unitList)>0) {
 			//echo '<div onclick="passClick(\'1034,'.$unitID.'\', \'rtPnl\');">Unit #'.$unitID.'</div>';
 			$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
 			array_push($armyItems ,$unitDat[15] ,$unitID);
-
+			/*
 			echo '
 			newUnitDetail('.$unitID.', "militaryContent");
 			//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
 			document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
 			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {passClick("1034,'.$unitID.'", "rtPnl")});
 			setUnitAction('.$unitID.', '.($actionPoints/1000).');
-			setUnitExp('.$unitID.', 0.5);';
+			setUnitExp('.$unitID.', 0.5);';*/
+			
+			echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75});'
 		}
-
 	}
-echo 'armyItems = ['.implode(',', $armyItems).'];
-	for (var i=0; i<armyItems.length; i+=2) {
-		document.getElementById("armyList_"+armyItems[i]).appendChild(document.getElementById("Udtl_"+armyItems[i+1]));
-	}';
+	echo 'armyItems = ['.implode(',', $armyItems).'];
+		for (var i=0; i<armyItems.length; i+=2) {
+			unitList.renderSum(armyItems[i], "armyList_"+armyItems[i+1]);
+			//document.getElementById("armyList_"+armyItems[i]).appendChild(document.getElementById("Udtl_"+armyItems[i+1]));
+		}';
 } else {
 	echo 'You don\'t controll any units at this time';
 }

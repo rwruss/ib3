@@ -16,11 +16,7 @@ $unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerDat[19], 40
 
 echo '<script>
 useDeskTop.newPane("characters");
-thisDiv = useDeskTop.getPane("characters");
-addCharButton = addDiv("", "button", thisDiv);
-addCharButton.innerHTML = "Get new chars";
-addCharButton.addEventListener("click", function () {console.log("run Func");scrMod(1089);});
-//var thisDiv = document.getElementById("charListContent");';
+thisDiv = useDeskTop.getPane("characters");'
 
 foreach ($unitList as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);

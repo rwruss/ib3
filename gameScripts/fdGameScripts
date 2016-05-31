@@ -50,8 +50,10 @@
                 <File name="tasks\to_4.php" />
                 <File name="tasks\td_5.php" />
                 <File name="tasks\to_5.php" />
-                <File name="tasks\pDtl_2.php" />
+                <File name="tasks\to_6.php" />
+                <File name="tasks\ts_6.php" />
                 <File name="tasks\pDtl_1.php" />
+                <File name="tasks\pDtl_2.php" />
             </Folder>
             <Folder name="units">
                 <File name="units\wbsc_1.php" />

@@ -715,7 +715,8 @@ class warband extends unit {
 		expDiv.setAttribute("data-boxName", "strBar");
 
 		thisDiv.dtlButton = addDiv("", "sumDtlBut", thisDiv);
-		dtlButton.addEventListener("click", function () {console.log("show detail")});
+		prm = "1034,"+this.unitID;
+		dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
 		thisDiv.nameDiv.innerHTML = this.unitName;
 		this.changeAttr(this.unitId, "actionPoints", this.aps)

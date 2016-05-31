@@ -2774,7 +2774,7 @@ precision mediump float;
 		<a href="javascript:void(0);" onclick="makeBox(\'laws\', 1007, 500, 500, 200, 50)">Faction Laws</a><br>
 		<a href="javascript:void(0);" onclick="makeBox(\'diplomacy\', 1008, 500, 500, 200, 50)">Diplomacy</a><br>
 		<a href="javascript:void(0);" onclick="makeBox(\'intrigue\', 1009, 500, 500, 200, 50)">Intrigue</a><br>
-		<a href="javascript:void(0);" onclick="makeBox(\'military\', 1011, 500, 500, 200, 50)">Military</a><br>
+		<a href="javascript:void(0);" onclick="scrMod(1011)">Military</a><br>
 		<a href="javascript:void(0);" onclick="passClick(\'1012,0\' , "infoBar")">Rule</a><br>
 		<a href="javascript:void(0);" onclick="makeBox(\'economy\', 1015, 500, 500, 200, 50)">Economy</a><br>
 		<a href="javascript:void(0);" onclick="makeBox(\'tech\', 1017, 500, 500, 200, 50)">Advances</a><br>

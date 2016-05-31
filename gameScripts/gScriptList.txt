@@ -55,7 +55,7 @@
 1049 - Detail for constructing a building at this city
 1050 - Process order for construction a building at this city 
 1051 - Start/get info on a task
-1052 - Process training a unit
+1052 - Process starting training of a unit
 1053 - Unit equipment Menu
 1054 - Equipment slot detail
 1055 - Show detail for equipment and allow selection

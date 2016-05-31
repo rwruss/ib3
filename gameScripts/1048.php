@@ -28,12 +28,13 @@ switch ($targetBuilding->status) {
     break;
 
   case 1:
+	// Show upgrade options for this building
 	echo 'var bldg_'.$postVals[1].' = makeTabMenu("bldg_'.$postVals[1].'", thisDiv);
 	bldg_'.$postVals[1].'.tab_1 = newTab("bldg_'.$postVals[1].'", 1, "Upgrade");
 	bldg_'.$postVals[1].'.tab_2 = newTab("bldg_'.$postVals[1].'", 2, "Tasks");
 	textBlob("", bldg_'.$postVals[1].'.tab_1, "Upgrade options");'
-	$upgrades = explode(',', $typeInfo[1]);
-	for ($i=4; $i<sizeof($upgrades); $i++) {
+	$upgrades = explode(',', $typeInfo[8]);
+	for ($i=0; $i<sizeof($upgrades); $i++) {
 		$upgradeInfo = explode('<-->', $bldgInfo[$upgrades[$i]]);
 		echo 'newBldgOpt("'.$upgrades[$i].'", '.$postVals[1].', bldg_'.$postVals[1].'.tab_1, "'.$upgradeInfo[5].'");';
 	}

@@ -18,9 +18,10 @@ $divisor = max(1,$bldgDat[17]);
 $actionPoints = min(1000, $bldgDat[16] + floor((time()-$bldgDat[27])/$divisor));
 
 // Check if slots are available in the production queue
+
 $queueSpot = false;
-for ($i=18; $i<23; $i++) {
-	if $bldgDat[$i] == 0;
+for ($i=0; $i<$bTypeDesc[7]; $i++) {
+	if $bldgDat[$i+18] == 0;
 	$queueSpot = $i;
 	break;
 }

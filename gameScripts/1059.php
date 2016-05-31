@@ -18,8 +18,9 @@ echo 'Updated at '.date('d,m,y', $unitDat[27]).' = '.$unitDat[27];
 
 
 // Load unit desc to determine what tasks this unit can do
-$unitDesc = explode('<-->', file_get_contents($scnPath.'/units.desc'));
-$unitTasks = explode(',', $unitDesc[$unitDat[10]*9+8]);
+$unitDesc = explode('<->', file_get_contents($scnPath.'/units.desc'));
+$typeDat = explode('<-->', $unitDesc[$unitDat[10]]);
+$unitTasks = explode(',', $typeDat[8]);
 
 // Load task file to get list of tasks that can be done by this unit
 $jobDesc = explode('<->', file_get_contents($scnPath.'/jobs.desc'));
