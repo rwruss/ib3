@@ -706,17 +706,17 @@ class warband extends unit {
 		thisDiv.setAttribute("data-unitid", this.unitID);
 
 		thisDiv.nameDiv = addDiv("asdf", "sumName", thisDiv);
-		nameDiv.setAttribute("data-boxName", "unitName");
+		thisDiv.nameDiv.setAttribute("data-boxName", "unitName");
 
 		thisDiv.actDiv = addDiv("asdf", "sumAct", thisDiv);
-		actDiv.setAttribute("data-boxName", "apBar");
+		thisDiv.actDiv.setAttribute("data-boxName", "apBar");
 
 		thisDiv.expDiv = addDiv("asdf", "sumStr", thisDiv);
-		expDiv.setAttribute("data-boxName", "strBar");
+		thisDiv.expDiv.setAttribute("data-boxName", "strBar");
 
 		thisDiv.dtlButton = addDiv("", "sumDtlBut", thisDiv);
-		prm = "1034,"+this.unitID;
-		dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
+		var prm = "1034,"+this.unitID;
+		thisDiv.dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
 		thisDiv.nameDiv.innerHTML = this.unitName;
 		this.changeAttr(this.unitId, "actionPoints", this.aps)

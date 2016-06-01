@@ -30,17 +30,17 @@ if ($approved) {
 		//print_r($taskList);
 		echo '<div id="incomplete" style="width:100%; display:inline"></div><script>';
 		for ($i=1; $i<=$taskSize; $i++) {
-			fseek($taskFile, $taskList[$i]*$jobBlockSize);
+			fseek($taskFile, $taskList->slotData[$i]*$jobBlockSize);
 			$taskDtl = unpack('i*', fread($taskFile, $jobBlockSize));
 			//print_r($taskDtl);
 			if ($taskDtl[3] > $taskDtl[4]) { // Task is not complete
 				$requiredPoints = max(1000,$taskDtl[7]);
-				echo 'newTaskSummary("'.$taskList[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
+				echo 'newTaskSummary("'.$taskList->slotData[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
 
 				//echo 'Incomplete: <div onclick="makeBox(\'taskDtl\', \'1040,'.$taskList[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskList[$i].')Task Type '.$taskDtl[7].' is '.$taskDtl[6].'/'.$taskDtl[5].' Complete</div>';
 			} else {
 				$requiredPoints = max(1000,$taskDtl[7]);
-				echo 'newTaskSummary("'.$taskList[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
+				echo 'newTaskSummary("'.$taskList->slotData[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
 				//echo 'Complete ('.$jobBlockSize.'): <div onclick="makeBox(\'taskDtl\', \'1040,'.$taskList[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskList[$i].')Task Type '.$taskDtl[7].' is '.$taskDtl[6].'/'.$taskDtl[5].' Complete</div>';
 			}
 		}

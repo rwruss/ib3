@@ -44,14 +44,21 @@ if ($approved) {
 
 	// Generate a list of common buildings that can be built at this location
 	//print_r($buildingInfo);
+
 	for ($i=1; $i<sizeof($buildingInfo); $i++) {
 		$bldgTypeInfo = explode('<-->', $buildingInfo[$i]);
 		$bldgClass = explode(',', $bldgTypeInfo[1]);
 		//print_r($bldgClass);
+		//echo 'Class '.$bldgClass[3].' - Look for '.$_SESSION['game_'.$gameID]['culture'].' in ';
+		//print_r(explode(',', $bldgTypeInfo[9]));
 		if ($bldgClass[3] == 1)	{
-			if (array_search($_SESSION['culture'], $bldgTypeInfo[9]) {
-				echo 'newBldgOpt("'.$i.'", 0, "bldg_tab2", "'.$bldgTypeInfo[0].'");';
+			$cultureList = explode(',', $bldgTypeInfo[9]);
+			for ($j=0; $j<sizeof($bldgTypeInfo[9]); $j++) {
+				if ($_SESSION['game_'.$gameID]['culture'] == $cultureList[$j]) {
+					echo 'newBldgOpt("'.$i.'", 0, "bldg_tab2", "'.$bldgTypeInfo[0].'");';
+				}
 			}
+		}
 	}
 
 	// Generate a list of player buildings that can be built at this locaiton

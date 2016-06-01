@@ -20,7 +20,7 @@ if (flock($unitFile, LOCK_EX)) {
 	$size = ftell($unitFile);
 	$newCityId = $size/$defaultBlockSize;
 
-	fseek($unitFile, $size*$defaultBlockSize-4);
+	fseek($unitFile, $newCityId*$defaultBlockSize-4);
 	fwrite($unitFile, pack('i', 0));
 
 	echo 'New city aID is '.$newCityId.'<br>';

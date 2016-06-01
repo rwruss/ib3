@@ -19,8 +19,8 @@ $playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 $playerObj = new player($playerDat);
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-$unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
-
+//$unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
+$unitList = new itemSlot($playerObj->unitSlot, $slotFile, 40);
 $noUnitsHere = true;
 //print_r($taskDat);
 echo '<script>
@@ -30,8 +30,8 @@ newTab("task_'.$postVals[1].'", 2, "Workers available");
 tabSelect("task_'.$postVals[1].'", 1);
 
 newTaskDetail("tDtl_'.$postVals[1].'", "task_'.$postVals[1].'_header", '.($taskDat[6]/$taskDat[5]).', 1)';
-
-foreach ($unitList as $unitID) {
+//print_r($unitList->slotData);
+foreach ($unitList->slotData as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);
 	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
@@ -53,8 +53,12 @@ foreach ($unitList as $unitID) {
 			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {scrMod("1046,'.$unitID.','.$postVals[1].'")});
 			setUnitAction('.$unitID.', '.($actionPoints/1000).');
 			setUnitExp('.$unitID.', 0.5);</script>';
-		}
-	}
+		} else {
+      //echo 'Wrong loc';
+    }
+	} else {
+    //echo 'Found '.$unitDat[4].'<br>';
+  }
 
 }
 echo '</script>';

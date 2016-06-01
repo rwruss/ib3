@@ -168,7 +168,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 		fseek($unitFile, ($newId)*$defaultBlockSize);
 		// Basic parameters
-		fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,6,$pGameID, $pGameID,1,$postVals[1],0));
+		fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,$typeParams[3],$pGameID, $pGameID,1,$postVals[1],0));
 		// Secondary information
 		fwrite($unitFile, pack("i*", $makeTypes[$i], 0, $townID));
 		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
