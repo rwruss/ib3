@@ -63,7 +63,6 @@ $unitFile = fopen('c:/websites/ib3/games/'.$gameID.'/unitDat.dat', 'rb');
 $totalUnits = 0;
 $maxUnitID = 0;
 $maxCount = 0;
-$trackArray = array_fill(0, 1001, 0);
 /*
 $xArray = array_fill(0, 1001, 0);
 $yArray = array_fill(0, 1001, 0);
@@ -86,12 +85,16 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 			$unitList = unpack("i*", $mapDat->dataString);
 			$count = 0;
 
-			//echo 'Found '.sizeof($unitList).'units<br>';
+			for ($i=1; $i<sizeof($unitList); $i+=2) {
+				if ($unitList[$i+1] == 1) {
+					fseek($unitFile, $unitList[$i]*100);					
+					$drawDat = $drawDat.fread($unitFile, 12).substr($mapDat->dataString, $count*8, 4); // X Loc, Y Loc, Unit ID
+					//$drawDat = $drawDat.fread($unitFile, 8).$thousand;
+					//$drawDat = $drawDat.fread($unitFile, 12);
+					$numUnits++;
+				}
+			}
 			/*
-			if ($tileIndex == 5200) {
-				echo '('.$tileX.', '.$tileY.')check slot: '.$tileIndex.'<br>';
-				print_r($unitList);
-			}*/
 			foreach ($unitList as $unitID) {
 				$maxUnitID = max($maxUnitID, $unitID);
 				if ($unitID > 0 ) {
@@ -101,7 +104,8 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 					}
 					//echo "read unit".($unitID)." for Row: ".$rows.", Col ".$cols." (".$tileIndex.") in game ".$gameID." - count ".$count."<br>";
 					fseek($unitFile, $unitID*100);
-					$drawDat = $drawDat.fread($unitFile, 12).substr($mapDat->dataString, $count*4, 4); // X Loc, Y Loc, Unit ID
+					
+					$drawDat = $drawDat.fread($unitFile, 12).substr($mapDat->dataString, $count*8, 4); // X Loc, Y Loc, Unit ID
 					//$drawDat = $drawDat.fread($unitFile, 8).$thousand;
 					//$drawDat = $drawDat.fread($unitFile, 12);
 					$numUnits++;
@@ -109,6 +113,7 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 				}
 			$count++;
 			}
+			*/
 		$maxCount = max($maxCount, $count);
 		}
 	}

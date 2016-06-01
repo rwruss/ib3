@@ -91,7 +91,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	$mapSlotNum = floor($startLocation[1]/120)*120+floor($startLocation[0]/120);
 	echo 'Record units at slot'.$mapSlotNum;
 
-	$mapSlot = new itemSlot($mapSlotNum, $mapSlotFile, 404); /// start, file, size
+	$mapSlot = new blockSlot($mapSlotNum, $mapSlotFile, 404); /// start, file, size
 
 
 	$unitSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
@@ -109,7 +109,16 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 		// Record first city location in a new settlments slot
 		$townSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
-		$mapSlot->addItem($townID, $mapSlotFile); // value, file
+		
+		$mLoc = sizeof($mapSlot->slotData);
+		for ($i=1; $i<=sizeof($mapSlot->slotData); $i+=2) {
+			if ($mapSlot->slotData[$i] == 0) {
+				$mLoc = $i;
+				break;
+			}
+		}
+		
+		$mapSlot->addItem($mapSlotFile, pack('i*', $townID, 1), $mLoc); // file, bin value, loc
 	} else {
 		// Create a new army unit for the items to be grouped into
 		$armyID = $unitIndex;
@@ -120,8 +129,16 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fwrite($unitFile, pack('i*', $startLocation[0],$startLocation[1],1,3,$pGameID, $pGameID,1,$postVals[1],0));
 		fseek($unitFile, $armyID*$defaultBlockSize + 52);
 		fwrite($unitFile, pack('i', $armySlot));
+		
+		$mLoc = sizeof($mapSlot->slotData);
+		for ($i=1; $i<=sizeof($mapSlot->slotData); $i+=2) {
+			if ($mapSlot->slotData[$i] == 0) {
+				$mLoc = $i;
+				break;
+			}
+		}
 
-		$mapSlot->addItem($armyID, $mapSlotFile); // value, file
+		$mapSlot->addItem($mapSlotFile, pack('i*', $armyID, 1), $mLoc); // file, bin value, loc
 		$armySlot = new itemSlot($armySlot, $gameSlot, 40);
 		$unitList->addItem($armyID, $gameSlot);
 	}
@@ -206,7 +223,15 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		//addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
 		$unitList->addItem($newId, $gameSlot);
 		if (!$startTown) {
-			$mapSlot->addItem($newId, $mapSlotFile); // value, file
+			$mLoc = sizeof($mapSlot->slotData);
+			for ($i=1; $i<=sizeof($mapSlot->slotData); $i+=2) {
+				if ($mapSlot->slotData[$i] == 0) {
+					$mLoc = $i;
+					break;
+				}
+			}
+			$mapSlot->addItem($mapSlotFile, pack('i*', $newId, 1));
+			//$mapSlot->addItem($newId, $mapSlotFile); // value, file
 		} else {
 			//addDataToSlot($gamePath."/gameSlots.slt", $townUnitSlot, pack("i", $newId), $gameSlot);
 		}
