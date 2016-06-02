@@ -13,6 +13,8 @@ $datSlotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 $xDir = [0,-1,0,1,-1,0,1,-1,0,1];
 $yDir = [0,1,1,1,0,0,0,-1,-1,-1];
 
+$showHierarchy = [0, 1, 0, 2, 4, 0, 3, 0, 3];
+
 fseek($unitFile, $pGameID*$defaultBlockSize);
 $playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
@@ -62,7 +64,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   $moves = sizeof($moveList);
   $terIndex = 5101;
   $riverCheck = true;
-	$saveInSlot = true;
+	$showOnMap = 1;
   $loadedSlots = [];
   $unitList = [];
   $diplomacyList = [];
@@ -165,109 +167,114 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 			$loadedSlots[$currentSlot] = [];
 			$mapList = new itemSlot($currentSlot, $mapSlotFile, 404);
 			$unitList = array_filter($mapList->slotData);
-			//$unitList = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $currentSlot, 404)));
-  			foreach ($unitList as $unitNumber) {
+			$checkList = [];
+			for ($listNum = 1; $listNum<=sizeof($mapList->slotData); $listNum+=2) {
+				if ($mapList->slotData[$listNum] > 0) $checkList[] = $mapList->slotData[$listNum];
+			}
+  			foreach ($checkList as $unitNumber) {
 				echo 'Load unit '.$unitNumber.'<br>';
   				fseek($unitFile, $unitNumber*$defaultBlockSize);
   				$tmpUnit = unpack('i*', fread($unitFile, $unitBlockSize));
   				//array_push($loadedSlots[$currentSlot], $unitNumber);
 				$loadedSlots[$currentSlot][] = $unitNumber;
-				$unitList[$unitNumber] = [];
-				array_push($unitList[$unitNumber], $tmpUnit[1], $tmpUnit[2], $tmpUnit[6], $tmpUnit[4], $tmpUnit[28]); // X Loc, Y Loc, Controller, Type, View Range
+				$foundList[$unitNumber] = [];
+				array_push($foundList[$unitNumber], $tmpUnit[1], $tmpUnit[2], $tmpUnit[6], $tmpUnit[4], $tmpUnit[28]); // X Loc, Y Loc, Controller, Type, View Range
   			}
   		} else {
           echo 'That key already exists!';
         }
-  			$turnCollisions = checkCollisions($currentSlot, $newLoc, $loadedSlots, $unitList);
-  			foreach ($turnCollisions as $collisionID) {
-  				// Check if diplomacy has already been loaded for the unit that you are colliding with
-					echo 'Collision with type '.$unitList[$collisionID][3].'<br>';
-					if (!array_key_exists($collisionID, $collisionList)) {
-						if ($unitList[$collisionID][2] != $pGameID) {
-							switch ($unitList[$collisionID][3]) {
-							// Determine action based on unit type
-								case 1: // A village
-									if ($moves - $i == 1) {
-										echo 'End in city '.$collisionID.'<br>';
-									} else {
-										echo 'Collision with city '.$collisionID.'<br>';}
-									break; // end case 1
-
-								case 2: // a resource building
-									if ($moves - $i == 1) {
-										echo 'End on resource Building '.$collisionID.' Player '.$pGameID.', Controller '.$unitList[$collisionID][2].'<br>';
-									} else {
-										echo 'Collision with resource Building '.$collisionID.' Player '.$pGameID.', Controller '.$unitList[$collisionID][2].'<br>';
-									}
-									break; // end case 2
-
-								case 3: // An army
-									echo 'Collision with army '.$collisionID.'<br>';
-									break; // end case 3
-
-								case 4: // A character
-									echo 'Collision with character '.$collisionID.'<br>';
-									break; // end case 4
-
-								case 5: // An agent
-									echo 'Collision with agent '.$collisionID.'<br>';
-									break; // end case 5
-
-								case 6:  // A warband
-
-									echo 'Collision with warband '.$collisionID.'<br>';
-									// Load the war list for the unit
-									fseek($unitFile, $unitList[$collisionID][2]*$defaultBlockSize);
-									$trgPlayerData = unpack('i*', fread($unitFile, $unitBlockSize));
-
-									$trgWarList = array_filter(unpack("i*", readSlotData($datSlotFile, $trgPlayerData[32], 40)));
-									$collisionList[$collisionID] = 1;
-
-									if(sizeof($trgWarList) > sizeof($myWarList)) {
-										$foundWars = compareWarLists($myWarList, $trgWarList);
-									} else {
-										$foundWars = compareWarLists($trgWarList, $myWarList);
-									}
-
-									if (sizeof($foundWars) > 0) {
-										// Start a battle at this location.  This will affect all of the common wars found.
-										$battleID = startNewBattle($postVals[1], $collisionID, $unitFile);
-										
-										// Record battle ID for each unit
-										fseek($unitFile, $postVals[1]*$defaultBlockSize+120);
-										fwrite($unitFile, pack('i', $battleID));
-										
-										fseek($unitFile, $collisionID*$defaultBlockSize+120);
-										fwrite($unitFile, pack('i', $battleID));
-										
-										goto endMove;
-									}
-									break; // break case 6
-
-								case 12:  // a battle
-									// Create a dialoge box for joining the battle
-									echo '<script>makeBox("battleInfo", "1071,'.$collisionID.'", 500, 500, 200, 50)</script>';
-								
-									break; // end case 12
-								}
-						} else {
-							// Collision is with a player controlled object
-							echo 'Collision with something you own <br>';
-
-							switch ($unitList[$collisionID][3]) {
-							// Determine action based on unit type
-								case 1: // A village
-									if ($moves - $i == 1) {
-										echo 'End in city '.$collisionID.'<br>';
-										$saveInSlot = false;
-									} else {
-										echo 'Collision with city '.$collisionID.'<br>';}
-									break; // end case 1
-								}
-						}
-					} else {
-						echo 'This one was already checked';
+		$turnCollisions = checkCollisions($currentSlot, $newLoc, $loadedSlots, $foundList);
+		foreach ($turnCollisions as $collisionID) {
+			// Check if diplomacy has already been loaded for the unit that you are colliding with
+			echo 'Collision with type '.$foundList[$collisionID][3].'<br>';
+			if (!array_key_exists($collisionID, $collisionList)) {
+				if ($foundList[$collisionID][2] != $pGameID) {
+					if ($moves - $i == 1) {
+						if ($foundList[$collisionID][3] <= $showHierarchy[$unitDat[4]])
 					}
+					switch ($foundList[$collisionID][3]) {
+					// Determine action based on unit type
+						case 1: // A village
+							if ($moves - $i == 1) {
+								echo 'End in city '.$collisionID.'<br>';								
+							} else {
+								echo 'Collision with city '.$collisionID.'<br>';}
+							break; // end case 1
+
+						case 2: // a resource building
+							if ($moves - $i == 1) {
+								echo 'End on resource Building '.$collisionID.' Player '.$pGameID.', Controller '.$foundList[$collisionID][2].'<br>';
+							} else {
+								echo 'Collision with resource Building '.$collisionID.' Player '.$pGameID.', Controller '.$foundList[$collisionID][2].'<br>';
+							}
+							break; // end case 2
+
+						case 3: // An army
+							echo 'Collision with army '.$collisionID.'<br>';
+							break; // end case 3
+
+						case 4: // A character
+							echo 'Collision with character '.$collisionID.'<br>';
+							break; // end case 4
+
+						case 5: // An agent
+							echo 'Collision with agent '.$collisionID.'<br>';
+							break; // end case 5
+
+						case 6:  // A warband
+							echo 'Collision with warband '.$collisionID.'<br>';
+							// Load the war list for the unit
+							fseek($unitFile, $foundList[$collisionID][2]*$defaultBlockSize);
+							$trgPlayerData = unpack('i*', fread($unitFile, $unitBlockSize));
+
+							$trgWarList = array_filter(unpack("i*", readSlotData($datSlotFile, $trgPlayerData[32], 40)));
+							$collisionList[$collisionID] = 1;
+
+							if(sizeof($trgWarList) > sizeof($myWarList)) {
+								$foundWars = compareWarLists($myWarList, $trgWarList);
+							} else {
+								$foundWars = compareWarLists($trgWarList, $myWarList);
+							}
+
+							if (sizeof($foundWars) > 0) {
+								// Start a battle at this location.  This will affect all of the common wars found.
+								$battleID = startNewBattle($postVals[1], $collisionID, $unitFile);
+								
+								// Record battle ID for each unit
+								fseek($unitFile, $postVals[1]*$defaultBlockSize+120);
+								fwrite($unitFile, pack('i', $battleID));
+								
+								fseek($unitFile, $collisionID*$defaultBlockSize+120);
+								fwrite($unitFile, pack('i', $battleID));
+								
+								goto endMove;
+							}
+							break; // break case 6
+
+						case 12:  // a battle
+							// Create a dialoge box for joining the battle
+							echo '<script>makeBox("battleInfo", "1071,'.$collisionID.'", 500, 500, 200, 50)</script>';
+						
+							break; // end case 12
+						}
+				} else {
+					// Collision is with a player controlled object
+					echo 'Collision with something you own <br>';
+
+					switch ($foundList[$collisionID][3]) {
+					// Determine action based on unit type
+						case 1: // A village
+							if ($moves - $i == 1) {
+								echo 'End in city '.$collisionID.'<br>';
+								$showOnMap = 0;
+							} else {
+								echo 'Collision with city '.$collisionID.'<br>';}
+							break; // end case 1
+						}
+					}
+				} else {
+					echo 'This one was already checked';
+				}
   			}
 
   			echo 'Step to ('.$newLoc[1].', '.$newLoc[2].').  '.$moveCost.' Move points used and '.$unitDat[16].' Action Points Remaining<br>';
@@ -283,76 +290,52 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
   // if slot has changed, make adjustment
   echo 'Old Slot: '.$oldSlot.', New Slot: '.$newSlot;
 
-  if ($oldSlot != $newSlot && $unitDat[26] != 0) {
-    // Remove from old slot file and add to new slot file
-    $mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
-    //$oldDat = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $oldSlot, 404)));
-    //$newDat = array_filter(unpack('i*', readSlotDataEndKey($mapSlotFile, $newSlot, 404)));
+	if ($oldSlot != $newSlot) {
+		// Remove from old slot file and add to new slot file
 
-		$oldSlotItem = new itemSlot($oldSlot, $mapSlotFile, 404);
+		$oldSlotItem = new blockSlot($oldSlot, $mapSlotFile, 404);
+		$loc = $oldSlotItem->findLoc($postVals[1],2);
+		$oldSlotItem->addItem($mapSlotFile, pack('i*', 0, 0), $loc);
+		
+		$newSlotItem = new blockSlot($newSlot, $mapSlotFile, 404);
+		$loc = $newSlotItem->findloc(0,2);
+		$newSlotItem->addItem($mapSlotFile, pack('i*', $postVals[1], $showOnMap), $loc);
 
+		fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
+		fwrite($unitFile, pack('i', $newSlot));
+		
+		echo 'Old Slot:<br>';
+		print_r($oldSlotItem->slotData);
 
-		$oldSlotItem->deleteItem($postVals[1], $mapSlotFile);
+		echo '<p>New Slot<br>';
+		print_r($newSlotItem->slotData);
 
-		if ($saveInSlot) {
-			$newSlotItem = new itemSlot($newSlot, $mapSlotFile, 404);
-			$newSlotItem->addItem($postVals[1], $mapSlotFile);
-
-			fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
-			fwrite($unitFile, pack('i', $newSlot));
-		}
-    echo 'Old Slot:<br>';
-    print_r($oldSlotItem->slotData);
-
-    echo '<p>New Slot<br>';
-    print_r($newSlotItem->slotData);
-
-
-    //removeFromEndSlot($mapSlotFile, $oldSlot, 404, $postVals[1]); //removeFromEndSlot($slotFile, $startSlot, $slot_size, $targetVal)
-    //addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404); //addtoSlotGen($gamePath.'/mapSlotFile.slt', $mapSlot, pack('i', $newID), $mapSlotFile, 404);
-  }
-  else {
-		$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
-		$newSlotItem = new itemSlot($newSlot, $mapSlotFile, 404);
-
-		if ($saveInSlot) {
-			$newSlotItem->addItem($postVals[1], $mapSlotFile);
-
-			fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
-			fwrite($unitFile, pack('i', $newSlot));
-		} else {
-			$deleteLoc = array_search($postVals[1], $newSlotItem->slotData);
-			if ($deleteLoc) $newSlotItem->deleteItem($deleteLoc, $mapSlotFile);
-		}
+	} else {
+		// Adjust to show or not show the unit depending upon the showOnMap value
+		$newSlotItem = new blockSlot($newSlot, $mapSlotFile, 404);
+		$loc = $newSlotItem->findloc(0,2);
+		$newSlotItem->addItem($mapSlotFile, pack('i*', $postVals[1], $showOnMap), $loc);
 	}
 
-	if ($unitDat[26] == 0) {
-    // Record this unit in the slot file
 
-	//addtoSlotGen($gamePath.'/mapSlotFile.slt', $newSlot, pack('i', $postVals[1]), $mapSlotFile, 404);
-  }
+	// Record new location of unit
+	fseek($unitFile, $postVals[1]*$defaultBlockSize);
+	fwrite($unitFile, pack('i*', $newLoc[1], $newLoc[2]));
 
+	// Record new energy level of unit
+	fseek($unitFile, $postVals[1]*$defaultBlockSize+60);
+	fwrite($unitFile, pack('i', $actionPoints));
 
+	// Record Current Slot and last update time for unit
+	fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
+	fwrite($unitFile, pack('i*', $newSlot, time()));
 
-
-  // Record new location of unit
-  fseek($unitFile, $postVals[1]*$defaultBlockSize);
-  fwrite($unitFile, pack('i*', $newLoc[1], $newLoc[2]));
-
-  // Record new energy level of unit
-  fseek($unitFile, $postVals[1]*$defaultBlockSize+60);
-  fwrite($unitFile, pack('i', $actionPoints));
-
-  // Record Current Slot and last update time for unit
-  fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
-  fwrite($unitFile, pack('i*', $newSlot, time()));
-
-  // Output results to browser
-  echo '<script>
+	// Output results to browser
+	echo '<script>
 	setUnitAction('.$postVals[1].',  '.($actionPoints/1000).');
 	updateUnitPosition('.$postVals[1].', '.$newLoc[1].', '.$newLoc[2].');
-  resetMove('.$newLoc[1].', '.$newLoc[2].');
-  </script>';
+	resetMove('.$newLoc[1].', '.$newLoc[2].');
+	</script>';
 
 } else {
 	// Move is not allowed
