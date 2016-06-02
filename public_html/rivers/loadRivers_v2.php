@@ -53,7 +53,7 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 	$dat = $dat.file_get_contents("./riverFiles/".$zoomLevel."/".$tileIndex.".pf2");
 }
 
-echo $head.$dat;
+//echo $head.$dat;
 
 $drawHead = '';
 $drawDat = '';
@@ -70,12 +70,14 @@ $tiArray = array_fill(0, 1001, 0);
 */
 $repeat = 0;
 $thousand = pack('i', 1000);
+//echo 'TILE LIST:';
+//print_r($tileList);
 for ($i=3; $i<sizeof($tileList); $i++) {
 	$numUnits = 0;
 	for ($rows=0; $rows<$tileList[0]; $rows++) {
 		$tileY = ($tileList[2] + $yMove[$tileList[$i]])*$tileList[0]+$rows;
 		for ($cols = 0; $cols<$tileList[0]; $cols++) {
-
+			//echo 'Check tile list #'.$i.' = '.$tileList[$i];
 			$tileX = ($tileList[1] + $xMove[$tileList[$i]])*$tileList[0]+$cols;
 
 			$tileIndex = $tileY*120+$tileX;
@@ -84,16 +86,20 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 			$mapDat = new itemSlot($tileIndex, $slotFile, 404); // start, file, size
 			$unitList = unpack("i*", $mapDat->dataString);
 			$count = 0;
+			//print_r($unitList);
 
-			for ($i=1; $i<sizeof($unitList); $i+=2) {
-				if ($unitList[$i+1] == 1) {
-					fseek($unitFile, $unitList[$i]*100);					
+			for ($j=1; $j<sizeof($unitList); $j+=2) {
+				if ($unitList[$j] > 0) echo 'Index '.$j.' is unit '.$unitList[$j].' -> '.$unitList[$j+1];
+				if ($unitList[$j+1] == 1) {
+					//echo 'Draw unit '.$unitList[$j+1];
+					fseek($unitFile, $unitList[$j]*100);
 					$drawDat = $drawDat.fread($unitFile, 12).substr($mapDat->dataString, $count*8, 4); // X Loc, Y Loc, Unit ID
 					//$drawDat = $drawDat.fread($unitFile, 8).$thousand;
 					//$drawDat = $drawDat.fread($unitFile, 12);
 					$numUnits++;
 				}
 			}
+
 			/*
 			foreach ($unitList as $unitID) {
 				$maxUnitID = max($maxUnitID, $unitID);
@@ -104,7 +110,7 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 					}
 					//echo "read unit".($unitID)." for Row: ".$rows.", Col ".$cols." (".$tileIndex.") in game ".$gameID." - count ".$count."<br>";
 					fseek($unitFile, $unitID*100);
-					
+
 					$drawDat = $drawDat.fread($unitFile, 12).substr($mapDat->dataString, $count*8, 4); // X Loc, Y Loc, Unit ID
 					//$drawDat = $drawDat.fread($unitFile, 8).$thousand;
 					//$drawDat = $drawDat.fread($unitFile, 12);
@@ -135,5 +141,5 @@ echo $drawHead.$drawDat;
 //print_r(unpack("v*", $head));
 //echo "Total Length: ".strlen($head.$dat);
 //sort($checkList);
-
+//print_r(unpack('i*', $drawDat));
 ?>

@@ -1009,7 +1009,7 @@ precision mediump float;
 
 		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-		xmlhttp.responseType = "arraybuffer";
+		//xmlhttp.responseType = "arraybuffer";
 
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
