@@ -11,9 +11,6 @@ $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 $divisor = max(1,$unitDat[17]);
 $actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/$divisor));
 
-echo 'Points available: '.$actionPoints.'<br>';
-echo 'Updated at '.date('d,m,y', $unitDat[27]).' = '.$unitDat[27];
-
 // Load unit exeperience for doing tasks
 
 
@@ -30,19 +27,27 @@ $mapSlot = floor($unitDat[2]/120)*120+floor($unitDat[1]/120);
 $mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'rb');
 
 
-// Look up list of tasks going on in city
+// Look up list of objects in the area
 $mapItems = new itemSlot($mapSlot, $mapSlotFile, 404); // start, file, slot size
+for ($i=1; $i<=sizeof($mapItems->slotData); $i+=2) {
+	if ($mapItems->slotData[$i] > 0) $checkItems[] = $mapItems->slotData[$i];
+}
 $checkItems = array_filter($mapItems->slotData);
 
 print_r($checkItems);
-//for ($i=1; $i<=sizeof($checkItems); $i++) {
+
+echo '<script>
+useDeskTop.newPane("charOrders_'.$postVals[1].'");
+thisDiv = useDeskTop.getPane("charOrders_'.$postVals[1].'");'
+
 foreach ($checkItems as $checkID) {
 	fseek($unitFile, $checkID*$defaultBlockSize);
 	$checkDat = unpack('i*', fread($unitFile, 200));
 
 	if ($checkDat[1] == $unitDat[1] && $checkDat[2] == $unitDat[2]) {
-		if ($checkDat[4] == 1)	{
-			echo 'In a city ('.$checkID.')';}
+		switch($checkDat[4]) {
+			case 1:
+			echo 'In a city ('.$checkID.')';
 
 			$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 			// Look up city tasks
@@ -51,12 +56,17 @@ foreach ($checkItems as $checkID) {
 			echo 'Tasks found:';
 			print_r($cityTasks->slotData);
 			fclose($slotFile);
+			break;
+			
+			default:
+			echo 'Some object here';
+			break;
+		}
 	}
 }
 
-echo '<script>';
 for ($i=0; $i<sizeof($unitTasks); $i++) {
-	echo 'var task = unitTaskOpt('.$unitTasks[$i].', "ordersContent", "'.$jobDesc[$unitTasks[$i]*4+2].'");';
+	echo 'var task = unitTaskOpt('.$unitTasks[$i].', thisDiv, "'.$jobDesc[$unitTasks[$i]*4+2].'");';
 }
 echo '</script>';
 ?>

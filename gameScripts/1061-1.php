@@ -16,10 +16,11 @@ $jobDistanceMod = array_fill(0, $jRowSize*$jRowSize, 1);
 
 // Determine the amount of action points to use
 // 1= minimum amount, 2 = 25%, 3 = 50%, 4 = max
+/*
 $workLevel = [0, 20, 250, 500, 1000];
 $divisor = max(1,$unitDat[17]);
 $actionPoints = min(1000, min($workLevel[$postVals[2]], $unitDat[16] + floor((time()-$unitDat[27])/$divisor)));
-
+*/
 // Load map terrain information for the base production from this area
 $rowSize = 14400;
 $terrainDat = '';
@@ -105,7 +106,7 @@ for ($i=sizeof($mapEffects->slotData); $i>2; $i-=6) {
 echo 'Finished job array<p>';
 print_r($jobArray);
 
-// Check for perks based on army ID
+// Check for perks based on army ID or commander
 $cmdBoost = 1;
 if ($unitDat[15] > 0 ) {
 	// Load the army to get the commander ID
@@ -183,7 +184,7 @@ for ($i=3; $i<=sizeof($unitRSC->slotData); $i+=2) {
 		$rscStart[0] = $i;
 		$rscStart[1] = $unitRSC->slotData[$i+1];
 	}
-	$carried += $thisRSC->slotData[$i+1];
+	$carried += $unitRSC->slotData[$i+1];
 }
 
 if ($carried < $unitDat[29]) {
