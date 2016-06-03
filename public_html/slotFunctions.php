@@ -228,11 +228,11 @@ class blockSlot extends dataSlot {
 
 	function deleteItem() {
 	}
-	
+
 	function findLoc($trgVal, $blockSize) {
 		$loc = sizeof($this->slotData);
 		for ($i=1; $i<sizeof($this->slotData); $i+=$blockSize)  {
-			if ($this->slotData[$i] == $trgValue) {
+			if ($this->slotData[$i] == $trgVal) {
 				$loc = $i;
 				break;
 			}

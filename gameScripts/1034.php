@@ -5,7 +5,7 @@ $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 fseek($unitFile, $postVals[1]*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
-print_r($unitDat);
+//print_r($unitDat);
 
 //echo 'Unit Detail for unit #'.$postVals[1];
 $_SESSION['selectedItem'] = $postVals[1];

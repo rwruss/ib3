@@ -53,7 +53,7 @@
 1047 - View buildings in a city
 1048 - Specific building information
 1049 - Detail for constructing a building at this city
-1050 - Process order for construction a building at this city 
+1050 - Process order for construction a building at this city
 1051 - Start/get info on a task
 1052 - Process starting training of a unit
 1053 - Unit equipment Menu
@@ -92,13 +92,14 @@
 1083 - List of plots character is involved in
 1084 - Character contribute to plot
 1085 - Assign RingLeader to a Plot
-1086 - Run a plot 
+1086 - Run a plot
 1087 - Process assign ringleader to a Plot
 1088 - Leave a plot
 1089 - Menu for character import
 1090 - Process import character
 1091 - Process purchasing a new character
 1092 - Add progress on building production item
+1093 - Add progress on a building via a task
 
 // Manual Override Functions
 2001 - Add Resources to a city

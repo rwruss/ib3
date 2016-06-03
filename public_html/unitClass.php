@@ -34,9 +34,9 @@ class unit {
 			return false;
 		}
 	}
-	
+
 	function set($desc, $val) {
-		if (array_key_exists($desc, $this->attrList) {
+		if (array_key_exists($desc, $this->attrList)) {
 			$this->unitDat[$this->attrList[$desc]] = $val;
 		}
 	}
@@ -53,7 +53,7 @@ class unit {
 			return false;
 		}
 	}
-	
+
 	function saveAll($file) {
 		// Pack the char data
 		$packStr = '';

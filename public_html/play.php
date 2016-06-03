@@ -1009,7 +1009,7 @@ precision mediump float;
 
 		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-		//xmlhttp.responseType = "arraybuffer";
+		xmlhttp.responseType = "arraybuffer";
 
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -2525,11 +2525,8 @@ precision mediump float;
 					// Data is X Point, Y Point, Unit ID
 					gridUnitLists[i].push(unitStuff[uCount*4], unitStuff[uCount*4+1], unitStuff[uCount*4+3]);
 					gridUnitsLength[i]+=1;
-					//minVals[0] = Math.min(minVals[0], unitStuff[uCount*3]);
-					//minVals[1] = Math.min(minVals[1], unitStuff[uCount*3+1]);
-					//maxVals[0] = Math.max(maxVals[0], unitStuff[uCount*3]);
-					//maxVals[1] = Math.max(maxVals[1], unitStuff[uCount*3+1]);
 				}
+				//console.log(gridUnitLists[i]);
 				tmptotalUnits += gridUnitsLength[i];
 				gridUnitsLength[i] = gridUnitLists[i].length/3.0;
 				gl.bindBuffer(gl.ARRAY_BUFFER, gridUniforms[i]);

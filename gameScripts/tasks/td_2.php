@@ -26,10 +26,11 @@ $noUnitsHere = true;
 echo '<script>
 newTabMenu("task_'.$postVals[1].'");
 newTab("task_'.$postVals[1].'", 1, "Description");
-newTab("task_'.$postVals[1].'", 2, "Workers available");
+workers = newTab("task_'.$postVals[1].'", 2, "Workers available");
 tabSelect("task_'.$postVals[1].'", 1);
 
-newTaskDetail("tDtl_'.$postVals[1].'", "task_'.$postVals[1].'_header", '.($taskDat[6]/$taskDat[5]).', 1)';
+newTaskDetail("tDtl_'.$postVals[1].'", "task_'.$postVals[1].'_header", '.($taskDat[6]/$taskDat[5]).', 1);
+';
 //print_r($unitList->slotData);
 foreach ($unitList->slotData as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);
@@ -46,13 +47,29 @@ foreach ($unitList->slotData as $unitID) {
 			$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/$actionReplenishRate));
 
 			// Show option to add production points to this task
-
+      /*
       echo '
 			newUnitDetail('.$unitID.', "task_'.$postVals[1].'_tab2");
 			document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
 			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {scrMod("1046,'.$unitID.','.$postVals[1].'")});
 			setUnitAction('.$unitID.', '.($actionPoints/1000).');
-			setUnitExp('.$unitID.', 0.5);</script>';
+			setUnitExp('.$unitID.', 0.5);</script>';*/
+      /*
+      echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});
+        unitList.renderSum('.$unitID.', workers)';*/
+      echo '
+        unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});
+        var objContain = addDiv("", "selectContain", workers);
+  			unitList.renderSum('.$unitID.', objContain);
+  			var newButton = optionButton("", objContain, "25%");
+  			newButton.objectID = "'.$postVals[1].','.$unitID.',1";
+  			newButton.addEventListener("click", function () {scrMod("1093,"+this.objectID)});
+  			var newButton = optionButton("", objContain, "50%");
+  			newButton.objectID = "'.$postVals[1].','.$unitID.',2";
+  			newButton.addEventListener("click", function () {scrMod("1093,"+this.objectID)});
+  			var newButton = optionButton("", objContain, "100%");
+  			newButton.objectID = "'.$postVals[1].','.$unitID.',3";
+  			newButton.addEventListener("click", function () {scrMod("1093,"+this.objectID)});';
 		} else {
       //echo 'Wrong loc';
     }

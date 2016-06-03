@@ -90,7 +90,7 @@ confirmButtons = function (msg, prm, trg, opt, asrc, dsrc) {
 }
 
 optionButton = function (prm, trg, src) {
-	var newButton = addDiv("button", "cBoxA", document.getElementById(trg));
+	var newButton = addDiv("button", "cBoxA", trg);
 	//newButton.addEventListener("click", function () {scrMod(prm)})
 	newButton.innerHTML = src;
 	return newButton;
@@ -648,6 +648,7 @@ class unit {
 		this.exp = options.exp || 0,
 		this.str = options.strength || 0,
 		this.subType = options.subType || 0,
+		this.tNum = options.tNum || 0,
 		this.unitID = options.unitID;
 	}
 
@@ -718,7 +719,7 @@ class warband extends unit {
 		var prm = "1034,"+this.unitID;
 		thisDiv.dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
-		thisDiv.nameDiv.innerHTML = this.unitName;
+		thisDiv.nameDiv.innerHTML = this.unitName + " - " + this.tNum;
 		this.changeAttr(this.unitId, "actionPoints", this.aps)
 		this.changeAttr(this.unitId, "strength", this.str)
 	}

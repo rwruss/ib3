@@ -42,7 +42,7 @@ if (sizeof($unitList)>0) {
 			setUnitAction('.$unitID.', '.($actionPoints/1000).');
 			setUnitExp('.$unitID.', 0.5);';*/
 
-			echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75});';
+			echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});';
 		}
 	}
 	echo 'armyItems = ['.implode(',', $armyItems).'];

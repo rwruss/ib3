@@ -230,7 +230,10 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 					break;
 				}
 			}
-			$mapSlot->addItem($mapSlotFile, pack('i*', $newId, 1));
+			//$mapSlot->addItem($mapSlotFile, pack('i*', $newId, 1));
+			$mLoc = $mapSlot->findLoc(0, 2);
+			$mapSlot->addItem($mapSlotFile, pack('i*', $newId, 1), $mLoc); // file, bin value, loc
+
 			//$mapSlot->addItem($newId, $mapSlotFile); // value, file
 		} else {
 			//addDataToSlot($gamePath."/gameSlots.slt", $townUnitSlot, pack("i", $newId), $gameSlot);

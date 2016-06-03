@@ -85,8 +85,8 @@ class building {
 
 		$this->bldgDatStr = fread($file, 400);
 		$this->bldgData = unpack('i*', $this->bldgDatStr);
-		echo 'Loaded a new building<br>';
-		print_r($this->bldgData);
+		//echo 'Loaded a new building<br>';
+		//print_r($this->bldgData);
 	}
 
 	function saveAll($file) {

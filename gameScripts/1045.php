@@ -190,13 +190,13 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 			if (!array_key_exists($collisionID, $collisionList)) {
 				if ($foundList[$collisionID][2] != $pGameID) {
 					if ($moves - $i == 1) {
-						if ($foundList[$collisionID][3] <= $showHierarchy[$unitDat[4]])
+						if ($foundList[$collisionID][3] <= $showHierarchy[$unitDat[4]]) $showOnMap = 0;
 					}
 					switch ($foundList[$collisionID][3]) {
 					// Determine action based on unit type
 						case 1: // A village
 							if ($moves - $i == 1) {
-								echo 'End in city '.$collisionID.'<br>';								
+								echo 'End in city '.$collisionID.'<br>';
 							} else {
 								echo 'Collision with city '.$collisionID.'<br>';}
 							break; // end case 1
@@ -239,14 +239,14 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 							if (sizeof($foundWars) > 0) {
 								// Start a battle at this location.  This will affect all of the common wars found.
 								$battleID = startNewBattle($postVals[1], $collisionID, $unitFile);
-								
+
 								// Record battle ID for each unit
 								fseek($unitFile, $postVals[1]*$defaultBlockSize+120);
 								fwrite($unitFile, pack('i', $battleID));
-								
+
 								fseek($unitFile, $collisionID*$defaultBlockSize+120);
 								fwrite($unitFile, pack('i', $battleID));
-								
+
 								goto endMove;
 							}
 							break; // break case 6
@@ -254,7 +254,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 						case 12:  // a battle
 							// Create a dialoge box for joining the battle
 							echo '<script>makeBox("battleInfo", "1071,'.$collisionID.'", 500, 500, 200, 50)</script>';
-						
+
 							break; // end case 12
 						}
 				} else {
@@ -296,14 +296,14 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 		$oldSlotItem = new blockSlot($oldSlot, $mapSlotFile, 404);
 		$loc = $oldSlotItem->findLoc($postVals[1],2);
 		$oldSlotItem->addItem($mapSlotFile, pack('i*', 0, 0), $loc);
-		
+
 		$newSlotItem = new blockSlot($newSlot, $mapSlotFile, 404);
 		$loc = $newSlotItem->findloc(0,2);
 		$newSlotItem->addItem($mapSlotFile, pack('i*', $postVals[1], $showOnMap), $loc);
 
 		fseek($unitFile, $postVals[1]*$defaultBlockSize+100);
 		fwrite($unitFile, pack('i', $newSlot));
-		
+
 		echo 'Old Slot:<br>';
 		print_r($oldSlotItem->slotData);
 
@@ -404,11 +404,11 @@ function startNewBattle($unit1, $unit2, $unitFile) {
 
 		flock($unitFile, LOCK_UN); // release dat lock
 	}
-	
+
 	// Add the two starting units to the war list
 	fseek($unitFile, $battleID*$defaultBlockSize+40);
 	fwrite($unitFile, pack('i*', $unit1, $unit2, time(), time()+86400));
-	
+
 	return $battleID;
 	/*
 	// Remove the two units from the map slot file and add a battle icon

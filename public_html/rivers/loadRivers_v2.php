@@ -53,7 +53,7 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 	$dat = $dat.file_get_contents("./riverFiles/".$zoomLevel."/".$tileIndex.".pf2");
 }
 
-//echo $head.$dat;
+echo $head.$dat;
 
 $drawHead = '';
 $drawDat = '';
@@ -89,7 +89,7 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 			//print_r($unitList);
 
 			for ($j=1; $j<sizeof($unitList); $j+=2) {
-				if ($unitList[$j] > 0) echo 'Index '.$j.' is unit '.$unitList[$j].' -> '.$unitList[$j+1];
+				//if ($unitList[$j] > 0) echo 'Index '.$j.' is unit '.$unitList[$j].' -> '.$unitList[$j+1];
 				if ($unitList[$j+1] == 1) {
 					//echo 'Draw unit '.$unitList[$j+1];
 					fseek($unitFile, $unitList[$j]*100);
@@ -126,6 +126,7 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 	//echo 'lenght is '.strlen($drawDat).'<br>';
 	$drawHead = $drawHead.pack("i", $numUnits);
 	$totalUnits += $numUnits;
+	//print_r(unpack('i*', $drawDat));
 }
 
 fclose($slotFile);
