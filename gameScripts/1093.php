@@ -10,10 +10,11 @@ Post Vals 1 = Building ID, 2 = Production Slot #, 3 = %
 echo 'Work on item '.$postVals[1];
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 $taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
-fseek($taskFile, $postVals[1]*$jobBlockSize);
-$taskDat = unpack('i*', fread($taskFile, $jobBlockSize));
+$trgTask = new task($postVals[1], $taskFile);
+//fseek($taskFile, $postVals[1]*$jobBlockSize);
+//$taskDat = unpack('i*', fread($taskFile, $jobBlockSize));
 echo 'Task dat:';
-print_r($taskDat);
+print_r($trgTask->taskDat);
 
 
 // Get data for unit producing the item
@@ -23,13 +24,13 @@ $workUnit = new unit($postVals[2], $unitFile, 400);
 
 // Caluclate action points available
 $divisor = max(1,$workUnit->unitDat[17]);
-$actionPoints = min(1000, $workUnit->unitDat[16] + floor((time()-$workUnit->unitDat[27])/$divisor));
+$actionPoints = min(1000, $workUnit->unitDat[16] + floor((time()-$workUnit->unitDat[27])*$workUnit->unitDat[17]/360000));
 
 $actionPct = [0, 250, 500, 1000];
 //$maxPoints = $actionPct[$postVals[3]]*10;
 $availablePoints = min($actionPct[$postVals[3]], $actionPoints);
 
-$neededPts = $taskDat[5]-$taskDat[6];
+$neededPts = $trgTask->taskDat[5]-$trgTask->taskDat[6];
 $usedPoints = min($availablePoints, $neededPts);
 
 echo 'Use '.$usedPoints.' Points';
@@ -40,36 +41,31 @@ if ($usedPoints > 0) {
 	$workUnit->unitDat[16] -= $usedPoints;
 	$workUnit->unitDat[27] = time();
 
-	if ($taskDat[6]+$usedPoints >= $taskDat[5]) {
+	if ($trgTask->taskDat[6]+$usedPoints >= $trgTask->taskDat[5]) {
 	// Process completion of building construction
-
 	// create a new building
-		$newBldg[1] = $workUnit->unitDat[1];
-		$newBldg[2] = $workUnit->unitDat[2];
-		$newBldg[16] = 0;
-		$newBldg[17] = 1;
+		$newBuilding = new building($trgTask->taskDat[11], $unitFile);
+		$newBuilding->bldgData = array_fill(1, 100, 0);
+		$newBuilding->bldgData[1] = $workUnit->unitDat[1]; // Building X
+		$newBuilding->bldgData[2] = $workUnit->unitDat[2]; // Building Y
+		$newBuilding->bldgData[7] = 1; // Set Status to complete
+		$newBuilding->bldgData[10] = $trgTask->taskDat[12]; // Building Type
+		$newBuilding->bldgData[16] = 0; // Energy
+		$newBuilding->bldgData[17] = 4167; // Energy Regen Rate
+		$newBuilding->bldgData[27] = time(); // Update time
 
-		$workUnit->unitDat[$postVals[2]] = 0;
-
-		// Add unit to map location slot
-		/*
-		$mapSlotNum = floor($newBldg[2]/120)*120+floor($newBldg[1]/120);
-		$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'rb');
-
-		$mapSlot = new itemSlot($mapSlotNum, $mapSlotFile, 404); /// start, file, size
-		$mapSlot->addItem($useBldg->bldgData[$postVals[2]], $mapSlotFile); // value, file
-
-		fclose($mapSlotFile);*/
+		$newBuilding->saveAll($unitFile);
+		
 	} else {
 		// Update stats for unit in production
-		$taskDat[6] += $usedPoints;
+		$trgTask->taskDat[6] += $usedPoints;
+		$trgTask->saveAll($taskFile);
 	}
-	$trgUnit->unitDat[27] = time();
-	$trgUnit->unitDat[16] -= $usedPoints;
-
-	//$usedBldg->saveAll($unitFile);
-	//$trgUnit->saveAll($unitFile);
+	
+	$workUnit->saveAll($unitFile);
 }
+
+echo '<script>unitList.change('.$postVals[2].', "actionPoints", '.$workUnit->unitDat[16].')</script>';
 
 fclose($unitFile);
 fclose($taskFile);

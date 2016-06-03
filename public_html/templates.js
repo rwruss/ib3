@@ -267,30 +267,11 @@ textBlob = function (id, target, content) {
 }
 
 newBldgOpt = function(id, base, target, desc) {
-	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
-	addImg("bldg_"+id+"_img", "bldgImg", thisDetail);
-	var lvlDiv = addDiv("bldg_"+id+"_lvl", "bldgLvl", thisDetail);
-	var descDiv = addDiv("bldg_"+id+"_desc", "bldgDesc", thisDetail);
-	lvlDiv.innerHTML = "1";
-	descDiv.innerHTML = desc;
-	document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
-
-	thisDetail.addEventListener("click", function() {makeBox("bldgStart", "1049,"+id + "," + base, 500, 500, 200, 50);});
+	
 }
 
 newBldgSum = function(id, target, pctComplete, status) {
-	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
-	addDiv("bldg_"+id+"_cond", "udAct", thisDetail);
-	var statusBox = addDiv("bldg_"+id+"_stat", "bldgLvl", thisDetail);
-	statusBox.innerHTML = status;
-	setBarSize("bldg_"+id+"_cond", pctComplete, 150);
-	addImg("bldg_"+id+"_img", "tdImg", thisDetail);
-	document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
-
-	thisDetail.addEventListener("click", function() {
-	scrMod("1048,"+id);
-		//makeBox("bldgDtl", "1048,"+id, 500, 500, 200, 50);
-	});
+	
 }
 
 newTaskDetail = function(id, target, pctComplete, killLink) {
@@ -575,6 +556,7 @@ class unitList {
 		if (this["unit_" + object.unitID]) {
 
 		} else {
+			/*
 			if (object.unitType == "warband") {
 				this["unit_" + object.unitID] = new warband(object);
 			}
@@ -583,6 +565,27 @@ class unitList {
 			}
 			else if (object.unitType == "plot") {
 				this["unit_" + object.unitID] = new plot(object);
+			}*/
+			switch (object.unitType) {
+				case "warband":
+					this["unit_" + object.unitID] = new warband(object);
+					break;
+					
+				case "character":
+					this["unit_" + object.unitID] = new character(object);
+					break;
+					
+				case "plot":
+					this["unit_" + object.unitID] = new plot(object);
+					break;
+					
+				case "building":
+					this["unit_" + object.unitID] = new building(object);
+					break;
+					
+				default:
+					console.log("Unknown Type");
+					break;
 			}
 		}
 	}
@@ -794,12 +797,7 @@ class plot extends unit {
 	renderSummary(target) {
 		var plotBox = plotSummary(this, target);
 		if (this.target > 0) unitList.renderSum(this.target, plotBox.childNodes[1]);
-		/*
-		var actDiv = addDiv("", "plotPoints", plotBox.childNodes[2]);
-		actDiv.setAttribute("data-boxName", "apBar");
-		actDiv.setAttribute("data-unitNum", this.unitID);
-		*/
-		//console.log("Set action bar to " + this.aps*this.lSkill/(1000*(this.tResist+this.lSkill)));
+
 		setBar(this.unitID, ".sumAct", 100*this.aps*this.lSkill/(1000*(this.tResist+this.lSkill)));
 		return plotBox;
 	}
@@ -822,36 +820,59 @@ class plot extends unit {
 	}
 }
 
+class building extends unit {
+
+	
+	set actionPoints(x) {
+		this.aps = Math.max(0, Math.min(x, 1000));
+		console.log("set aps to " + this.aps);
+		setBar(this.unitID, ".sumAct", this.aps/10);
+	}
+
+	get actionPoints() {
+		return this.aps;
+	}
+	
+	renderSummary(target) {
+		var thisDetail = addDiv(id, "tdHolder", target);
+		thisDetail.act = addDiv("bldg_"+id+"_cond", "udAct", thisDetail);
+		thisDetail.statusBox = addDiv("bldg_"+id+"_stat", "bldgLvl", thisDetail);
+		thisDetail.statusBox.innerHTML = status;
+		//setBarSize("bldg_"+id+"_cond", pctComplete, 150);
+		//addImg("bldg_"+id+"_img", "tdImg", thisDetail);
+		//document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
+		
+		var actDiv = addDiv("", "sumAct", thisDiv);
+		actDiv.setAttribute("data-boxName", "apBar");
+		actDiv.setAttribute("data-boxunitid", this.unitID);
+
+		thisDetail.addEventListener("click", function() {
+			scrMod("1048,"+id);
+		});
+		this.actionPoints = this.aps;
+	}
+	
+	buildOpt(target) {
+		var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
+		addImg("bldg_"+id+"_img", "bldgImg", thisDetail);
+		var lvlDiv = addDiv("bldg_"+id+"_lvl", "bldgLvl", thisDetail);
+		var descDiv = addDiv("bldg_"+id+"_desc", "bldgDesc", thisDetail);
+		lvlDiv.innerHTML = "1";
+		descDiv.innerHTML = desc;
+		document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
+
+		thisDetail.addEventListener("click", function() {makeBox("bldgStart", "1049,"+id + "," + base, 500, 500, 200, 50);});
+	}
+}
+
 setBar = function (id, desc, pct) {
-	//console.log("setting " + desc + " to " + pct)
-  //thisList = document.body.querySelectorAll(".udHolder");
 	thisList = document.body.querySelectorAll(desc);
-	//console.log("Checking " + thisList.length + " nodes");
 	for (n=0; n<thisList.length; n++) {
 		if (thisList[n].getAttribute("data-boxunitid") == id) {
-			//console.log("Dound and instance");
 			thisList[n].style.width = pct*125/100;
 			thisList[n].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
 		}
 	}
-	/*
-	for (n=0; n<thisList.length; n++) {
-		if (thisList[n].getAttribute("data-unitID") == id) {
-			console.log("found 1" + thisList[n].childNodes );
-			for (i=0; i<thisList[n].childNodes.length; i++) {
-				console.log("check " + i + " of " + thisList[n].childNodes.length)
-				if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
-					//console.log("found it - " + desc + ", us set ti " + pct);
-				  thisList[n].childNodes[i].style.width = pct*125/100;
-				  thisList[n].childNodes[i].style.backgroundColor = "rgb("+parseInt((100-pct)*2.55)+", "+parseInt(pct*2.55)+", 0)";
-				  //console.log("rgb("+parseInt((100-pct)*2.55)+", 0, "+parseInt(pct*2.55)+")");
-				}
-			}
-		} else {
-
-		}
-	}
-	*/
 }
 
 

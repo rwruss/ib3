@@ -99,7 +99,8 @@
 1090 - Process import character
 1091 - Process purchasing a new character
 1092 - Add progress on building production item
-1093 - Add progress on a building via a task
+1093 - Add progress on building construction via a task
+1094 - Gathering options for a resource point
 
 // Manual Override Functions
 2001 - Add Resources to a city

@@ -1,7 +1,8 @@
 <?php
 
-include("./slotFunctions.php");
-include("./cityClass.php");
+include('./slotFunctions.php');
+include('./cityClass.php');
+include('./unitClass.php');
 // Check to see if player is already in game
 $playerList = unpack("i*", file_get_contents("../games/".$gameID."/players.dat"));
 $idSpot = array_search($_SESSION['playerId'], $playerList);
@@ -182,18 +183,34 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		echo 'Make unit type '.$makeTypes[$i].' at unit #'.$newId.'<br>';
 		$thisDtl = explode('<-->', $unitInf[$makeTypes[$i]]);
 		$typeParams = explode(",", $thisDtl[1]);
-
+		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
+		fwrite($unitFile, pack("i", 0));
+		
+		$newUnit = new unit($newId, $unitFile, 400);
+		$newUnit->unitDat[1] = $startLocation[0]; // X Loc
+		$newUnit->unitDat[2] = $startLocation[1]; // Y Loc
+		$newUnit->unitDat[3] = 1; // Icon
+		$newUnit->unitDat[4] = $typeParams[3]; // Unit Type
+		$newUnit->unitDat[5] = $pGameID; // Owner 
+		$newUnit->unitDat[6] = $pGameID; // Controller 
+		$newUnit->unitDat[7] = 1; // Status 
+		$newUnit->unitDat[8] = $postVals[1]; // Culture 
+		$newUnit->unitDat[10] = $makeTypes[$i]; // Troop Type 
+		$newUnit->unitDat[12] = $townID; // Current Loc		
+		$newUnit->unitDat[15] = $armyID; // Army ID	
+		$newUnit->unitDat[17] = $thisDtl[10]; // Army ID	
+		
+		/*
 		fseek($unitFile, ($newId)*$defaultBlockSize);
 		// Basic parameters
 		fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,$typeParams[3],$pGameID, $pGameID,1,$postVals[1],0));
 		// Secondary information
 		fwrite($unitFile, pack("i*", $makeTypes[$i], 0, $townID));
-		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
-		fwrite($unitFile, pack("i", 9990));
+		
 
 		fseek($unitFile, ($newId)*$defaultBlockSize+56);
 		fwrite($unitFile, pack('i', $armyID));
-
+		*/
 		//addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
 		$unitList->addItem($newId, $gameSlot);
 		if (!$startTown) {
