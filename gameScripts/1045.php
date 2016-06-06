@@ -253,7 +253,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 
 						case 12:  // a battle
 							// Create a dialoge box for joining the battle
-							echo '<script>makeBox("battleInfo", "1071,'.$collisionID.'", 500, 500, 200, 50)</script>';
+							echo '<script>scrMod("1071,'.$collisionID.'")</script>';
 
 							break; // end case 12
 						}

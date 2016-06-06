@@ -973,7 +973,8 @@ precision mediump float;
 			console.log(testNode.parentNode.nodeName);
 						testNode = testNode.parentNode;
 		}
-		testNode.remove();
+		//testNode.remove();
+		testNode.parentObj.destroyWindow();
 	}
 
 	var taskList = new Array();
