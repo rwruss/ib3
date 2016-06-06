@@ -248,11 +248,11 @@ resourceBox = function (id, qty, target) {
 
 taskOpt = function(id, target, prm, desc) {
 
-	var thisOpt = addDiv(id, "tdHolder", document.getElementById(target));
+	var thisOpt = addDiv(id, "tdHolder", target);
 	if (desc) thisOpt.innerHTML = desc;
 
-	if (prm) thisOpt.addEventListener("click", function() {makeBox("taskDtl", "1026,"+id+","+prm,500, 500, 200, 50);});
-	else thisOpt.addEventListener("click", function() {makeBox("taskDtl", "1026,"+id,500, 500, 200, 50);});
+	if (prm) thisOpt.addEventListener("click", function() {scrMod("1026,"+id+","+prm);});
+	else thisOpt.addEventListener("click", function() {scrMod("taskDtl", "1026,"+id,500, 500, 200, 50);});
 }
 
 textBlob = function (id, target, content) {
@@ -267,11 +267,11 @@ textBlob = function (id, target, content) {
 }
 
 newBldgOpt = function(id, base, target, desc) {
-	
+
 }
 
 newBldgSum = function(id, target, pctComplete, status) {
-	
+
 }
 
 newTaskDetail = function(id, target, pctComplete, killLink) {
@@ -570,19 +570,23 @@ class unitList {
 				case "warband":
 					this["unit_" + object.unitID] = new warband(object);
 					break;
-					
+
 				case "character":
 					this["unit_" + object.unitID] = new character(object);
 					break;
-					
+
 				case "plot":
 					this["unit_" + object.unitID] = new plot(object);
 					break;
-					
+
 				case "building":
 					this["unit_" + object.unitID] = new building(object);
 					break;
-					
+
+				case "task":
+					this["unit_" + object.unitID] = new task(object);
+					break;
+
 				default:
 					console.log("Unknown Type");
 					break;
@@ -714,17 +718,22 @@ class warband extends unit {
 
 		thisDiv.actDiv = addDiv("asdf", "sumAct", thisDiv);
 		thisDiv.actDiv.setAttribute("data-boxName", "apBar");
+		thisDiv.actDiv.setAttribute("data-boxunitid", this.unitID);
 
 		thisDiv.expDiv = addDiv("asdf", "sumStr", thisDiv);
 		thisDiv.expDiv.setAttribute("data-boxName", "strBar");
+		thisDiv.expDiv.setAttribute("data-boxunitid", this.unitID);
 
 		thisDiv.dtlButton = addDiv("", "sumDtlBut", thisDiv);
 		var prm = "1034,"+this.unitID;
 		thisDiv.dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
 		thisDiv.nameDiv.innerHTML = this.unitName + " - " + this.tNum;
-		this.changeAttr(this.unitId, "actionPoints", this.aps)
-		this.changeAttr(this.unitId, "strength", this.str)
+
+		this.actionPoints = this.aps;
+		this.strength = this.str;
+		//this.changeAttr(this.unitId, "actionPoints", this.aps)
+		//this.changeAttr(this.unitId, "strength", this.str)
 	}
 
 }
@@ -821,8 +830,6 @@ class plot extends unit {
 }
 
 class building extends unit {
-
-	
 	set actionPoints(x) {
 		this.aps = Math.max(0, Math.min(x, 1000));
 		console.log("set aps to " + this.aps);
@@ -832,37 +839,70 @@ class building extends unit {
 	get actionPoints() {
 		return this.aps;
 	}
-	
+
 	renderSummary(target) {
-		var thisDetail = addDiv(id, "tdHolder", target);
-		thisDetail.act = addDiv("bldg_"+id+"_cond", "udAct", thisDetail);
-		thisDetail.statusBox = addDiv("bldg_"+id+"_stat", "bldgLvl", thisDetail);
-		thisDetail.statusBox.innerHTML = status;
-		//setBarSize("bldg_"+id+"_cond", pctComplete, 150);
-		//addImg("bldg_"+id+"_img", "tdImg", thisDetail);
-		//document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
-		
+		var thisDetail = addDiv("", "tdHolder", target);
+		thisDetail.act = addDiv("", "udAct", thisDetail);
+		thisDetail.statusBox = addDiv("", "bldgLvl", thisDetail);
+		thisDetail.statusBox.innerHTML = this.unitName + " " + this.unitID;
+
+
 		var actDiv = addDiv("", "sumAct", thisDiv);
 		actDiv.setAttribute("data-boxName", "apBar");
 		actDiv.setAttribute("data-boxunitid", this.unitID);
 
-		thisDetail.addEventListener("click", function() {
-			scrMod("1048,"+id);
-		});
+		var prm = "1048,"+this.unitID;
+		thisDetail.addEventListener("click", function() {scrMod(prm);});
 		this.actionPoints = this.aps;
 	}
-	
-	buildOpt(target) {
-		var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
-		addImg("bldg_"+id+"_img", "bldgImg", thisDetail);
-		var lvlDiv = addDiv("bldg_"+id+"_lvl", "bldgLvl", thisDetail);
-		var descDiv = addDiv("bldg_"+id+"_desc", "bldgDesc", thisDetail);
-		lvlDiv.innerHTML = "1";
-		descDiv.innerHTML = desc;
-		document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
 
-		thisDetail.addEventListener("click", function() {makeBox("bldgStart", "1049,"+id + "," + base, 500, 500, 200, 50);});
+	buildOpt(target, base) {
+		var thisDetail = addDiv("", "tdHolder", target);
+		addImg("", "bldgImg", thisDetail);
+		var lvlDiv = addDiv("", "bldgLvl", thisDetail);
+		var descDiv = addDiv("", "bldgDesc", thisDetail);
+		lvlDiv.innerHTML = "1";
+		descDiv.innerHTML = this.unitName;
+		//document.getElementById("bldg_"+id+"_img").src = "./textures/borderMask3.png"
+		var prm = "1049,"+ this.unitID.substr(1) + ","+base;
+		thisDetail.addEventListener("click", function() {scrMod(prm);});
 	}
+}
+
+class task extends unit {
+	constructor (object) {
+		//console.log("make a plot");
+		super(object);
+		this.ptsNeed = object.reqPts || 500;
+	}
+
+	set actionPoints(x) {
+		this.aps = Math.max(0, Math.min(x, 1000));
+		console.log("set aps to " + this.aps);
+		setBar(this.unitID, ".sumAct", this.aps*100/this.ptsNeed);
+		console.log("set bar to " + this.aps*100/this.ptsNeed)
+	}
+
+	get actionPoints() {
+		return this.aps;
+	}
+
+	renderSummary(target) {
+		var thisDetail = addDiv("", "tdHolder", target);
+		thisDetail.act = addDiv("", "udAct", thisDetail);
+		thisDetail.statusBox = addDiv("", "bldgLvl", thisDetail);
+		thisDetail.statusBox.innerHTML = "Task" + this.unitID;
+
+
+		var actDiv = addDiv("", "sumAct", thisDiv);
+		actDiv.setAttribute("data-boxName", "apBar");
+		actDiv.setAttribute("data-boxunitid", this.unitID);
+
+		var prm = "1040,"+this.unitID;
+		thisDetail.addEventListener("click", function() {scrMod(prm);});
+		this.actionPoints = this.aps;
+	}
+
 }
 
 setBar = function (id, desc, pct) {
@@ -897,6 +937,7 @@ class pane {
 			bPos = [parseInt(this.offsetLeft), parseInt(this.offsetTop), event.clientX, event.clientY];
 			//console.log(bPos);
 		});
+		this.toTop();
 	}
 
 	destroyWindow() {

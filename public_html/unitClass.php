@@ -130,16 +130,16 @@ class warband extends unit {
 
 class task {
 	protected $linkFile, $unitBin, $id, $attrList;
-	
+
 	function __construct($id, $file) {
 
 		$this->linkFile = $file;
 		fseek($this->linkFile, $id*200);
-		$unitBin = fread($this->linkFile, $size);
+		$unitBin = fread($this->linkFile, 200);
 		$this->taskDat = unpack('i*', $unitBin);
 		$this->taskID = $id;
 	}
-	
+
 	function saveAll($file) {
 		// Pack the char data
 		$packStr = '';

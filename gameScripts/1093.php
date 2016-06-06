@@ -8,14 +8,9 @@ Process work on a building production item
 Post Vals 1 = Building ID, 2 = Production Slot #, 3 = %
 */
 echo 'Work on item '.$postVals[1];
-$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-$taskFile = fopen($gamePath.'/tasks.tdt', 'rb');
+$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
+$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
 $trgTask = new task($postVals[1], $taskFile);
-//fseek($taskFile, $postVals[1]*$jobBlockSize);
-//$taskDat = unpack('i*', fread($taskFile, $jobBlockSize));
-echo 'Task dat:';
-print_r($trgTask->taskDat);
-
 
 // Get data for unit producing the item
 $workUnit = new unit($postVals[2], $unitFile, 400);
@@ -44,6 +39,7 @@ if ($usedPoints > 0) {
 	if ($trgTask->taskDat[6]+$usedPoints >= $trgTask->taskDat[5]) {
 	// Process completion of building construction
 	// create a new building
+		echo 'Task complete ('.$trgTask->taskDat[6].' + '.$usedPoints.' >= '.$trgTask->taskDat[5].')';
 		$newBuilding = new building($trgTask->taskDat[11], $unitFile);
 		$newBuilding->bldgData = array_fill(1, 100, 0);
 		$newBuilding->bldgData[1] = $workUnit->unitDat[1]; // Building X
@@ -55,17 +51,19 @@ if ($usedPoints > 0) {
 		$newBuilding->bldgData[27] = time(); // Update time
 
 		$newBuilding->saveAll($unitFile);
-		
+		$trgTask->taskDat[6] += $usedPoints;
+
 	} else {
 		// Update stats for unit in production
 		$trgTask->taskDat[6] += $usedPoints;
 		$trgTask->saveAll($taskFile);
 	}
-	
+
 	$workUnit->saveAll($unitFile);
 }
 
-echo '<script>unitList.change('.$postVals[2].', "actionPoints", '.$workUnit->unitDat[16].')</script>';
+echo '<script>unitList.change('.$postVals[2].', "actionPoints", '.$workUnit->unitDat[16].');
+taskList.change('.$postVals[1].', "actionPoints", '.$trgTask->taskDat[6].')</script>';
 
 fclose($unitFile);
 fclose($taskFile);

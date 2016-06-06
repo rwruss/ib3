@@ -2655,6 +2655,7 @@ precision mediump float;
 
 	function webGLStart() {
 		useDeskTop = new deskTop;
+		taskList = new unitList();
 		unitList = new unitList();
 		setClick([0], "auto")
 		var canvas = document.getElementById("lesson03-canvas");

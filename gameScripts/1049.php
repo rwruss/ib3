@@ -4,7 +4,7 @@ include("./slotFunctions.php");
 
 // verify that user is ok to view this info
 $cityID = $_SESSION['selectedItem'];
-echo 'Construct a building in '.$cityID.' - Building Type is '.$postVals[1].'<br>';
+//echo 'Construct a building in '.$cityID.' - Building Type is '.$postVals[1].'<br>';
 // Verify that the person giving the order has the proper credintials
 $unitFile = fopen($gamePath.'/unitDat.dat' ,'rb');
 fseek($unitFile, $cityID*$defaultBlockSize);
@@ -13,17 +13,18 @@ $cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
 $approved = array_search($pGameID, $credList);
+/*
 echo 'Approved level '.$approved.'<br>
 Show buildings in slot '.$cityDat[17].'<br>
 Tasks in slot '.$cityDat[21].'<br>';
-
+*/
 if ($approved) {
 	$buildingsPresent = array_fill(0, 1000, 0);
 	$buildingProgress = array_fill(0,1000,0);
-	echo 'Options for construction of building type '.$postVals[1].' at location '.$_SESSION['selectedItem'];
+	//echo 'Options for construction of building type '.$postVals[1].' at location '.$_SESSION['selectedItem'];
 
 	// Load building Names and Costs
-	$buildingInfo = explode('<->', file_get_contents($gamePath.'/buildings.desc'));
+	$buildingInfo = explode('<->', file_get_contents($scnPath.'/buildings.desc'));
 
 	if ($postVals[1] < 100) {
 		// This is a community owned building
@@ -38,18 +39,18 @@ if ($approved) {
 
 		// Load constructed buildings present to check for prereqs
 		$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
-		print_r($bldgList);
+		//print_r($bldgList);
 		foreach ($bldgList as $bldgID) {
-			echo 'Check '.$bldgID.'<br>';
+			//echo 'Check '.$bldgID.'<br>';
 			fseek($unitFile, $bldgID*$defaultBlockSize);
 			$bldgDat = unpack('i*', fread($unitFile, 100));
 
 			if ($bldgDat[7] == 1) {
-				echo 'FINISHED ('.$bldgDat[10].')';
+				//echo 'FINISHED ('.$bldgDat[10].')';
 				// Building is complete - add to list
 				$buildingsPresent[$bldgDat[10]]++;
 			} else {
-				echo 'INPROGRESS ('.$bldgDat[10].')';
+				//echo 'INPROGRESS ('.$bldgDat[10].')';
 				$buildingProgress[$bldgDat[10]]++;
 			}
 		}
@@ -85,7 +86,9 @@ if ($approved) {
 
 	// Compare the list of buildings in the $bldgNames list to what is here and can be constructed.
 	echo '<script>
-	addDiv("test", "reqHolder", document.getElementById("bldgStartContent"));';
+	useDeskTop.newPane("bldgStart");
+	thisDiv = useDeskTop.getPane("bldgStart");
+	addDiv("test", "reqHolder", thisDiv);';
 	$selectedBldg = explode('<-->', $buildingInfo[$postVals[1]]);
 	$prereqs = explode(',', $selectedBldg[3]);
 	//echo 'Explode '.$buildingInfo[$postVals[1]*7+3].' ('.strlen($buildingInfo[$postVals[1]*7+3]).')';
@@ -124,13 +127,13 @@ if ($approved) {
 	if ($preCheck && $rscCheck) {
 		if ($buildingProgress[$postVals[1]]+$buildingsPresent[$postVals[1]] < $selectedBldg[6]) {
 			// Give the option to Proceed with starting a task and construction of the building
-			echo 'confirmButtons("Confirm that you would like to construct this building", "1050,'.$postVals[1].','.$postVals[2].'", "bldgStartContent", 2, "Build It!");</script>';
+			echo 'confirmButtons("Confirm that you would like to construct this building", "1050,'.$postVals[1].','.$postVals[2].'", "test", 2, "Build It!");</script>';
 		} else {
 			echo 'reqBox("Allowed:", "test", '.$selectedBldg[6].', '.($buildingProgress[$postVals[1]]+$buildingsPresent[$postVals[1]]).');
-			confirmButtons("You cannot build anymore of the building", "", "bldgStartContent", 1, "", "OK :(");';
+			confirmButtons("You cannot build anymore of the building", "", "test", 1, "", "OK :(");';
 		}
 	} else {
-		echo 'confirmButtons("PreRequisites not met.", "", "bldgStartContent", 1, "", "OK :(");';
+		echo 'confirmButtons("PreRequisites not met.", "", "test", 1, "", "OK :(");';
 	}
 	echo '</script>';
 

@@ -12,11 +12,12 @@ fclose($taskFile);
 
 $required = max(1000, $taskDat[5]);
 
+/*
 echo '
 <div class="taskHeader" id="task_'.$postVals[1].'_header"></div>
 <div class="centeredmenu" id="task_'.$postVals[1].'_tabs"><ul id="task_'.$postVals[1].'_tabs_ul"></ul></div>
 <div class="taskOptions" id="task_'.$postVals[1].'_options"></div>';
-
+*/
 //print_r($taskDat);
 
 include('../gameScripts/tasks/td_'.$taskDat[7].'.php');

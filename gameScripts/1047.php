@@ -36,16 +36,18 @@ if ($approved) {
 		tabSelect("bldg", 1);
 		';*/
 	echo '<script>
-		var bldgTabs = makeTabMenu("bldgMenu");
-		var bldgTabs_1 = newTab("newChars", 1, "Buildings");
-		var bldgTabs_2 = newTab("newChars", 2, "Construct");
-		var bldgTabs_3 = newTab("newChars", 2, "Town Buildings");
-		';
+		useDeskTop.newPane("cityBldg");
+		thisDiv = useDeskTop.getPane("cityBldg");
+		var bldgTabs = makeTabMenu("bldgMenu", thisDiv);
+		var bldgTabs_1 = newTab("bldgMenu", 1, "Buildings");
+		var bldgTabs_2 = newTab("bldgMenu", 2, "Construct");
+		var bldgTabs_3 = newTab("bldgMenu", 2, "Town Buildings");';
+
 	$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
 	foreach ($bldgList as $bldgID) {
 		fseek($unitFile, $bldgID*$defaultBlockSize);
 		$bldgDat = unpack('i*', fread($unitFile, $defaultBlockSize));
-		echo 'unitList.newUnit{unitType:"building", unitID:'.$unitID.', unitName:"bldg name", actionPoints:'.$bldgDat[16].'};
+		echo 'unitList.newUnit({unitType:"building", unitID:'.$bldgID.', unitName:"bldg name", actionPoints:'.$bldgDat[16].'});
 		unitList.renderSum('.$bldgID.', bldgTabs_1);';
 		//echo 'newBldgSum("'.$bldgID.'", "bldg_tab1", .5, '.$bldgDat[7].');';
 	}
@@ -59,8 +61,8 @@ if ($approved) {
 			$cultureList = explode(',', $bldgTypeInfo[9]);
 			for ($j=0; $j<sizeof($bldgTypeInfo[9]); $j++) {
 				if ($_SESSION['game_'.$gameID]['culture'] == $cultureList[$j]) {
-					echo 'unitList.newUnit{unitType:"building", unitID:"b'.$unitID.'", unitName:"bldg name", actionPoints:'.$bldgDat[16].'};
-					unitList["b'.$bldgID.'"].buildOpt(bldgTabs_2);';
+					echo 'unitList.newUnit({unitType:"building", unitID:"b'.$i.'", unitName:"'.$bldgTypeInfo[0].'", actionPoints:'.$bldgDat[16].'});
+					unitList["unit_b'.$i.'"].buildOpt(bldgTabs_2, 0);';
 					//echo 'newBldgOpt("'.$i.'", 0, "bldg_tab2", "'.$bldgTypeInfo[0].'");';
 				}
 			}

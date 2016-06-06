@@ -16,7 +16,6 @@ $charList = new itemSlot(0, $uSlotFile, 40);
 $usedList = new itemSlot($playerDat[35], $gameSlotFile, 40);
 
 echo '<script>
-
 useDeskTop.newPane("addChars");
 thisDiv = useDeskTop.getPane("addChars");
 var newCharTabs = makeTabMenu("newChars", thisDiv);

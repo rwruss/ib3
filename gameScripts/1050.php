@@ -45,8 +45,10 @@ for ($i=1; $i<sizeof($rscDat); $i+=2) {
 
 // Load constructed buildings present to check for prereqs
 
-if ($buildingCat[1] == 1) {
+if ($buildingCat[1] == 1 || 1) {
 	$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
+	echo 'building list for slot ('.$cityDat[17].'):';
+	print_r($bldgList);
 	foreach ($bldgList as $bldgID) {
 		fseek($unitFile, $bldgID*$defaultBlockSize);
 		$bldgDat = unpack('i*', fread($unitFile, 100));
@@ -77,8 +79,10 @@ if ($buildingCat[1] == 1) {
 	$prereqs = explode(',', $bldgType[3]);
 	$preCheck = true;
 	$buildingsNeeded = [];
-	echo 'Buildings Required ('.sizeof($prereqs).')<br>';
+	echo 'Buildings Required ('.(sizeof($prereqs)/2).')<br>';
 	print_r($prereqs);
+	echo 'Buildings present:';
+	print_r($buildingsPresent);;
 	if (sizeof($prereqs) > 1) {
 		for ($i=0; $i<sizeof($prereqs); $i+=2) {
 			//echo 'Prereq: '.$prereqs[$i].' needs '.$prereqs[$i+1].'<br>';

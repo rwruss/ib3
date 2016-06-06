@@ -16,7 +16,7 @@ $unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerDat[19], 40
 
 echo '<script>
 useDeskTop.newPane("characters");
-thisDiv = useDeskTop.getPane("characters");'
+thisDiv = useDeskTop.getPane("characters");';
 
 foreach ($unitList as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);
