@@ -138,7 +138,7 @@ if ($approved) {
 	echo '</script>';
 
 } else {
-	echo 'You are not approved to look at buildings in this city';
+	//echo 'You are not approved to look at buildings in this city';
 }
 
 fclose($unitFile);

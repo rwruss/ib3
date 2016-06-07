@@ -970,11 +970,15 @@ precision mediump float;
 			testNode = this;
 		}
 		while (testNode.parentNode.nodeName != "BODY") {
-			console.log(testNode.parentNode.nodeName);
-						testNode = testNode.parentNode;
+			testNode = testNode.parentNode;
+			if (testNode.parentNode.parentObj) {
+				console.log(testNode.parentNode.parentObj + " found");
+				break;
+			}
 		}
 		//testNode.remove();
-		testNode.parentObj.destroyWindow();
+		console.log("destroying " + testNode.parentNode.parentObj.nodeType + "  via " + testNode);
+		testNode.parentNode.parentObj.destroyWindow();
 	}
 
 	var taskList = new Array();

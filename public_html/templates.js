@@ -85,7 +85,7 @@ confirmButtons = function (msg, prm, trg, opt, asrc, dsrc) {
 		} else {
 			dButton.innerHTML = "Decline";
 		}
-		dButton.addEventListener("click", function () {killBox(dButton)});
+		dButton.addEventListener("click", function () {killBox(dButton);event.stopPropagation();});
 	}
 }
 
@@ -922,14 +922,16 @@ class pane {
 		this.element = paneBox(desc, 0, 500, 500, 250, 250);
 		//console.log(this.element.childNodes);
 		this.desc = desc;
-		this.desktop = desktop;
-		this.element.childNodes[0].parentObj = this;
+		this.deskHolder = desktop;
+		//this.element.childNodes[0].parentObj = this;
 		this.element.parentObj = this;
-		this.desktop.arrangePanes();
+		this.deskHolder.arrangePanes();
+		this.nodeType = "pane";
 
 		this.element.addEventListener("click", function() {this.parentObj.toTop()});
 		this.element.childNodes[0].addEventListener("click", function () {
-			this.parentObj.destroyWindow();
+			//console.log("destroying " + this.parentNode.parentObj.nodeType + "  via " + this);
+			this.parentNode.parentObj.destroyWindow();
 			event.stopPropagation();
 			});
 		this.element.addEventListener("dragstart", function () {
@@ -943,12 +945,12 @@ class pane {
 	destroyWindow() {
 		//console.log("remove " + this.desc)
 		this.element.remove();
-		this.desktop.removePane(this);
-		//console.log("final " + Object.keys(this.desktop.paneList));
+		this.deskHolder.removePane(this);
+		//console.log("final " + Object.keys(this.deskHolder.paneList));
 	}
 
 	toTop() {
-		this.desktop.paneToTop(this);
+		this.deskHolder.paneToTop(this);
 	}
 }
 
@@ -991,13 +993,15 @@ class deskTop {
 				this.paneList[desc] = mkPane;
 				//console.log("just made " + desc + " --- "  + Object.keys(this.paneList));
 			}
+			//console.log("created " + desc);
 		}
-		console.log("created " + desc);
+
 	}
 
 	arrangePanes() {
 		var count = 1;
 		for (var item in this.paneList) {
+			//console.log("arrange " + item);
 			this.paneList[item].element.style.zIndex = count;
 			count++;
 		}
@@ -1005,7 +1009,10 @@ class deskTop {
 
 	getPane(desc) {
 		if (this.paneList[desc]) {
+			//console.log("dound " + desc);
 			return this.paneList[desc].element.childNodes[1];
+		} else {
+			//console.log(desc + " does not ex");
 		}
 	}
 
@@ -1019,8 +1026,9 @@ class deskTop {
 	removePane (thisPane) {
 		//console.log("Base array " + Object.keys(this.paneList));
 		//console.log("remove from " + this.constructor.name + " looking for " + thisPane.desc);
+		//this.paneList.splice(thisPane.desc, 1);
 		delete this.paneList[thisPane.desc];
-		//console.log("current List " + Object.keys(this.paneList));
+		//console.log("current List " + Object.keys(this.paneList) + " leaving a size of " + this.paneList.length);
 	}
 }
 
@@ -1039,7 +1047,7 @@ selectItem = function (trg, id, others) {
 	selectedItem = trg.parentNode;
 	selectedID = id;
 	trg.parentNode.style.borderColor = "#FF0000";
-	console.log("selectedID is " + selectedID);
+	//console.log("selectedID is " + selectedID);
 	for (var i=0; i<others.length; i++) {
 		unitList.renderSingleSum(id, others[i]);
 	}
