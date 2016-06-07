@@ -23,7 +23,14 @@ for ($i=1; $i<=sizeof($unitList->slotData); $i++) {
 	else if (array_search($unitList->slotData[$i], $sideB->slotData)) $matchedSide = 2;
 }
 
-echo '';
-// Load units on each side of the battle
+// Get information on the wars 
+for ($i=0; $i<=5; $i++) {
+	fseek($unitFile, $unitDat[17+$i]*$defaultBlockSize);
+	$warDat = unpack('i*', fread($unitFile, 200));
+	echo 'War #'.$unitDat[17+$i].'<br>';
+}
+
+echo '<div style="position:absolute; bottom:0; left:0;" onclick="scrMod(1094,'.$unitID.');">Battle Detail</div>';
+
 
 ?>
