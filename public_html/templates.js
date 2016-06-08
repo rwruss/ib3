@@ -554,7 +554,11 @@ class unitList {
 
 	newUnit (object) {
 		if (this["unit_" + object.unitID]) {
-
+				switch (object.unitType) {
+					case "warband":
+					this["unit_" + object.unitID]
+					break;
+				}
 		} else {
 			/*
 			if (object.unitType == "warband") {
@@ -659,8 +663,6 @@ class unit {
 		this.unitID = options.unitID;
 	}
 
-
-
 	set strength(x) {
 		this.str = Math.min(x, 100);
 		setBar(this.unitID, ".sumStr", this.str);
@@ -671,28 +673,18 @@ class unit {
 	}
 
 	changeAttr(id, desc, value) {
-		/*
-		this[desc] = value;
-		console.log("set " + desc + " to " + value)
-		thisList = document.body.querySelectorAll(".udHolder");
-		for (var n=0; n<thisList.length; n++) {
-			if (thisList[n].getAttribute("data-unitid") == id) {
-				for (var i=0; i<thisList[n].childNodes.length; i++) {
-					if (thisList[n].childNodes[i].getAttribute("data-boxName") == desc) {
-						thisList[n].childNodes[i].innerHTML = this[desc];
-					}
-				}
-			} else {
-			}
-		}*/
-	}
 
+	}
 
 	renderSingleSummary(target) {
 		while (target.firstChild) {
 			target.removeChild(target.firstChild);
 		}
 		this.renderSummary(target);
+	}
+
+	update(object) {
+
 	}
 }
 
@@ -781,7 +773,6 @@ class character extends unit {
 }
 
 class plot extends unit {
-
 	constructor (object) {
 		//console.log("make a plot");
 		super(object);
@@ -903,6 +894,16 @@ class task extends unit {
 		this.actionPoints = this.aps;
 	}
 
+	update(object) {
+		this.type = options.unitType || this.type,
+		this.unitName = options.unitName || this.unitName,
+		this.aps = options.actionPoints || this.aps,
+		this.status = options.status || this.status,
+		this.exp = options.exp || this.exp,
+		this.str = options.strength || this.str,
+		this.subType = options.subType || this.subType,
+		this.tNum = options.tNum || this.tNum;
+	}
 }
 
 setBar = function (id, desc, pct) {
