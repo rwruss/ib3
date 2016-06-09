@@ -14,7 +14,6 @@ fseek($unitFile, $pGameID*$defaultBlockSize);
 $playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Creatre the data for the new character
-$typeOffset = [0, 0, 4, 8, 12, 16, 20];
 $charTemplateFile = fopen($scnPath.'/charTemplates.dat', 'rb');
 $newChar = new character($postVals[1]*4, $charTemplateFile);
 fclose($charTemplateFile);
@@ -32,11 +31,13 @@ if (flock($unitFile, LOCK_EX)) {
 	
 	flock($unitFile, LOCK_UN);
 }
-// Add game specific infomration
+
+// Load information for the building that is creating the character
+
+// Add game specific infomrationf
 
 /// Record locations, controller, etc
 
-fclose($unitFile);
 
 // Add character into player's list of available characters
 $unitList = new itemSlot($playerDat[19], $slotFile, 40);

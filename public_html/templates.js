@@ -554,22 +554,8 @@ class unitList {
 
 	newUnit (object) {
 		if (this["unit_" + object.unitID]) {
-				switch (object.unitType) {
-					case "warband":
-					this["unit_" + object.unitID]
-					break;
-				}
+			this["unit_" + object.unitID].update;
 		} else {
-			/*
-			if (object.unitType == "warband") {
-				this["unit_" + object.unitID] = new warband(object);
-			}
-			else if (object.unitType == "character") {
-				this["unit_" + object.unitID] = new character(object);
-			}
-			else if (object.unitType == "plot") {
-				this["unit_" + object.unitID] = new plot(object);
-			}*/
 			switch (object.unitType) {
 				case "warband":
 					this["unit_" + object.unitID] = new warband(object);
@@ -684,7 +670,12 @@ class unit {
 	}
 
 	update(object) {
-
+		this.aps = object.actionPoints || this.aps,
+		this.status = object.status || this.status,
+		this.exp = object.exp || this.exp,
+		this.str = object.strength || this.str,
+		this.subType = object.subType || this.subType,
+		this.tNum = object.tNum || this.tNum;
 	}
 }
 
@@ -895,14 +886,8 @@ class task extends unit {
 	}
 
 	update(object) {
-		this.type = options.unitType || this.type,
-		this.unitName = options.unitName || this.unitName,
-		this.aps = options.actionPoints || this.aps,
-		this.status = options.status || this.status,
-		this.exp = options.exp || this.exp,
-		this.str = options.strength || this.str,
-		this.subType = options.subType || this.subType,
-		this.tNum = options.tNum || this.tNum;
+		super.update(object);
+		this.ptsNeed = object.ptsNeed || this.ptsNeed;
 	}
 }
 
