@@ -34,6 +34,7 @@ switch ($targetBuilding->bldgData[7]) {
 	bldg_'.$postVals[1].'.tab_1 = newTab("bldg_'.$postVals[1].'", 1, "Upgrade");
 	bldg_'.$postVals[1].'.tab_2 = newTab("bldg_'.$postVals[1].'", 2, "Tasks");
 	textBlob("", bldg_'.$postVals[1].'.tab_1, "Upgrade options");';
+	
 	$upgrades = explode(',', $typeInfo[8]);
 	for ($i=0; $i<sizeof($upgrades); $i++) {
 		$upgradeInfo = explode('<-->', $bldgInfo[$upgrades[$i]]);
@@ -58,7 +59,7 @@ switch ($targetBuilding->bldgData[7]) {
 			fseek($unitFile, $targetBuilding->bldgData[$i+18]*$defaultBlockSize);
 			$itemDat = unpack('i*', fread($unitFile, 400));
 			echo '
-			unitList.newUnit({unitType:"warband", unitID:'.$targetBuilding->bldgData[$i+18].', unitName:"Training", actionPoints:'.$itemDat[16].', strength:'.$itemDat[17].'});
+			unitList.newUnit({unitType:"trainingUnit", unitID:'.$targetBuilding->bldgData[$i+18].', unitName:"Training", trainPts:'.$itemDat[18].', trainReq:'.$itemDat[19].'});
 			var objContain = addDiv("", "selectContain", bldgQueue);
 			unitList.renderSum('.$targetBuilding->bldgData[18+$i].', objContain);
 			var newButton = optionButton("", objContain, "25%");

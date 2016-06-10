@@ -554,7 +554,12 @@ class unitList {
 
 	newUnit (object) {
 		if (this["unit_" + object.unitID]) {
-			this["unit_" + object.unitID].update;
+			if (this["unit_" + object.unitID].type == object.unitType) {
+				this["unit_" + object.unitID].update;
+			} else {
+				delete this["unit_" + object.unitID];
+				this.newUnit(object);
+			}
 		} else {
 			switch (object.unitType) {
 				case "warband":
@@ -575,6 +580,10 @@ class unitList {
 
 				case "task":
 					this["unit_" + object.unitID] = new task(object);
+					break;
+					
+				case "trainingUnit":
+					this["unit_" + object.unitID] = new trainingUnit(object);
 					break;
 
 				default:
@@ -676,6 +685,45 @@ class unit {
 		this.str = object.strength || this.str,
 		this.subType = object.subType || this.subType,
 		this.tNum = object.tNum || this.tNum;
+	}
+}
+
+class trainingUnit extends unit {
+	constructor (object) {
+		super(object);
+		this.trainPts = object.trainPts,
+		this.trainReq = object.trainReq;
+	}
+	
+	set trainPts(x) {
+		this.aps = Math.max(0, Math.min(x, 1000));
+		console.log("set aps to " + this.aps);
+		setBar(this.unitID, ".sumAct", this.trainPts*100/this.trainReq);
+	}
+	
+	renderSummary(target) {
+		//console.log('draw ' + this.type)
+		var thisDiv = addDiv(null, 'udHolder', target);
+		thisDiv.setAttribute("data-unitid", this.unitID);
+
+		thisDiv.nameDiv = addDiv("asdf", "sumName", thisDiv);
+		thisDiv.nameDiv.setAttribute("data-boxName", "unitName");
+
+		thisDiv.actDiv = addDiv("asdf", "sumAct", thisDiv);
+		thisDiv.actDiv.setAttribute("data-boxName", "apBar");
+		thisDiv.actDiv.setAttribute("data-boxunitid", this.unitID);
+
+		thisDiv.expDiv = addDiv("asdf", "sumStr", thisDiv);
+		thisDiv.expDiv.setAttribute("data-boxName", "strBar");
+		thisDiv.expDiv.setAttribute("data-boxunitid", this.unitID);
+
+		thisDiv.dtlButton = addDiv("", "sumDtlBut", thisDiv);
+		var prm = "1034,"+this.unitID;
+		thisDiv.dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
+
+		thisDiv.nameDiv.innerHTML = this.unitName + " - " + this.tNum;
+
+		this.trainPts = this.trainPts;
 	}
 }
 

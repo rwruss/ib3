@@ -22,7 +22,7 @@ $actionPoints = min(1000, $bldgDat[16] + floor((time()-$bldgDat[27])/$divisor));
 $queueSpot = false;
 for ($i=0; $i<$bTypeDesc[7]; $i++) {
 	if $bldgDat[$i+18] == 0;
-	$queueSpot = $i;
+	$queueSpot = $i+18;
 	break;
 }
 if ($queueSpot) {
@@ -75,8 +75,12 @@ if ($queueSpot) {
 	}
 	
 	$newUnit->saveAll($unitFile);
+	
+	// Record the unit in the queue spot for this building 
+	fseek($unitFile, $postVals[2]*$defaultBlockSize + $queueSpot*4-4);
+	fwrite($unitFile, pack('i', $newID));
 
-	echo 'Unit '.$unitDesc[$unitType*8].' created';
+	echo 'Unit '.$unitDesc[$unitType*8].' started';
 } else {
 	echo 'No production spots available at this building';
 }
