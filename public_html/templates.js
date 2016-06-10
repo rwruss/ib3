@@ -860,9 +860,9 @@ class task extends unit {
 
 	set actionPoints(x) {
 		this.aps = Math.max(0, Math.min(x, 1000));
-		console.log("set aps to " + this.aps);
+		//console.log("set aps to " + this.aps);
 		setBar(this.unitID, ".sumAct", this.aps*100/this.ptsNeed);
-		console.log("set bar to " + this.aps*100/this.ptsNeed)
+		console.log(this.unitID + " set bar to " + this.aps*100/this.ptsNeed)
 	}
 
 	get actionPoints() {
