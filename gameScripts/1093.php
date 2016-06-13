@@ -33,7 +33,7 @@ echo 'Use '.$usedPoints.' Points';
 // Record new stats for unit production
 if ($usedPoints > 0) {
 	// Updadate stats for producing building
-	$workUnit->unitDat[16] -= $usedPoints;
+	$workUnit->unitDat[16] = $actionPoints-$usedPoints;
 	$workUnit->unitDat[27] = time();
 
 	if ($trgTask->taskDat[6]+$usedPoints >= $trgTask->taskDat[5]) {
@@ -53,12 +53,14 @@ if ($usedPoints > 0) {
 		$newBuilding->saveAll($unitFile);
 		$trgTask->taskDat[6] += $usedPoints;
 
+		// Need to remove the task from the player's que.
+
 	} else {
 		// Update stats for unit in production
 		$trgTask->taskDat[6] += $usedPoints;
-		$trgTask->saveAll($taskFile);
-	}
 
+	}
+	$trgTask->saveAll($taskFile);
 	$workUnit->saveAll($unitFile);
 }
 

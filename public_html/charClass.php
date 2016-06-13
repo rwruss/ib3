@@ -19,7 +19,14 @@ class character {
 		fseek($file, $id*100);
 
 		$this->charDatStr = fread($file, 400);
-		$charData = unpack('i*', $this->charDatStr);
+		$this->charData = unpack('i*', $this->charDatStr);
+		//echo 'Char Data:';
+		//print_r($this->charData);
+	}
+
+	function changeID($newID) {
+		$this->charID = $newID;
+		echo 'New ID is '.$this->charID.'<br>';
 	}
 
 	function save($file) {

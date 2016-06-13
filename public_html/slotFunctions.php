@@ -87,7 +87,7 @@ class itemSlot extends dataSlot {
 		// Determine if there is enough space in the slot
 		$available = sizeof($this->slotList)*($this->size-4);
 		$numSlotsStart = sizeof($this->slotList);
-		echo 'Need '.($emptySpot*4).', Have '.$available.'<p>';
+		echo 'Recording '.$value.' at Slot '.$this->slotList[0].' Need '.($emptySpot*4).', Have '.$available.'<p>';
 		if ($emptySpot*4 > $available) {
 			echo 'Add a slot<br>';
 			// Need to get a new Slot
@@ -115,7 +115,7 @@ class itemSlot extends dataSlot {
 		$writeSlot = floor(($emptySpot*4-1)/($this->size-4));
 		$writePos = 4*$emptySpot - $writeSlot*($this->size-4);
 
-		echo 'Slot #'.$writeSlot.' ('.$this->slotList[$writeSlot].').  Write Spot is '.$writePos.'<p>';
+		echo 'Sub Slot #'.$writeSlot.' ('.$this->slotList[$writeSlot].').  Write Spot is '.$writePos.'<p>';
 		$this->slotData[$emptySpot] = $value;
 
 		fseek($file, $this->slotList[$writeSlot]*$this->size+$writePos);

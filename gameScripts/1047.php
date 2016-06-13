@@ -5,7 +5,7 @@ include("./cityClass.php");
 
 // verify that user is ok to view this info
 $cityID = $_SESSION['selectedItem'];
-echo 'Show projects for city '.$cityID.'<br>';
+//echo 'Show projects for city '.$cityID.'<br>';
 // Verify that the person giving the order has the proper credintials
 $unitFile = fopen($gamePath.'/unitDat.dat' ,'rb');
 fseek($unitFile, $cityID*$defaultBlockSize);
@@ -17,8 +17,8 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
 //$approved = array_search($pGameID, $credList);
 $approved = checkCred($pGameID, $credList);
-echo 'Approved level '.$approved.'<br>
-Show buildings in slot '.$cityDat[17].'<br>';
+//echo 'Approved level '.$approved.'<br>
+//Show buildings in slot '.$cityDat[17].'<br>';
 
 if ($approved) {
 	$buildingInfo = explode('<->', file_get_contents($scnPath.'/buildings.desc'));
@@ -61,7 +61,7 @@ if ($approved) {
 			$cultureList = explode(',', $bldgTypeInfo[9]);
 			for ($j=0; $j<sizeof($bldgTypeInfo[9]); $j++) {
 				if ($_SESSION['game_'.$gameID]['culture'] == $cultureList[$j]) {
-					echo 'unitList.newUnit({unitType:"building", unitID:"b'.$i.'", unitName:"'.$bldgTypeInfo[0].'", actionPoints:'.$bldgDat[16].'});
+					echo 'unitList.newUnit({unitType:"building", unitID:"b'.$i.'", unitName:"'.$bldgTypeInfo[0].'"});
 					unitList["unit_b'.$i.'"].buildOpt(bldgTabs_2, 0);';
 					//echo 'newBldgOpt("'.$i.'", 0, "bldg_tab2", "'.$bldgTypeInfo[0].'");';
 				}

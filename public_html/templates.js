@@ -555,7 +555,7 @@ class unitList {
 	newUnit (object) {
 		if (this["unit_" + object.unitID]) {
 			if (this["unit_" + object.unitID].type == object.unitType) {
-				this["unit_" + object.unitID].update;
+				this["unit_" + object.unitID].update(object);
 			} else {
 				delete this["unit_" + object.unitID];
 				this.newUnit(object);
@@ -581,7 +581,7 @@ class unitList {
 				case "task":
 					this["unit_" + object.unitID] = new task(object);
 					break;
-					
+
 				case "trainingUnit":
 					this["unit_" + object.unitID] = new trainingUnit(object);
 					break;
@@ -694,13 +694,13 @@ class trainingUnit extends unit {
 		this.trainPts = object.trainPts,
 		this.trainReq = object.trainReq;
 	}
-	
+
 	set trainPts(x) {
 		this.aps = Math.max(0, Math.min(x, 1000));
 		console.log("set aps to " + this.aps);
 		setBar(this.unitID, ".sumAct", this.trainPts*100/this.trainReq);
 	}
-	
+
 	renderSummary(target) {
 		//console.log('draw ' + this.type)
 		var thisDiv = addDiv(null, 'udHolder', target);
@@ -919,12 +919,12 @@ class task extends unit {
 
 	renderSummary(target) {
 		var thisDetail = addDiv("", "tdHolder", target);
-		thisDetail.act = addDiv("", "udAct", thisDetail);
+		//thisDetail.act = addDiv("", "udAct", thisDetail);
 		thisDetail.statusBox = addDiv("", "bldgLvl", thisDetail);
 		thisDetail.statusBox.innerHTML = "Task" + this.unitID;
 
 
-		var actDiv = addDiv("", "sumAct", thisDiv);
+		var actDiv = addDiv("", "sumAct", thisDetail);
 		actDiv.setAttribute("data-boxName", "apBar");
 		actDiv.setAttribute("data-boxunitid", this.unitID);
 

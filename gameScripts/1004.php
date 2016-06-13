@@ -94,8 +94,9 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 	$mapSlot = new blockSlot($mapSlotNum, $mapSlotFile, 404); /// start, file, size
 
-
+	// Create a unit slot for the player
 	$unitSlot = startASlot($gameSlot, $gamePath."/gameSlots.slt");
+	echo 'Unit slot is '.$unitSlot.'<br>';
 	$unitList = new itemSlot($unitSlot, $gameSlot, 40);
 
 	// Create a new town
@@ -140,7 +141,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		}
 
 		$mapSlot->addItem($mapSlotFile, pack('i*', $armyID, 0), $mLoc); // file, bin value, loc
-		$armySlot = new itemSlot($armySlot, $gameSlot, 40);
+		$armyObj = new itemSlot($armySlot, $gameSlot, 40);
 		$unitList->addItem($armyID, $gameSlot);
 	}
 	echo 'Army ID is '.$armyID.'<p>';
@@ -164,9 +165,11 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 
 	// Add char data to the town character slot
-	$dat = pack('i*', -9, $newCharID);
-	fseek($gameSlot, $townData[13]*40+4);
-	fwrite($gameSlot, $dat);
+	if ($startTown) {
+		$dat = pack('i*', -9, $newCharID);
+		fseek($gameSlot, $townData[13]*40+4);
+		fwrite($gameSlot, $dat);
+	}
 
 	// Record leadership of the town in the character's position information
 	$newDat = pack('i*', -1*$townID, 10) ;
@@ -185,36 +188,40 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		$typeParams = explode(",", $thisDtl[1]);
 		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
 		fwrite($unitFile, pack("i", 0));
-		
+
 		$newUnit = new unit($newId, $unitFile, 400);
 		$newUnit->unitDat[1] = $startLocation[0]; // X Loc
 		$newUnit->unitDat[2] = $startLocation[1]; // Y Loc
 		$newUnit->unitDat[3] = 1; // Icon
 		$newUnit->unitDat[4] = $typeParams[3]; // Unit Type
-		$newUnit->unitDat[5] = $pGameID; // Owner 
-		$newUnit->unitDat[6] = $pGameID; // Controller 
-		$newUnit->unitDat[7] = 1; // Status 
-		$newUnit->unitDat[8] = $postVals[1]; // Culture 
-		$newUnit->unitDat[10] = $makeTypes[$i]; // Troop Type 
-		$newUnit->unitDat[12] = $townID; // Current Loc		
-		$newUnit->unitDat[15] = $armyID; // Army ID	
-		$newUnit->unitDat[17] = $thisDtl[10]; // Army ID	
-		
+		$newUnit->unitDat[5] = $pGameID; // Owner
+		$newUnit->unitDat[6] = $pGameID; // Controller
+		$newUnit->unitDat[7] = 1; // Status
+		$newUnit->unitDat[8] = $postVals[1]; // Culture
+		$newUnit->unitDat[10] = $makeTypes[$i]; // Troop Type
+		$newUnit->unitDat[12] = $townID; // Current Loc
+		$newUnit->unitDat[15] = $armyID; // Army ID
+		$newUnit->unitDat[17] = $thisDtl[10]; // Army ID
+
+		$newUnit->saveAll($unitFile);
 		/*
 		fseek($unitFile, ($newId)*$defaultBlockSize);
 		// Basic parameters
 		fwrite($unitFile, pack("i*", $startLocation[0],$startLocation[1],1,$typeParams[3],$pGameID, $pGameID,1,$postVals[1],0));
 		// Secondary information
 		fwrite($unitFile, pack("i*", $makeTypes[$i], 0, $townID));
-		
+
 
 		fseek($unitFile, ($newId)*$defaultBlockSize+56);
 		fwrite($unitFile, pack('i', $armyID));
 		*/
 		//addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
+		echo 'Record unit #'.$newId.' in unit slot<br>';
 		$unitList->addItem($newId, $gameSlot);
+		print_r($unitList->slotData);
 		if (!$startTown) {
-			$armySlot->addItem($newId, $gameSlot);
+			echo 'Record in army slot<br>';
+			$armyObj->addItem($newId, $gameSlot);
 			//->addItem($newId, $mapSlotFile); // value, file
 		} else {
 			//addDataToSlot($gamePath."/gameSlots.slt", $townUnitSlot, pack("i", $newId), $gameSlot);
@@ -238,7 +245,9 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fwrite($unitFile, pack("i", 9990));
 
 		//addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
+		echo 'Record unit #'.$newId.' in unit slot<br>';
 		$unitList->addItem($newId, $gameSlot);
+		print_r($unitList->slotData);
 		if (!$startTown) {
 			$mLoc = sizeof($mapSlot->slotData);
 			for ($i=1; $i<=sizeof($mapSlot->slotData); $i+=2) {
@@ -309,7 +318,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fclose($mapSlotFile);
 }
 
-echo "<script>window.location.replace('./play.php?gameID=".$gameID."')</script>";
+//echo "<script>window.location.replace('./play.php?gameID=".$gameID."')</script>";
 
 
 

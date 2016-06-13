@@ -21,9 +21,10 @@ $actionPoints = min(1000, $bldgDat[16] + floor((time()-$bldgDat[27])/$divisor));
 
 $queueSpot = false;
 for ($i=0; $i<$bTypeDesc[7]; $i++) {
-	if $bldgDat[$i+18] == 0;
-	$queueSpot = $i+18;
-	break;
+	if ($bldgDat[$i+18] == 0)	{
+		$queueSpot = $i+18;
+		break;
+	}
 }
 if ($queueSpot) {
 	// Load the unit dat from the parameters file
@@ -65,7 +66,7 @@ if ($queueSpot) {
 	// add the unit to the list of units for this player
 	$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 	addDataToSlot($gamePath.'/gameSlots.slt', $playerDat[22], pack('i', $unitIndex), $slotFile);
-	
+
 	if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fseek($unitFile, 396, SEEK_END);
 		fwrite($unitFile, pack('i', 0));
@@ -73,10 +74,10 @@ if ($queueSpot) {
 		$newID = $size/$defaultBlockSize-4;
 		flock($unitFile, LOCK_UN); // release the lock  on the player File
 	}
-	
+
 	$newUnit->saveAll($unitFile);
-	
-	// Record the unit in the queue spot for this building 
+
+	// Record the unit in the queue spot for this building
 	fseek($unitFile, $postVals[2]*$defaultBlockSize + $queueSpot*4-4);
 	fwrite($unitFile, pack('i', $newID));
 

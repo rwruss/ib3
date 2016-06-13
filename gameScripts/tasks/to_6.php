@@ -48,8 +48,8 @@ for ($i=1; $i<=sizeof($charList->slotData); $i++) {
 }
 
 echo 'var objContain = addDiv("", "selectContain", newCharTabs_2);
-	objContain.innerHTML = "SOmething new";
-	objContain.addEventListener("click", function () {scrMod("1091,1")});
+	objContain.innerHTML = "SOmething new at building '.$postVals[2].'";
+	objContain.addEventListener("click", function () {scrMod("1091,'.$postVals[2].',1")});
 	</script>';
 
 fclose($gameSlotFile);
