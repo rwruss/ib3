@@ -71,7 +71,7 @@ if ($usedPoints > 0) {
 		$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'rb');
 
 		$mapSlot = new blockSlot($mapSlotNum, $mapSlotFile, 404); /// start, file, size
-		$mapSlot->addItem($mapSlotFile, pack('i*', $useBldg->bldgData[$postVals[2]], 0)); // value, file
+		$mapSlot->addItem($mapSlotFile, pack('i*', $useBldg->bldgData[$postVals[2]], 0)); // unit ID, not visible
 
 		fclose($mapSlotFile);
 	} else {
