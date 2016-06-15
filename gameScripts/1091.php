@@ -10,7 +10,7 @@ include("./slotFunctions.php");
 include("./charClass.php");
 
 // Get player data
-$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
+$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 fseek($unitFile, $pGameID*$defaultBlockSize);
 $playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
@@ -31,7 +31,6 @@ for ($i=0; $i<$bTypeDesc[7]; $i++) {
 }
 if ($queueSpot) {
 	echo 'Open spot - proceed';
-	$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 
 	// Creatre the data for the new character
 	$charTemplateFile = fopen($scnPath.'/charTemplates.dat', 'rb');
@@ -61,10 +60,14 @@ if ($queueSpot) {
 	$newChar->charData[18] = 0;
 	$newChar->charData[19] = 500;
 
-	print_r($newChar->charData);
-
+	// Save the new character
 	$newChar->save($unitFile);
 
+	// Add the unit to the building slot
+	echo 'Save unit '.$newID.' in building #'.$postVals[1].' queue spot '.$queueSpot;
+	fseek($unitFile, $postVals[1]*$defaultBlockSize+4*($queueSpot-1));
+	fwrite($unitFile, pack('i', $newID));
+	//$bldgDat[$queueSpot+18]
 } else {
 	echo 'No available spots';
 }
@@ -105,7 +108,7 @@ for ($i=1; $i<=sizeof($mapSlotDat->slotData); $i++) {
 }
 */
 // Record time that the character was imported into the game information file
-fclose($slotFile);
+
 fclose($unitFile);
 
 ?>

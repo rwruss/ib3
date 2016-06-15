@@ -33,8 +33,9 @@ switch ($targetBuilding->bldgData[7]) {
 	echo 'var bldg_'.$postVals[1].' = makeTabMenu("bldg_'.$postVals[1].'", thisDiv);
 	bldg_'.$postVals[1].'.tab_1 = newTab("bldg_'.$postVals[1].'", 1, "Upgrade");
 	bldg_'.$postVals[1].'.tab_2 = newTab("bldg_'.$postVals[1].'", 2, "Tasks");
+	bldg_'.$postVals[1].'.tab_3 = newTab("bldg_'.$postVals[1].'", 3, "Production");
 	textBlob("", bldg_'.$postVals[1].'.tab_1, "Upgrade options");';
-	
+
 	$upgrades = explode(',', $typeInfo[8]);
 	for ($i=0; $i<sizeof($upgrades); $i++) {
 		$upgradeInfo = explode('<-->', $bldgInfo[$upgrades[$i]]);
@@ -51,7 +52,7 @@ switch ($targetBuilding->bldgData[7]) {
 	}
 
 	// Show type dependent items in progress at this locaiton - check training slots
-	echo 'var bldgQueue = addDiv("", "stdContain", thisDiv);';
+	echo 'var bldgQueue = addDiv("", "stdContain", bldg_'.$postVals[1].'.tab_3);';
 	if ($typeInfo[7] > 0)
 	for ($i=0; $i<$typeInfo[7]; $i++) {
 		if ($targetBuilding->bldgData[$i+18] != 0) {

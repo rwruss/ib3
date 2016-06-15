@@ -583,6 +583,7 @@ class unitList {
 					break;
 
 				case "trainingUnit":
+					console.log("mk training unit");
 					this["unit_" + object.unitID] = new trainingUnit(object);
 					break;
 
@@ -692,7 +693,8 @@ class trainingUnit extends unit {
 	constructor (object) {
 		super(object);
 		this.trainPts = object.trainPts,
-		this.trainReq = object.trainReq;
+		this.trainReq = object.trainReq,
+		this.unitID = object.unitID;
 	}
 
 	set trainPts(x) {
@@ -702,7 +704,7 @@ class trainingUnit extends unit {
 	}
 
 	renderSummary(target) {
-		//console.log('draw ' + this.type)
+		console.log('draw ttraing ' + this.unitID)
 		var thisDiv = addDiv(null, 'udHolder', target);
 		thisDiv.setAttribute("data-unitid", this.unitID);
 
@@ -721,7 +723,7 @@ class trainingUnit extends unit {
 		var prm = "1034,"+this.unitID;
 		thisDiv.dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
-		thisDiv.nameDiv.innerHTML = this.unitName + " - " + this.tNum;
+		thisDiv.nameDiv.innerHTML = this.unitName + " - " + this.unitID;
 
 		this.trainPts = this.trainPts;
 	}

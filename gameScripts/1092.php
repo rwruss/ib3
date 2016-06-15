@@ -40,25 +40,25 @@ if ($usedPoints > 0) {
 		$trgUnit->unitDat[2] = $useBldg->bldgData[2];
 		$trgUnit->unitDat[18] = 0;
 		$trgUnit->unitDat[19] = 0;
-		
+
 		fseek($unitFile, $pGameID*$defaultBlockSize);
 		$playerDat = unpack('i*', fread($unitFile, 400));
 		$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-		
+
 		switch ($trgUnit->unitDat[4]) {
 			case 4:
 				// made a new character
-				
-				// Record in player character list				
+
+				// Record in player character list
 				$charSlot = new itemSlot($playerDat[19], $slotFile, 40);
 				$charSlot->addItem($useBldg->bldgData[$postVals[2]]);
 				break;
-				
+
 			case 6:
 				// made a new warband
-				
-				// Record in player unit list				
-				$unitList = new itemSlot($playerDat[22], $slotFile, 40)));
+
+				// Record in player unit list
+				$unitList = new itemSlot($playerDat[22], $slotFile, 40);
 				$unitList->addItem($useBldg->bldgData[$postVals[2]]);
 				break;
 		}
