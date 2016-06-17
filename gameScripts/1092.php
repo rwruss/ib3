@@ -7,7 +7,7 @@ include('./cityClass.php');
 Process work on a building production item
 Post Vals 1 = Building ID, 2 = Production Slot #, 3 = %
 */
-echo 'Work on item '.$postVals[1];
+echo 'Work at building '.$postVals[1];
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 
 // Get data for building producing the item
@@ -15,18 +15,19 @@ $useBldg = new building($postVals[1], $unitFile);
 
 // Caluclate action points available
 $divisor = max(1,$useBldg->bldgData[17]);
-$actionPoints = min(1000, $useBldg->bldgData[16] + floor((time()-$useBldg->bldgData[27])/$divisor));
+echo 'Divisor is '.$divisor.' Time is '.(time()-$useBldg->bldgData[27]);
+$actionPoints = min(1000, $useBldg->bldgData[16] + 100*floor((time()-$useBldg->bldgData[27])/$divisor));
 
 $actionPct = [0, 100, 250, 500, 1000];
 $availablePoints = min($actionPct[$postVals[3]], $actionPoints);
 
 // Calculate points needed to complete the training
-$trgUnit = new unit($useBldg->bldgData[$postVals[2]], $unitFile, 400);
+$trgUnit = new unit($useBldg->bldgData[$postVals[2]+18], $unitFile, 400);
 
 $neededPts = $trgUnit->unitDat[19]-$trgUnit->unitDat[18];
 $usedPoints = min($availablePoints, $neededPts);
 
-echo 'Use '.$usedPoints.' Points';
+echo 'Use '.$usedPoints.' of '.$availablePoints.'  Points to add to production of object #'.$useBldg->bldgData[$postVals[2]+18];
 
 // Record new stats for unit production
 if ($usedPoints > 0) {
@@ -35,6 +36,7 @@ if ($usedPoints > 0) {
 	$useBldg->bldgData[27] = time();
 
 	if ($trgUnit->unitDat[18]+$usedPoints >= $trgUnit->unitDat[19]) {
+		echo 'Unit is complete<br>';
 	// Process completion of unit training
 		$trgUnit->unitDat[1] = $useBldg->bldgData[1];
 		$trgUnit->unitDat[2] = $useBldg->bldgData[2];
@@ -75,6 +77,7 @@ if ($usedPoints > 0) {
 
 		fclose($mapSlotFile);
 	} else {
+		echo 'Unit is not complete '.$trgUnit->unitDat[18].' + '.$usedPoints.' < '.$trgUnit->unitDat[19];
 		// Update stats for unit in production
 		$trgUnit->unitDat[18] += $usedPoints;
 	}
