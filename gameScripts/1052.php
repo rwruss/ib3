@@ -59,23 +59,24 @@ if ($queueSpot) {
 	$newUnit->set("updateTime", time());
 
 	// Need to get a new unit ID and save to that unit ID in the unit file
-
-	// add the unit to the list of units for this player
-	$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-	addDataToSlot($gamePath.'/gameSlots.slt', $playerDat[22], pack('i', $unitIndex), $slotFile);
-
 	if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fseek($unitFile, 396, SEEK_END);
 		fwrite($unitFile, pack('i', 0));
 		$size = ftell($unitFile);
 		$newID = $size/$defaultBlockSize-4;
+		fflush($unitFile);
 		flock($unitFile, LOCK_UN); // release the lock  on the player File
 	}
+	newUnit->changeID($newID);
+	
+	// add the unit to the list of units for this player
+	$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+	addDataToSlot($gamePath.'/gameSlots.slt', $playerDat[22], pack('i', $newID), $slotFile);
 
 	$newUnit->saveAll($unitFile);
 
 	// Record the unit in the queue spot for this building
-	fseek($unitFile, $postVals[2]*$defaultBlockSize + $queueSpot*4-4);
+	fseek($unitFile, $postVals[2]*$defaultBlockSize + (18+$queueSpot)*4-4);
 	fwrite($unitFile, pack('i', $newID));
 
 	echo 'Unit '.$unitDesc[$unitType*8].' started';

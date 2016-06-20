@@ -40,6 +40,10 @@ class unit {
 			$this->unitDat[$this->attrList[$desc]] = $val;
 		}
 	}
+	
+	function changeID($newID) {
+		$this->unitID = $newID;
+	}
 
 	function save($desc, $val) {
 		global $defaultBlockSize;

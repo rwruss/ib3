@@ -17,7 +17,8 @@ $usedList = new itemSlot($playerDat[35], $gameSlotFile, 40);
 
 echo '<script>
 useDeskTop.newPane("addChars");
-thisDiv = useDeskTop.getPane("addChars");
+thisDiv = useDeskTop.getPane("addChars");';
+/*
 var newCharTabs = makeTabMenu("newChars", thisDiv);
 var newCharTabs_1 = newTab("newChars", 1, "My Chars");
 var newCharTabs_2 = newTab("newChars", 2, "New");
@@ -46,8 +47,8 @@ for ($i=1; $i<=sizeof($charList->slotData); $i++) {
 		newButton.addEventListener("click", function () {scrMod("1090,"+this.objectID)});
 ';
 }
-
-echo 'var objContain = addDiv("", "selectContain", newCharTabs_2);
+*/
+echo 'var objContain = addDiv("", "selectContain", thisDiv);
 	objContain.innerHTML = "SOmething new at building '.$postVals[2].'";
 	objContain.addEventListener("click", function () {scrMod("1091,'.$postVals[2].',1")});
 	</script>';
