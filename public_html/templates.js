@@ -61,7 +61,7 @@ confirmBox = function (msg, prm, type, trg, aSrc, dSrc) {
 
 confirmButtons = function (msg, prm, trg, opt, asrc, dsrc) {
 
-	var boxHolder = addDiv(trg+"_confirmButtons", "cButtons", document.getElementById(trg));
+	var boxHolder = addDiv(trg+"_confirmButtons", "cButtons", trg);
 
 	var boxMsg = addDiv("confirmBox", "cBoxM", boxHolder);
 	var buttonHolder = addDiv(trg+"buttonHolder", "cButtons", boxHolder);
@@ -656,6 +656,7 @@ class unit {
 		this.str = options.strength || 0,
 		this.subType = options.subType || 0,
 		this.tNum = options.tNum || 0,
+		this.trainPts = 0,
 		this.unitID = options.unitID;
 	}
 
@@ -680,6 +681,7 @@ class unit {
 	}
 
 	update(object) {
+		console.log("update unit");
 		this.aps = object.actionPoints || this.aps,
 		this.status = object.status || this.status,
 		this.exp = object.exp || this.exp,
@@ -692,15 +694,19 @@ class unit {
 class trainingUnit extends unit {
 	constructor (object) {
 		super(object);
-		this.trainPts = object.trainPts,
-		this.trainReq = object.trainReq,
+		this.oTrainPts = object.trainPts || 0;
+		this.trainReq = object.trainReq || 100;
+		this.wtf = object.trainPts;
 		this.unitID = object.unitID;
+		console.log(this.unitID + "training unit made with " + this.oTrainPts + " points");
+		console.log(this);
+		console.log(object);
 	}
 
 	set trainPts(x) {
 		this.aps = Math.max(0, Math.min(x, 1000));
-		console.log("set aps to " + this.aps);
-		setBar(this.unitID, ".sumAct", this.trainPts*100/this.trainReq);
+		console.log("set training points to " + this.oTrainPts);
+		setBar(this.unitID, ".sumAct", this.oTrainPts*100/this.trainReq);
 	}
 
 	renderSummary(target) {
@@ -725,7 +731,18 @@ class trainingUnit extends unit {
 
 		thisDiv.nameDiv.innerHTML = this.unitName + " - " + this.unitID;
 
-		this.trainPts = this.trainPts;
+		this.trainPts = this.oTrainPts;
+	}
+
+	update (object) {
+		super.update(object);
+
+		this.oTrainPts = object.trainPts || this.oTrainPts,
+		this.trainReq = object.trainReq,
+		this.unitID = object.unitID;
+
+		this.trainPts = this.oTrainPts;
+		console.log("set train pts to " + this.oTrainPts);
 	}
 }
 

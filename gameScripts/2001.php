@@ -8,7 +8,7 @@ fseek($unitFile, $cityID*$defaultBlockSize);
 $cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 fclose($unitFile);
 echo 'City Data: ';
-print_r($cityDat);
+//print_r($cityDat);
 
 // Load resource Data
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
@@ -17,7 +17,7 @@ $rscDat = unpack("i*", readSlotData($slotFile, $cityDat[11], 40));
 $numHave = sizeof($rscDat)/2;
 fclose($slotFile);
 echo '<P>Rsc Data:<br>';
-print_r($rscDat);
+//print_r($rscDat);
 
 echo '<p>City Resources: ';
 for ($i=1; $i<$numHave; $i++) {

@@ -46,22 +46,19 @@ if ($queueSpot) {
 	$cityDat = unpack('i*', fread($unitFile, 400));
 
 	// create a unit from template dat
-	$templateFile = fopen($scnPath.'/unitTemplates.dat', 'rb');
-	$newUnit = new unit($unitType*4, $charTemplateFile, 400);
+	$templateFile = fopen($scnPath.'/charTemplates.dat', 'rb');
+	$newUnit = new unit($unitType*4, $templateFile, 400);
 	fclose($templateFile);
 
 
 	// Record specifics for this unit
-	//fseek($unitFile, $unitIndex*$defaultBlockSize);
-	//fwrite($unitFile, pack('i*', $cityDat[1], $cityDat[2], 0, 6, $pGameID, $pGameID, 1, 1, 1, $unitType));
 	$newUnit->set("xLoc", $cityDat[1]);
 	$newUnit->set("yLoc", $cityDat[2]);
 	$newUnit->set("owner", $pGameID);
 	$newUnit->set("controller", $pGameID);
 	$newUnit->set("updateTime", time());
 
-	//fseek($unitFile, $unitIndex*$defaultBlockSize+104);
-	//fwrite($unitFile, pack('i', time()));
+	// Need to get a new unit ID and save to that unit ID in the unit file
 
 	// add the unit to the list of units for this player
 	$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');

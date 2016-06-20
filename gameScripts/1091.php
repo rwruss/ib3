@@ -57,6 +57,7 @@ if ($queueSpot) {
 	/// Record locations, controller, etc
 	$newChar->charData[1] = $bldgDat[1];
 	$newChar->charData[2] = $bldgDat[2];
+	$newChar->charData[4] = 4;
 	$newChar->charData[18] = 0;
 	$newChar->charData[19] = 500;
 
