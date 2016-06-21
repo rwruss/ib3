@@ -11,7 +11,7 @@ $typeDesc = explode('<-->', $unitDesc[$unitType]);
 echo 'Produce unit type '.$unitType.'<br>
 '.$typeDesc[0].'
 <script>
-confirmButtons("Confirm that you would like to train '.trim($typeDesc[0]).'", "1052,'.$taskNum[0].','.$unitType.'", thisDiv, 2, "Train");
+confirmButtons("Confirm that you would like to train '.trim($typeDesc[0]).'", "1052,'.$taskNum[0].','.$unitType.','.$postVals[2].'", thisDiv, 2, "Train");
 </script>
 ';
 

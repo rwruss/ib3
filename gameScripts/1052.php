@@ -5,11 +5,10 @@ include('./unitClass.php');
 // Process training the unit type selected.
 
 $unitType = $postVals[2];
-echo '<Script>alert("Train unit type '.$unitType.' at city '.$_SESSION['selectedItem'].'");';
 
 // Load information for the building producing the unit
-$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $postVals[2]*$defaultBlockSize);
+$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
+fseek($unitFile, $postVals[3]*$defaultBlockSize);
 $bldgDat = unpack('i*', fread($unitFile, 200));
 
 $bldgDesc = explode('<->', file_get_contents($scnPath.'/buildings.desc'));
@@ -18,9 +17,10 @@ $divisor = max(1,$bldgDat[17]);
 $actionPoints = min(1000, $bldgDat[16] + floor((time()-$bldgDat[27])/$divisor));
 
 // Check if slots are available in the production queue
-
+print_r($bldgDat);
 $queueSpot = false;
 for ($i=0; $i<$bTypeDesc[7]; $i++) {
+	echo 'Check slot '.$i;
 	if ($bldgDat[$i+18] == 0)	{
 		$queueSpot = $i+18;
 		break;
@@ -46,7 +46,7 @@ if ($queueSpot) {
 	$cityDat = unpack('i*', fread($unitFile, 400));
 
 	// create a unit from template dat
-	$templateFile = fopen($scnPath.'/charTemplates.dat', 'rb');
+	$templateFile = fopen($scnPath.'/charTemplates.dat', 'r+b');
 	$newUnit = new unit($unitType*4, $templateFile, 400);
 	fclose($templateFile);
 
@@ -57,6 +57,7 @@ if ($queueSpot) {
 	$newUnit->set("owner", $pGameID);
 	$newUnit->set("controller", $pGameID);
 	$newUnit->set("updateTime", time());
+	$newUnit->set("troopType", $postVals[2]);
 
 	// Need to get a new unit ID and save to that unit ID in the unit file
 	if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
@@ -67,24 +68,25 @@ if ($queueSpot) {
 		fflush($unitFile);
 		flock($unitFile, LOCK_UN); // release the lock  on the player File
 	}
-	newUnit->changeID($newID);
-	
-	// add the unit to the list of units for this player
-	$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-	addDataToSlot($gamePath.'/gameSlots.slt', $playerDat[22], pack('i', $newID), $slotFile);
+	$newUnit->changeID($newID);
 
+	// add the unit to the list of units for this player
+	$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
+	addDataToSlot($gamePath.'/gameSlots.slt', $playerDat[22], pack('i', $newID), $slotFile);
+	fclose($slotFile);
 	$newUnit->saveAll($unitFile);
 
 	// Record the unit in the queue spot for this building
-	fseek($unitFile, $postVals[2]*$defaultBlockSize + (18+$queueSpot)*4-4);
+	echo 'Record at '.$queueSpot.' in building '.$postVals[3];
+	fseek($unitFile, $postVals[3]*$defaultBlockSize + ($queueSpot)*4-4);
 	fwrite($unitFile, pack('i', $newID));
 
-	echo 'Unit '.$unitDesc[$unitType*8].' started';
+	echo $uTypeDesc[0].' started';
 } else {
 	echo 'No production spots available at this building';
 }
 
-fclose($slotFile);
+
 fclose($unitFile);
 
 

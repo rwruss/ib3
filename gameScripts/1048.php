@@ -53,27 +53,29 @@ switch ($targetBuilding->bldgData[7]) {
 
 	// Show type dependent items in progress at this locaiton - check training slots
 	echo 'var bldgQueue = addDiv("", "stdContain", bldg_'.$postVals[1].'.tab_3);';
-	if ($typeInfo[7] > 0)
-	for ($i=0; $i<$typeInfo[7]; $i++) {
-		if ($targetBuilding->bldgData[$i+18] != 0) {
-			// Get data on object being made
-			fseek($unitFile, $targetBuilding->bldgData[$i+18]*$defaultBlockSize);
-			$itemDat = unpack('i*', fread($unitFile, 400));
-			echo '
-			unitList.newUnit({unitType:"trainingUnit", unitID:'.$targetBuilding->bldgData[$i+18].', unitName:"Training", trainPts:'.$itemDat[18].', trainReq:'.$itemDat[19].'});
-			var objContain = addDiv("", "selectContain", bldgQueue);
-			unitList.renderSum('.$targetBuilding->bldgData[18+$i].', objContain);
-			var newButton = optionButton("", objContain, "25%");
-			newButton.objectID = "'.$postVals[1].','.$i.',1";
-			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});
-			var newButton = optionButton("", objContain, "50%");
-			newButton.objectID = "'.$postVals[1].','.$i.',2";
-			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});
-			var newButton = optionButton("", objContain, "100%");
-			newButton.objectID = "'.$postVals[1].','.$i.',3";
-			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});';
-		}
-	}
+	if ($typeInfo[7] > 0) {
+    //print_r($targetBuilding->bldgData);
+  	for ($i=0; $i<$typeInfo[7]; $i++) {
+  		if ($targetBuilding->bldgData[$i+18] != 0) {
+  			// Get data on object being made
+  			fseek($unitFile, $targetBuilding->bldgData[$i+18]*$defaultBlockSize);
+  			$itemDat = unpack('i*', fread($unitFile, 400));
+  			echo '
+  			unitList.newUnit({unitType:"trainingUnit", unitID:'.$targetBuilding->bldgData[$i+18].', unitName:"Training", trainPts:'.$itemDat[18].', trainReq:'.$itemDat[19].'});
+  			var objContain = addDiv("", "selectContain", bldgQueue);
+  			unitList.renderSum('.$targetBuilding->bldgData[18+$i].', objContain);
+  			var newButton = optionButton("", objContain, "25%");
+  			newButton.objectID = "'.$postVals[1].','.$i.',1";
+  			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});
+  			var newButton = optionButton("", objContain, "50%");
+  			newButton.objectID = "'.$postVals[1].','.$i.',2";
+  			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});
+  			var newButton = optionButton("", objContain, "100%");
+  			newButton.objectID = "'.$postVals[1].','.$i.',3";
+  			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});';
+  		}
+  	}
+  }
 	break;
 }
 echo '</script>';

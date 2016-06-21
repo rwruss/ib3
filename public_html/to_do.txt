@@ -1,0 +1,2 @@
+- Add production point requirements to units
+- Make sure all needed unit info is saved in 1052 for starting unit production at a building.
