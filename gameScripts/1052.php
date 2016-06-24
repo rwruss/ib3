@@ -58,6 +58,7 @@ if ($queueSpot) {
 	$newUnit->set("controller", $pGameID);
 	$newUnit->set("updateTime", time());
 	$newUnit->set("troopType", $postVals[2]);
+	$newUnit->unitDat[19] = $uTypeDesc[2];
 
 	// Need to get a new unit ID and save to that unit ID in the unit file
 	if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
