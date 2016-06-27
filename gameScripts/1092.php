@@ -42,6 +42,7 @@ if ($usedPoints > 0) {
 		$trgUnit->unitDat[2] = $useBldg->bldgData[2];
 		$trgUnit->unitDat[5] = $pGameID; // Owner
 		$trgUnit->unitDat[6] = $pGameID; // Controller
+		$trgUnit->unitDat[7] = 1; // Controller
 
 		$trgUnit->unitDat[18] = 0;
 		$trgUnit->unitDat[19] = 0;

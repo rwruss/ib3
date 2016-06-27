@@ -20,7 +20,7 @@ $typeDat = explode('<-->', $unitDesc[$unitDat[10]]);
 $unitTasks = explode(',', $typeDat[8]);
 
 // Load task file to get list of tasks that can be done by this unit
-$jobDesc = explode('<->', file_get_contents($scnPath.'/jobs.desc'));
+$jobItems = explode('<->', file_get_contents($scnPath.'/jobs.desc'));
 
 // Check to see if the unit is in a city
 $mapSlot = floor($unitDat[2]/120)*120+floor($unitDat[1]/120);
@@ -38,7 +38,7 @@ print_r($checkItems);
 
 echo '<script>
 useDeskTop.newPane("charOrders_'.$postVals[1].'");
-thisDiv = useDeskTop.getPane("charOrders_'.$postVals[1].'");'
+thisDiv = useDeskTop.getPane("charOrders_'.$postVals[1].'");';
 
 foreach ($checkItems as $checkID) {
 	fseek($unitFile, $checkID*$defaultBlockSize);
@@ -57,16 +57,17 @@ foreach ($checkItems as $checkID) {
 			print_r($cityTasks->slotData);
 			fclose($slotFile);
 			break;
-			
+
 			default:
-			echo 'Some object here';
+			//echo 'Some object here';
 			break;
 		}
 	}
 }
 
 for ($i=0; $i<sizeof($unitTasks); $i++) {
-	echo 'var task = unitTaskOpt('.$unitTasks[$i].', thisDiv, "'.$jobDesc[$unitTasks[$i]*4+2].'");';
+	$jobDesc = explode('<-->', $jobItems[$unitTasks[$i]]);
+	echo 'var task = unitTaskOpt('.$unitTasks[$i].', thisDiv, "'.trim($jobDesc[3]).'");';
 }
 echo '</script>';
 ?>

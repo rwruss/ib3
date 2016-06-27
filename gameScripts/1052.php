@@ -58,6 +58,7 @@ if ($queueSpot) {
 	$newUnit->set("controller", $pGameID);
 	$newUnit->set("updateTime", time());
 	$newUnit->set("troopType", $postVals[2]);
+	$newUnit->unitDat[4] = 6;
 	$newUnit->unitDat[19] = $uTypeDesc[2];
 
 	// Need to get a new unit ID and save to that unit ID in the unit file
@@ -72,9 +73,11 @@ if ($queueSpot) {
 	$newUnit->changeID($newID);
 
 	// add the unit to the list of units for this player
+	/*
 	$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 	addDataToSlot($gamePath.'/gameSlots.slt', $playerDat[22], pack('i', $newID), $slotFile);
 	fclose($slotFile);
+	*/
 	$newUnit->saveAll($unitFile);
 
 	// Record the unit in the queue spot for this building

@@ -14,8 +14,8 @@ $unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->unitSl
 $armyItems = [];
 if (sizeof($unitList)>0) {
 	echo '<script>
-	useDeskTop.newPane("characters");
-	thisDiv = useDeskTop.getPane("characters");
+	useDeskTop.newPane("military");
+	thisDiv = useDeskTop.getPane("military");
 	addDiv("armyList_0", "stdContainer", thisDiv);
 	textBlob("desc", "armyList_0", "Unattached");
 	';

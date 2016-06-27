@@ -21,7 +21,8 @@ $approved = checkCred($pGameID, $credList);
 //Show buildings in slot '.$cityDat[17].'<br>';
 
 if ($approved) {
-	$buildingInfo = explode('<->', file_get_contents($scnPath.'/buildings.desc'));
+	$buildingTypes = explode('<->', file_get_contents($scnPath.'/buildings.desc'));
+
 	/*
 	echo '
 	<div class="taskHeader" id="bldg_header"></div>
@@ -45,16 +46,21 @@ if ($approved) {
 
 	$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
 	foreach ($bldgList as $bldgID) {
+
 		fseek($unitFile, $bldgID*$defaultBlockSize);
-		$bldgDat = unpack('i*', fread($unitFile, $defaultBlockSize));
-		echo 'unitList.newUnit({unitType:"building", unitID:'.$bldgID.', unitName:"bldg name", actionPoints:'.$bldgDat[16].'});
+		$bldgDat = unpack('i*', fread($unitFile, 400));
+		$buildingInfo = explode('<-->', $buildingTypes[$bldgDat[10]]);
+		//print_r($bldgDat);
+		$actionPoints = min(1000, $bldgDat[16] + floor((time()-$bldgDat[27])*4167/360000));
+		//$actionPoints = min(1000, $bldgDat[16] + floor((time()-$bldgDat[27])/$bldgDat[17]));
+		echo 'unitList.newUnit({unitType:"building", unitID:'.$bldgID.', unitName:"'.$buildingInfo[0].'", actionPoints:'.$actionPoints.'});
 		unitList.renderSum('.$bldgID.', bldgTabs_1);';
 		//echo 'newBldgSum("'.$bldgID.'", "bldg_tab1", .5, '.$bldgDat[7].');';
 	}
 
 	// Generate a list of common buildings that can be built at this location
-	for ($i=1; $i<sizeof($buildingInfo); $i++) {
-		$bldgTypeInfo = explode('<-->', $buildingInfo[$i]);
+	for ($i=1; $i<sizeof($buildingTypes); $i++) {
+		$bldgTypeInfo = explode('<-->', $buildingTypes[$i]);
 		$bldgClass = explode(',', $bldgTypeInfo[1]);
 
 		if ($bldgClass[3] == 1)	{

@@ -303,7 +303,7 @@ newTaskOpt = function(id, target) {
 }
 
 unitTaskOpt = function(id, target, desc) {
-	var thisOpt = addDiv("utOpt_"+id, "tdHolder", document.getElementById(target));
+	var thisOpt = addDiv("utOpt_"+id, "tdHolder", target);
 	thisOpt.innerHTML = desc;
 
 	thisOpt.addEventListener("click", function () {makeBox("taskDtl", "1060,"+id, 500, 500, 200, 50);});
@@ -778,7 +778,7 @@ class warband extends unit {
 		var prm = "1034,"+this.unitID;
 		thisDiv.dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
-		thisDiv.nameDiv.innerHTML = this.unitName + " - " + this.tNum;
+		thisDiv.nameDiv.innerHTML = this.type + " - " + this.unitID;
 
 		this.actionPoints = this.aps;
 		this.strength = this.str;
@@ -821,7 +821,7 @@ class character extends unit {
 		var prm = "1074,"+this.unitID;
 		dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
-		nameDiv.innerHTML = this.unitName;
+		nameDiv.innerHTML = this.type + " - " + this.unitID;
 		this.actionPoints = this.aps;
 		this.strength = this.str;
 		//this.changeAttr(this.unitId, "actionPoints", this.aps);
@@ -896,7 +896,7 @@ class building extends unit {
 		thisDetail.statusBox.innerHTML = this.unitName + " " + this.unitID;
 
 
-		var actDiv = addDiv("", "sumAct", thisDiv);
+		var actDiv = addDiv("", "sumAct", thisDetail);
 		actDiv.setAttribute("data-boxName", "apBar");
 		actDiv.setAttribute("data-boxunitid", this.unitID);
 

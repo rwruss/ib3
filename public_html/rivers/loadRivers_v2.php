@@ -52,7 +52,6 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 	$head = $head.pack("v", filesize("./riverFiles/".$zoomLevel."/".$tileIndex.".pf2"));
 	$dat = $dat.file_get_contents("./riverFiles/".$zoomLevel."/".$tileIndex.".pf2");
 }
-
 echo $head.$dat;
 
 $drawHead = '';
@@ -91,13 +90,14 @@ for ($i=3; $i<sizeof($tileList); $i++) {
 			for ($j=1; $j<sizeof($unitList); $j+=2) {
 				//if ($unitList[$j] > 0) echo 'Index '.$j.' is unit '.$unitList[$j].' -> '.$unitList[$j+1];
 				if ($unitList[$j+1] == 1) {
-					//echo 'Draw unit '.$unitList[$j+1];
+					//echo 'Draw unit '.$unitList[$j];
 					fseek($unitFile, $unitList[$j]*100);
 					$drawDat = $drawDat.fread($unitFile, 12).substr($mapDat->dataString, $count*8, 4); // X Loc, Y Loc, Unit ID
 					//$drawDat = $drawDat.fread($unitFile, 8).$thousand;
 					//$drawDat = $drawDat.fread($unitFile, 12);
 					$numUnits++;
 				}
+			$count++;
 			}
 
 			/*

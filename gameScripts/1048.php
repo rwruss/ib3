@@ -30,7 +30,9 @@ switch ($targetBuilding->bldgData[7]) {
 
   case 1:
 	// Show upgrade options for this building
-	echo 'var bldg_'.$postVals[1].' = makeTabMenu("bldg_'.$postVals[1].'", thisDiv);
+  echo '
+  unitList.renderSum('.$postVals[1].', thisDiv);
+	var bldg_'.$postVals[1].' = makeTabMenu("bldg_'.$postVals[1].'", thisDiv);
 	bldg_'.$postVals[1].'.tab_1 = newTab("bldg_'.$postVals[1].'", 1, "Upgrade");
 	bldg_'.$postVals[1].'.tab_2 = newTab("bldg_'.$postVals[1].'", 2, "Tasks");
 	bldg_'.$postVals[1].'.tab_3 = newTab("bldg_'.$postVals[1].'", 3, "Production");
@@ -73,7 +75,9 @@ switch ($targetBuilding->bldgData[7]) {
   			var newButton = optionButton("", objContain, "100%");
   			newButton.objectID = "'.$postVals[1].','.$i.',3";
   			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});';
-  		}
+  		} else {
+        echo 'var objContain = addDiv("", "selectContain", bldgQueue);';
+      }
   	}
   }
 	break;

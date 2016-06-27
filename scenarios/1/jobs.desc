@@ -1,7 +1,7 @@
-0 - Job ID<-->1 - Job Type,subType<-->2 - Name<-->3 - Description
-<->1<-->1<-->Forage for Food<-->Scour the area for some food.
-<->2<-->3,2<-->Construction<-->Build Stuff
-<->3<-->1<-->Forage for Stone<-->Scour the area for some food.
+0 - Job ID<-->1 - Job Type,subType<-->2 - Name<-->3 - Description<->
+1<-->1<-->Forage for Food<-->Scour the area for some food.<->
+2<-->3,2<-->Construction<-->Build Stuff<->
+3<-->1<-->Forage for Stone<-->Scour the area for some food.
 <->4<-->1<-->Forage for Something Else<-->Scour the area for some food.
 <->5<-->1<-->Forage for Stuff<-->Scour the area for some food.
 <->6<-->2,1<-->Farm for Food<-->Gather from a farm.
@@ -10,4 +10,3 @@
 <->9<-->2<-->Work at Iron Mine<-->Gather from a farm.
 <->10<-->2<-->Work at Silver Mine<-->Gather from a farm.
 <->11<-->3,3<-->Establish a town<-->Establish a town here
-
