@@ -1,2 +1,9 @@
-- Add production point requirements to units
-- Make sure all needed unit info is saved in 1052 for starting unit production at a building.
+Short Term:
+
+
+Long Term:
+Add and remove units from armys/groups
+Battle resolution
+Character trait development and exp points
+Character prestige from subordinates
+Permanant exp points generation and use
