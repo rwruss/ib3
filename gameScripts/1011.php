@@ -26,8 +26,11 @@ if (sizeof($unitList)>0) {
 		//echo 'Type '.$unitDat[4].'<br>';
 
 		if ($unitDat[4] == 3) {
-			echo 'addDiv("armyList_'.$unitID.'", "stdContainer", thisDiv);
-			textBlob("desc", "armyList_'.$unitID.'", "Army Information");
+			echo 'var thisArmy = addDiv("armyList_'.$unitID.'", "stdContainer", thisDiv);
+			thisArmy.addEventListener("click", function() {
+				scrMod("1027,'.$unitID.'");
+			});
+			textBlob("desc", "armyList_'.$unitID.'", "Army Information - '.$unitID.'");
 			';
 		} else {
 			//echo '<div onclick="passClick(\'1034,'.$unitID.'\', \'rtPnl\');">Unit #'.$unitID.'</div>';

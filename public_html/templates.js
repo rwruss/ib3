@@ -306,7 +306,9 @@ unitTaskOpt = function(id, target, desc) {
 	var thisOpt = addDiv("utOpt_"+id, "tdHolder", target);
 	thisOpt.innerHTML = desc;
 
-	thisOpt.addEventListener("click", function () {makeBox("taskDtl", "1060,"+id, 500, 500, 200, 50);});
+	thisOpt.addEventListener("click", function () {
+		//makeBox("taskDtl", "1060,"+id, 500, 500, 200, 50);
+	scrMod("1060,"+id)});
 }
 
 charTaskOpt = function(id, target, desc) {

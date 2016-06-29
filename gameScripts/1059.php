@@ -8,8 +8,7 @@ fseek($unitFile, $postVals[1]*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Process if unit has action points to spend
-$divisor = max(1,$unitDat[17]);
-$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/$divisor));
+$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])*$unitDat[17]/360000));
 
 // Load unit exeperience for doing tasks
 

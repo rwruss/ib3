@@ -1,10 +1,13 @@
 <?php
 
-echo 'Order/task detail for a unit';
+echo '<script>
+useDeskTop.newPane("unitTasks");
+thisDiv = useDeskTop.getPane("unitTasks");
+</script>';
 
 // Load unit data
 $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
-fseek($unitFile, $_SESSION['selectedUnit']*$defaultBlockSize);
+fseek($unitFile, $_SESSION['selectedItem']*$defaultBlockSize);
 $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 // Load unit exeperience for doing tasks
@@ -21,7 +24,7 @@ echo '<br>Type '.gettype($unitTasks[0]).' ('.gettype($unitTasks[0]+100).')<br>';
 
 // Load task file to get list of tasks that can be done by this unit
 $jobsDesc = explode('<->', file_get_contents($scnPath.'/jobs.desc'));
-$typeInfo = explode('<-->', $jobDesc[$postVals[1]]);
+$typeInfo = explode('<-->', $jobsDesc[$postVals[1]]);
 $jobType = explode(',', $typeInfo[1]);
 
 if (array_search($postVals[1], $unitTasks) !== false) {
