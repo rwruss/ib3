@@ -102,6 +102,9 @@
 1093 - Add progress on building construction via a task
 1094 - Battle Detail
 1095 - Gathering options for a resource point
+1096 - Review intelligence about an object
+1097 - Write a message to an object or unit
+1098 - Process sending a message to object/unit
 
 // Manual Override Functions
 2001 - Add Resources to a city

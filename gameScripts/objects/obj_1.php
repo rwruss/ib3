@@ -41,7 +41,9 @@ if ($approved) {
 
 	  <div style="position:absolute; bottom:0; left:0;">hideMove</div>';
 } else {
-	echo 'You are not authorized to view this city';
+	// Show basics about city
+	echo '<div style="position:absolute; bottom:20; left:0;" onclick="scrMod(\'1096,'.$unitID.'\');">Intelligence</div>
+	<div style="position:absolute; bottom:40; left:0;" onclick="scrMod(\'1097,'.$unitID.'\');">Message</div>';
 }
 
 

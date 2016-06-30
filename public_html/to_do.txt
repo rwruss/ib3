@@ -1,5 +1,5 @@
 Short Term:
-Remve resource cart unit after it founds a city
+TEST - Remve resource cart unit after it founds a city
 
 Long Term:
 Add and remove units from armys/groups
@@ -7,3 +7,4 @@ Battle resolution
 Character trait development and exp points
 Character prestige from subordinates
 Permanant exp points generation and use
+Convert all unit interfaces to unit class

@@ -140,8 +140,11 @@ class itemSlot extends dataSlot {
 		$this->slotData[$position] = $value;
 	}
 
-	function deleteByValue() {
-
+	function deleteByValue($val, $file) {
+		$matches = array_keys($this->slotData, $val);
+		foreach ($matches as $keyNum) {
+			$this->addItemAtSpot(0, $keyNum, $file);
+		}
 	}
 }
 

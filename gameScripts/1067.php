@@ -62,6 +62,15 @@ $cityCredentials->addItem($slotFile, pack('i*', -9, $pGameID), $addLoc);
 fseek($unitFile, $_SESSION['selectedItem']*$defaultBlockSize+12);
 fwrite($unitFile, pack('i', 1));
 
+// Remove the cart from the list of military units the player controls
+fseek($unitFile, $pGameID*$defaultBlockSize);
+$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
+
+$playerObj = new player($playerDat);
+$unitList = new itemSlot($playerObj->unitSlot, $slotFile, 40);
+
+$unitList->deleteByValue($_SESSION['selectedItem'], $slotFile);
+
 fclose($unitFile);
 fclose($slotFile);
 

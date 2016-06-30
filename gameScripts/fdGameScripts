@@ -178,9 +178,11 @@
             <Folder name="rivers">
                 <File name="E:\websites\ib3\public_html\rivers\loadRivers_v2.php" />
             </Folder>
-            <File name="E:\websites\ib3\public_html\cityClass.php" />
-            <File name="E:\websites\ib3\public_html\checkSlot.php" />
             <File name="E:\websites\ib3\public_html\bldgObjects.php" />
+            <File name="E:\websites\ib3\public_html\charClass.php" />
+            <File name="E:\websites\ib3\public_html\checkSlot.php" />
+            <File name="E:\websites\ib3\public_html\cityClass.php" />
+            <File name="E:\websites\ib3\public_html\classObjects.html" />
             <File name="E:\websites\ib3\public_html\dipFunctions.php" />
             <File name="E:\websites\ib3\public_html\director.php" />
             <File name="E:\websites\ib3\public_html\gameScr.php" />
@@ -188,15 +190,14 @@
             <File name="E:\websites\ib3\public_html\glMatrix-0.9.5.min.js" />
             <File name="E:\websites\ib3\public_html\ib3styles.css" />
             <File name="E:\websites\ib3\public_html\index.php" />
+            <File name="E:\websites\ib3\public_html\objectTest.html" />
             <File name="E:\websites\ib3\public_html\play.php" />
             <File name="E:\websites\ib3\public_html\slotFunctions.php" />
             <File name="E:\websites\ib3\public_html\taskFunctions.php" />
             <File name="E:\websites\ib3\public_html\templates.js" />
             <File name="E:\websites\ib3\public_html\unitClass.php" />
             <File name="E:\websites\ib3\public_html\webgl-utils.js" />
-            <File name="E:\websites\ib3\public_html\objectTest.html" />
-            <File name="E:\websites\ib3\public_html\classObjects.html" />
-            <File name="E:\websites\ib3\public_html\charClass.php" />
+            <File name="E:\websites\ib3\public_html\to_do.txt" />
         </Folder>
         <Folder name="scripts">
             <File name="E:\websites\ib3\scripts\1000.php" />
