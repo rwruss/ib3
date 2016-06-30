@@ -9,6 +9,7 @@ $playerObj = new player($playerDat);
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
+$unitDesc = explode('<->', file_get_contents($scnPath.'/units.desc'));
 
 //print_r($unitList);
 $armyItems = [];
@@ -44,8 +45,8 @@ if (sizeof($unitList)>0) {
 			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {passClick("1034,'.$unitID.'", "rtPnl")});
 			setUnitAction('.$unitID.', '.($actionPoints/1000).');
 			setUnitExp('.$unitID.', 0.5);';*/
-
-			echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});';
+			$thisInfo = explode('<-->', $unitDesc[$unitDat[10]]);
+			echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"'.trim($thisInfo[0]).'", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});';
 		}
 	}
 	echo 'armyItems = ['.implode(',', $armyItems).'];

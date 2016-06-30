@@ -3,11 +3,9 @@
 // Get job descriptions
 //$taskDesc = explode('<->', file_get_contents($scnPath.'/tasks.desc'));
 
-echo 'Gather a resource from the map.  Do you wish to '.$typeInfo[2].'?  Select the amount of effort you want to put into
-gathering this resource.  The more you gather, the more the surrounding area will be depleted.
+echo 'textBlob("", thisDiv, "Gather a resource from the map.  Do you wish to '.$typeInfo[2].'?  Select the amount of effort you want to put into gathering this resource.  The more you gather, the more the surrounding area will be depleted.");
 
-<script>
-addDiv("jobOptions", "cButtons", document.getElementById("taskDtlContent"));
+addDiv("jobOptions", "cButtons", thisDiv);
 
 var opt1 = optionButton("", "jobOptions", "10%");
 opt1.addEventListener("click", function() {scrMod("1061,'.$postVals[1].',1")});

@@ -1,7 +1,7 @@
 <?php
 
 include("./slotFunctions.php");
-echo 'Job at specific resource point';
+//echo 'Job at specific resource point';
 
 // Look for available resource points nearby
 $mapSlot = floor($unitDat[2]/120)*120+floor($unitDat[1]/120);
@@ -125,8 +125,8 @@ for ($i=0; $i<sizeof($checkItemList); $i++) {
 if (sizeof($workItems) > 0) {
 	foreach($workItems as $bldgID => $bType) {
 		echo '
-		addDiv("jobOptions_'.$bldgID.'", "cButtons", document.getElementById("taskDtlContent"));
-		textBlob("1", "jobOptions+'.$bldgID.'", "Do you wish to work at this location?");
+		addDiv("jobOptions_'.$bldgID.'", "cButtons", thisDiv);
+		textBlob("1", thisDiv, "Do you wish to work at this location?");
 
 		var opt1 = optionButton("", "jobOptions_'.$bldgID.'", "1");
 		opt1.addEventListener("click", function() {scrMod("1061,'.$postVals[1].','.$bldgID.',1")});
@@ -149,7 +149,7 @@ if (sizeof($workItems) > 0) {
 } else {
 	echo 'Nothing';
 }
-
+echo '</script>';
 function checkSlot($slotNum, $slotFile) {
 	echo 'Look up slot '.$slotNum.'<br>';
 	return new itemSlot($slotNum, $slotFile, 404);

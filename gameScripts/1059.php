@@ -46,14 +46,14 @@ foreach ($checkItems as $checkID) {
 	if ($checkDat[1] == $unitDat[1] && $checkDat[2] == $unitDat[2]) {
 		switch($checkDat[4]) {
 			case 1:
-			echo 'In a city ('.$checkID.')';
+			//echo 'In a city ('.$checkID.')';
 
 			$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 			// Look up city tasks
-			echo 'Task slit is '.$checkDat[21].'<br>';
+			//echo 'Task slit is '.$checkDat[21].'<br>';
 			$cityTasks = new itemSlot($checkDat[21], $slotFile, 40);
-			echo 'Tasks found:';
-			print_r($cityTasks->slotData);
+			//echo 'Tasks found:';
+			//print_r($cityTasks->slotData);
 			fclose($slotFile);
 			break;
 

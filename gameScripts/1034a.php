@@ -17,7 +17,7 @@ equip.addEventListener("click", function () {makeBox("equip", "1053,'.$postVals[
 
 var orders = addDiv("unitOrders", "stdFloatDiv", document.getElementById("rtPnl"));
 orders.innerHTML = "Unit Orders";
-orders.addEventListener("click", function () {makeBox("orders", "1059,'.$postVals[1].'", 500, 500, 200, 50)});
+orders.addEventListener("click", function () {scrMod("1059,'.$postVals[1].'")});
 
 var upgrades = addDiv("unitUpgrades", "stdFloatDiv", document.getElementById("rtPnl"));
 upgrades.innerHTML = "Upgrade";

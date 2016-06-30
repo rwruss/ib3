@@ -275,7 +275,7 @@ newBldgSum = function(id, target, pctComplete, status) {
 }
 
 newTaskDetail = function(id, target, pctComplete, killLink) {
-	var thisDetail = addDiv(id, "tdHolder", document.getElementById(target));
+	var thisDetail = addDiv(id, "tdHolder", target);
 	addDiv(id+"_prog", "udAct", thisDetail);
 	setBarSize(id+"_prog", pctComplete, 150);
 	addImg(id+"_img", "tdImg", thisDetail);
@@ -780,7 +780,7 @@ class warband extends unit {
 		var prm = "1034,"+this.unitID;
 		thisDiv.dtlButton.addEventListener("click", function () {passClick(prm, "rtPnl")});
 
-		thisDiv.nameDiv.innerHTML = this.type + " - " + this.unitID;
+		thisDiv.nameDiv.innerHTML = this.unitName + " - " + this.unitID;
 
 		this.actionPoints = this.aps;
 		this.strength = this.str;

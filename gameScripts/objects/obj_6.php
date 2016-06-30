@@ -11,11 +11,7 @@ switch ($unitDat[7]) {
 		resetMove();
 		unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});
 		unitList.renderSum('.$unitID.', "rtPnl");
-		//newUnitDetail('.$unitID.', "rtPnl");
 		newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
-		//document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
-		//setUnitAction('.$unitID.', '.($actionPoints/1000).');
-		//setUnitExp('.$unitID.', 0.5);
 
 		var orders = addDiv("unitOrders", "stdFloatDiv", document.getElementById("rtPnl"));
 		orders.innerHTML = "Unit Orders";

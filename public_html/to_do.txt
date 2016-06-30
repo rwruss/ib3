@@ -1,5 +1,5 @@
 Short Term:
-
+Remve resource cart unit after it founds a city
 
 Long Term:
 Add and remove units from armys/groups

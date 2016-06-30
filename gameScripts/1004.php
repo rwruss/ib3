@@ -201,7 +201,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		$newUnit->unitDat[10] = $makeTypes[$i]; // Troop Type
 		$newUnit->unitDat[12] = $townID; // Current Loc
 		$newUnit->unitDat[15] = $armyID; // Army ID
-		$newUnit->unitDat[17] = $thisDtl[10]; // Army ID
+		$newUnit->unitDat[17] = $thisDtl[10]; // action point regeneration
 
 		$newUnit->saveAll($unitFile);
 		/*
