@@ -1,5 +1,5 @@
 <?php
-
+/*
 echo 'Non owner details for a character';
 
 // Load player Dat to get intelligence slot
@@ -20,5 +20,5 @@ for ($i=0; $i<$intelSize; $i++) {
 		echo 'Intel of type '.$intelDat[$i*3+1].' with a value of '.$intelDat[$i*3+2].' at time of '.$intelDat[$i*3+3].' by character '.$intelDat[$i*3+4];
 	}
 }
-
+*/
 ?>

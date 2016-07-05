@@ -43,7 +43,7 @@ if ($approved) {
 } else {
 	// Show basics about city
 	echo '<div style="position:absolute; bottom:20; left:0;" onclick="scrMod(\'1096,'.$unitID.'\');">Intelligence</div>
-	<div style="position:absolute; bottom:40; left:0;" onclick="scrMod(\'1097,'.$unitID.'\');">Message</div>';
+	
 }
 
 

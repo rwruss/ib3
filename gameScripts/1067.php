@@ -5,6 +5,7 @@ This will convert a resource cart into a NEW permanant sub-city
 */
 include('./cityClass.php');
 include('./slotFunctions.php');
+include('unitClass.php');
 
 
 // Load the resource cart data (transported resources and buildings) and save to the players city slot (if not already linked)
@@ -63,11 +64,10 @@ fseek($unitFile, $_SESSION['selectedItem']*$defaultBlockSize+12);
 fwrite($unitFile, pack('i', 1));
 
 // Remove the cart from the list of military units the player controls
-fseek($unitFile, $pGameID*$defaultBlockSize);
-$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
-$playerObj = new player($playerDat);
-$unitList = new itemSlot($playerObj->unitSlot, $slotFile, 40);
+
+$playerObj = new player($pGameID, $unitFile, 400);
+$unitList = new itemSlot($playerObj->get('unitSlot'), $slotFile, 40);
 
 $unitList->deleteByValue($_SESSION['selectedItem'], $slotFile);
 

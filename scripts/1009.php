@@ -1,11 +1,14 @@
 <?php
 
+//postVals 1 = offset group
+
+date_default_timezone_set('America/Chicago');
 session_start();
 if (isset($_SESSION['playerId'])) {
-	echo "conPaneShow Open Games";
+	echo 'conPane<a href="javascript:void(0)" onclick=passClick("1009,'.(max(0, $postVals[1]-1)).'")>Previous</a>|<a href="javascript:void(0)" onclick=passClick("1009,'.($postVals[1]+1).'")>Next</a>';
 	$playerId = $_SESSION['playerId'];
-	
-	// Get games player is in
+
+	// Get games player is inf
 	$pDatFile = fopen("../users/userDat.dat", "rb");
 	fseek($pDatFile, $playerId*500);
 	$playerDat = fread($pDatFile, 500);
@@ -19,14 +22,15 @@ if (isset($_SESSION['playerId'])) {
 		$gameList = read_slot($slotFile, $gameSlot[1], 40);
 		fclose($slotFile);
 		}
-		
+
 	// Get list of open games
 	$openGamesFile = fopen("../games/openGames.dat", "rb");
-	$testDat = fread($openGamesFile, 10*4*2);
+	fseek($openGamesFile, 2*40*$postVals[1]);
+	$testDat = fread($openGamesFile, 2*10*4);
 	$openDat = unpack("N*", $testDat);
 	fclose($openGamesFile);
 	$showGames = min(10, sizeof($openDat)/2);
-	
+
 	for ($i=0; $i<$showGames; $i++) {
 		$gamePlayers = filesize("../games/".$openDat[$i*2+1]."/players.dat")/4;
 		echo "<div style='border:1px solid #000000;'>Game ".$openDat[$i*2+1]." - Started ".date("m/d",$openDat[$i*2+2])."<br>
@@ -48,7 +52,7 @@ function read_slot($file, $slot_num, $slot_size)
 		fseek($file, $next_slot*$slot_size);
 		$slot_dat = fread($file, $slot_size);
 		$units_a = array_merge($units_a, unpack("N*", substr($slot_dat, 4)));
-	
+
 		$slot_check = unpack("N", $slot_dat);
 		$next_slot = $slot_check[1];
 		//echo "Next Slot: ".$next_slot;

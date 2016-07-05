@@ -1,13 +1,5 @@
 <?php
 
-class player {
-	function player($itemArray) {
-		$this->status = $itemArray[1];
-		$this->intelSlot = $itemArray[24];
-		$this->unitSlot = $itemArray[22];
-	}
-}
-
 $defaultBlockSize = 100;
 $unitBlockSize = 400;
 $jobBlockSize = 200;
@@ -31,13 +23,18 @@ $inputValidate = TRUE;
 foreach ($postVals as $value) {
 	if (!is_numeric ($value) || $value < 0) $inputValidate = FALSE;
 }
+$gamePath = "../games/".$gameID;
+$scnPath = "../scenarios/".$_SESSION['game_'.$gameID]['scenario'];
 if ($inputValidate) {
-	$gamePath = "../games/".$gameID;
-	$scnPath = "../scenarios/".$_SESSION['game_'.$gameID]['scenario'];
+
 	include("../gameScripts/".$postVals[0].".php");
 } else {
+	if ($postVals[0] > 3000) {
+		include("../gameScripts/".$postVals[0].".php");
+	} else {
 	echo 'Validation error';
 	print_r($postVals);
+	}
 }
 
 function read_slot($file, $slot_num, $slot_size)
@@ -57,7 +54,7 @@ function read_slot($file, $slot_num, $slot_size)
 		}
 	return $units_a;
 	}
-	
+
 function sendMessage($mOpt, $content, $toList) {
 	include("../gameScripts/msg/messageSend.php");
 }

@@ -6,10 +6,5 @@ useDeskTop.newPane("characters");
 thisDiv = useDeskTop.getPane("characters");
 
 textBlob("", thisDiv, "To: '.$postVals[1].'");
-msgDiv = addDiv("", "", thisDiv);
-msgBox = document.createElement("textArea");
-msgDiv.appendChild(msgBox)';
-
-
-
+msgBox(thisDiv, "3001,'.$postVals[1].'");';
 ?>

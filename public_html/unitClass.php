@@ -40,7 +40,7 @@ class unit {
 			$this->unitDat[$this->attrList[$desc]] = $val;
 		}
 	}
-	
+
 	function changeID($newID) {
 		$this->unitID = $newID;
 	}
@@ -66,6 +66,14 @@ class unit {
 		}
 		fseek($file, $this->unitID*100);
 		fwrite($file, $packStr);
+	}
+}
+
+class player extends unit {
+	function __construct($id, $file, $size) {
+		parent::__construct($id, $file, $size);
+
+		$this->attrList['unitSlot'] = 22;
 	}
 }
 

@@ -1,5 +1,6 @@
 <?php
 
+include("./unitClass.php");
 date_default_timezone_set('America/Chicago');
 
 if (isset($unitAssign)) {
@@ -13,14 +14,11 @@ if (isset($unitAssign)) {
 
 // Get list of workers avaialble to work on this task.
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $pGameID*$defaultBlockSize);
-$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
-
-$playerObj = new player($playerDat);
+$playerObj = new player($pGameID, $unitFile, 400);
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 //$unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
-$unitList = new itemSlot($playerObj->unitSlot, $slotFile, 40);
+$unitList = new itemSlot($playerObj->get('unitSlot'), $slotFile, 40);
 $noUnitsHere = true;
 //print_r($taskDat);
 

@@ -104,6 +104,29 @@ scrButton = function (prm, trg, src) {
 	return newButton;
 }
 
+msgBox = function (trg, prm) {
+	subBox = document.createElement("input");
+	subBox.style.width="100%";
+	subBox.addEventListener("keydown", function (event) {event.stopPropagation()});
+	subBox.addEventListener("click", function (event) {event.stopPropagation()});
+	trg.appendChild(subBox);
+
+	msgBox = document.createElement("textArea");
+	msgBox.style.width="100%";
+	msgBox.addEventListener("keydown", function (event) {event.stopPropagation()});
+	msgBox.addEventListener("mousedown", function (event) {console.log(event); this.parentNode.parentNode.setAttribute("draggable", false); });
+	msgBox.addEventListener("mouseup", function (event) {console.log(event); this.parentNode.parentNode.setAttribute("draggable", true); });
+	msgBox.addEventListener("mouseout", function (event) {console.log(event); this.parentNode.parentNode.setAttribute("draggable", true); });
+	trg.appendChild(msgBox);
+
+	sendButton = addDiv("", "", trg);
+	sendButton.innerHTML = "send message";
+	sendButton.addEventListener("click", function () {
+		//alert("send");
+		//alert(msgBox.value);});
+	scrMod(prm + "<!*!>" + subBox.value + "<!*!>" + msgBox.value);});
+}
+
 killButton = function (trg, src) {
 	var newButton = addDiv("button", "button", trg);
 	newButton.addEventListener("click", function () {
@@ -447,6 +470,7 @@ paneBox = function(bName, val, h, w, x, y) {
 
 	newDiv.addEventListener("drag", function () {
 		if (event.clientX > 0) {
+		console.log("drag start");
 		this.style.left = bPos[0] - bPos[2] + event.clientX;
 		this.style.top = bPos[1] - bPos[3] + event.clientY;
 		}

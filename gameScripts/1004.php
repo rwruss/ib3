@@ -84,10 +84,10 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fseek($unitFile, $newCharID*$defaultBlockSize+48);
 	fwrite($unitFile, pack('i', $positionSlot));
 
-	// Create map slot file
-	$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'w+b');
-	fseek($mapSlotFile, 120*90*404-4);
-	fwrite($mapSlotFile, pack('i', 0));
+	// Create map slot file IF it doesn't already exist
+	$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
+	//fseek($mapSlotFile, 120*90*404-4);
+	//fwrite($mapSlotFile, pack('i', 0));
 
 	$mapSlotNum = floor($startLocation[1]/120)*120+floor($startLocation[0]/120);
 	echo 'Record units at slot'.$mapSlotNum;
@@ -230,6 +230,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 
 	// If no town is being started, create a resource unit for the player
 	if (!$startTown) {
+		/*
 		$newId = $unitIndex;
 		$unitIndex +=4;;
 
@@ -243,6 +244,30 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fwrite($unitFile, pack("i*", 6, 0, $townID));
 		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
 		fwrite($unitFile, pack("i", 9990));
+		*/
+		$newId = $unitIndex;
+		$unitIndex +=4;;
+		echo 'Make unit type 6 at unit #'.$newId.'<br>';
+		$thisDtl = explode('<-->', $unitInf[6]);
+		$typeParams = explode(",", $thisDtl[1]);
+		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
+		fwrite($unitFile, pack("i", 0));
+
+		$newUnit = new unit($newId, $unitFile, 400);
+		$newUnit->unitDat[1] = $startLocation[0]; // X Loc
+		$newUnit->unitDat[2] = $startLocation[1]; // Y Loc
+		$newUnit->unitDat[3] = 1; // Icon
+		$newUnit->unitDat[4] = $typeParams[3]; // Unit Type
+		$newUnit->unitDat[5] = $pGameID; // Owner
+		$newUnit->unitDat[6] = $pGameID; // Controller
+		$newUnit->unitDat[7] = 1; // Status
+		$newUnit->unitDat[8] = $postVals[1]; // Culture
+		$newUnit->unitDat[10] = 6; // Troop Type
+		$newUnit->unitDat[12] = $townID; // Current Loc
+		$newUnit->unitDat[15] = 0; // Army ID
+		$newUnit->unitDat[17] = $thisDtl[10]; // action point regeneration
+
+		$newUnit->saveAll($unitFile);
 
 		//addDataToSlot($gamePath."/gameSlots.slt", $unitSlot, pack("N", $newId), $gameSlot);
 		echo 'Record unit #'.$newId.' in unit slot<br>';

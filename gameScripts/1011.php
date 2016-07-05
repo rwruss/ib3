@@ -1,14 +1,15 @@
 <?php
 include('./slotFunctions.php');
+include('./unitClass.php');
 // Get list of all units for this faction
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $pGameID*$defaultBlockSize);
-$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
+//fseek($unitFile, $pGameID*$defaultBlockSize);
+//$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
-$playerObj = new player($playerDat);
+$playerObj = new player($pGameID, $unitFile, 400);
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-$unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
+$unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->get("unitSlot"), 40)));
 $unitDesc = explode('<->', file_get_contents($scnPath.'/units.desc'));
 
 //print_r($unitList);

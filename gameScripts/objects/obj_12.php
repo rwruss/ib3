@@ -1,16 +1,15 @@
 <?php
 
 include("./slotFunctions.php");
+include("./unitClass.php");
 echo 'This is a battle that is waiting to take place';
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 
 // Load list of units that the player controls
-fseek($unitFile, $pGameID*$defaultBlockSize);
-$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
-$playerObj = new player($playerDat);
+$playerObj = new player($pGameID, $unitFile, 400);
 
-$unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
+$unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->get('unitSlot'), 40)));
 
 $matchedSide = 0;
 // Look for units that the player controls to determine which side they are on
@@ -23,7 +22,7 @@ for ($i=1; $i<=sizeof($unitList->slotData); $i++) {
 	else if (array_search($unitList->slotData[$i], $sideB->slotData)) $matchedSide = 2;
 }
 
-// Get information on the wars 
+// Get information on the wars
 for ($i=0; $i<=5; $i++) {
 	fseek($unitFile, $unitDat[17+$i]*$defaultBlockSize);
 	$warDat = unpack('i*', fread($unitFile, 200));

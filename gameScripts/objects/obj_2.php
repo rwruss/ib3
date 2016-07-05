@@ -1,5 +1,6 @@
 <?php
 include("./slotFunctions.php");
+include("./unitClass.php");
 echo 'This is a resource point for resource tyoe '.$unitDat[10];
 
 // Get list of available labor at this location
@@ -9,13 +10,10 @@ $cityDat = unpack('i*', fread($unitFile, 400));
 echo 'Got data for city #'.$unitDat[15];
 
 // Get list of player units to check if they can work here
-fseek($unitFile, $pGameID*400);
-$playerDat = unpack('i*', fread($unitFile, 400));
-
-$playerObj = new player($playerDat);
+$playerObj = new player($pGameID, $unitFile, 400);
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-$unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
+$unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerObj->get('unitSlot'), 40)));
 
 print_r($unitList);
 if (sizeof($unitList)>0) {
