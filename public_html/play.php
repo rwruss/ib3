@@ -2786,7 +2786,9 @@ precision mediump float;
 	</div>
 	<div id="infoBar" style="position:absolute; top:640; left:110; height:50; width:1200; border:1px solid #000000">infoBar</div>
 	<div id="rtPnl" style="position:absolute; top:15; left:1310; height:675; width:200; border:1px solid #000000; display:inline;"></div>
-	<div id="botPnl" style="position:absolute; top:690; left:10; height:40; width:1400; border:1px solid #000000"></div>
+	<div id="botPnl" style="position:absolute; top:690; left:10; height:40; width:1400; border:1px solid #000000">
+		<a href="javascript:void(0);" onclick="makeBox(\'inBox\', 1099, 500, 500, 200, 50)">Read Messages</a>
+	</div>
 	<div id="gmPnl" style="position:absolute; top:15; left:110; height:675; width:1200; border:1px solid #000000; overflow:hidden">
 		<canvas style="position:absolute" id="lesson03-canvas" style="border: none; " width=1200 height=700></canvas>
 	</div>

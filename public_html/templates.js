@@ -111,20 +111,20 @@ msgBox = function (trg, prm) {
 	subBox.addEventListener("click", function (event) {event.stopPropagation()});
 	trg.appendChild(subBox);
 
-	msgBox = document.createElement("textArea");
-	msgBox.style.width="100%";
-	msgBox.addEventListener("keydown", function (event) {event.stopPropagation()});
-	msgBox.addEventListener("mousedown", function (event) {console.log(event); this.parentNode.parentNode.setAttribute("draggable", false); });
-	msgBox.addEventListener("mouseup", function (event) {console.log(event); this.parentNode.parentNode.setAttribute("draggable", true); });
-	msgBox.addEventListener("mouseout", function (event) {console.log(event); this.parentNode.parentNode.setAttribute("draggable", true); });
-	trg.appendChild(msgBox);
+	box = document.createElement("textArea");
+	box.style.width="100%";
+	box.addEventListener("keydown", function (event) {event.stopPropagation()});
+	box.addEventListener("mousedown", function (event) {console.log(event); this.parentNode.parentNode.setAttribute("draggable", false); });
+	box.addEventListener("mouseup", function (event) {console.log(event); this.parentNode.parentNode.setAttribute("draggable", true); });
+	box.addEventListener("mouseout", function (event) {console.log(event); this.parentNode.parentNode.setAttribute("draggable", true); });
+	trg.appendChild(box);
 
 	sendButton = addDiv("", "", trg);
 	sendButton.innerHTML = "send message";
 	sendButton.addEventListener("click", function () {
 		//alert("send");
 		//alert(msgBox.value);});
-	scrMod(prm + "<!*!>" + subBox.value + "<!*!>" + msgBox.value);});
+	scrMod(prm + "<!*!>" + subBox.value + "<!*!>" + box.value);});
 }
 
 killButton = function (trg, src) {
