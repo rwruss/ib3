@@ -1,6 +1,6 @@
 <NotepadPlus>
     <Project name="portfolio" />
-    <Project name="IB#">
+    <Project name="IB3">
         <Folder name="doc">
             <Folder name="org">
                 <File name="E:\websites\ib3\doc\org\baseView.html" />
@@ -167,8 +167,15 @@
             <File name="1091.php" />
             <File name="1092.php" />
             <File name="1093.php" />
+            <File name="1094.php" />
+            <File name="1095.php" />
+            <File name="1096.php" />
+            <File name="1097.php" />
+            <File name="1098.php" />
+            <File name="1099.php" />
             <File name="2001.php" />
             <File name="2002.php" />
+            <File name="3001.php" />
             <File name="cl255.php" />
             <File name="traits.desc" />
             <File name="gScriptList.txt" />

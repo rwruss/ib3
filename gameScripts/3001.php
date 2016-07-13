@@ -60,11 +60,11 @@ if (sizeof($toList) > 0) {
       fseek($messageContentFile, 0, SEEK_END);
       $msgSpot = ftell($messageContentFile);
       //fwrite($msg[1]);
-      $blockLength = strlen($msg[1]) + strlen($msg[2]) + 5 + 4;
+      $blockLength = strlen($msg[1]) + strlen($msg[2]) + 5 + 4 + 4; // total length is subject length + message length + separator length + total length integer + time integer
       echo 'Message length is '.$blockLength.' ('.strlen($msg[1]).') + ('.strlen($msg[2]).') + 9 written at spot '.$msgSpot.'<br>
       Subject: '.$msg[1].'<br>
       Content: '.$msg[2].'<br>';
-      fwrite($messageContentFile, pack('i', $blockLength).$msg[1].'<-!->'.$msg[2]);
+      fwrite($messageContentFile, pack('i*', $blockLength, time()).$msg[1].'<-!->'.$msg[2]);
       $msgSlot->addItem($slotFile, pack('i*', $msgSpot, 1, 1), $msgSlot->findLoc(0, 3));  // message start loc, message file num, read/unread
     }
   }

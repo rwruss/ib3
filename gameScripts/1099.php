@@ -18,8 +18,14 @@ if ($trgPlayer->unitDat[25] == 0) {
   for ($i=1; $i<=sizeof($msgSlot->slotData); $i+=3) {
     if ($msgSlot->slotData[$i] > 0) {
       fseek($msgFile, $msgSlot->slotData[$i]);
-      $msgLen = unpack('i', fread($msgFile, 4));
-      echo fread($msgFile, $msgLen[1]).'<br>';
+      //$msgLen = unpack('i', fread($msgFile, 4));
+      $msgDat = explode('<-!->', fread($msgFile, 50));
+	  $msgHead = unpack('i*', substr($msgDat, 0, 8));
+	  if ($msgSlot->slotData[$i] == 1) {
+		  echo '<b><tr><td>'.date('d/m/y H:i:s', $msgHead[2]).'<td><td>'.substr($msgDat[0],8).'</td></tr></b>';
+	  }	 else {
+		  echo '<tr><td>'.date('d/m/y H:i:s', $msgHead[2]).'<td><td>'.substr($msgDat[0],8).'</td></tr>';
+	  }
     }
   }
   fclose($msgFile);
