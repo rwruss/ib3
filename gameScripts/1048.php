@@ -47,9 +47,13 @@ switch ($targetBuilding->bldgData[7]) {
 	// Show task options
 	$tasks = explode(',', $typeInfo[2]);
 	if ($tasks > 1 ) {
+
 		echo 'textBlob("", bldg_'.$postVals[1].'.tab_2, "Building options");';
 		for ($i=1; $i<sizeof($tasks); $i++) {
-			echo 'taskOpt('.$tasks[$i].', bldg_'.$postVals[1].'.tab_2, '.$postVals[1].', "Task '.$tasks[$i].'");';
+      $unitID = explode('.', $tasks[$i]);
+      $unitInfo = explode('<->', file_get_contents($scnPath.'/units.desc'));
+      $uTypeInfo = explode('<-->', $unitInfo[$unitID[1]]);
+			echo 'taskOpt('.$tasks[$i].', bldg_'.$postVals[1].'.tab_2, '.$postVals[1].', "'.trim($uTypeInfo[0]).' ('.$tasks[$i].')");';
 		}
 	}
 
@@ -76,7 +80,8 @@ switch ($targetBuilding->bldgData[7]) {
   			newButton.objectID = "'.$postVals[1].','.$i.',3";
   			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});';
   		} else {
-        echo 'var objContain = addDiv("", "selectContain", bldgQueue);';
+        echo 'var objContain = addDiv("", "selectContain", bldgQueue);
+        objContain.innerHTML = "empty production slot";';
       }
   	}
   }

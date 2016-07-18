@@ -104,7 +104,10 @@
 1095 - Gathering options for a resource point
 1096 - Review intelligence about an object
 1097 - Write a message to an object or unit
-1098 - Process sending a message to object/unit
+1098 - Process sending a message to object/unit <--- EMPTY!!!
+1099 - Show inbox for player
+1100 - Read a message
+1101 - Process request to reply to message
 
 // Manual Override Functions
 2001 - Add Resources to a city

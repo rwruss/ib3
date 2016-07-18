@@ -49,12 +49,14 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		$unitIndex +=4;
 		fseek($unitFile, $pGameID*$defaultBlockSize+399);
 		fwrite($unitFile, pack("C", 0));
+		fflush($unitFile);
 
 		// Add player to list of players for this game
 		$pListFile = fopen("../games/".$gameID."/players.dat", "ab");
 		fwrite($pListFile, pack("i*", $_SESSION['playerId'], $pGameID*-1));
 		fclose($pListFile);
 	} else {
+		echo 'Already in game';
 		$pGameID = intval($playerList[$idSpot+1]*-1);
 	}
 
@@ -146,8 +148,9 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	}
 	echo 'Army ID is '.$armyID.'<p>';
 	// This records data in the player's data
+	/*
 	fseek($unitFile, $pGameID*$defaultBlockSize);
-	fwrite($unitFile, pack("i*", 1, $postVals[1], $postVals[1])); // Status, Race, Culture
+	fwrite($unitFile, pack("i*", 1, $postVals[1], $postVals[1], 13)); // Status, Race, Culture, Type
 	fseek($unitFile, $pGameID*$defaultBlockSize+36);
 	fwrite($unitFile, pack("i", $townSlot));  // Record the town slot
 	fseek($unitFile, $pGameID*$defaultBlockSize+72);
@@ -158,6 +161,19 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	// Record character as faction leader
 	fseek($unitFile, $pGameID*$defaultBlockSize+48);
 	fwrite($unitFile, pack("i", $newCharID));
+	*/
+
+	$newPlayer = new unit($pGameID, $unitFile, 400);
+
+	$newPlayer->unitDat[1] = 1;  // Status
+	$newPlayer->unitDat[2] = $postVals[1];  // Race
+	$newPlayer->unitDat[3] = $postVals[1];  // Culture
+	$newPlayer->unitDat[4] = 13;  // Player type number
+	$newPlayer->unitDat[10] = $townSlot;  // Record the town slot
+	$newPlayer->unitDat[19] = $charSlot;  // Record the char slot
+	$newPlayer->unitDat[11] = $townID;  // Primary City
+
+	$newPlayer->saveAll($unitFile);
 
 	// Set settlment Data as applicable
 
@@ -330,8 +346,10 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	// Add units to city unit slot
 
 	// Record the unit slot in the player data
-	fseek($unitFile, $pGameID*$defaultBlockSize+84);
-	fwrite($unitFile, pack("i", $unitSlot));
+	//fseek($unitFile, $pGameID*$defaultBlockSize+84);
+	//fwrite($unitFile, pack("i", $unitSlot));
+	$newPlayer->unitDat[22] = $unitSlot;
+	$newPlayer->saveAll($unitFile);
 
 	// write to end of block to ensure it is full
 	fseek($unitFile, $pGameID*$defaultBlockSize+399);

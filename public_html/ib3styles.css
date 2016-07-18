@@ -314,6 +314,10 @@
 	height:25;
 }
 
+.msgSum_1 {
+	font-weight: bold;
+}
+
 .optionHolder {
 	position:absolute;
 	left:500;

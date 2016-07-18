@@ -153,7 +153,7 @@ function newTown($id, $townFile, $slotFile, $townDtls) {
 
 function checkCred($trg, $credSlotDat) {
 	$approved = false;
-	for ($i=1; $i<=sizeof($credSlotDat); $i++) {
+	for ($i=1; $i<=sizeof($credSlotDat); $i+=2) {
 		if ($credSlotDat[$i+1] == $trg) {
 			$approved = $credSlotDat[$i];
 			break;

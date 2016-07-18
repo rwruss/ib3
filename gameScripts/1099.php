@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('America/Chicago');
 echo 'messages';
 include("./slotFunctions.php");
 include("./unitClass.php");
@@ -15,19 +15,23 @@ if ($trgPlayer->unitDat[25] == 0) {
   $msgFile = fopen($gamePath.'/messages.dat', 'rb');
   $msgSlot = new blockSlot($trgPlayer->unitDat[25], $slotFile, 40);
   print_r($msgSlot->slotData);
+  echo '<table>';
   for ($i=1; $i<=sizeof($msgSlot->slotData); $i+=3) {
     if ($msgSlot->slotData[$i] > 0) {
       fseek($msgFile, $msgSlot->slotData[$i]);
       //$msgLen = unpack('i', fread($msgFile, 4));
       $msgDat = explode('<-!->', fread($msgFile, 50));
-	  $msgHead = unpack('i*', substr($msgDat, 0, 8));
-	  if ($msgSlot->slotData[$i] == 1) {
-		  echo '<b><tr><td>'.date('d/m/y H:i:s', $msgHead[2]).'<td><td>'.substr($msgDat[0],8).'</td></tr></b>';
-	  }	 else {
-		  echo '<tr><td>'.date('d/m/y H:i:s', $msgHead[2]).'<td><td>'.substr($msgDat[0],8).'</td></tr>';
-	  }
+	    $msgHead = unpack('i*', substr($msgDat[0], 0, 16));
+      if ($msgHead[4] > 0) {
+        $subPrefix = "RE:";
+      } else {
+        $subPrefix = "";
+      }
+
+		  echo '<tr class="msgSum_'.$msgSlot->slotData[$i+2].'" onclick="makeBox(\'readMsg\', \'1100,'.$msgSlot->slotData[$i].','.$msgHead[1].'\', 0, 0, 0, 0)"><td>'.date('d/m/y H:i:s', $msgHead[2]).'<td><td>'.$subPrefix.substr($msgDat[0],16).'</td></tr>';
     }
   }
+  echo '</table>';
   fclose($msgFile);
 }
 fclose($unitFile);

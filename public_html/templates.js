@@ -104,12 +104,18 @@ scrButton = function (prm, trg, src) {
 	return newButton;
 }
 
-msgBox = function (trg, prm) {
+msgBox = function (trg, prm, opt) {
+	console.log("opt = " + opt);
 	subBox = document.createElement("input");
-	subBox.style.width="100%";
-	subBox.addEventListener("keydown", function (event) {event.stopPropagation()});
-	subBox.addEventListener("click", function (event) {event.stopPropagation()});
-	trg.appendChild(subBox);
+	if (opt == 0) {
+
+		subBox.style.width="100%";
+		subBox.addEventListener("keydown", function (event) {event.stopPropagation()});
+		subBox.addEventListener("click", function (event) {event.stopPropagation()});
+		trg.appendChild(subBox);
+	} else {
+		subBox.value = "";
+	}
 
 	box = document.createElement("textArea");
 	box.style.width="100%";
@@ -468,15 +474,16 @@ paneBox = function(bName, val, h, w, x, y) {
 	var newDiv = document.createElement('div');
 	newDiv.draggable = "true";
 
-	newDiv.addEventListener("drag", function () {
+	newDiv.addEventListener("drag", function (event) {
 		if (event.clientX > 0) {
 		console.log("drag start");
 		this.style.left = bPos[0] - bPos[2] + event.clientX;
 		this.style.top = bPos[1] - bPos[3] + event.clientY;
 		}
 	});
-	newDiv.addEventListener("dragend", function () {
-
+	newDiv.addEventListener("dragend", function (event) {
+		event = event || window.event;
+		console.log(event + " = " + event.clientX + ", " + event.clientY);
 		this.style.left = bPos[0] - bPos[2] + event.clientX;
 		this.style.top = bPos[1] - bPos[3] + event.clientY;
 	});
@@ -997,7 +1004,7 @@ setBar = function (id, desc, pct) {
 
 class pane {
 	constructor (desc, desktop) {
-		//console.log("Make a pane " + this);
+		console.log("Make a pane " + this);
 		this.element = paneBox(desc, 0, 500, 500, 250, 250);
 		//console.log(this.element.childNodes);
 		this.desc = desc;
@@ -1007,16 +1014,18 @@ class pane {
 		this.deskHolder.arrangePanes();
 		this.nodeType = "pane";
 
-		this.element.addEventListener("click", function() {this.parentObj.toTop()});
-		this.element.childNodes[0].addEventListener("click", function () {
+		this.element.addEventListener("click", function(event) {this.parentObj.toTop()});
+		this.element.childNodes[0].addEventListener("click", function (event) {
 			//console.log("destroying " + this.parentNode.parentObj.nodeType + "  via " + this);
 			this.parentNode.parentObj.destroyWindow();
 			event.stopPropagation();
 			});
-		this.element.addEventListener("dragstart", function () {
+		this.element.addEventListener("dragstart", function (event) {
 			this.parentObj.toTop();
+			event.dataTransfer.setData('application/node type', this);
 			bPos = [parseInt(this.offsetLeft), parseInt(this.offsetTop), event.clientX, event.clientY];
-			//console.log(bPos);
+
+			console.log(bPos);
 		});
 		this.toTop();
 	}
@@ -1080,7 +1089,7 @@ class deskTop {
 	arrangePanes() {
 		var count = 1;
 		for (var item in this.paneList) {
-			//console.log("arrange " + item);
+			//console.log("arrange " + item + " = " + count);
 			this.paneList[item].element.style.zIndex = count;
 			count++;
 		}

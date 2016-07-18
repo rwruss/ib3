@@ -42,7 +42,6 @@ var taskDesc = newTab("newChars", 1, "Description");
 var taskWork = newTab("newChars", 2, "Workers available");
 tabSelect("newChars", 1);';
 
-//print_r($unitList->slotData);
 foreach ($unitList->slotData as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);
 	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));

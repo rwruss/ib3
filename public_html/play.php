@@ -32,6 +32,7 @@ $gameTimes = unpack("N*", substr($paramDat, 0, 8));
 //$playerDat = file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*400, 400);
 
 $playerDat = unpack("i*", file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*100, 400));
+
 /*
 $pStatus = unpack("C*", substr($playerDat, 0, 5));
 $playerOther = unpack("s*", substr($playerDat, 24, 42));
@@ -681,7 +682,9 @@ precision mediump float;
 <script type="text/javascript">
 
 	function ncode_div(el_id) {
-         var x = document.getElementById(el_id).getElementsByTagName("script");
+				if (typeof(el_id) == "string") trg = document.getElementById(el_id);
+				else trg = el_id;
+         var x = trg.getElementsByTagName("script");
          for(var i=0;i<x.length;i++) {
                  eval(x[i].text);
 							   }
@@ -849,9 +852,15 @@ precision mediump float;
 		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
 		xmlhttp.onreadystatechange = function() {
+			if (typeof(trg) == "string") target = document.getElementById(trg);
+			else target = trg;
+			//console.log("send to " + target);
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				document.getElementById(trg).innerHTML = xmlhttp.response;
-				ncode_div(trg);
+				//console.log("sending...");
+				target.innerHTML = xmlhttp.response;
+				//console.log("sent");
+				ncode_div(target);
+				//console.log("ncoding");
 				}
 			}
 
@@ -880,69 +889,15 @@ precision mediump float;
 
 		var zCount=0;
 	function makeBox(bName, val, h, w, x, y) {
-		//console.log("make a box");
-		if (!document.getElementById(bName)) {
-			var newDiv = document.createElement("div");
-			newDiv.style.height = h;
-			newDiv.style.width = w;
-			newDiv.style.top = y;
-			newDiv.style.left = x;
-			newDiv.style.position = "absolute";
-			newDiv.style.border = "1px solid #000000";
-			newDiv.style.background = "#B0B0B0";
-			newDiv.id = bName;
-			newDiv.draggable = "true";
-			zCount++;
-			newDiv.style.zIndex = zCount;
-
-			newDiv.addEventListener("click", function () {this.style.zIndex = zCount++;})
-			newDiv.addEventListener("dragstart", function () {
-				this.style.zIndex = zCount++;
-				//console.log("start drag -> " + event.clientX + ", " + event.clientY);
-				bPos = [parseInt(this.style.left), parseInt(this.style.top), event.clientX, event.clientY]
-
-			});
-			newDiv.addEventListener("drag", function () {
-
-				if (event.clientX > 0) {
-				this.style.left = bPos[0] - bPos[2] + event.clientX;
-				this.style.top = bPos[1] - bPos[3] + event.clientY;
-				if (event.clientX < 10) console.log("??? " + event.clientX + ", " + event.clientY);
-				}
-			});
-			newDiv.addEventListener("dragend", function () {
-
-				this.style.left = bPos[0] - bPos[2] + event.clientX;
-				this.style.top = bPos[1] - bPos[3] + event.clientY;
-			});
-
-			var killBut = document.createElement("div");
-			killBut.innerHTML = "X";
-			killBut.onclick = closeBox;
-			killBut.style.top = 0;
-			killBut.style.right = 0;
-			killBut.style.position = "absolute";
-			killBut.style.border = "1px solid #FFFFFF";
-
-			var newContent = document.createElement("div");
-			newContent.style.height = h-20;
-			newContent.style.width = w;
-			newContent.style.top = 20;
-			newContent.style.left = 0;
-			newContent.style.position = "absolute";
-			newContent.id = bName + "Content"
-
-			//newContent.style.border = "1px solid #FFFFFF";
-			newContent.style.background = "#D0D0D0";
-			newContent.style.overflow = "auto";
-
-			document.getElementsByTagName("body")[0].appendChild(newDiv);
-			newDiv.appendChild(killBut);
-			newDiv.appendChild(newContent);
-			newDiv.objList = [];
-			}
-
-		passClick(val, bName + "Content");
+		console.log(arguments);
+		e = window.event || arguments[0];
+		console.log(window.event);
+		useDeskTop.newPane(bName);
+		//console.log(bName + " = " + useDeskTop.getPane(bName));
+		//console.log("passClick to " + useDeskTop.getPane(bName));
+		//console.log("event: " + event);
+		//e.stopPropagation();
+		passClick(val, useDeskTop.getPane(bName));
 		}
 
 	function closeBox() {
@@ -2659,6 +2614,8 @@ precision mediump float;
 
 
 	function webGLStart() {
+		document.getElementById("readMsg").addEventListener("click", function(event) {console.log(event);makeBox(\'inBox\', 1099, 500, 500, 200, 50)});
+
 		useDeskTop = new deskTop;
 		taskList = new unitList();
 		unitList = new unitList();
@@ -2766,10 +2723,11 @@ precision mediump float;
 		passClick(info, trg);
 	}
 
+window.addEventListener("load", webGLStart);
 </script>
 
 	<html>
-	<body onload="webGLStart();">
+	<body>
 	<div id="ltPnl" style="position:absolute; top:15; left:10; height:675; width:100; border:1px solid #000000">
 		Culture: '.$playerDat[3].'<br>
 		ID: '.$pGameID.'<br>
@@ -2787,7 +2745,7 @@ precision mediump float;
 	<div id="infoBar" style="position:absolute; top:640; left:110; height:50; width:1200; border:1px solid #000000">infoBar</div>
 	<div id="rtPnl" style="position:absolute; top:15; left:1310; height:675; width:200; border:1px solid #000000; display:inline;"></div>
 	<div id="botPnl" style="position:absolute; top:690; left:10; height:40; width:1400; border:1px solid #000000">
-		<a href="javascript:void(0);" onclick="makeBox(\'inBox\', 1099, 500, 500, 200, 50)">Read Messages</a>
+		<a href="javascript:void(0);" id="readMsg">Read Messages</a>
 	</div>
 	<div id="gmPnl" style="position:absolute; top:15; left:110; height:675; width:1200; border:1px solid #000000; overflow:hidden">
 		<canvas style="position:absolute" id="lesson03-canvas" style="border: none; " width=1200 height=700></canvas>

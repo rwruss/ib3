@@ -2,6 +2,7 @@
 
 class unit {
 	protected $linkFile, $unitBin, $id, $attrList;
+	public $unitDat;
 
 	function __construct($id, $file, $size) {
 		global $defaultBlockSize;
@@ -9,7 +10,12 @@ class unit {
 		$this->linkFile = $file;
 		fseek($this->linkFile, $id*$defaultBlockSize);
 		$unitBin = fread($this->linkFile, $size);
-		$this->unitDat = unpack('i*', $unitBin);
+		if (strlen($unitBin) < $size) {
+			echo 'Start a blank unit';
+			$this->unitDat = array_fill(1, 100, 0);
+		} else {
+			$this->unitDat = unpack('i*', $unitBin);
+		}
 		$this->unitID = $id;
 
 		$this->attrList = [];
@@ -65,7 +71,7 @@ class unit {
 			$packStr.=pack('i', $value);
 		}
 		fseek($file, $this->unitID*100);
-		fwrite($file, $packStr);
+		$saveLen = fwrite($file, $packStr);
 	}
 }
 
