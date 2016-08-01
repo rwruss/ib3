@@ -34,7 +34,7 @@ echo '<script>
 useDeskTop.newPane("characters");
 thisDiv = useDeskTop.getPane("characters");
 
-taskList.newUnit({unitType:"task", unitID:'.$postVals[1].', unitName:"char name", actionPoints:'.$taskDat[6].', reqPts:'.$taskDat[5].', strength:75});
+taskList.newUnit({unitType:"task", unitID:'.$postVals[1].', unitName:"Task #'.$postVals[1].' on '.$taskDat[11].'", actionPoints:'.$taskDat[6].', reqPts:'.$taskDat[5].', strength:75});
 taskList.renderSum('.$postVals[1].', thisDiv)
 
 var thisTask = makeTabMenu("newChars", thisDiv);
@@ -56,7 +56,7 @@ foreach ($unitList->slotData as $unitID) {
       $actionReplenishRate = max(1, $unitDat[17]);
       //$actionPoints = min(1000, $workUnit->unitDat[16] + floor((time()-$workUnit->unitDat[27])*$workUnit->unitDat[17]/360000));
 			$actionPoints = min(1000, $unitDat[16] + 10*floor((time()-$unitDat[27])*$unitDat[17]/360000));
-      echo 'Replensih: '.$actionReplenishRate;
+      //echo 'Replensih: '.$actionReplenishRate;
 
 			// Show option to add production points to this task
 

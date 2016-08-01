@@ -118,11 +118,9 @@ if ($buildingCat[1] == 1 || 1) {
 			$buildingPoints = explode(',', $bldgType[2]);
 			// Create a new task to be processed.
 			$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
-			$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
 			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),$buildingPoints[0],0,4,$cityID,0, $cityID, $postVals[2], $postVals[1]);
-			$newTask = createTask($taskFile, $parameters); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
+			$newTask = createTask($taskFile, $parameters);
 			fclose($taskFile);
-			fclose($taskIndex);
 
 			// Update existing building status to show that it is being upgraded
 			fseek($unitFile, $postVals[2]*$defaultBlockSize+24);
@@ -182,11 +180,9 @@ if ($buildingCat[1] == 1 || 1) {
 			// Create a new task to be processed.
 			$buildingPoints = explode(',', $bldgType[2]);
 			$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
-			$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
 			$parameters = pack('i*', $cityDat[1], $cityDat[2],1,time(),$buildingPoints[0],0,2,$cityID,0, $cityID, $newID, $postVals[1]);
 			$newTask = createTask($taskFile, $parameters); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 			fclose($taskFile);
-			fclose($taskIndex);
 
 			echo '<p>Parameters:';
 			print_r(unpack('i*', $parameters));

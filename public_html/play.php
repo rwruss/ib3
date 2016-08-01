@@ -2528,7 +2528,7 @@ precision mediump float;
 	var clickParams = [];
 	var clickTarg = "";
 	function handleClick(event)	{
-		//alert(testParam + "," + clickParams);
+		//alert(clickParams);
 		document.body.style.cursor = "auto";
 		var loc = findPos(this);
 		var rect = this.getBoundingClientRect();
@@ -2555,7 +2555,8 @@ precision mediump float;
 			document.getElementById("clickLong").value = longitude;
 			sendStr = clickParams + ","+pixelValues+","+baseTile+","+zoomLvl;
 			if (clickParams[0] != 0) {
-				passClick(sendStr, clickTarg);
+				makeBox(clickTarg, sendStr, 500, 500, 200, 50);
+				//passClick(sendStr, clickTarg);
 				//alert("blah " + baseTile);
 			}
 			//else passClick(sendStr, "rtPnl");

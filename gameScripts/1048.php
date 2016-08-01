@@ -21,7 +21,7 @@ useDeskTop.newPane("bldgInfo");
 thisDiv = useDeskTop.getPane("bldgInfo");
 thisDiv.innerHTML = "";
 ';
-
+print_r($targetBuilding->bldgData);
 switch ($targetBuilding->bldgData[7]) {
   case 0:
     echo 'textBlob("descriptiveBlob", thisDiv, "This building is still under construction.");
@@ -47,13 +47,25 @@ switch ($targetBuilding->bldgData[7]) {
 	// Show task options
 	$tasks = explode(',', $typeInfo[2]);
 	if ($tasks > 1 ) {
-
+    //print_r($tasks);
 		echo 'textBlob("", bldg_'.$postVals[1].'.tab_2, "Building options");';
 		for ($i=1; $i<sizeof($tasks); $i++) {
-      $unitID = explode('.', $tasks[$i]);
+      $taskID = explode('.', $tasks[$i]);
       $unitInfo = explode('<->', file_get_contents($scnPath.'/units.desc'));
-      $uTypeInfo = explode('<-->', $unitInfo[$unitID[1]]);
-			echo 'taskOpt('.$tasks[$i].', bldg_'.$postVals[1].'.tab_2, '.$postVals[1].', "'.trim($uTypeInfo[0]).' ('.$tasks[$i].')");';
+      switch ($taskID[0]) {
+        case 5:
+        $uTypeInfo = explode('<-->', $unitInfo[$taskID[1]]);
+  			echo 'taskOpt('.$tasks[$i].', bldg_'.$postVals[1].'.tab_2, '.$postVals[1].', "'.trim($uTypeInfo[0]).' ('.$tasks[$i].')");';
+        break;
+
+        case 6:
+        echo 'taskOpt('.$tasks[$i].', bldg_'.$postVals[1].'.tab_2, '.$postVals[1].', "Train character");';
+        break;
+
+        case 11:
+        echo 'taskOpt('.$tasks[$i].', bldg_'.$postVals[1].'.tab_2, '.$postVals[1].', "Gather stuff");';
+      }
+
 		}
 	}
 

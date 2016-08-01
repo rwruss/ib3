@@ -18,7 +18,7 @@ if ($unitDat[5] == $pGameID || $unitDat[6] == $pGameID) {
 		//setUnitExp('.$unitID.', 0.5);
 
 		var settle = addDiv("unitUpgrades", "stdFloatDiv", document.getElementById("rtPnl"));
-		settle.innerHTML = "Settle Here";
+		settle.innerHTML = "Settle Here (Pop '.$unitDat[25].')";
 		settle.addEventListener("click", function () {makeBox("settle", "1067,'.$postVals[1].'", 500, 500, 200, 50)});
 		</script>';}
 	else {include('../gameScripts/1096.php');}

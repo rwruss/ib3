@@ -714,13 +714,15 @@ class unit {
 	}
 
 	update(object) {
-		console.log("update unit");
+
 		this.aps = object.actionPoints || this.aps,
 		this.status = object.status || this.status,
 		this.exp = object.exp || this.exp,
 		this.str = object.strength || this.str,
 		this.subType = object.subType || this.subType,
+		this.unitName = object.unitName || this.unitName,
 		this.tNum = object.tNum || this.tNum;
+		console.log("update unit " + this);
 	}
 }
 
@@ -783,7 +785,7 @@ class warband extends unit {
 	set actionPoints(x) {
 
 		this.aps = Math.max(0, Math.min(x, 1000));
-		console.log("set aps to " + this.aps);
+		//console.log("set aps to " + this.aps);
 		setBar(this.unitID, ".sumAct", this.aps/10);
 	}
 
@@ -962,7 +964,7 @@ class task extends unit {
 		this.aps = Math.max(0, Math.min(x, 1000));
 		//console.log("set aps to " + this.aps);
 		setBar(this.unitID, ".sumAct", this.aps*100/this.ptsNeed);
-		console.log(this.unitID + " set bar to " + this.aps*100/this.ptsNeed)
+		//console.log(this.unitID + " set bar to " + this.aps*100/this.ptsNeed)
 	}
 
 	get actionPoints() {
@@ -973,7 +975,7 @@ class task extends unit {
 		var thisDetail = addDiv("", "tdHolder", target);
 		//thisDetail.act = addDiv("", "udAct", thisDetail);
 		thisDetail.statusBox = addDiv("", "bldgLvl", thisDetail);
-		thisDetail.statusBox.innerHTML = "Task" + this.unitID;
+		thisDetail.statusBox.innerHTML = this.unitName;
 
 
 		var actDiv = addDiv("", "sumAct", thisDetail);
@@ -1004,7 +1006,7 @@ setBar = function (id, desc, pct) {
 
 class pane {
 	constructor (desc, desktop) {
-		console.log("Make a pane " + this);
+		//console.log("Make a pane " + this);
 		this.element = paneBox(desc, 0, 500, 500, 250, 250);
 		//console.log(this.element.childNodes);
 		this.desc = desc;

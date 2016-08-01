@@ -282,6 +282,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		$newUnit->unitDat[12] = $townID; // Current Loc
 		$newUnit->unitDat[15] = 0; // Army ID
 		$newUnit->unitDat[17] = $thisDtl[10]; // action point regeneration
+		$newUnit->unitDat[25] = 100; // Population
 
 		$newUnit->saveAll($unitFile);
 

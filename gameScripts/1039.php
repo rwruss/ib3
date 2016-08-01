@@ -22,13 +22,18 @@ if ($approved != false) {
 	$credLevel = $credList[$approved-1]*(-1);
 
 	// Verify that enough resources are available for the building
-	$buildingDat = explode('<-->', file_get_contents($gamePath.'/buildings.desc'));
-	$rscList = explode('/', $buildingDat[$postVals[3]*7+4]);
+	$buildingDat = explode('<->', file_get_contents($scnPath.'/rbuildings.desc'));
+	print_r($buildingDat);
+	$bldgTypeInfo = explode("<-->", $buildingDat[$postVals[3]]);
+	$buildPts = explode(',', $bldgTypeInfo[2]);
+	$rscList = explode('/', $bldgTypeInfo[4]);
+	echo '<p>TypeInfo:<br>';
+	print_r($bldgTypeInfo);
 	echo '<p>RscList:<br>';
 	print_r($rscList);
-	$numReqd = sizeof($rscList)/2;
-	for ($i=0; $i<$numReqd; $i++) {
-		$reqdRsc[$rscList[$i*2]] = $rscList[$i*2+1];
+	$numReqd = sizeof($rscList);
+	for ($i=0; $i<$numReqd; $i+=2) {
+		$reqdRsc[$rscList[$i]] = $rscList[$i+1];
 	}
 
 	echo 'Resources required:<br>';
@@ -69,27 +74,33 @@ if ($approved != false) {
 		} else {
 			echo 'Major lock error';
 		}
+		// Record information for new building
 		fseek($unitFile, $newID*$defaultBlockSize);
-		fwrite($unitFile, pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2, 0, 2, $cityID, $cityID, 1, 1, 1, $postVals[3], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
+		fwrite($unitFile, pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2, 0, 2, $cityID, $cityID, 0, 1, 1, $bldgTypeInfo[11], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
 
 		// add the building to the town as an "in progress" building
-		
-		// Verify that slot exists and create one if needed.
-		if ($cityDat[17] == 0) { // Need to create a new slot
-			$cityDat[17] = startASlot($slotFile, $gamePath.'/gameSlots.slt'); //startASlot($slot_file, $slot_handle)
-			fseek($unitFile, $cityID*$defaultBlockSize+64);
-			fwrite($unitFile, pack('i', $cityDat[17]));
+
+		// Verify that slot exists and create one if needed. -> use resource point list for resource points
+		echo 'City resource point is - '.$cityDat[10];
+		if ($cityDat[10] == 0) { // Need to create a new slot
+			$cityDat[10] = startASlot($slotFile, $gamePath.'/gameSlots.slt'); //startASlot($slot_file, $slot_handle)
+			fseek($unitFile, $cityID*$defaultBlockSize+36);
+			fwrite($unitFile, pack('i', $cityDat[10]));
+			echo 'created new slot '.$cityDat[10];
+
+			// Save new slot to city information
+			fseek($unitFile, $cityID*$defaultBlockSize+36);
+			fwrite($unitFile, pack('i', $cityDat[10]));
 		}
-		
-		addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[17], pack('i', $newID), $slotFile);
-		//writeBlocktoSlot($gamePath.'/gameSlots.slt', $cityDat[17], pack('i*', 0, $newID), $slotFile, 40); // function writeBlocktoSlot($slotHandle, $checkSlot, $addData, $slotFile, $slotSize)
+
+		addDataToSlot($gamePath.'/gameSlots.slt', $cityDat[10], pack('i', $newID), $slotFile);
 		echo '<p>New unit ID is '.$newID.'<br>';
-		
+
 		// add a task to the town as an "in progress" task
 		// Create a new task to be processed.
 		$taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
-		$taskIndex = fopen($gamePath.'/tasks.tix', 'r+b');
-		$parameters = pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2,1,time(),1000,0,2,$cityID,0, $cityID, $newID);
+
+		$parameters = pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2,1,time(),$buildPts[0],0,2,$cityID,0, $cityID, $newID, $postVals[3]);
 		$newTask = createTask($taskFile, $parameters); //createTask($taskFile, $taskIndex, $duration, $parameters, $gamePath, $slotFile)
 		fclose($taskFile);
 
@@ -102,10 +113,20 @@ if ($approved != false) {
 		// add the building to the map file at the specified location
 		$mapSlot = floor($postVals[2]/120)*120+floor($postVals[1]/120);
 		$mapSlotFile = fopen($gamePath.'/mapSlotFile.slt', 'r+b');
-		
-		$mSlotItem = new itemSlot($mapSlot, $mapSlotFile, 404);
-		$mSlotItem->addItem($newID, $mapSlotFile);
-		
+
+		//$mapSlot->addItem($mapSlotFile, pack('i*', $townID, 1), $mLoc); // file, bin value, loc
+		$mSlotItem = new blockSlot($mapSlot, $mapSlotFile, 404);
+		//$mSlotItem->addItem($newID, $mapSlotFile);
+
+		$mLoc = sizeof($mSlotItem->slotData);
+		for ($i=1; $i<=sizeof($mSlotItem->slotData); $i+=2) {
+			if ($mSlotItem->slotData[$i] == 0) {
+				$mLoc = $i;
+				break;
+			}
+		}
+		$mSlotItem->addItem($mapSlotFile, pack('i*', $newID, 1), $mLoc);
+
 		//addtoSlotGen($gamePath.'/mapSlotFile.slt', $mapSlot, pack('i', $newID), $mapSlotFile, 404);
 		fclose($mapSlotFile);
 	} else {

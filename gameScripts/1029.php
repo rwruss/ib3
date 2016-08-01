@@ -34,14 +34,14 @@ if ($approved) {
 				//print_r($taskDtl);
 				if ($taskDtl[3] > $taskDtl[4]) { // Task is not complete
 					$requiredPoints = max(1000,$taskDtl[7]);
-					echo 'taskList.newUnit({unitType:"task", unitID:'.$taskList->slotData[$i].', unitName:"char name", actionPoints:'.$taskDtl[6].', reqPts:'.$taskDtl[5].', strength:75});
+					echo 'taskList.newUnit({unitType:"task", unitID:'.$taskList->slotData[$i].', unitName:"Task name", actionPoints:'.$taskDtl[6].', reqPts:'.$taskDtl[5].', strength:75});
 					taskList.renderSum('.$taskList->slotData[$i].', thisDiv);';
 					//echo 'newTaskSummary("'.$taskList->slotData[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
 
 					//echo 'Incomplete: <div onclick="makeBox(\'taskDtl\', \'1040,'.$taskList[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskList[$i].')Task Type '.$taskDtl[7].' is '.$taskDtl[6].'/'.$taskDtl[5].' Complete</div>';
 				} else {
 					$requiredPoints = max(1000,$taskDtl[7]);
-					echo 'taskList.newUnit({unitType:"task", unitID:'.$taskList->slotData[$i].', unitName:"char name", actionPoints:'.$taskDtl[6].', reqPts:'.$taskDtl[5].', strength:75});
+					echo 'taskList.newUnit({unitType:"task", unitID:'.$taskList->slotData[$i].', unitName:"Task #'.$taskList->slotData[$i].'", actionPoints:'.$taskDtl[6].', reqPts:'.$taskDtl[5].', strength:75});
 					taskList.renderSum('.$taskList->slotData[$i].', thisDiv);';
 					//echo 'newTaskSummary("'.$taskList->slotData[$i].'", "incomplete", '.($taskDtl[6]/$requiredPoints).');';
 					//echo 'Complete ('.$jobBlockSize.'): <div onclick="makeBox(\'taskDtl\', \'1040,'.$taskList[$i].'\', 500, 500, 200, 50);">'.$i.' - '.$taskList[$i].')Task Type '.$taskDtl[7].' is '.$taskDtl[6].'/'.$taskDtl[5].' Complete</div>';

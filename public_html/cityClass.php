@@ -2,17 +2,38 @@
 
 class city {
 	public $cityData, $rscSlot, $slotFile;
-	private $cityID, $cityDatStr;
+	private $cityID, $cityDatStr, $actionPoints;
 
-	function __construct($id, $file) {
-		//$this->init($start, $slotFile, $size);
-		$this->init($id, $file);
-		$this->cityID = $id;
-		//$this->slotFile = $file;
+	function __construct($args) {
+		echo 'Load a city';
+		if (sizeof($args) == 2) {
+			if (gettype($args[0]) == 'integer' && gettype($args[1]) == 'resource') {
+				echo 'From a file';
+			echo 'TYpes: '.gettype($args[0]).', '.gettype($args[1]);
+			$this->init($args[0], $args[1]);
+
+		} else echo 'City class error 1 - '.gettype($args[0]).', '.gettype($args[1]);
+		}
+		else if (sizeof($args) == 3) {
+			if (gettype($args[0]) == 'integer' && gettype($args[1]) == 'resource' && gettype($args[2]) == 'array') {
+				echo 'Already loaded';
+				$this->cityData = array_fill(1, 100, 0);
+				foreach($args[2] as $key => $value) {
+					$this->cityData[$key] = $value;
+				}
+			}
+		} else {echo 'INit error';}
+		$this->cityID = $args[0];
+		$this->slotFile = $args[1];
+		$this->actionPoints = min($this->cityData[25]*10, $this->cityData[31]+(time() - $this->cityData[27])*4167*$this->cityData[25]/(360000*100));
 	}
 
 	function slotFile($slotFile) {
 		$this->slotFile = $slotFile;
+	}
+
+	function aps() {
+		return $this->actionPoints;
 	}
 
 	function init($id, $file) {
@@ -20,8 +41,8 @@ class city {
 
 		$this->cityDatStr = fread($file, 400);
 		$this->cityData = unpack('i*', $this->cityDatStr);
-		echo 'Created a new city<br>';
-		print_r($this->cityData);
+		//echo 'Created a new city<br>';
+		//print_r($this->cityData);
 	}
 
 	function addRsc($id, $amount) {
@@ -112,6 +133,8 @@ function newTown($id, $townFile, $slotFile, $townDtls) {
 	$townData[6] = $townDtls[2]; // pgameID
 	$townData[7] = 1;
 	$townData[8] = $townDtls[3]; // Culture
+	$townData[25] = $townDtls[4]; // Culture
+	$townData[27] = time();
 
 	// Create a credential list for the town and record this player as having full cred.
 	$credListSlot = startASlot($slotFile, $gamePath."/gameSlots.slt");

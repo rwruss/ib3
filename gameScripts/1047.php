@@ -42,7 +42,7 @@ if ($approved) {
 		var bldgTabs = makeTabMenu("bldgMenu", thisDiv);
 		var bldgTabs_1 = newTab("bldgMenu", 1, "Buildings");
 		var bldgTabs_2 = newTab("bldgMenu", 2, "Construct");
-		var bldgTabs_3 = newTab("bldgMenu", 2, "Town Buildings");';
+		var bldgTabs_3 = newTab("bldgMenu", 3, "Town Buildings");';
 
 	$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
 	foreach ($bldgList as $bldgID) {
@@ -63,11 +63,11 @@ if ($approved) {
 		$bldgTypeInfo = explode('<-->', $buildingTypes[$i]);
 		$bldgClass = explode(',', $bldgTypeInfo[1]);
 
-		if ($bldgClass[3] == 1)	{
+		if ($bldgClass[2] == 1)	{
 			$cultureList = explode(',', $bldgTypeInfo[9]);
 			for ($j=0; $j<sizeof($bldgTypeInfo[9]); $j++) {
 				if ($_SESSION['game_'.$gameID]['culture'] == $cultureList[$j]) {
-					echo 'unitList.newUnit({unitType:"building", unitID:"b'.$i.'", unitName:"'.$bldgTypeInfo[0].'"});
+					echo 'unitList.newUnit({unitType:"building", unitID:"b'.$i.'", unitName:"'.$bldgTypeInfo[0].' - '.$bldgClass[2].'"});
 					unitList["unit_b'.$i.'"].buildOpt(bldgTabs_2, 0);';
 					//echo 'newBldgOpt("'.$i.'", 0, "bldg_tab2", "'.$bldgTypeInfo[0].'");';
 				}

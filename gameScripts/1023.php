@@ -42,14 +42,12 @@ if ($approved) {
 	// Review city to see if it is allowed to construct this new building type
 
 	/// Load list of buildings already at the city
-	$buildingDat = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
-	$numBuildings = sizeof($buildingDat);
+	$buildingList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
+	$numBuildings = sizeof($buildingList);
 
-	for ($i=0; $i<$numBuildings; $i++) {
-		fseek($unitFile, $bldgID*$defaultBlockSize);
+	for ($i=1; $i<=$numBuildings; $i++) {
+		fseek($unitFile, $buildingList[$i]*$defaultBlockSize);
 		$buildingDat = unpack('i*', fread($unitFile, $unitBlockSize));
-		$typeList[$buildingDat[10]][] = $i;
-		$buildingDatList[] = $buildingDat;
 	}
 	echo 'Select what you want to build at this location:<br>
 	<select id="newBldgType">
@@ -57,6 +55,7 @@ if ($approved) {
 		<option value="2">Mine</option>
 	</select><div onclick="sendValue(\'newBldgType\', [1039,'.$baseX.','.$baseY.'])">Give the Order!</div>
 	Buildings already present here:<br>';
+	/*
 	if ($numBuildings > 0) {
 		foreach ($typeList as $typeID) {
 			echo 'Building type '.$typeID.'<br>';
@@ -68,7 +67,7 @@ if ($approved) {
 	echo '<script></script>';
 	} else {
 		echo 'No buildings at this location';
-	}
+	}*/
 } else {
 	echo 'You do not have the authority required to issue this order. ('.$pGameID.')';
 }

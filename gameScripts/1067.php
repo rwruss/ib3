@@ -25,7 +25,7 @@ if (flock($unitFile, LOCK_EX)) {
 	fwrite($unitFile, pack('i', 0));
 
 	echo 'New city aID is '.$newCityId.'<br>';
-	$townInf = [$unitDat[1], $unitDat[2], $pGameID, $_SESSION['game_'.$gameID]['culture']];
+	$townInf = [$unitDat[1], $unitDat[2], $pGameID, $_SESSION['game_'.$gameID]['culture'], $unitDat[25]]; // X loc, Y Loc, pgameId, Culture, Population
 	newTown($newCityId, $unitFile, $slotFile, $townInf); //($id, $townFile, $slotFile)
 
 	flock($unitFile, LOCK_UN); // release the lock  on the player File

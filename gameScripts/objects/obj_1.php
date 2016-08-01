@@ -7,11 +7,12 @@ include("./cityClass.php");
 // Verify that player is authorized to view the resources at this city
 $cityID = $_SESSION['selectedItem'];
 // Verify that the person giving the order has the proper credintials
-fseek($unitFile, $cityID*$defaultBlockSize);
-$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
+//fseek($unitFile, $cityID*$defaultBlockSize);
+$thisCity = new city([$cityID, $unitFile, $unitDat]);
+//$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-$credList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[19], 40)));
+$credList = array_filter(unpack("i*", readSlotData($slotFile, $thisCity->cityData[19], 40)));
 $approved = checkCred($pGameID, $credList);
 //$approved = array_search($pGameID, $credList);
 echo 'Approved level '.$approved.'<br>';
@@ -24,6 +25,8 @@ if ($approved) {
 	  Status: '.$unitDat[7].'<br>
 	  Space: '.$unitDat[8].'<br>
 	  Map Object ID '.$unitDat[23].'<br>
+		Population '.$unitDat[25].'<br>
+		Action Points '.$thisCity->aps().'
 	  <div style="position:absolute; bottom:220; left:0;" onclick="makeBox(\'rscSummary\', 1068, 500, 500, 200, 50);">Leave Town</div>
 	  <div style="position:absolute; bottom:200; left:0;" onclick="makeBox(\'rscSummary\', 1063, 500, 500, 200, 50);">Show Resources</div>
 	  <div style="position:absolute; bottom:180; left:0;" onclick="scrMod(1047);">City Buildings</div>

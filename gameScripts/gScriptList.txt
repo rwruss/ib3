@@ -13,7 +13,7 @@
 1010 - Religion Change Menu
 1011 - Military Menu for player
 1012 - Issue Orders/Edicts
-1013 - Process establish town
+1013 - Process establish town <--- EMPTY
 1014 - Settlement detail screen <--- replaced by CL255
 1015 - Economy Management
 1016 - Read technology to determine tasks ??
@@ -108,6 +108,7 @@
 1099 - Show inbox for player
 1100 - Read a message
 1101 - Process request to reply to message
+1102 - Gather from resource location
 
 // Manual Override Functions
 2001 - Add Resources to a city

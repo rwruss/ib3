@@ -13,5 +13,5 @@ $actionPoints = min(1000, min($workLevel[$postVals[2]], $unitDat[16] + floor((ti
 
 // Calculate the amount of resources generated
 $production = $actionPoints/1000 * $bldgDat[20]/100 * $bldgDat[18];
-
+//echo 'Make something or something.'
 ?>

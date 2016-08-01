@@ -11,7 +11,7 @@ $taskDat = unpack('i*', fread($taskFile, $jobBlockSize));
 fclose($taskFile);
 
 $required = max(1000, $taskDat[5]);
-
+print_r($taskDat);
 /*
 echo '
 <div class="taskHeader" id="task_'.$postVals[1].'_header"></div>

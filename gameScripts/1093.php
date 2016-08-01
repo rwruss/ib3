@@ -41,7 +41,7 @@ if ($usedPoints > 0) {
 	// create a new building
 		echo 'Task complete ('.$trgTask->taskDat[6].' + '.$usedPoints.' >= '.$trgTask->taskDat[5].')';
 		$newBuilding = new building($trgTask->taskDat[11], $unitFile);
-		$newBuilding->bldgData = array_fill(1, 100, 0);
+		//$newBuilding->bldgData = array_fill(1, 100, 0);
 		$newBuilding->bldgData[1] = $workUnit->unitDat[1]; // Building X
 		$newBuilding->bldgData[2] = $workUnit->unitDat[2]; // Building Y
 		$newBuilding->bldgData[7] = 1; // Set Status to complete
@@ -58,6 +58,7 @@ if ($usedPoints > 0) {
 	} else {
 		// Update stats for unit in production
 		$trgTask->taskDat[6] += $usedPoints;
+		echo 'Have '.$trgTask->taskDat[6].' pf '.$trgTask->taskDat[5].' Needed.';
 
 	}
 	$trgTask->saveAll($taskFile);

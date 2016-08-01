@@ -2,14 +2,14 @@
 
 // postvals 1 = resource ID, 2 = energy to use
 
-include("./slotFunctions.php");
+//include("./slotFunctions.php");
 $meSlotFile = fopen($gamePath.'/mapEffects.slt', 'rb');
 
 // Process a type 1 task (gathering from an area on the map)
 $jobRadius = 10;  // Need to adjust this to be pulled from the task parameters
 $jRowSize = 2*$jobRadius+1; // Row size for the job
-$jobX = [$unitDat[1]-$jobRadius, $unitDat[1]+$jobRadius];
-$jobY = [$unitDat[2]-$jobRadius, $unitDat[2]+$jobRadius];
+$jobX = [$rscPoint[1]-$jobRadius, $rscPoint[1]+$jobRadius];
+$jobY = [$rscPoint[2]-$jobRadius, $rscPoint[2]+$jobRadius];
 
 // Load a job radius template
 $jobDistanceMod = array_fill(0, $jRowSize*$jRowSize, 1);
@@ -18,8 +18,8 @@ $jobDistanceMod = array_fill(0, $jRowSize*$jRowSize, 1);
 // 1= minimum amount, 2 = 25%, 3 = 50%, 4 = max
 /*
 $workLevel = [0, 20, 250, 500, 1000];
-$divisor = max(1,$unitDat[17]);
-$actionPoints = min(1000, min($workLevel[$postVals[2]], $unitDat[16] + floor((time()-$unitDat[27])/$divisor)));
+$divisor = max(1,$rscPoint[17]);
+$actionPoints = min(1000, min($workLevel[$postVals[2]], $rscPoint[16] + floor((time()-$rscPoint[27])/$divisor)));
 */
 // Load map terrain information for the base production from this area
 $rowSize = 14400;
@@ -33,8 +33,12 @@ $terrainArray = unpack('C*', $terrainDat);
 
 // Load the terrain description to get the max production values
 echo 'Load resource production for resource ID #'.$postVals[1];
-$rscDesc = explode('<-->', file_get_contents($scnPath.'/resources.desc'));
-$rscProd = explode(',', $rscDesc[$postVals[1]]);
+$rscList = explode('<->', file_get_contents($scnPath.'/resources.desc'));
+$rscItem = explode('<-->', $rscList[$rscPoint[10]]);
+$rscProd = explode(',', $rscItem[1]);
+
+echo 'Terrain production matrix:';
+print_r($rscProd);
 
 // This puts the base amount of resource that this type of terrain produces into the jobArray for each tile
 for ($i=0; $i=sizeof($terrainArray); $i++) {
@@ -43,12 +47,12 @@ for ($i=0; $i=sizeof($terrainArray); $i++) {
 
 // Load the map effects informatuion for the affected area
 echo 'Load map effects<br>';
-$mapSlot = floor($unitDat[2]/120)*120+floor($unitDat[1]/120);
+$mapSlot = floor($rscPoint[2]/120)*120+floor($rscPoint[1]/120);
 $mapEffects = new mapEventSlot($mapSlot, $meSlotFile, 404); //$start, $slotFile, $size
 
 $now = time();
 
-// Override loaded jobArray
+// Override loaded jobArray for testing
 $jobArray = array_fill(0, $jRowSize*$jRowSize, 100);
 //print_r($mapEffects->slotData);
 
@@ -93,7 +97,7 @@ for ($i=sizeof($mapEffects->slotData); $i>2; $i-=6) {
 					$circleArray = $radiusArray_20;
 					break;
 			}
-			$circleArray = arra_fill(0, $eRowSize*$eRowSize, 1);
+			$circleArray = array_fill(0, $eRowSize*$eRowSize, 1);
 			for ($row=$rowStart; $row<=$rowEnd; $row++) {
 				for ($col=$colStart; $col<=$colEnd; $col++) {
 					// Add in the effects
@@ -108,9 +112,9 @@ print_r($jobArray);
 
 // Check for perks based on army ID or commander
 $cmdBoost = 1;
-if ($unitDat[15] > 0 ) {
+if ($rscPoint[15] > 0 ) {
 	// Load the army to get the commander ID
-	fseek($unitFile, $unitDat[15]*$defaulBlockSize);
+	fseek($unitFile, $rscPoint[15]*$defaulBlockSize);
 	$armyDat = unpack('i*', fread($unitFile, 200));
 
 
@@ -137,7 +141,7 @@ if ($unitDat[15] > 0 ) {
 
 // Load unit descriptions
 $unitDesc = explode('<-->', file_get_contents($scnPath.'/units.desc'));
-$unitBoosts = explode(',', $unitDesc[$unitDat[10]]);
+$unitBoosts = explode(',', $unitDesc[$rscPoint[10]]);
 
 // Read the unit boots/nerfs
 $unitMod = 1.0;
@@ -146,9 +150,9 @@ if ($foundKey) $unitMod = $unitBoosts[$foundKey+1];
 
 // Load the unit experience
 $expBoost = 1.0;
-if ($unitDat[14] > 0) {
+if ($rscPoint[14] > 0) {
 $unitSlotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-$unitExp = new mapEventSlot($unitDat[14], $unitSlotFile, 40);
+$unitExp = new mapEventSlot($rscPoint[14], $unitSlotFile, 40);
 
 	// Adjust the production rate based on experience
 	for ($i=2; $i<sizeof($unitExp->slotData); $i+=2) {
@@ -177,7 +181,7 @@ $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addT
 
 // Save resources collected to unit slot
 $carried = 0;
-$unitRSC = new mapEventSlot($unitDat[30], $unitSlotFile, 40);
+$unitRSC = new mapEventSlot($rscPoint[30], $unitSlotFile, 40);
 $rscStart = [0,0];
 for ($i=3; $i<=sizeof($unitRSC->slotData); $i+=2) {
 	if ($unitRSC->slotData[$i] == $postVals[1]) {
@@ -187,14 +191,14 @@ for ($i=3; $i<=sizeof($unitRSC->slotData); $i+=2) {
 	$carried += $unitRSC->slotData[$i+1];
 }
 
-if ($carried < $unitDat[29]) {
-	$space = $unitDat[29] - $carried;
+if ($carried < $rscPoint[29]) {
+	$space = $rscPoint[29] - $carried;
 	$location = sizeof($unitRSC->slotData);
 	if ($rscStart[0]>0) $location = $rscStart[0];
 
 	$unitRSC->addItem($unitSlotFile, pack('i*', $postVals[1], $rscStart[1]+min($space, $collected)), $location);
 } else {
-	echo 'Can not carry any more<br>'
+	echo 'Can not carry any more<br>';
 }
 
 fclose($meSlotFile);

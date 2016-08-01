@@ -1,7 +1,7 @@
 <?php
 
 include("./slotFunctions.php");
-//echo 'Job at specific resource point';
+echo 'Job at specific resource point';
 
 // Look for available resource points nearby
 $mapSlot = floor($unitDat[2]/120)*120+floor($unitDat[1]/120);
