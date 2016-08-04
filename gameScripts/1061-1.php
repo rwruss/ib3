@@ -114,7 +114,7 @@ print_r($jobArray);
 $cmdBoost = 1;
 if ($rscPoint[15] > 0 ) {
 	// Load the army to get the commander ID
-	fseek($unitFile, $rscPoint[15]*$defaulBlockSize);
+	fseek($unitFile, $rscPoint[15]*$defaultBlockSize);
 	$armyDat = unpack('i*', fread($unitFile, 200));
 
 
@@ -178,7 +178,7 @@ $eventData = pack('i*', $postVals[1], $postVals[2], $actionType, time(), $magnit
 // Record the event for future actions
 echo 'Add effect<br>';
 $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addTarget);
-
+/*
 // Save resources collected to unit slot
 $carried = 0;
 $unitRSC = new mapEventSlot($rscPoint[30], $unitSlotFile, 40);
@@ -200,7 +200,7 @@ if ($carried < $rscPoint[29]) {
 } else {
 	echo 'Can not carry any more<br>';
 }
-
+*/
 fclose($meSlotFile);
 fclose($unitFile);
 ?>

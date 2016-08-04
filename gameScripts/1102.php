@@ -19,5 +19,5 @@ echo $baseCity->aps().' points available.';
 
 include('../gameScripts/1061-1.php');
 //print_r($baseCity->cityData);
-fclose($unitFile);
+//fclose($unitFile);
 ?>
