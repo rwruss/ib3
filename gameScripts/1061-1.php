@@ -1,5 +1,13 @@
 <?php
 
+/*
+Process overview: When a area job order is recieved, the terrain data for that particular location is loaded.  Each terrain type has a set production value for the given resource types.
+An array is created that represents each cell of the terrain area and the total production for that terrain type is stored.
+
+Next, the terrain affects are loaded and referenced against the terrain cells.  Any impact to production is deducted from that cell.
+Finally, the gathering object's parameters are loaded and caluclated for the particular resource.  Each terrain cell is the calculated to produce the minimum of the remaining production value 
+or the unit's production rate.
+*/
 // postvals 1 = resource ID, 2 = energy to use
 
 //include("./slotFunctions.php");
@@ -61,7 +69,7 @@ for ($i=sizeof($mapEffects->slotData); $i>2; $i-=6) {
 	// Event format: x location, y location, type, time, magnitude, radius
 
 	// Check if the event is too old to consider
-	if ($mapEffects->slotData[$i-2] + 345600) {
+	if ($mapEffects->slotData[$i-2] + 345600 < $now) {
 		echo 'Past the affect time';
 		break;
 	} else {
@@ -166,19 +174,16 @@ fclose($unitSlotFile);
 // Calculate the production power of the unit given the order
 $magnitude = 1 * $expBoost * $unitMod;
 
-// Determine amount of resources collected
+// Determine amount of resources collected -> compare the unit's gathering rate to the allowable amount for each terrain cell.
 $collected = 0;
 for ($i=0; $i<sizeof($jobArray); $i++) {
-	$collected += max($jobArray[$i], $magnitude);
+	$collected += min($jobArray[$i], $magnitude);
 }
 echo 'Collected '.$collected;
 
-// Make new data for this event
+// Make new data for this event and record to map events.
 $actionType = $postVals[1];
 $eventData = pack('i*', $postVals[1], $postVals[2], $actionType, time(), $magnitude, $jobRadius);
-
-// Record the event for future actions
-echo 'Add effect<br>';
 $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addTarget);
 /*
 // Save resources collected to unit slot
