@@ -37,9 +37,10 @@ $rscList = explode('<->', file_get_contents($scnPath.'/resources.desc'));
 $rscItem = explode('<-->', $rscList[$rscPoint[10]]);
 $rscProd = explode(',', $rscItem[1]);
 
+/*
 echo 'Terrain production matrix:';
 print_r($rscProd);
-
+*/
 // This puts the base amount of resource that this type of terrain produces into the jobArray for each tile
 for ($i=0; $i=sizeof($terrainArray); $i++) {
 	$jobArray[$i]=$rscProd[$terrainArray[$i+1]];
@@ -107,9 +108,10 @@ for ($i=sizeof($mapEffects->slotData); $i>2; $i-=6) {
 		}
 	}
 }
+/*
 echo 'Finished job array<p>';
 print_r($jobArray);
-
+*/
 // Check for perks based on army ID or commander
 $cmdBoost = 1;
 if ($rscPoint[15] > 0 ) {
