@@ -165,21 +165,23 @@ $foundKey = array_search('rsc_'.$postVals[1], $unitBoosts);
 if ($foundKey) $unitMod = $unitBoosts[$foundKey+1];
 
 // Load the unit experience
-$expBoost = 1.0;
-if ($rscPoint[14] > 0) {
 $unitSlotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+$expBoost = 1.0;
+/*
+// Changed how experience is calced.  Need to update.
+
+if ($rscPoint[14] > 0) {
 $unitExp = new mapEventSlot($rscPoint[14], $unitSlotFile, 40);
 
 	// Adjust the production rate based on experience
 	for ($i=2; $i<sizeof($unitExp->slotData); $i+=2) {
 		if ($unitExp->slotData[$i] == $postVals[1]) $expBoost = $unitExp->slotData[$i+1]/100;
 	}
-fclose($unitSlotFile);
 }
+*/
 
 // Calculate the production power of the unit given the order
 $magnitude = 1 * $expBoost * $unitMod;
-echo 'Unit magnitude is :'.$magnitude;
 
 // Determine amount of resources collected -> compare the unit's gathering rate to the allowable amount for each terrain cell.
 $collected = 0;
@@ -193,13 +195,12 @@ $actionType = $postVals[1];
 $eventData = pack('i*', $postVals[1], $postVals[2], $actionType, time(), $magnitude, $jobRadius);
 $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addTarget);
 
-
-/*
 // Save resources collected to unit slot
 $carried = 0;
-$unitRSC = new mapEventSlot($rscPoint[30], $unitSlotFile, 40);
+if ($)
+$unitRSC = new blockSlot($unitDat[30], $unitSlotFile, 40);
 $rscStart = [0,0];
-for ($i=3; $i<=sizeof($unitRSC->slotData); $i+=2) {
+for ($i=1; $i<=sizeof($unitRSC->slotData); $i+=2) {
 	if ($unitRSC->slotData[$i] == $postVals[1]) {
 		$rscStart[0] = $i;
 		$rscStart[1] = $unitRSC->slotData[$i+1];
@@ -207,8 +208,8 @@ for ($i=3; $i<=sizeof($unitRSC->slotData); $i+=2) {
 	$carried += $unitRSC->slotData[$i+1];
 }
 
-if ($carried < $rscPoint[29]) {
-	$space = $rscPoint[29] - $carried;
+if ($carried < $unitDat[29]) {
+	$space = $unitDat[29] - $carried;
 	$location = sizeof($unitRSC->slotData);
 	if ($rscStart[0]>0) $location = $rscStart[0];
 
@@ -216,7 +217,10 @@ if ($carried < $rscPoint[29]) {
 } else {
 	echo 'Can not carry any more<br>';
 }
-*/
+
+fclose($unitSlotFile);
 fclose($meSlotFile);
 fclose($unitFile);
+
+
 ?>
