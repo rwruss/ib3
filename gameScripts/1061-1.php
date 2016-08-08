@@ -5,7 +5,7 @@ Process overview: When a area job order is recieved, the terrain data for that p
 An array is created that represents each cell of the terrain area and the total production for that terrain type is stored.
 
 Next, the terrain affects are loaded and referenced against the terrain cells.  Any impact to production is deducted from that cell.
-Finally, the gathering object's parameters are loaded and caluclated for the particular resource.  Each terrain cell is the calculated to produce the minimum of the remaining production value 
+Finally, the gathering object's parameters are loaded and caluclated for the particular resource.  Each terrain cell is the calculated to produce the minimum of the remaining production value
 or the unit's production rate.
 */
 // postvals 1 = resource ID, 2 = energy to use
@@ -116,10 +116,16 @@ for ($i=sizeof($mapEffects->slotData); $i>2; $i-=6) {
 		}
 	}
 }
-/*
+
 echo 'Finished job array<p>';
 print_r($jobArray);
-*/
+
+// Get unit data
+echo 'Get data for unit '.$postVals[2];
+fseek($unitFile, $postVals[2]*$defaultBlockSize);
+$unitDat = unpack('i*', fread($unitFile, 400));
+
+
 // Check for perks based on army ID or commander
 $cmdBoost = 1;
 if ($rscPoint[15] > 0 ) {
@@ -173,6 +179,7 @@ fclose($unitSlotFile);
 
 // Calculate the production power of the unit given the order
 $magnitude = 1 * $expBoost * $unitMod;
+echo 'Unit magnitude is :'.$magnitude;
 
 // Determine amount of resources collected -> compare the unit's gathering rate to the allowable amount for each terrain cell.
 $collected = 0;
@@ -185,6 +192,8 @@ echo 'Collected '.$collected;
 $actionType = $postVals[1];
 $eventData = pack('i*', $postVals[1], $postVals[2], $actionType, time(), $magnitude, $jobRadius);
 $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addTarget);
+
+
 /*
 // Save resources collected to unit slot
 $carried = 0;

@@ -108,10 +108,12 @@
 1099 - Show inbox for player
 1100 - Read a message
 1101 - Process request to reply to message
-1102 - Gather from resource location
+1102 - Gather from resource location (from a city - not in use right now)
+1103 - Gather from a resource location with a unit
 
 // Manual Override Functions
-2001 - Add Resources to a city
+2001 - Add Resources to a city menu
+2002 - process resource add
 
 CL255 - City interface
 

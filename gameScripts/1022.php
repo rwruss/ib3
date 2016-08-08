@@ -24,6 +24,14 @@ if ($cityInfo[10] == 0) {
 		if ($farmList->slotData[$i] > 0) {
 			fseek($unitFile, $farmList->slotData[$i]*$defaultBlockSize);
 			$farmDat = unpack('i*', fread($unitFile, 400));
+			echo 'unitList.newUnit({unitType:"building", unitID:'.$farmList->slotData[$i].', unitName:"'.$farmList->slotData[$i].' - '.$farmDat[10].'", actionPoints:0});
+				var objContain = addDiv("", "selectContain", thisDiv);
+  			unitList.renderSum('.$farmList->slotData[$i].', objContain);
+  			var newButton = optionButton("", objContain, "Gather Here");
+  			newButton.objectID = "'.$farmList->slotData[$i].',1";
+  			newButton.addEventListener("click", function () {scrMod("1103,"+this.objectID)});
+			';
+			/*
 			echo '
 			unitList.newUnit({unitType:"building", unitID:'.$farmList->slotData[$i].', unitName:"'.$farmList->slotData[$i].' - '.$farmDat[10].'", actionPoints:0});
 			var objContain = addDiv("", "selectContain", thisDiv);
@@ -36,7 +44,7 @@ if ($cityInfo[10] == 0) {
   			newButton.addEventListener("click", function () {scrMod("1102,"+this.objectID)});
   			var newButton = optionButton("", objContain, "100%");
   			newButton.objectID = "'.$farmList->slotData[$i].',3";
-  			newButton.addEventListener("click", function () {scrMod("1102,"+this.objectID)});';
+  			newButton.addEventListener("click", function () {scrMod("1102,"+this.objectID)});';*/
 		}
 	}
 echo '</script>';
