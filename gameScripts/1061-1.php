@@ -123,7 +123,8 @@ print_r($jobArray);
 // Get unit data
 echo 'Get data for unit '.$postVals[2];
 fseek($unitFile, $postVals[2]*$defaultBlockSize);
-$unitDat = unpack('i*', fread($unitFile, 400));
+$workingUnit = new unit($postVals[2], $unitFile, 400);
+//$unitDat = unpack('i*', fread($unitFile, 400));
 
 
 // Check for perks based on army ID or commander
@@ -197,8 +198,12 @@ $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addT
 
 // Save resources collected to unit slot
 $carried = 0;
-if ($)
-$unitRSC = new blockSlot($unitDat[30], $unitSlotFile, 40);
+if ($workingUnit->unitDat[30] == 0) {
+	$newSlot = startASlot($slotFile, "../users/userSlots.slt");
+	$workingUnit->saveAll($unitFile);
+}
+
+$unitRSC = new blockSlot($workingUnit->unitDat[30], $unitSlotFile, 40);
 $rscStart = [0,0];
 for ($i=1; $i<=sizeof($unitRSC->slotData); $i+=2) {
 	if ($unitRSC->slotData[$i] == $postVals[1]) {
@@ -208,8 +213,8 @@ for ($i=1; $i<=sizeof($unitRSC->slotData); $i+=2) {
 	$carried += $unitRSC->slotData[$i+1];
 }
 
-if ($carried < $unitDat[29]) {
-	$space = $unitDat[29] - $carried;
+if ($carried < $workingUnit->unitDat[29]) {
+	$space = $workingUnit->unitDat[29] - $carried;
 	$location = sizeof($unitRSC->slotData);
 	if ($rscStart[0]>0) $location = $rscStart[0];
 
