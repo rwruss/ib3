@@ -146,6 +146,14 @@ class warband extends unit {
 		}
 }
 
+class army extends unit {
+	function __construct($id, $file, $size) {
+		parent::__construct($id, $file, $size);
+		
+		$this->attrList['carryCap'] = 29;
+		$this->attrList['carrySlot'] = 30;
+}
+
 class task {
 	protected $linkFile, $unitBin, $id, $attrList;
 

@@ -198,12 +198,28 @@ $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addT
 
 // Save resources collected to unit slot
 $carried = 0;
-if ($workingUnit->unitDat[30] == 0) {
-	$newSlot = startASlot($slotFile, "../users/userSlots.slt");
-	$workingUnit->saveAll($unitFile);
+
+// Check to see if the unit is part of an army (if so, the rsc go to the army storage).
+if ($workingUnit->unitDat[15] > 0) {
+	$trgArmy = new army($workingUnit->unitDat[15], $unitFile, 400);
+	$capacity = $trgArmy->get('carryCap');
+	if ($trgArmy->get('carrySlot') == 0) {
+		$newSlot = startASlot($slotFile, "../users/userSlots.slt");
+		$trgArmy->set('carrySlot', $newSlot);
+		$trgArmy->saveAll($unitFile);
+		$useRscSlot = $newSlot;
+	} else $useRscSlot = $trgArmy->get('carrySlot');
+} else {
+	$capacity = $workingUnit->get('carryCap');
+	if ($workingUnit->get('carrySlot') == 0) {
+		$newSlot = startASlot($slotFile, "../users/userSlots.slt");
+		$workingUnit->set('carrySlot', $newSlot);
+		$workingUnit->saveAll($unitFile);
+		$useRscSlot = $newSlot;
+	} else $useRscSlot = $workingUnit->get('carrySlot');
 }
 
-$unitRSC = new blockSlot($workingUnit->unitDat[30], $unitSlotFile, 40);
+$unitRSC = new blockSlot($useRscSlot, $unitSlotFile, 40);
 $rscStart = [0,0];
 for ($i=1; $i<=sizeof($unitRSC->slotData); $i+=2) {
 	if ($unitRSC->slotData[$i] == $postVals[1]) {
@@ -212,9 +228,11 @@ for ($i=1; $i<=sizeof($unitRSC->slotData); $i+=2) {
 	}
 	$carried += $unitRSC->slotData[$i+1];
 }
+/*
 
-if ($carried < $workingUnit->unitDat[29]) {
-	$space = $workingUnit->unitDat[29] - $carried;
+NEED TO VERIFY THAT THE CORRECT PRODUCTION ID IS USED - POSTVALS 1 IS THE ID OF THE FARM OBJECT.  NEED TO LOAD RESORUCE TYPE AND USE THAT.
+if ($carried < $capacity) {
+	$space = $capacity - $carried;
 	$location = sizeof($unitRSC->slotData);
 	if ($rscStart[0]>0) $location = $rscStart[0];
 
@@ -222,7 +240,7 @@ if ($carried < $workingUnit->unitDat[29]) {
 } else {
 	echo 'Can not carry any more<br>';
 }
-
+*/
 fclose($unitSlotFile);
 fclose($meSlotFile);
 fclose($unitFile);
