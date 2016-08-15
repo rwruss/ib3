@@ -3,6 +3,16 @@
 date_default_timezone_set('America/Chicago');
 $actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
 
+// Get resource slot
+if ($unitDat[30] > 0) {
+  include('./slotFunctions.php');
+  $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+  $rscSlot = new itemSlot($unitDat[30], $slotFile, 40);
+  print_r($rscSlot->slotData);
+} else {
+  echo 'No rsc slot started';
+}
+
 echo '<script>
 resetMove();
 
@@ -24,21 +34,4 @@ upgrades.innerHTML = "Upgrade";
 upgrades.addEventListener("click", function () {makeBox("upgrades", "1069,'.$postVals[1].'", 500, 500, 200, 50)});
 </script>';
 
-/*
-Full and true unit information for this unit. <br>
-Last Update Time: '.date('d/m/y h:i:s', $unitDat[27]).'<br>'.
-time().' - '.$unitDat[27].' = '.(floor((time()-$unitDat[27])/1)).'
-Now: '.date('d/m/y h:i:s', time()).'
-Move Options:
-<table>
-  <tr><td onclick="move(7)">7</td><td onclick="move(8)">8</td><td onclick="move(9)">9</td></tr>
-  <tr><td onclick="move(4)">4</td><td>x</td><td onclick="move(6)">6</td></tr>
-  <tr><td onclick="move(1)">1</td><td onclick="move(2)">2</td><td onclick="move(3)">3</td></tr>
-</table>
-<span onclick="move(10)">Back Up</span>
-<span onclick="move(11)">Clear</span>
-<span onclick="orderMove()">Send Order</span>
-
-Object Type 6';
-*/
 ?>

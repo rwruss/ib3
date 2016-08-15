@@ -6,7 +6,7 @@ $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 //fseek($unitFile, $pGameID*$defaultBlockSize);
 //$playerDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
-$playerObj = new player($pGameID, $unitFile, 400);
+$playerObj = loadPlayer($pGameID, $unitFile, 400);
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 $unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->get("unitSlot"), 40)));
@@ -24,28 +24,23 @@ if (sizeof($unitList)>0) {
 	foreach ($unitList as $unitID) {
 
 		fseek($unitFile, $unitID*$defaultBlockSize);
+		//$showUnit = new warband($unitID, $unitFile, 400);
 		$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 		//echo 'Type '.$unitDat[4].'<br>';
 
 		if ($unitDat[4] == 3) {
 			echo 'var thisArmy = addDiv("armyList_'.$unitID.'", "stdContainer", thisDiv);
-			thisArmy.addEventListener("click", function() {
-				scrMod("1027,'.$unitID.'");
+
+			thisdesc = textBlob("desc", "armyList_'.$unitID.'", "Army Information - '.$unitID.'");
+			thisdesc.addEventListener("click", function() {
+				passClick("1027,'.$unitID.'", rtPnl);
 			});
-			textBlob("desc", "armyList_'.$unitID.'", "Army Information - '.$unitID.'");
 			';
 		} else {
 			//echo '<div onclick="passClick(\'1034,'.$unitID.'\', \'rtPnl\');">Unit #'.$unitID.'</div>';
 			$actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
 			array_push($armyItems ,$unitDat[15] ,$unitID);
-			/*
-			echo '
-			newUnitDetail('.$unitID.', "militaryContent");
-			//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
-			document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
-			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {passClick("1034,'.$unitID.'", "rtPnl")});
-			setUnitAction('.$unitID.', '.($actionPoints/1000).');
-			setUnitExp('.$unitID.', 0.5);';*/
+
 			$thisInfo = explode('<-->', $unitDesc[$unitDat[10]]);
 			echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"'.trim($thisInfo[0]).'", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});';
 		}

@@ -4,18 +4,21 @@ class unit {
 	protected $linkFile, $unitBin, $id, $attrList;
 	public $unitDat;
 
-	function __construct($id, $file, $size) {
+	function __construct($id, $dat) {
+		/*
 		global $defaultBlockSize;
 
 		$this->linkFile = $file;
 		fseek($this->linkFile, $id*$defaultBlockSize);
 		$unitBin = fread($this->linkFile, $size);
-		if (strlen($unitBin) < $size) {
+		*/
+		if (sizeof($dat) == 0) {
 			echo 'Start a blank unit';
 			$this->unitDat = array_fill(1, 100, 0);
 		} else {
-			$this->unitDat = unpack('i*', $unitBin);
+			$this->unitDat = $dat;
 		}
+		//echo 'Set as type '.gettype($this->unitDat);
 		$this->unitID = $id;
 
 		$this->attrList = [];
@@ -37,12 +40,14 @@ class unit {
 		if (array_key_exists($desc, $this->attrList)) {
 			return $this->unitDat[$this->attrList[$desc]];
 		} else {
+			echo 'Not found';
 			return false;
 		}
 	}
 
 	function set($desc, $val) {
 		if (array_key_exists($desc, $this->attrList)) {
+			echo 'Found '.$desc.' use spot '.$this->attrList[$desc].'.  Type: '.gettype ($this->unitDat);
 			$this->unitDat[$this->attrList[$desc]] = $val;
 		}
 	}
@@ -76,16 +81,16 @@ class unit {
 }
 
 class player extends unit {
-	function __construct($id, $file, $size) {
-		parent::__construct($id, $file, $size);
+	function __construct($id, $dat) {
+		parent::__construct($id, $dat);
 
 		$this->attrList['unitSlot'] = 22;
 	}
 }
 
 class battle extends unit {
-	function __construct($id, $file, $size) {
-		parent::__construct($id, $file, $size);
+	function __construct($id, $dat) {
+		parent::__construct($id, $dat);
 
 		$this->attrList['battleType'] = 10;
 		$this->attrList['baseUnit_1'] = 11;
@@ -98,8 +103,8 @@ class battle extends unit {
 }
 
 class char extends unit {
-		function __construct($id, $file, $size) {
-			parent::__construct($id, $file, $size);
+		function __construct($id, $dat) {
+			parent::__construct($id, $dat);
 
 			$this->attrList['subType'] = 10;
 			$this->attrList['currentTask'] = 11;
@@ -115,9 +120,9 @@ class char extends unit {
 }
 
 class warband extends unit {
-	function __construct($id, $file, $size) {
-		parent::__construct($id, $file, $size);
-
+	function __construct($id, $dat) {
+		parent::__construct($id, $dat);
+		echo 'Load an warband';
 		$this->attrList['troopType'] = 10;
 		$this->attrList['currentTask'] = 11;
 		$this->attrList['currentLoc'] = 12;
@@ -147,11 +152,13 @@ class warband extends unit {
 }
 
 class army extends unit {
-	function __construct($id, $file, $size) {
-		parent::__construct($id, $file, $size);
-		
+	function __construct($id, $dat) {
+		parent::__construct($id, $dat);
+		echo 'Load an army';
+		$this->attrList['unitListSlot'] = 14;
 		$this->attrList['carryCap'] = 29;
 		$this->attrList['carrySlot'] = 30;
+	}
 }
 
 class task {
@@ -177,4 +184,35 @@ class task {
 	}
 }
 
+function loadPlayer($id, $file, $size) {
+	global $defaultBlockSize;
+	fseek($file, $id*$defaultBlockSize);
+	$dat = unpack('i*', fread($file, $size));
+
+	return new player($id, $dat);
+}
+
+function loadUnit($id, $file, $size) {
+	global $defaultBlockSize;
+	fseek($file, $id*$defaultBlockSize);
+	$dat = unpack('i*', fread($file, $size));
+	echo 'Swithcing '.$dat[4];
+	switch($dat[4]) {
+		case 3:
+			return new army($id, $dat);
+			break;
+
+		case 4:
+			return new char($id, $dat);
+			break;
+
+		case 6:
+			return new warband($id, $dat);
+			break;
+
+		case 8:
+			return new warband($id, $dat);
+			break;
+	}
+}
 ?>

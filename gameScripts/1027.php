@@ -1,16 +1,19 @@
 <?php
 include('./slotFunctions.php');
+include('./unitClass.php');
 // Get slot for units for this group
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-fseek($unitFile, $postVals[1]*$defaultBlockSize);
-$groupDat = unpack('i*', fread($unitFile, $unitBlockSize));
+//fseek($unitFile, $postVals[1]*$defaultBlockSize);
+//$groupDat = unpack('i*', fread($unitFile, $unitBlockSize));
+
+$thisGroup = loadUnit($postVals[1], $unitFile, 400);
 
 // Read all units in this group
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 //readSlotData($file, $slot_num, $slot_size)
 //$unitList = array_filter(unpack("N*", readSlotData($slotFile, $groupDat[14], 40)));
-$unitList = new itemSlot($groupDat[14], $slotFile, 40);
-fclose($slotFile);
+$unitList = new itemSlot($thisGroup->get('unitListSlot'), $slotFile, 40);
+
 
 foreach($unitList->slotData as $listUnitID) {
 	fseek($unitFile, $listUnitID*$defaultBlockSize);
@@ -19,4 +22,14 @@ foreach($unitList->slotData as $listUnitID) {
 
 // Show orders available for this army group based on the unit types present
 print_r($unitList->slotData);
+
+// Load resources carried by this army
+if ($thisGroup->get('carrySlot') > 0) {
+	$rscSlot = new blockSlot($thisGroup->get('carrySlot'), $slotFile, 40);
+	print_r($rscSlot->slotData);
+} else {
+	echo 'Carrying nothing';
+}
+
+fclose($slotFile);
 ?>

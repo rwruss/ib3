@@ -11,7 +11,7 @@ or the unit's production rate.
 // postvals 1 = resource ID, 2 = energy to use
 
 //include("./slotFunctions.php");
-$meSlotFile = fopen($gamePath.'/mapEffects.slt', 'rb');
+$meSlotFile = fopen($gamePath.'/mapEffects.slt', 'r+b');
 
 // Process a type 1 task (gathering from an area on the map)
 $jobRadius = 10;  // Need to adjust this to be pulled from the task parameters
@@ -118,12 +118,14 @@ for ($i=sizeof($mapEffects->slotData); $i>2; $i-=6) {
 }
 
 echo 'Finished job array<p>';
-print_r($jobArray);
+//print_r($jobArray);
 
 // Get unit data
 echo 'Get data for unit '.$postVals[2];
 fseek($unitFile, $postVals[2]*$defaultBlockSize);
-$workingUnit = new unit($postVals[2], $unitFile, 400);
+$workingUnit = loadUnit($postVals[2], $unitFile, 400);
+print_r($workingUnit->unitDat);
+echo 'Working unit carry Slot '.$workingUnit->get('carrySlot');
 //$unitDat = unpack('i*', fread($unitFile, 400));
 
 
@@ -149,7 +151,7 @@ if ($rscPoint[15] > 0 ) {
 				$traitMods = explode('<-->', $traitItems[$cmdTraits->slotData[$i]]);
 
 				// Look through the loaded traits for a relevant resource boost
-				$foundKey = array_search('rsc_'.$postVals[1], explode(',', $traitMods[1]));
+				$foundKey = array_search('rsc_'.$rscPoint[10], explode(',', $traitMods[1]));
 				if ($foundKey) $cmdBoost += $traitMods[$foundKey+1];
 			}
 		}
@@ -157,16 +159,24 @@ if ($rscPoint[15] > 0 ) {
 }
 
 // Load unit descriptions
-$unitDesc = explode('<-->', file_get_contents($scnPath.'/units.desc'));
-$unitBoosts = explode(',', $unitDesc[$rscPoint[10]]);
+$unitList = explode('<->', file_get_contents($scnPath.'/units.desc'));
+$typeDesc = explode('<-->', $unitList[$workingUnit->unitDat[10]]);
+$unitBoosts = explode(',', $typeDesc[11]);
+
 
 // Read the unit boots/nerfs
 $unitMod = 1.0;
-$foundKey = array_search('rsc_'.$postVals[1], $unitBoosts);
-if ($foundKey) $unitMod = $unitBoosts[$foundKey+1];
+for ($i=0; $i<sizeof($unitBoosts); $i+=2) {
+	if ($unitBoosts[$i] == $rscPoint[10]) {
+		$unitMod += $unitBoosts[$i+1]/100;
+		echo 'Boost for rsc '.$unitBoosts[$i].' now '.$unitMod;
+	}
+}
+//$foundKey = array_search('rsc_'.$rscPoint[10], $unitBoosts);
+//if ($foundKey) $unitMod = $unitBoosts[$foundKey+1];
 
 // Load the unit experience
-$unitSlotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+$unitSlotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 $expBoost = 1.0;
 /*
 // Changed how experience is calced.  Need to update.
@@ -192,8 +202,8 @@ for ($i=0; $i<sizeof($jobArray); $i++) {
 echo 'Collected '.$collected;
 
 // Make new data for this event and record to map events.
-$actionType = $postVals[1];
-$eventData = pack('i*', $postVals[1], $postVals[2], $actionType, time(), $magnitude, $jobRadius);
+$actionType = $rscPoint[10];
+$eventData = pack('i*', $rscPoint[10], $postVals[2], $actionType, time(), $magnitude, $jobRadius);
 $mapEffects->addItem($meSlotFile, $eventData, 1); //($testFile, $sendData, $addTarget);
 
 // Save resources collected to unit slot
@@ -201,18 +211,21 @@ $carried = 0;
 
 // Check to see if the unit is part of an army (if so, the rsc go to the army storage).
 if ($workingUnit->unitDat[15] > 0) {
-	$trgArmy = new army($workingUnit->unitDat[15], $unitFile, 400);
+	$trgArmy = loadUnit($workingUnit->unitDat[15], $unitFile, 400);
+	//$trgArmy = new army($workingUnit->unitDat[15], $unitFile, 400);
 	$capacity = $trgArmy->get('carryCap');
 	if ($trgArmy->get('carrySlot') == 0) {
-		$newSlot = startASlot($slotFile, "../users/userSlots.slt");
+		$newSlot = startASlot($unitSlotFile, "../users/userSlots.slt");
 		$trgArmy->set('carrySlot', $newSlot);
 		$trgArmy->saveAll($unitFile);
 		$useRscSlot = $newSlot;
 	} else $useRscSlot = $trgArmy->get('carrySlot');
 } else {
 	$capacity = $workingUnit->get('carryCap');
+	echo 'Working unit stuff:';
+	print_r($workingUnit->unitDat);
 	if ($workingUnit->get('carrySlot') == 0) {
-		$newSlot = startASlot($slotFile, "../users/userSlots.slt");
+		$newSlot = startASlot($unitSlotFile, "../users/userSlots.slt");
 		$workingUnit->set('carrySlot', $newSlot);
 		$workingUnit->saveAll($unitFile);
 		$useRscSlot = $newSlot;
@@ -220,30 +233,37 @@ if ($workingUnit->unitDat[15] > 0) {
 }
 
 $unitRSC = new blockSlot($useRscSlot, $unitSlotFile, 40);
-$rscStart = [0,0];
-for ($i=1; $i<=sizeof($unitRSC->slotData); $i+=2) {
-	if ($unitRSC->slotData[$i] == $postVals[1]) {
+echo 'List of carried resources (Slot '.$useRscSlot.')';
+print_r($unitRSC->slotData);
+$rscStart = [0,0,0];
+for ($i=1; $i<sizeof($unitRSC->slotData); $i+=2) {
+	if ($unitRSC->slotData[$i] == $rscPoint[10]) {
 		$rscStart[0] = $i;
 		$rscStart[1] = $unitRSC->slotData[$i+1];
 	}
+	else if ($unitRSC->slotData[$i] == 0) $rscStart[2] = $i;
 	$carried += $unitRSC->slotData[$i+1];
 }
-/*
 
-NEED TO VERIFY THAT THE CORRECT PRODUCTION ID IS USED - POSTVALS 1 IS THE ID OF THE FARM OBJECT.  NEED TO LOAD RESORUCE TYPE AND USE THAT.
+$capacity = $typeDesc[12];
+//NEED TO VERIFY THAT THE CORRECT PRODUCTION ID IS USED - POSTVALS 1 IS THE ID OF THE FARM OBJECT.  NEED TO LOAD RESORUCE TYPE AND USE THAT.
 if ($carried < $capacity) {
 	$space = $capacity - $carried;
 	$location = sizeof($unitRSC->slotData);
-	if ($rscStart[0]>0) $location = $rscStart[0];
+	if ($rscStart[0]>0) {
+		$location = $rscStart[0];
+	}
+	else if ($rscStart[2] > 0) $location = $rscStart[2];
 
-	$unitRSC->addItem($unitSlotFile, pack('i*', $postVals[1], $rscStart[1]+min($space, $collected)), $location);
+	echo 'Add new resoruces to locatoinb '.$location;
+
+	$unitRSC->addItem($unitSlotFile, pack('i*', $rscPoint[10], $rscStart[1]+min($space, $collected)), $location);
 } else {
-	echo 'Can not carry any more<br>';
+	echo 'Can not carry any more (Max: '.$carried.'/'.$capacity.')<br>';
 }
-*/
+
 fclose($unitSlotFile);
 fclose($meSlotFile);
 fclose($unitFile);
-
 
 ?>

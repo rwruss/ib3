@@ -175,12 +175,12 @@ class blockSlot extends dataSlot {
 
 				fseek($file, $this->size-4, SEEK_END);
 				fwrite($file, pack('i', 0));
-				$newLoc = ftell($file)/$this->size - 1;
+				$newLoc = ceil(ftell($file)/$this->size) - 1;
 				$this->slotList[] = $newLoc;
 
 				$testPack = pack('N', $newLoc);
 				$testVal = unpack('N', $testPack);
-				echo 'Add new slot: '.$newLoc.' Record at old location '.$oldEnd.' = ('.$oldEnd*$this->size.') value is '.$testVal[1].'<p>';
+				echo 'Add new slot: '.$newLoc.' ('.ftell($file).'/'.$this->size.') Record at old location '.$oldEnd.' = ('.$oldEnd*$this->size.') value is '.$testVal[1].'<p>';
 
 
 				fseek($file, $oldEnd*$this->size);

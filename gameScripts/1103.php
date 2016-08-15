@@ -17,7 +17,8 @@ fseek($unitFile, $postVals[1]*$defaultBlockSize);
 $farmDat = unpack('i*', fread($unitFile, 400));
 
 // Get list of units nearby
-$playerObj = new player($pGameID, $unitFile, 400);
+$playerObj = loadPlayer($pGameID, $unitFile, 400);
+//$playerObj = new player($pGameID, $unitFile, 400);
 $unitList = new itemSlot($playerObj->get("unitSlot"), $slotFile, 40);
 //print_r($unitList->slotData);
 for ($i=1; $i<=sizeof($unitList->slotData); $i++) {
