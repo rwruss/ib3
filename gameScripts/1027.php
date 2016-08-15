@@ -31,5 +31,10 @@ if ($thisGroup->get('carrySlot') > 0) {
 	echo 'Carrying nothing';
 }
 
+echo '<script>
+	dropOpt = textBlob("", "rtPnl", "Drop Resources");
+	dropOpt.addEventListener("click", function() {scrMod("1105,'.$postVals[1].'")});
+</script>'
+
 fclose($slotFile);
 ?>

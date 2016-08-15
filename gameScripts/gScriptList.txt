@@ -110,6 +110,8 @@
 1101 - Process request to reply to message
 1102 - Gather from resource location (from a city - not in use right now)
 1103 - Gather from a resource location with a unit
+1104 - Gather from a resource location with a unit
+1105 - Menu for dropping resources from unit or army
 
 // Manual Override Functions
 2001 - Add Resources to a city menu
