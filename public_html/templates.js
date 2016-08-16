@@ -977,7 +977,6 @@ class task extends unit {
 		thisDetail.statusBox = addDiv("", "bldgLvl", thisDetail);
 		thisDetail.statusBox.innerHTML = this.unitName;
 
-
 		var actDiv = addDiv("", "sumAct", thisDetail);
 		actDiv.setAttribute("data-boxName", "apBar");
 		actDiv.setAttribute("data-boxunitid", this.unitID);
@@ -990,6 +989,19 @@ class task extends unit {
 	update(object) {
 		super.update(object);
 		this.ptsNeed = object.ptsNeed || this.ptsNeed;
+	}
+}
+
+class town extends unit {
+	constructor (object) {
+		super(object);
+	}
+	
+	renderSummary(target) {
+	var thisDetail = addDiv("", "tdHolder", target);
+	//thisDetail.act = addDiv("", "udAct", thisDetail);
+	thisDetail.statusBox = addDiv("", "bldgLvl", thisDetail);
+	thisDetail.statusBox.innerHTML = this.unitName;
 	}
 }
 

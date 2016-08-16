@@ -213,6 +213,8 @@ function loadUnit($id, $file, $size) {
 		case 8:
 			return new warband($id, $dat);
 			break;
+			
+		default new unit($id, $dat);
 	}
 }
 ?>
