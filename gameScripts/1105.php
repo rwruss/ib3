@@ -43,13 +43,17 @@ for ($i=1; $i<=sizeof($gridList->slotData); $i+=2) {
 fclose($mapSlotFile);
 
 // Load what the unit/army is carrying and display slider bars for deposit amounts
+echo 'groupList = [];'
 $carryDat = new blockSlot($selectedUnit->get('carrySlot'), $slotFile, 40);
-echo '</script>';
 for ($i=1; $i<sizeof($carryDat->slotData); $i+=2) {
 	if ($carryDat->slotData[$i+1] > 0) {
-		echo 'R#'.$carryDat->slotData[$i].' : '.$carryDat->slotData[$i];
+		echo 'var newSlide = slideValBar(trg, '.$carryDat->slotData[$i].', 0, '.$carryDat->slotData[$i+1].');
+		newSlide.title.innerHTML = "Resource #'.$carryDat->slotData[$i].'";
+		groupList.push(newSlide.slide);';
+		//echo 'R#'.$carryDat->slotData[$i].' : '.$carryDat->slotData[$i];
 	}
 }
+echo '</script>';
 
 
 

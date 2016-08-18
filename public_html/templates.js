@@ -1155,13 +1155,46 @@ selectItem = function (trg, id, others) {
 	}
 }
 
-slideValBar = function (trg) {
+var groupList = [];
+collect = function (group) {
+	var retStr = "";
+	for (i=0; i<group.length; i++)  {
+		console.log(group[i]);
+		retStr = retStr + group[i].id + ',' + group[i].value+",";
+	}
+	//console.log(retStr);
+	return retStr;
+}
+
+slideValBar = function (trg, slideID, low, hi) {
 	var contain = addDiv("", "", trg);
-	var minVal = addDiv("", "", contain);
+	
+	contain.title = addDiv("", "", contain);
+	
+	var minVal = addDiv("", "", contain);	
+	minVal.innerHTML = low;
+	
 	var maxVal = addDiv("", "", contain);
-	var slide = document.createElement("input");
-	slide.type="range";
-	slide.min="0";
-	slide.max="100";
-	contain.appendChild(slide);
+	maxVal.innerHTML = hi;
+	
+	contain.slide = document.createElement("input");
+	contain.slide.type="range";
+	contain.slide.min=low;
+	contain.slide.max=hi;
+	contain.slide.value = "0";
+	contain.slide.step = "1";
+	contain.slide.id = slideID;
+	contain.appendChild(contain.slide);
+	
+	var setVal = addDiv("", "", contain);
+	
+	minVal.addEventListener("click", function () {contain.slide.stepDown(1); setVal.innerHTML = contain.slide.value;});
+	maxVal.addEventListener("click", function () {contain.slide.stepUp(1); setVal.innerHTML = contain.slide.value;});	
+	
+	//groupList.push(slide);
+	
+	contain.slide.addEventListener("input", function() {setVal.innerHTML = this.value;});
+	contain.slide.addEventListener("change", function() {setVal.innerHTML = this.value;});
+	
+	return contain;
 }
