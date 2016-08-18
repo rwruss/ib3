@@ -196,7 +196,6 @@ function loadUnit($id, $file, $size) {
 	global $defaultBlockSize;
 	fseek($file, $id*$defaultBlockSize);
 	$dat = unpack('i*', fread($file, $size));
-	echo 'Swithcing '.$dat[4];
 	switch($dat[4]) {
 		case 3:
 			return new army($id, $dat);
@@ -213,8 +212,9 @@ function loadUnit($id, $file, $size) {
 		case 8:
 			return new warband($id, $dat);
 			break;
-			
-		default new unit($id, $dat);
+
+		default:
+		 	return new unit($id, $dat);
 	}
 }
 ?>

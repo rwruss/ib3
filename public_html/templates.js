@@ -996,7 +996,7 @@ class town extends unit {
 	constructor (object) {
 		super(object);
 	}
-	
+
 	renderSummary(target) {
 	var thisDetail = addDiv("", "tdHolder", target);
 	//thisDetail.act = addDiv("", "udAct", thisDetail);
@@ -1153,4 +1153,15 @@ selectItem = function (trg, id, others) {
 	for (var i=0; i<others.length; i++) {
 		unitList.renderSingleSum(id, others[i]);
 	}
+}
+
+slideValBar = function (trg) {
+	var contain = addDiv("", "", trg);
+	var minVal = addDiv("", "", contain);
+	var maxVal = addDiv("", "", contain);
+	var slide = document.createElement("input");
+	slide.type="range";
+	slide.min="0";
+	slide.max="100";
+	contain.appendChild(slide);
 }

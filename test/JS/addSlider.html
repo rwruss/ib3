@@ -1,0 +1,68 @@
+<script>
+
+addDiv = function(id, useClassName, target) {
+	var trg;
+	if (typeof(target) == "string") trg = document.getElementById(target);
+	else trg = target;
+
+	var newDiv = document.createElement("div");
+	newDiv.className = useClassName;
+	newDiv.id = id;
+	trg.appendChild(newDiv);
+	return newDiv;
+}
+var groupList = [];
+slideValBar = function (trg, min, max) {
+	var contain = addDiv("", "", trg);
+	var minVal = addDiv("", "", contain);
+	
+	minVal.innerHTML = min;
+	var maxVal = addDiv("", "", contain);
+	maxVal.innerHTML = max;
+	var slide = document.createElement("input");
+	slide.type="range";
+	slide.min="0";
+	slide.max="100";
+	slide.value = "0";
+	slide.step = "1";
+	slide.id = "1";
+	
+	contain.appendChild(slide);
+	var setVal = addDiv("", "", contain);
+	
+	minVal.addEventListener("click", function () {slide.stepDown(1); setVal.innerHTML = slide.value;});
+	maxVal.addEventListener("click", function () {slide.stepUp(1); setVal.innerHTML = slide.value;});
+	
+	
+	
+	groupList.push(slide);
+	
+	slide.addEventListener("input", function() {setVal.innerHTML = this.value;});
+	slide.addEventListener("change", function() {setVal.innerHTML = this.value;});
+}
+
+function init() {
+	document.getElementById("button").addEventListener("click", function () {slideValBar("testContain", 0, 100)});
+	
+	document.getElementById("collector").addEventListener("click", function () {collect(groupList);});
+}
+
+function collect(group) {
+	var retStr = "";
+	for (i=0; i<group.length; i++)  {
+		console.log(group[i]);
+		retStr = retStr + group[i].id + ',' + group[i].value+",";
+	}
+	console.log(retStr);
+}
+
+window.addEventListener("load", init);
+</script>
+
+<html>
+<body>
+<div id="testContain"></div>
+<div id="button">Button</div>
+<div id="collector">Collect Values</div>
+</body>
+</html>
