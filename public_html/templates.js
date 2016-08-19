@@ -427,15 +427,7 @@ selectionHead = function (trg) {
 
 	return container;
 }
-/*
-var selectedItem;
-selectItem = function (trg) {
-	if (selectedItem)	selectedItem.style.borderColor = "000000";
-	selectedItem = trg.parentNode;
-	trg.parentNode.style.borderColor = "#FF0000";
-	console.log(trg);
-}
-*/
+
 setBarSize = function(id, pct, full) {
 	if (document.getElementById(id)) {
 		document.getElementById(id).style.width = full * pct;

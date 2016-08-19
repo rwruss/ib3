@@ -12,7 +12,7 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 //Load the unit
 $selectedUnit = loadUnit($postVals[1], $unitFile, 400);
 
-echo '<script>var selectHead = selectionHead("rtPnl");';
+echo '<script>var selectHead = addDiv("", "stdContainer", "rtPnl")';
 
 // Look for nearby settlements that you can drop resources in
 $mapSlot = floor($selectedUnit->get('yLoc')/120)*120+floor($selectedUnit->get('xLoc')/120);

@@ -80,11 +80,13 @@ class unit {
 	}
 }
 
-class player extends unit {
+class army extends unit {
 	function __construct($id, $dat) {
 		parent::__construct($id, $dat);
-
-		$this->attrList['unitSlot'] = 22;
+		echo 'Load an army';
+		$this->attrList['unitListSlot'] = 14;
+		$this->attrList['carryCap'] = 29;
+		$this->attrList['carrySlot'] = 30;
 	}
 }
 
@@ -119,6 +121,19 @@ class char extends unit {
 		}
 }
 
+class settlement extends unit {
+	$this->attrList['carryCap'] = 33;
+	$this->attrList['carrySlot'] = 11;
+}
+
+class player extends unit {
+	function __construct($id, $dat) {
+		parent::__construct($id, $dat);
+
+		$this->attrList['unitSlot'] = 22;
+	}
+}
+
 class warband extends unit {
 	function __construct($id, $dat) {
 		parent::__construct($id, $dat);
@@ -145,21 +160,10 @@ class warband extends unit {
 		$this->attrList['carryCap'] = 29;
 		$this->attrList['carrySlot'] = 30;
 		$this->attrList['battleID'] = 31;
-
-		//echo 'MAKE WARBAND ('.sizeof($this->attrList).')';
-		//print_r($this->attrList);
 		}
 }
 
-class army extends unit {
-	function __construct($id, $dat) {
-		parent::__construct($id, $dat);
-		echo 'Load an army';
-		$this->attrList['unitListSlot'] = 14;
-		$this->attrList['carryCap'] = 29;
-		$this->attrList['carrySlot'] = 30;
-	}
-}
+
 
 class task {
 	protected $linkFile, $unitBin, $id, $attrList;
@@ -197,6 +201,10 @@ function loadUnit($id, $file, $size) {
 	fseek($file, $id*$defaultBlockSize);
 	$dat = unpack('i*', fread($file, $size));
 	switch($dat[4]) {
+		case 1:
+			return new settlement($id, $dat);
+			break;
+			
 		case 3:
 			return new army($id, $dat);
 			break;

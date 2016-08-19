@@ -5,11 +5,12 @@ class dataSlot {
 	public $dataString;
 	public $slotData = [];
 	private $itemsPerSlot;
-	private $slotSize;
+	private $slotSize, $useFile;
 	public $start, $size;
 
 	function __construct($start, $slotFile, $size) {
 		$this->init($start, $slotFile, $size);
+		$this->useFile = $slotFile;
 	}
 
 	function init($start, $slotFile, $size) {
@@ -66,6 +67,38 @@ class dataSlot {
 				// Add new block to list of blocks for this slot
 				$this->slotList[] = $newBlock;
 			}
+		}
+	}
+	
+	function saveSlot() {
+		if (flock($this->useFile, LOCK_EX) {
+			// Fill then end of the array as needed to get a round number of slots
+			$numSlotItems = $this->size/4-1;
+			while (sizeof($this->slotData)&numSlotItems > 0) $this->slotData[] = 0;
+			
+			// Determind number of slots needed and number currently reserved
+			$slotsNeeded = (sizeof($this->slotData)*4+4)/$size;
+			
+			fseek($this->useFile, 0, SEEK_END);
+			$fileSlots = ftell($this->useFile)/$this->size;
+			
+			$addCount = 0;
+			while ($slotsNeeded > sizeof($this->slotList)) {
+				$slotList[] = $fileSlots + $count;
+				$count++;
+			}
+			
+			// Record the slots in the file
+			for ($i=0; $i<$slotsNeeded; $i++) {
+				$dat = pack('i', $this->slotList[$i]);
+				for ($j=1; $j<=$numSlotItems; $j++) {
+					$dat .= pack($this->slotData[$i*$numSlotItems+$j]);
+				}
+				fseek($this->useFile, $this->size*$this->slotList[$i]);
+				fwrite($this->useFile, $dat);
+			}
+		fflush($this->useFile);
+		flock($this->useFile, LOCK_UN);
 		}
 	}
 }
