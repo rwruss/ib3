@@ -620,8 +620,13 @@ class unitList {
 					this["unit_" + object.unitID] = new trainingUnit(object);
 					break;
 
+				case "town":
+				console.log("mk town unit");
+					this["unit_" + object.unitID] = new town(object);
+					break;
+
 				default:
-					console.log("Unknown Type");
+					console.log("Unknown Type - " + object.unitType);
 					break;
 			}
 		}
@@ -1149,7 +1154,7 @@ selectItem = function (trg, id, others) {
 	selectedItem = trg.parentNode;
 	selectedID = id;
 	trg.parentNode.style.borderColor = "#FF0000";
-	//console.log("selectedID is " + selectedID);
+	console.log("selectedID is " + selectedID);
 	for (var i=0; i<others.length; i++) {
 		unitList.renderSingleSum(id, others[i]);
 	}
@@ -1160,23 +1165,20 @@ collect = function (group) {
 	var retStr = "";
 	for (i=0; i<group.length; i++)  {
 		console.log(group[i]);
-		retStr = retStr + group[i].id + ',' + group[i].value+",";
+		retStr = retStr + "," + group[i].id + ',' + group[i].value;
 	}
-	//console.log(retStr);
+	console.log(retStr);
 	return retStr;
 }
 
 slideValBar = function (trg, slideID, low, hi) {
-	var contain = addDiv("", "", trg);
-	
-	contain.title = addDiv("", "", contain);
-	
-	var minVal = addDiv("", "", contain);	
+	console.log("Add a slide bar to " + trg)
+	var contain = addDiv("", "slideContain", trg);
+	contain.descr = addDiv("", "slideTitle", contain);
+
+	var minVal = addDiv("", "slideMin", contain);
 	minVal.innerHTML = low;
-	
-	var maxVal = addDiv("", "", contain);
-	maxVal.innerHTML = hi;
-	
+
 	contain.slide = document.createElement("input");
 	contain.slide.type="range";
 	contain.slide.min=low;
@@ -1185,16 +1187,19 @@ slideValBar = function (trg, slideID, low, hi) {
 	contain.slide.step = "1";
 	contain.slide.id = slideID;
 	contain.appendChild(contain.slide);
-	
-	var setVal = addDiv("", "", contain);
-	
+
+	var maxVal = addDiv("", "slideMin", contain);
+	maxVal.innerHTML = hi;
+
+	var setVal = addDiv("", "slideVal", contain);
+
 	minVal.addEventListener("click", function () {contain.slide.stepDown(1); setVal.innerHTML = contain.slide.value;});
-	maxVal.addEventListener("click", function () {contain.slide.stepUp(1); setVal.innerHTML = contain.slide.value;});	
-	
+	maxVal.addEventListener("click", function () {contain.slide.stepUp(1); setVal.innerHTML = contain.slide.value;});
+
 	//groupList.push(slide);
-	
+
 	contain.slide.addEventListener("input", function() {setVal.innerHTML = this.value;});
 	contain.slide.addEventListener("change", function() {setVal.innerHTML = this.value;});
-	
+
 	return contain;
 }

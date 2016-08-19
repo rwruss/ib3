@@ -21,12 +21,10 @@ foreach($unitList->slotData as $listUnitID) {
 }
 
 // Show orders available for this army group based on the unit types present
-print_r($unitList->slotData);
 
 // Load resources carried by this army
 if ($thisGroup->get('carrySlot') > 0) {
 	$rscSlot = new blockSlot($thisGroup->get('carrySlot'), $slotFile, 40);
-	print_r($rscSlot->slotData);
 } else {
 	echo 'Carrying nothing';
 }
