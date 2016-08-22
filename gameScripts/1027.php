@@ -25,6 +25,7 @@ foreach($unitList->slotData as $listUnitID) {
 // Load resources carried by this army
 if ($thisGroup->get('carrySlot') > 0) {
 	$rscSlot = new blockSlot($thisGroup->get('carrySlot'), $slotFile, 40);
+	print_r($rscSlot->slotData);
 } else {
 	echo 'Carrying nothing';
 }
@@ -32,6 +33,8 @@ if ($thisGroup->get('carrySlot') > 0) {
 echo '<script>
 	dropOpt = textBlob("", "rtPnl", "Drop Resources");
 	dropOpt.addEventListener("click", function() {scrMod("1105,'.$postVals[1].'")});
+	addOpt = textBlob("", "rtPnl", "Add/Drop Units");
+	addOpt.addEventListener("click", function() {scrMod("1105,'.$postVals[1].'")});
 </script>';
 
 fclose($slotFile);

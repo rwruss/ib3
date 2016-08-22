@@ -1154,6 +1154,61 @@ selectItem = function (trg, id, others) {
 	}
 }
 
+var sortList;
+groupSort = function (trg) {
+	var groupContainer = addDiv("", "stdContain", trg);
+	groupContainer.left = addDiv("groupSort_1", "stdContain", groupContainer);
+	groupContainer.centerBar = addDiv("", "stdContain", groupContainer);
+	groupContainer.right = addDiv("groupSort_2", "stdContain", groupContainer);
+	
+	var sortButton = addDiv("", "button", groupContainer.centerBar);
+	sortButton.innerHTML = "Assign";
+	sortButton.addEventListener("click", function () {sortGroup(groupContainer)});
+	
+	sortList = [];
+	sortList.moved = [];
+	return groupContainer;
+}
+
+groupButton = function (trg, id) {
+	var newButton = addDiv("button", "button", trg);
+	newButton.innerHTML = "asd";
+	newButton.objId = id;
+	newButton.addEventListener("click", function () {
+		var check = sortList.indexOf(this.parentNode);
+		if (check >= 0) {
+			this.parentNode.style.borderColor = "#000000";
+			sortList.splice(check, 1);
+			console.log("found at " + check + ". Size is  " + sortList.length);
+			
+			var moveCheck = sortList.moved.indexOf(this.objId);
+			if (moveCheck >= 0) sortList.moved.splice(moveCheck, 1);
+		} else {
+			console.log("not found " + check);
+			this.parentNode.style.borderColor = "#FF0000";
+			sortList.push(this.parentNode);
+			
+			sortList.moved.push(this.objId);
+		}
+		console.log(sortList);
+	})
+}
+
+sortGroup = function(parent) {
+	console.log("ASSIGN THE FOLLOWING: " + sortList)
+	for (i=0; i<sortList.length; i++) {
+		sortList[i].style.borderColor = "#000000";
+		if (sortList[i].parentNode == parent.left) {
+			parent.right.appendChild(sortList[i]);
+		} else {
+			parent.left.appendChild(sortList[i]);
+		}
+	}
+	console.log("Move items " + sortList.moved);
+	sortList = [];
+	sortList.moved = [];
+}
+
 var groupList = [];
 collect = function (group) {
 	var retStr = "";

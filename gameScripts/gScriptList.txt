@@ -112,6 +112,9 @@
 1103 - Gather from a resource location with a unit
 1104 - Gather from a resource location with a unit
 1105 - Menu for dropping resources from unit or army
+1106 - Process resource transfer from units
+1107 - Menu for Add/Drop units from an army
+1108 - Process add/drop units from an army
 
 // Manual Override Functions
 2001 - Add Resources to a city menu

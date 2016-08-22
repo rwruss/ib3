@@ -1,0 +1,28 @@
+<link rel="stylesheet" type="text/css" href="e:\websites\ib3\public_html\ib3styles.css">
+<script type="text/javascript" src="e:\websites\ib3\public_html\templates.js"></script>
+<script>
+
+function init() {
+	console.log("start Test");
+	var thisGroup = groupSort("testContain");
+	
+	for (var i=1; i<5; i++) {
+		var thisContain = addDiv("", "selectContain", thisGroup.left);
+		groupButton(thisContain, i);
+	}
+	
+	for (var i=1; i<5; i++) {
+		var thisContain = addDiv("", "selectContain", thisGroup.right);
+		groupButton(thisContain, i+5);
+	}
+}
+
+
+window.addEventListener("load", init);
+</script>
+
+<html>
+<body>
+<div id="testContain" style="width:99%; height:99%; border:1px solid blue"></div>
+</body>
+</html>
