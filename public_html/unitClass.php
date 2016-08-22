@@ -83,7 +83,7 @@ class unit {
 class army extends unit {
 	function __construct($id, $dat) {
 		parent::__construct($id, $dat);
-		echo 'Load an army';
+		//echo 'Load an army';
 		$this->attrList['unitListSlot'] = 14;
 		$this->attrList['carryCap'] = 29;
 		$this->attrList['carrySlot'] = 30;
@@ -101,6 +101,16 @@ class battle extends unit {
 		$this->attrList['resolveTime'] = 14;
 		$this->attrList['sideList_1'] = 15;
 		$this->attrList['sideList_2'] = 16;
+	}
+}
+
+class building extends unit {
+	function __construct($id, $dat) {
+		parent::__construct($id, $dat);
+	}
+
+	function actionPoints() {
+		return min(1000, $this->unitDat[16] + floor((time()-$this->unitDat[27])*4167/360000))+500;
 	}
 }
 
@@ -122,8 +132,12 @@ class char extends unit {
 }
 
 class settlement extends unit {
-	$this->attrList['carryCap'] = 33;
-	$this->attrList['carrySlot'] = 11;
+	function __construct($id, $dat) {
+		parent::__construct($id, $dat);
+
+		$this->attrList['carryCap'] = 33;
+		$this->attrList['carrySlot'] = 11;
+	}
 }
 
 class player extends unit {
@@ -137,7 +151,7 @@ class player extends unit {
 class warband extends unit {
 	function __construct($id, $dat) {
 		parent::__construct($id, $dat);
-		echo 'Load an warband';
+		//echo 'Load an warband';
 		$this->attrList['troopType'] = 10;
 		$this->attrList['currentTask'] = 11;
 		$this->attrList['currentLoc'] = 12;
@@ -204,7 +218,7 @@ function loadUnit($id, $file, $size) {
 		case 1:
 			return new settlement($id, $dat);
 			break;
-			
+
 		case 3:
 			return new army($id, $dat);
 			break;
@@ -219,6 +233,11 @@ function loadUnit($id, $file, $size) {
 
 		case 8:
 			return new warband($id, $dat);
+			break;
+
+		case 9:
+			//echo 'Load a building object';
+			return new building($id, $dat);
 			break;
 
 		default:

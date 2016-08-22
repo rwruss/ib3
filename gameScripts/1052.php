@@ -47,7 +47,7 @@ if ($queueSpot) {
 
 	// create a unit from template dat
 	$templateFile = fopen($scnPath.'/charTemplates.dat', 'r+b');
-	$newUnit = new unit($unitType*4, $templateFile, 400);
+	$newUnit = loadUnit($unitType*4, $templateFile, 400);
 	fclose($templateFile);
 
 

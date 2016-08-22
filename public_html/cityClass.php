@@ -89,7 +89,7 @@ class city {
 		return qty;
 	}
 }
-
+/*
 class building {
 	public $bldgData, $rscSlot, $slotFile;
 	private $bldgID, $bldgDatStr;
@@ -120,7 +120,7 @@ class building {
 		fwrite($file, $packStr);
 	}
 }
-
+*/
 function newTown($id, $townFile, $slotFile, $townDtls) {
 	global $defaultBlockSize, $gameSlot, $pGameID, $startLocation, $gamePath;
 

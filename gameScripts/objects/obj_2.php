@@ -14,8 +14,8 @@ echo 'Got data for city #'.$unitDat[15];
 $playerObj = new player($pGameID, $unitFile, 400);
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
-$unitList = new itemSlot($playerObj->get('unitSlot'), $slotFile, 40);
-$farmList = new itemSlot($cityDat[10], $slotFile, 40);
+//$unitList = new itemSlot($playerObj->get('unitSlot'), $slotFile, 40);
+//$farmList = new itemSlot($cityDat[10], $slotFile, 40);
 //$unitList = array_filter(unpack("N*", readSlotData($slotFile, $playerObj->get('unitSlot'), 40)));
 
 
@@ -24,10 +24,10 @@ $farmList = new itemSlot($cityDat[10], $slotFile, 40);
 echo '<script>
 	var orders = addDiv("", "stdFloatDiv", document.getElementById("rtPnl"));
 	orders.innerHTML = "Gather Rsc";
-	orders.addEventListener("click", function () {scrMod("1094,'.$unitID.'")});
+	orders.addEventListener("click", function () {scrMod("1095,'.$unitID.'")});
 	</script>';
 
-print_r($farmList->slotData);
+//print_r($farmList->slotData);
 /*
 if (sizeof($unitList->slotData)>0) {
 	foreach ($unitList->slotData as $pUnitID) {

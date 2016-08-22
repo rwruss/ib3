@@ -11,8 +11,11 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 
 //Load the unit
 $selectedUnit = loadUnit($postVals[1], $unitFile, 400);
+print_R($selectedUnit);
 
-echo '<script>var selectHead = addDiv("", "stdContainer", "rtPnl")';
+echo '<script>//var selectHead = selectionHead("rtPnl");
+var selectHead = addDiv("abcded", "stdContainer", "rtPnl");
+';
 
 // Look for nearby settlements that you can drop resources in
 $mapSlot = floor($selectedUnit->get('yLoc')/120)*120+floor($selectedUnit->get('xLoc')/120);
@@ -35,7 +38,7 @@ for ($i=1; $i<=sizeof($gridList->slotData); $i+=2) {
 				echo 'unitList.newUnit({unitType:"town", unitID:'.$gridList->slotData[$i].', unitName:"Town '.$gridList->slotData[$i].'", actionPoints:"0", strength:75, tNum:"0"});
 				var objContain = addDiv("", "selectContain", rtPnl);
 				unitList.renderSum('.$gridList->slotData[$i].', objContain);
-				selectButton(objContain, "hai", '.$gridList->slotData[$i].', [selectHead.right]);';
+				selectButton(objContain, "hai", '.$gridList->slotData[$i].', [selectHead]);';
 			}
 		}
 	}

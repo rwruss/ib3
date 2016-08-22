@@ -6,7 +6,7 @@ date_default_timezone_set('America/Chicago');
 if (isset($unitAssign)) {
   if ($unitAssign != 0) {
     echo 'Task type 2 Detail - unit assigned #'.$unitAssign.'<br>';
-    print_r($taskDat);
+    //print_r($taskDat);
   }
 } else {
   //echo 'Task type 2 Detail';
@@ -14,11 +14,14 @@ if (isset($unitAssign)) {
 
 // Get list of workers avaialble to work on this task.
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-$playerObj = new player($pGameID, $unitFile, 400);
-
+fseek($unitFile, $pGameID*$defaultBlockSize);
+$pDat = unpack('i*', fread($unitFile, 400));
+$playerObj = new player($pGameID, $pDat);
+//print_R($playerObj);
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 //$unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
 $unitList = new itemSlot($playerObj->get('unitSlot'), $slotFile, 40);
+//echo 'Check unit tslot '.$playerObj->get('unitSlot');
 $noUnitsHere = true;
 //print_r($taskDat);
 
@@ -42,7 +45,9 @@ var taskDesc = newTab("newChars", 1, "Description");
 var taskWork = newTab("newChars", 2, "Workers available");
 tabSelect("newChars", 1);';
 
+//print_r($unitList->slotData);
 foreach ($unitList->slotData as $unitID) {
+  //echo 'CHeck '.$unitID;
 	fseek($unitFile, $unitID*$defaultBlockSize);
 	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 

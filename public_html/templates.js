@@ -704,8 +704,10 @@ class unit {
 	}
 
 	renderSingleSummary(target) {
-		while (target.firstChild) {
-			target.removeChild(target.firstChild);
+		if (target.firstChild) {
+			while (target.firstChild) {
+				target.removeChild(target.firstChild);
+			}
 		}
 		this.renderSummary(target);
 	}

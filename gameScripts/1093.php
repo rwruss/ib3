@@ -10,10 +10,11 @@ Post Vals 1 = Building ID, 2 = Production Slot #, 3 = %
 echo 'Work on item '.$postVals[1];
 $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 $taskFile = fopen($gamePath.'/tasks.tdt', 'r+b');
+
 $trgTask = new task($postVals[1], $taskFile);
 
 // Get data for unit producing the item
-$workUnit = new unit($postVals[2], $unitFile, 400);
+$workUnit = loadUnit($postVals[2], $unitFile, 400);
 //fseek($unitFile, $postVals[1]*$defaultBlockSize);
 //$bldgDat = unpack('i*', fread($unitFile, 200));
 
@@ -40,18 +41,21 @@ if ($usedPoints > 0) {
 	// Process completion of building construction
 	// create a new building
 		echo 'Task complete ('.$trgTask->taskDat[6].' + '.$usedPoints.' >= '.$trgTask->taskDat[5].')';
-		$newBuilding = new building($trgTask->taskDat[11], $unitFile);
-		//$newBuilding->bldgData = array_fill(1, 100, 0);
-		$newBuilding->bldgData[1] = $workUnit->unitDat[1]; // Building X
-		$newBuilding->bldgData[2] = $workUnit->unitDat[2]; // Building Y
-		$newBuilding->bldgData[7] = 1; // Set Status to complete
-		$newBuilding->bldgData[10] = $trgTask->taskDat[12]; // Building Type
-		$newBuilding->bldgData[16] = 0; // Energy
-		$newBuilding->bldgData[17] = 4167; // Energy Regen Rate
-		$newBuilding->bldgData[27] = time(); // Update time
+		$newBuilding = loadUnit($trgTask->taskDat[11], $unitFile, 400);
+		//$newBuilding = new building($trgTask->taskDat[11], $unitFile);
+		//$newBuilding->unitDat = array_fill(1, 100, 0);
+		$newBuilding->unitDat[1] = $workUnit->unitDat[1]; // Building X
+		$newBuilding->unitDat[2] = $workUnit->unitDat[2]; // Building Y
+		$newBuilding->unitDat[7] = 1; // Set Status to complete
+		$newBuilding->unitDat[10] = $trgTask->taskDat[12]; // Building Type
+		$newBuilding->unitDat[16] = 0; // Energy
+		$newBuilding->unitDat[17] = 4167; // Energy Regen Rate
+		$newBuilding->unitDat[19] = 0; // Energy Regen Rate
+		$newBuilding->unitDat[27] = time(); // Update time
 
 		$newBuilding->saveAll($unitFile);
 		$trgTask->taskDat[6] += $usedPoints;
+		$trgTask->taskDat[3] = 2;
 
 		// Need to remove the task from the player's que.
 

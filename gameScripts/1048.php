@@ -1,8 +1,9 @@
 <?php
 
 include('./slotFunctions.php');
-include('./bldgObjects.php');
+//include('./bldgObjects.php');
 include('./cityClass.php');
+include('./unitClass.php');
 
 
 //echo 'Specific building information for building '.$postVals[1].' <br>
@@ -10,19 +11,19 @@ include('./cityClass.php');
 
 // Get building information
 $unitFile = fopen($gamePath.'/unitDat.dat' ,'rb');
-$targetBuilding = new building($postVals[1], $unitFile);
+$targetBuilding = loadUnit($postVals[1], $unitFile, 400);
 //fseek($unitFile, $postVals[1]*$defaultBlockSize);
 //$bldgDat = unpack('i*', fread($unitFile, $defaultBlockSize));
 $bldgInfo = explode('<->', file_get_contents($scnPath.'/buildings.desc'));
-$typeInfo = explode('<-->', $bldgInfo[$targetBuilding->bldgData[10]]);
+$typeInfo = explode('<-->', $bldgInfo[$targetBuilding->unitDat[10]]);
 
 echo '<script>
 useDeskTop.newPane("bldgInfo");
 thisDiv = useDeskTop.getPane("bldgInfo");
 thisDiv.innerHTML = "";
 ';
-print_r($targetBuilding->bldgData);
-switch ($targetBuilding->bldgData[7]) {
+//print_r($targetBuilding);
+switch ($targetBuilding->unitDat[7]) {
   case 0:
     echo 'textBlob("descriptiveBlob", thisDiv, "This building is still under construction.");
       textBlob("descriptiveBlob", thisDiv, "This building is still under construction.");';
@@ -72,16 +73,16 @@ switch ($targetBuilding->bldgData[7]) {
 	// Show type dependent items in progress at this locaiton - check training slots
 	echo 'var bldgQueue = addDiv("", "stdContain", bldg_'.$postVals[1].'.tab_3);';
 	if ($typeInfo[7] > 0) {
-    //print_r($targetBuilding->bldgData);
+    //print_r($targetBuilding->unitDat);
   	for ($i=0; $i<$typeInfo[7]; $i++) {
-  		if ($targetBuilding->bldgData[$i+18] != 0) {
+  		if ($targetBuilding->unitDat[$i+18] != 0) {
   			// Get data on object being made
-  			fseek($unitFile, $targetBuilding->bldgData[$i+18]*$defaultBlockSize);
+  			fseek($unitFile, $targetBuilding->unitDat[$i+18]*$defaultBlockSize);
   			$itemDat = unpack('i*', fread($unitFile, 400));
   			echo '
-  			unitList.newUnit({unitType:"trainingUnit", unitID:'.$targetBuilding->bldgData[$i+18].', unitName:"Training", trainPts:'.$itemDat[18].', trainReq:'.$itemDat[19].'});
+  			unitList.newUnit({unitType:"trainingUnit", unitID:'.$targetBuilding->unitDat[$i+18].', unitName:"Training", trainPts:'.$itemDat[18].', trainReq:'.$itemDat[19].'});
   			var objContain = addDiv("", "selectContain", bldgQueue);
-  			unitList.renderSum('.$targetBuilding->bldgData[18+$i].', objContain);
+  			unitList.renderSum('.$targetBuilding->unitDat[18+$i].', objContain);
   			var newButton = optionButton("", objContain, "25%");
   			newButton.objectID = "'.$postVals[1].','.$i.',1";
   			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});

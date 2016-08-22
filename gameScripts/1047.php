@@ -2,6 +2,8 @@
 
 include("./slotFunctions.php");
 include("./cityClass.php");
+include("./unitClass.php");
+
 
 // verify that user is ok to view this info
 $cityID = $_SESSION['selectedItem'];
@@ -39,6 +41,7 @@ if ($approved) {
 	echo '<script>
 		useDeskTop.newPane("cityBldg");
 		thisDiv = useDeskTop.getPane("cityBldg");
+		thisDiv.innerHTML = "";
 		var bldgTabs = makeTabMenu("bldgMenu", thisDiv);
 		var bldgTabs_1 = newTab("bldgMenu", 1, "Buildings");
 		var bldgTabs_2 = newTab("bldgMenu", 2, "Construct");
@@ -47,13 +50,14 @@ if ($approved) {
 	$bldgList = array_filter(unpack("i*", readSlotData($slotFile, $cityDat[17], 40)));
 	foreach ($bldgList as $bldgID) {
 
-		fseek($unitFile, $bldgID*$defaultBlockSize);
-		$bldgDat = unpack('i*', fread($unitFile, 400));
-		$buildingInfo = explode('<-->', $buildingTypes[$bldgDat[10]]);
+		//fseek($unitFile, $bldgID*$defaultBlockSize);
+		//$bldgDat = unpack('i*', fread($unitFile, 400));
+		$checkBldg = loadUnit($bldgID, $unitFile, 400);
+		$buildingInfo = explode('<-->', $buildingTypes[$checkBldg->unitDat[10]]);
 		//print_r($bldgDat);
-		$actionPoints = min(1000, $bldgDat[16] + floor((time()-$bldgDat[27])*4167/360000));
+		//$actionPoints = min(1000, $checkBldg->unitDat[16] + floor((time()-$checkBldg->unitDat[27])*4167/360000));
 		//$actionPoints = min(1000, $bldgDat[16] + floor((time()-$bldgDat[27])/$bldgDat[17]));
-		echo 'unitList.newUnit({unitType:"building", unitID:'.$bldgID.', unitName:"'.$buildingInfo[0].'", actionPoints:'.$actionPoints.'});
+		echo 'unitList.newUnit({unitType:"building", unitID:'.$bldgID.', unitName:"'.$buildingInfo[0].'", actionPoints:'.$checkBldg->actionPoints().'});
 		unitList.renderSum('.$bldgID.', bldgTabs_1);';
 		//echo 'newBldgSum("'.$bldgID.'", "bldg_tab1", .5, '.$bldgDat[7].');';
 	}
