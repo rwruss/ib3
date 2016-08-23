@@ -34,7 +34,7 @@ echo '<script>
 	dropOpt = textBlob("", "rtPnl", "Drop Resources");
 	dropOpt.addEventListener("click", function() {scrMod("1105,'.$postVals[1].'")});
 	addOpt = textBlob("", "rtPnl", "Add/Drop Units");
-	addOpt.addEventListener("click", function() {scrMod("1105,'.$postVals[1].'")});
+	addOpt.addEventListener("click", function() {scrMod("1107,'.$postVals[1].'")});
 </script>';
 
 fclose($slotFile);
