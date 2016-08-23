@@ -115,6 +115,7 @@
 1106 - Process resource transfer from units
 1107 - Menu for Add/Drop units from an army
 1108 - Process add/drop units from an army
+1109 - Get information about another player
 
 // Manual Override Functions
 2001 - Add Resources to a city menu

@@ -145,6 +145,8 @@ class player extends unit {
 		parent::__construct($id, $dat);
 
 		$this->attrList['unitSlot'] = 22;
+		$this->attrList['dipSlot'] = 23;
+		$this->attrList['warList'] = 32;
 	}
 }
 

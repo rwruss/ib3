@@ -5,17 +5,56 @@
 include('./unitClass.php');
 include('./slotFunctions.php');
 
+$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+
 // postvas - > 1 is army ID, 2+ is unit ID
 $pvSize = sizeof($postVals);
 
-
-
 // verify that player controls the army in question
+$trgArmy = loadUnit($postVals[1], $unitFile, 400);
 
+// Load unit list for the army
+$armyUnits = new itemSlot($trgArmy->get('unitListSlot'));
 
-// Verify that the player controls the units in question
-for ($i=1)
+$inList = [];
+$outList = [];
+for ($i=2; $i<=$pvSize; $i++) {
+	if (array_search($postVals[$i],$armyUnits->slotData)) {
+		$outList[] = $postVals[$i];
+	} else {
+		$inList[] = $postVals[$i];
+	}
+}
 
-// 
+// Review units being removed from the army - process all if player controls the army or only the ones that player controls.
+for ($i=0; $i<sizeof($outList); $i++) {
+	$outUnit = loadUnit($outList[$i], $unitFile, 400);
+	if ($outUnit->get('controller') == $pGameID || $trgArmy->get('controller') == $pGameID) {
+		// Process this unit out of the army
+		$outUnit->save('armyID', 0);
+		
+		$armyUnits->deleteByValue($outList[$i], $slotFile);
+	}
+}
+
+// Review units being added to the army - process all that the player controls if he also controls the army
+if ($trgArmy->get('controller') == $pGameID) {
+	for ($i=0; $i<sizeof($inList); $i++) {
+		$inUnit = loadUnit($inList[$i], $unitFile, 400);
+		if ($inUnit->get('controller') == $pGameID) {
+			// Update unit to be in army
+			$inUnit->save('armyID', $postVals[1]);
+			
+			// Add to army unit list
+			$armyUnits->addItem($inList[$i], $slotFile);
+		}
+	}
+} else {
+	echo 'Can\'t add to an army you don\'t control!';
+}
+
+fclose($unitFile);
+fclose($slotFile);
 
 ?>
