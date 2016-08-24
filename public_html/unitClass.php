@@ -5,10 +5,11 @@ class unit {
 	public $unitDat;
 
 	function __construct($id, $dat) {
+		//$this->linkFile = $file;
 		/*
 		global $defaultBlockSize;
 
-		$this->linkFile = $file;
+
 		fseek($this->linkFile, $id*$defaultBlockSize);
 		$unitBin = fread($this->linkFile, $size);
 		*/

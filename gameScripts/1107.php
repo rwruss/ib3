@@ -17,7 +17,7 @@ echo '<script>
 	useDeskTop.newPane("selUnits");
 	thisDiv = useDeskTop.getPane("selUnits");
 
-  var thisGroup = groupSort(thisDiv);';
+  var thisGroup = groupSort(thisDiv, '.$postVals[1].');';
 $trgArmy = loadUnit($postVals[1], $unitFile, 400);
 
 // Can add/remove units from this army
