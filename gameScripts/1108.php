@@ -5,8 +5,8 @@
 include('./unitClass.php');
 include('./slotFunctions.php');
 
-$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 
 // postvas - > 1 is army ID, 2+ is unit ID
 $pvSize = sizeof($postVals);

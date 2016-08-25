@@ -4,7 +4,7 @@ date_default_timezone_set('America/Chicago');
 $actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])*$unitDat[17]/360000));
 
 $_SESSION['selectedUnit'] = $unitID;
-
+print_r($unitDat);
 echo '
 	<script>
 	resetMove();
@@ -15,7 +15,7 @@ echo '
 	//document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "unitName";
 	//setUnitAction('.$unitID.', '.($actionPoints/1000).');
 	//setUnitExp('.$unitID.', 0.5);
-	
+
 	var equip = addDiv("unitEquip", "stdFloatDiv", document.getElementById("rtPnl"));
 	equip.innerHTML = "Equip this unit";
 	equip.addEventListener("click", function () {makeBox("equip", "1053,'.$unitID.'", 500, 500, 200, 50)} );

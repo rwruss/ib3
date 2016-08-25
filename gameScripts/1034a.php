@@ -2,7 +2,7 @@
 
 date_default_timezone_set('America/Chicago');
 $actionPoints = min(1000, $unitDat[16] + floor((time()-$unitDat[27])/1));
-
+print_r($unitDat);
 // Get resource slot
 if ($unitDat[30] > 0) {
   include('./slotFunctions.php');

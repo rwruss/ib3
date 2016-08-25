@@ -4,8 +4,8 @@ class unit {
 	protected $linkFile, $unitBin, $id, $attrList;
 	public $unitDat;
 
-	function __construct($id, $dat) {
-		//$this->linkFile = $file;
+	function __construct($id, $dat, $file) {
+		$this->linkFile = $file;
 		/*
 		global $defaultBlockSize;
 
@@ -61,9 +61,10 @@ class unit {
 		global $defaultBlockSize;
 
 		if (array_key_exists($desc, $this->attrList)) {
-			fseek($this->linkFile, $this->id*$defaultBlockSize + $this->attrList[$desc]*4);
+			fseek($this->linkFile, $this->unitID*$defaultBlockSize + $this->attrList[$desc]*4-4);
 			fwrite($this->linkFile, pack('i', $val));
-
+			echo 'ID: '.$this->unitID;
+			echo 'Save '.$val.' at spot '.($this->unitID*$defaultBlockSize + $this->attrList[$desc]*4-4);
 			$this->attrList[$desc] = $val;
 		} else {
 			return false;
@@ -82,8 +83,8 @@ class unit {
 }
 
 class army extends unit {
-	function __construct($id, $dat) {
-		parent::__construct($id, $dat);
+	function __construct($id, $dat, $file) {
+		parent::__construct($id, $dat, $file);
 		//echo 'Load an army';
 		$this->attrList['unitListSlot'] = 14;
 		$this->attrList['carryCap'] = 29;
@@ -92,8 +93,8 @@ class army extends unit {
 }
 
 class battle extends unit {
-	function __construct($id, $dat) {
-		parent::__construct($id, $dat);
+	function __construct($id, $dat, $file) {
+		parent::__construct($id, $dat, $file);
 
 		$this->attrList['battleType'] = 10;
 		$this->attrList['baseUnit_1'] = 11;
@@ -106,8 +107,8 @@ class battle extends unit {
 }
 
 class building extends unit {
-	function __construct($id, $dat) {
-		parent::__construct($id, $dat);
+	function __construct($id, $dat, $file) {
+		parent::__construct($id, $dat, $file);
 	}
 
 	function actionPoints() {
@@ -116,8 +117,8 @@ class building extends unit {
 }
 
 class char extends unit {
-		function __construct($id, $dat) {
-			parent::__construct($id, $dat);
+		function __construct($id, $dat, $file) {
+			parent::__construct($id, $dat, $file);
 
 			$this->attrList['subType'] = 10;
 			$this->attrList['currentTask'] = 11;
@@ -133,8 +134,8 @@ class char extends unit {
 }
 
 class settlement extends unit {
-	function __construct($id, $dat) {
-		parent::__construct($id, $dat);
+	function __construct($id, $dat, $file) {
+		parent::__construct($id, $dat, $file);
 
 		$this->attrList['carryCap'] = 33;
 		$this->attrList['carrySlot'] = 11;
@@ -142,8 +143,8 @@ class settlement extends unit {
 }
 
 class player extends unit {
-	function __construct($id, $dat) {
-		parent::__construct($id, $dat);
+	function __construct($id, $dat, $file) {
+		parent::__construct($id, $dat, $file);
 
 		$this->attrList['unitSlot'] = 22;
 		$this->attrList['dipSlot'] = 23;
@@ -152,8 +153,8 @@ class player extends unit {
 }
 
 class warband extends unit {
-	function __construct($id, $dat) {
-		parent::__construct($id, $dat);
+	function __construct($id, $dat, $file) {
+		parent::__construct($id, $dat, $file);
 		//echo 'Load an warband';
 		$this->attrList['troopType'] = 10;
 		$this->attrList['currentTask'] = 11;
@@ -210,7 +211,7 @@ function loadPlayer($id, $file, $size) {
 	fseek($file, $id*$defaultBlockSize);
 	$dat = unpack('i*', fread($file, $size));
 
-	return new player($id, $dat);
+	return new player($id, $dat, $file);
 }
 
 function loadUnit($id, $file, $size) {
@@ -219,32 +220,32 @@ function loadUnit($id, $file, $size) {
 	$dat = unpack('i*', fread($file, $size));
 	switch($dat[4]) {
 		case 1:
-			return new settlement($id, $dat);
+			return new settlement($id, $dat, $file);
 			break;
 
 		case 3:
-			return new army($id, $dat);
+			return new army($id, $dat, $file);
 			break;
 
 		case 4:
-			return new char($id, $dat);
+			return new char($id, $dat, $file);
 			break;
 
 		case 6:
-			return new warband($id, $dat);
+			return new warband($id, $dat, $file);
 			break;
 
 		case 8:
-			return new warband($id, $dat);
+			return new warband($id, $dat, $file);
 			break;
 
 		case 9:
 			//echo 'Load a building object';
-			return new building($id, $dat);
+			return new building($id, $dat, $file);
 			break;
 
 		default:
-		 	return new unit($id, $dat);
+		 	return new unit($id, $dat, $file);
 	}
 }
 ?>

@@ -35,6 +35,8 @@ echo '<script>
 	dropOpt.addEventListener("click", function() {scrMod("1105,'.$postVals[1].'")});
 	addOpt = textBlob("", "rtPnl", "Add/Drop Units");
 	addOpt.addEventListener("click", function() {scrMod("1107,'.$postVals[1].'")});
+	disbandOpt = textBlob("", "rtPnl", "Disband Army");
+	disbandOpt.addEventListener("click", function() {scrMod("1107,'.$postVals[1].'")});
 </script>';
 
 fclose($slotFile);

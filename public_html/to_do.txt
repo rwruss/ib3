@@ -1,5 +1,7 @@
 Short Term:
-TEST - Remve resource cart unit after it founds a city
+Disband/create army options
+Assign a commander/chars to an army
+Give units to a player to control
 
 Long Term:
 Add and remove units from armys/groups
