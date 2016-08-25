@@ -127,7 +127,7 @@ class char extends unit {
 			$this->attrList['titleSlot'] = 14;
 			$this->attrList['traitSlot'] = 15;
 			$this->attrList['energy'] = 16;
-			$this->attrList['regen'] = 17;
+			$this->attrList['enRegen'] = 17;
 			$this->attrList['publicReligion'] = 18;
 			$this->attrList['experience'] = 18;
 		}

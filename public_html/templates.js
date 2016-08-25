@@ -1155,7 +1155,7 @@ selectItem = function (trg, id, others) {
 }
 
 var sortList;
-groupSort = function (trg, id) {
+groupSort = function (trg, id, dir) {
 	var groupContainer = addDiv("", "stdContain", trg);
 	groupContainer.left = addDiv("groupSort_1", "stdContain", groupContainer);
 	groupContainer.centerBar = addDiv("", "stdContain", groupContainer);
@@ -1163,7 +1163,7 @@ groupSort = function (trg, id) {
 
 	var sortButton = addDiv("", "button", groupContainer.centerBar);
 	sortButton.innerHTML = "Assign";
-	sortButton.addEventListener("click", function () {sortGroup(groupContainer)});
+	sortButton.addEventListener("click", function () {sortGroup(groupContainer, dir)});
 
 	sortList = [];
 	sortList.moved = [id];
@@ -1194,7 +1194,7 @@ groupButton = function (trg, id) {
 	})
 }
 
-sortGroup = function(parent) {
+sortGroup = function(parent, dir) {
 	console.log("ASSIGN THE FOLLOWING: " + sortList)
 	for (i=0; i<sortList.length; i++) {
 		sortList[i].style.borderColor = "#000000";
@@ -1205,7 +1205,7 @@ sortGroup = function(parent) {
 		}
 	}
 	console.log("Move items " + sortList.moved);
-	scrMod("1108,"+sortList.moved);
+	scrMod(dir + ","+sortList.moved);
 	sortList = [];
 	sortList.moved = [];
 

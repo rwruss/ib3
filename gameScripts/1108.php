@@ -5,19 +5,17 @@
 include('./unitClass.php');
 include('./slotFunctions.php');
 
-$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
-$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
+$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 
 // postvas - > 1 is army ID, 2+ is unit ID
 $pvSize = sizeof($postVals);
-print_r($postVals);
 
 // verify that player controls the army in question
 $trgArmy = loadUnit($postVals[1], $unitFile, 400);
 
 // Load unit list for the army
 $armyUnits = new itemSlot($trgArmy->get('unitListSlot'), $slotFile, 40);
-echo 'Loaded slot '.$trgArmy->get('unitListSlot');
 
 $inList = [];
 $outList = [];
@@ -29,10 +27,6 @@ for ($i=2; $i<$pvSize; $i++) {
 		$inList[] = $postVals[$i];
 	}
 }
-echo 'In List:';
-print_r($inList);
-echo 'Out List';
-print_r($outList);
 
 // Review units being removed from the army - process all if player controls the army or only the ones that player controls.
 for ($i=0; $i<sizeof($outList); $i++) {

@@ -20,6 +20,10 @@ skills.addEventListener("click", function () {makeBox("skills", "1076,'.$postVal
 var traits = addDiv("unitEquip", "stdFloatDiv", document.getElementById("rtPnl"));
 traits.innerHTML = "Character Traits";
 traits.addEventListener("click", function () {makeBox("traits", "1077,'.$postVals[1].'", 500, 500, 200, 50)});
+
+var sendUnits = addDiv("unitEquip", "stdFloatDiv", document.getElementById("rtPnl"));
+sendUnits.innerHTML = "Transfer Units";
+sendUnits.addEventListener("click", function() {scrMod("1110,'.$postVals[1].'")});
 </script>';
 fclose($unitFile);
 

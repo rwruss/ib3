@@ -16,6 +16,19 @@ $thisPlayer = loadPlayer($pGameId, $unitFile, 400);
 $intelSlot = new blockSlot($thisPlayer->get('intelSlot'), $slotFile, 40);
 print_r($intelSlot->slotData);
 
+
+for ($i=1; $i<=sizeof($intelSlot->slotData); $i+=5) {
+	if ($intelSlot->slotData[$i] == $postVals[1]) {
+		echo 'Intel found';
+	}
+}
+
+echo '<script>
+	giveOpt = textBlob("", "rtPnl", "Drop Resources");
+	dropOpt.addEventListener("click", function() {scrMod("1105,'.$postVals[1].'")});
+	addOpt = textBlob("", "rtPnl", "Add/Drop Units");
+	addOpt.addEventListener("click", function() {scrMod("1107,'.$postVals[1].'")});
+</script>';
 ///This is the diplomacy used in 1008
 /*
 // Get overall diplomatic statuses

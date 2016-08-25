@@ -4,7 +4,6 @@ Assign a commander/chars to an army
 Give units to a player to control
 
 Long Term:
-Add and remove units from armys/groups
 Battle resolution
 Character trait development and exp points
 Character prestige from subordinates
