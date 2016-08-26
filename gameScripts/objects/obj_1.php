@@ -8,7 +8,7 @@ include("./cityClass.php");
 $cityID = $_SESSION['selectedItem'];
 // Verify that the person giving the order has the proper credintials
 //fseek($unitFile, $cityID*$defaultBlockSize);
-$thisCity = new city([$cityID, $unitFile, $unitDat]);
+$thisCity = new city([$cityID, $unitFile, $thisUnit->unitDat]);
 //$cityDat = unpack('i*', fread($unitFile, $unitBlockSize));
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
@@ -19,13 +19,13 @@ echo 'Approved level '.$approved.'<br>';
 
 if ($approved) {
 	echo 'Unit Details for unit '.$unitID.'<br>
-	  Type: '.$unitDat[4].'<br>
-	  Owner: '.$unitDat[5].'<br>
-	  Controller: '.$unitDat[6].'<br>
-	  Status: '.$unitDat[7].'<br>
-	  Space: '.$unitDat[8].'<br>
-	  Map Object ID '.$unitDat[23].'<br>
-		Population '.$unitDat[25].'<br>
+	  Type: '.$thisCity->cityData[4].'<br>
+	  Owner: '.$thisCity->cityData[5].'<br>
+	  Controller: '.$thisCity->cityData[6].'<br>
+	  Status: '.$thisCity->cityData[7].'<br>
+	  Space: '.$thisCity->cityData[8].'<br>
+	  Map Object ID '.$thisCity->cityData[23].'<br>
+		Population '.$thisCity->cityData[25].'<br>
 		Action Points '.$thisCity->aps().'
 	  <div style="position:absolute; bottom:220; left:0;" onclick="makeBox(\'rscSummary\', 1068, 500, 500, 200, 50);">Leave Town</div>
 	  <div style="position:absolute; bottom:200; left:0;" onclick="makeBox(\'rscSummary\', 1063, 500, 500, 200, 50);">Show Resources</div>
