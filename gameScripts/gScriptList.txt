@@ -121,6 +121,10 @@
 1112 - Process disband an army
 1113 - Show options for adding a unit to an army
 1114 - Process army creation from a unit or combination
+1115 - Menu for transfer of unit control
+1116 - Menu for mercenary trades
+1117 - Process purchase of mercenary unit
+1118 - Menu for sale of mercenary unit
 
 // Manual Override Functions
 2001 - Add Resources to a city menu

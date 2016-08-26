@@ -37,6 +37,12 @@ switch ($thisUnit->get('status')) {
 			armyDtl.innerHTML = "Army Detail";
 			armyDtl.addEventListener("click", passClick("1113,'.$unitID.'", rtPnl););';
 		}
+		
+		echo '
+		var controlOpt = addDiv("unitUpgrades", "stdFloatDiv", document.getElementById("rtPnl"));
+		controlOpt.innerHTML = "Upgrade";
+		controlOpt.addEventListener("click", function () {passClick("1115,'.$postVals[1].'")});';
+		
 		break;
 
 	case 2: // Involved in a battle

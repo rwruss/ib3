@@ -30,10 +30,19 @@ else if ($trgUnit->get('uType') == 6) {
 	// Combine with an existing unit to create a new army
 	
 	// Create a new army
+	$newArmy = newUnit(2, $unitFile);
 	
-	// Record army ID in both unit informations
+	// Create an item List for the army
+	$newArmy->save('unitListSlot', newSlot($slotFile));
+	$armyUnits = new itemSlot($newArmy->get('unitListSlot'));
 	
 	// Record both unit IDs in the army unit list
+	$armyUnits->addItem($postVals[1], $slotFile);
+	$armyUnits->addItem($postVals[2], $slotFile);
+	
+	// Record army ID in both unit informations
+	$thisUnit->save('armyID', $newArmy->get('unitListSlot'));
+	$trgUnit->save('armyID', $newArmy->get('unitListSlot'));
 }
 
 

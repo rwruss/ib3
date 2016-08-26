@@ -397,7 +397,7 @@ function newSlot($slotFile) {
 			echo "create new slot<br>";
 			clearstatcache();
 			fseek($slotFile, 0, SEEK_END);
-			$use_slot = max(1, (ftell($slotFile))/40);
+			$use_slot = max(1, ceil((ftell($slotFile))/40));
 			fseek($slotFile, $use_slot*40 +39);
 			fwrite($slotFile, pack("C", 0));
 			flock($slotFile, LOCK_UN); // release the lock

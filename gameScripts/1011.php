@@ -18,6 +18,11 @@ if (sizeof($unitList)>0) {
 	echo '<script>
 	useDeskTop.newPane("military");
 	thisDiv = useDeskTop.getPane("military");
+	
+	var mercOpts = addDiv("unitOrders", "stdFloatDiv", thisDiv);
+	mercOpts.innerHTML = "Mercenaries";
+	mercOpts.addEventListener("click", function () {scrMod("1116,'.$postVals[1].'")});
+	
 	addDiv("armyList_0", "stdContainer", thisDiv);
 	textBlob("desc", "armyList_0", "Unattached");
 	';

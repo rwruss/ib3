@@ -2,10 +2,11 @@
 
 class unit {
 	protected $linkFile, $unitBin, $id, $attrList;
-	public $unitDat;
+	public $unitDat, $mercApproved;
 
 	function __construct($id, $dat, $file) {
 		$this->linkFile = $file;
+		$this->mercApproved = false;
 		/*
 		global $defaultBlockSize;
 
@@ -146,6 +147,7 @@ class player extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
 
+		$this->attrList['lordID'] = 15;
 		$this->attrList['unitSlot'] = 22;
 		$this->attrList['dipSlot'] = 23;
 		$this->attrList['warList'] = 32;
@@ -156,6 +158,8 @@ class warband extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
 		//echo 'Load an warband';
+		$this->mercApproved = true;
+		
 		$this->attrList['troopType'] = 10;
 		$this->attrList['currentTask'] = 11;
 		$this->attrList['currentLoc'] = 12;
@@ -246,6 +250,26 @@ function loadUnit($id, $file, $size) {
 
 		default:
 		 	return new unit($id, $dat, $file);
+	}
+}
+
+function newUnit($type, $file) {
+	global $defaultBlockSize;
+	
+	if flock($file, LOCK_EX) {
+		fseek($file, 0, SEEK_END);
+		$endPos = ftell($file);
+		$newID = ceil($endPos/$defaultBlockSize);
+		
+		fseek($file, $newID*$defaultBlockSize+396);
+		fwrite($file, pack('i', 0);
+		
+		$tmpDat = array_fill(1, 100, 0);
+		$tmpDat[4] = $type;
+		
+		flock($file, LOCK_UN);
+		
+		return loadUnit($newID, $file, 400);
 	}
 }
 ?>
