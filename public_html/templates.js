@@ -1244,8 +1244,8 @@ slideValBar = function (trg, slideID, low, hi) {
 
 	var setVal = addDiv("", "slideVal", contain);
 
-	minVal.addEventListener("click", function () {contain.slide.stepDown(1); setVal.innerHTML = contain.slide.value;});
-	maxVal.addEventListener("click", function () {contain.slide.stepUp(1); setVal.innerHTML = contain.slide.value;});
+	minVal.addEventListener("click", function (event) {event.stopPropagation();contain.slide.stepDown(1); setVal.innerHTML = contain.slide.value;});
+	maxVal.addEventListener("click", function (event) {event.stopPropagation();contain.slide.stepUp(1); setVal.innerHTML = contain.slide.value;});
 
 	//groupList.push(slide);
 
@@ -1253,4 +1253,19 @@ slideValBar = function (trg, slideID, low, hi) {
 	contain.slide.addEventListener("change", function() {setVal.innerHTML = this.value;});
 
 	return contain;
+}
+
+selectList = function (trg, options) {
+		var newMenu = document.createElement("select");
+		newMenu.id = "99";
+
+		for (var i=0; i<options.length; i+=2)		 {
+			var option = document.createElement("option");
+			option.value = options[i];
+			option.text = options[i+1];
+			newMenu.add(option);
+		}
+
+		trg.appendChild(newMenu);
+		return newMenu;
 }

@@ -159,7 +159,7 @@ class warband extends unit {
 		parent::__construct($id, $dat, $file);
 		//echo 'Load an warband';
 		$this->mercApproved = true;
-		
+
 		$this->attrList['troopType'] = 10;
 		$this->attrList['currentTask'] = 11;
 		$this->attrList['currentLoc'] = 12;
@@ -255,20 +255,20 @@ function loadUnit($id, $file, $size) {
 
 function newUnit($type, $file) {
 	global $defaultBlockSize;
-	
-	if flock($file, LOCK_EX) {
+
+	if (flock($file, LOCK_EX)) {
 		fseek($file, 0, SEEK_END);
 		$endPos = ftell($file);
 		$newID = ceil($endPos/$defaultBlockSize);
-		
+
 		fseek($file, $newID*$defaultBlockSize+396);
-		fwrite($file, pack('i', 0);
-		
+		fwrite($file, pack('i', 0));
+
 		$tmpDat = array_fill(1, 100, 0);
 		$tmpDat[4] = $type;
-		
+
 		flock($file, LOCK_UN);
-		
+
 		return loadUnit($newID, $file, 400);
 	}
 }
