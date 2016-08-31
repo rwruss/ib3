@@ -1,0 +1,51 @@
+<html>
+
+<script>
+
+function init() {
+  console.log("hello");
+
+  document.getElementById("talkSend").addEventListener("click", function () {
+    console.log("send the talk");
+  })
+
+  var source = new EventSource("phpDaemon2.php");
+  source.onmessage = function(event) {
+    console.log("loading stream");
+      document.getElementById("chatWindow").innerHTML += event.data + "<br>";
+  };
+}
+
+window.addEventListener("load", init);
+</script>
+
+<style>
+.chatWindow {
+  width:95%;
+  height:50%;
+  border:1px solid blue;
+  overflow:scroll;
+}
+
+.talkContain {
+  width:85%;
+  height:70;
+  border:1px solid red;
+}
+
+.talkSend {
+  width:4%;
+  height:70;
+  border:1px solid green;
+  float:left;
+}
+</style>
+
+<body>
+<div id="chatWindow" class="chatWindow">hello</div>
+<div id="talkContain" class="talkContain">
+  <input id="talkBox"></input>
+</div>
+<div id="talkSend" class="talkSend"></div>
+</body>
+</html>
