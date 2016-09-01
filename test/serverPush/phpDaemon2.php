@@ -5,7 +5,7 @@ session_start();
 
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
-
+header('Connection: keep-alive');
 
 $chatFile = fopen('chat.dat', 'rb');
 fseek($chatFile, 0, SEEK_END);
@@ -18,11 +18,11 @@ if ($size > $_SESSION['userCount']) {
   echo "data: {$newStuff}\n\n";
 
 } else {
-  echo "data: nothing new.\n\n";
+  echo "data: nothing new ({$size} vs {$_SESSION['userCount']}).\n\n";
 }
-flush();
-//$time = date('r');
-//echo "data: Run ".$count." times,  The server time is: {$time}";
+//flush();
+$time = date('r');
+//echo "data: The server time is: {$time}\n\n";
 //echo "data: Yo mama {$_SESSION['userCount']} times!\n\n";
 
 $time = date('r');

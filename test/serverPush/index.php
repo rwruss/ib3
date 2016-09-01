@@ -15,10 +15,17 @@ function init() {
   })
 
   var source = new EventSource("phpDaemon2.php");
-  source.onmessage = function(event) {
-    //console.log("loading stream");
-      document.getElementById("chatWindow").innerHTML += event.data + "<br>";
-  };
+  console.log("Sources State:" + source.readyState);
+  source.onopen = function () {
+    source.onmessage = function(event) {
+      console.log("loading stream..");
+      console.log(event.data);
+      //console.log("Sources State:" + source.readyState);
+      target = document.getElementById("chatWindow");
+      target.innerHTML += event.data + "<br>";
+      target.scrollTop = target.scrollHeight;
+    };
+  }
 }
 
 function sendMsg () {
@@ -27,7 +34,7 @@ function sendMsg () {
 
   params = "msg="+msgBox.value;
   var xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", "recMsg.php", true);
+  xmlhttp.open("POST", "recMsg.php", true);
   xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
   xmlhttp.onreadystatechange = function() {
