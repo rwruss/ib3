@@ -147,6 +147,7 @@ class player extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
 
+		$this->attrList['homeCity'] = 11;
 		$this->attrList['lordID'] = 15;
 		$this->attrList['unitSlot'] = 22;
 		$this->attrList['dipSlot'] = 23;
