@@ -125,6 +125,7 @@
 1116 - Menu for mercenary trades
 1117 - Process purchase of mercenary unit
 1118 - Menu for sale of mercenary unit
+1119 - Processs putting a unit up for sale as a merc
 
 // Manual Override Functions
 2001 - Add Resources to a city menu

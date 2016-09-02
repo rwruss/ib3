@@ -10,3 +10,11 @@ Character trait development and exp points
 Character prestige from subordinates
 Permanant exp points generation and use
 Convert all unit interfaces to unit class
+
+
+Useful Links:
+Real Time Updating: https://www.sitepoint.com/real-time-apps-websockets-server-sent-events/
+WebSockets: http://socketo.me/
+WebSockets: http://stackoverflow.com/questions/11077857/what-are-long-polling-websockets-server-sent-events-sse-and-comet
+WebSockets: http://www.phpbuilder.com/articles/application-architecture/optimization/creating-real-time-applications-with-php-and-websockets.html
+WebSockets: https://www.sanwebe.com/2013/05/chat-using-websocket-php-socket

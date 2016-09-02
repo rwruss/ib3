@@ -14,13 +14,23 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 // Load transacation informatino
 fseek($mercFile, $postVals[1]*100);
 $thisTrade = unpack('i*', fread($mercFile, 100));
+$heldRsc[$thisTrade[11]] = 0;
+$heldRsc[$thisTrade[13]] = 0;
+$heldRsc[$thisTrade[15]] = 0;
+$heldRsc[$thisTrade[17]] = 0;
+$heldRsc[$thisTrade[19]] = 0;
 
 // Confirm that the purchasing player has the required resources
 $thisPlayer = loadPlayer($pGameID, $unitFile, 400);
 $thisHomeCity = loadUnit($thisPlayer->get('homeCity'), $unitFile, 400);
 $thisRsc = new itemSlot($thisHomeCity->get('carrySlot'), $slotFile, 40);
 for ($i=1; $i<sizeof($thisRsc->slotData); $i+=2) {
-	
+	$heldRsc[$thisRsc->slotData[$i]] = $thisRsc->slotData[$i+1];
+}
+
+$rscCheck = true;
+for ($i=11; $i<20; $i+=2) {
+	if ($heldRsc[$i] < $thisTrade[$i+1]) exit('Not enough resources');
 }
 
 
