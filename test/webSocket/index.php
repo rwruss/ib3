@@ -29,28 +29,28 @@
 -->
 </style>
 </head>
-<body>	
-<?php 
+<body>
+<?php
 $colours = array('007AFF','FF7000','FF7000','15E25F','CFC700','CFC700','CF1100','CF00BE','F00');
 $user_colour = array_rand($colours);
 ?>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 
-<script language="javascript" type="text/javascript">  
+<script language="javascript" type="text/javascript">
 $(document).ready(function(){
 	//create a new WebSocket object.
-	var wsUri = "ws://localhost:9000/demo/server.php"; 	
-	websocket = new WebSocket(wsUri); 
-	
-	websocket.onopen = function(ev) { // connection is open 
+	var wsUri = "ws://localhost:9000/demo/server.php";
+	websocket = new WebSocket(wsUri);
+
+	websocket.onopen = function(ev) { // connection is open
 		$('#message_box').append("<div class=\"system_msg\">Connected!</div>"); //notify user
 	}
 
-	$('#send-btn').click(function(){ //use clicks message send button	
+	$('#send-btn').click(function(){ //use clicks message send button
 		var mymessage = $('#message').val(); //get message text
 		var myname = $('#name').val(); //get user name
-		
+
 		if(myname == ""){ //empty name?
 			alert("Enter your Name please!");
 			return;
@@ -59,7 +59,7 @@ $(document).ready(function(){
 			alert("Enter Some message Please!");
 			return;
 		}
-		
+
 		//prepare json data
 		var msg = {
 		message: mymessage,
@@ -69,16 +69,17 @@ $(document).ready(function(){
 		//convert and send data to server
 		websocket.send(JSON.stringify(msg));
 	});
-	
+
 	//#### Message received from server?
 	websocket.onmessage = function(ev) {
+		console.log(ev.data);
 		var msg = JSON.parse(ev.data); //PHP sends Json data
 		var type = msg.type; //message type
 		var umsg = msg.message; //message text
 		var uname = msg.name; //user name
 		var ucolor = msg.color; //color
 
-		if(type == 'usermsg') 
+		if(type == 'usermsg')
 		{
 			$('#message_box').append("<div><span class=\"user_name\" style=\"color:#"+ucolor+"\">"+uname+"</span> : <span class=\"user_message\">"+umsg+"</span></div>");
 		}
@@ -86,12 +87,12 @@ $(document).ready(function(){
 		{
 			$('#message_box').append("<div class=\"system_msg\">"+umsg+"</div>");
 		}
-		
+
 		$('#message').val(''); //reset text
 	};
-	
-	websocket.onerror	= function(ev){$('#message_box').append("<div class=\"system_error\">Error Occurred - "+ev.data+"</div>");}; 
-	websocket.onclose 	= function(ev){$('#message_box').append("<div class=\"system_msg\">Connection Closed</div>");}; 
+
+	websocket.onerror	= function(ev){$('#message_box').append("<div class=\"system_error\">Error Occurred - "+ev.data+"</div>");};
+	websocket.onclose 	= function(ev){$('#message_box').append("<div class=\"system_msg\">Connection Closed</div>");};
 });
 </script>
 <div class="chat_wrapper">
