@@ -2,7 +2,7 @@
 <html>
 
 <head>
-<title>Learning WebGL &mdash; lesson 4</title>
+<title>On the use of buffers and triangles to create entertainment</title>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
 <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
@@ -15,9 +15,8 @@
     varying vec3 vPos;
 
     void main(void) {
-        //gl_FragColor = vec4(vPos, 1.0);
-        if (mod(vPos.x*10.0,1.0) < 0.1 || mod(vPos.z*10.0, 1.0) < 0.1) gl_FragColor = vec4(0.0,0.0,0.0,1.0);
-        else gl_FragColor = vec4(1.0,1.0,1.0,1.0);
+		if (mod(vPos.x*10.0,1.0) < 0.1 || mod(vPos.z*10.0, 1.0) < 0.1) gl_FragColor = vec4(0.0,0.0,0.0,1.0);
+		else gl_FragColor = vec4(1.0,1.0,1.0,1.0);
     }
 </script>
 
@@ -58,6 +57,52 @@
         //gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10), 1.0);
         gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10)+vec3(aPieceLocation.x, 0.0, aPieceLocation.y)*0.20, 1.0);
         vPieceLocation = aPieceLocation;
+    }
+</script>
+
+<script id="boardBackFS" type="x-shader/x-fragment">
+    precision mediump float;
+
+    varying vec3 vPosition;
+
+    void main(void) {
+        gl_FragColor = vec4(vPosition, 1.0);
+    }
+</script>
+
+<script id="boardBackVS" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+	
+	varying vec3 vPosition;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+		vPosition = (aVertexPosition+1.0)/2.0;
+    }
+</script>
+
+<script id="highLightFS" type="x-shader/x-fragment">
+    precision mediump float;
+
+    void main(void) {
+        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+</script>
+
+<script id="highLightVS" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    uniform vec3 uOffset;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+	
+	varying vec3 vPosition;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition+uOffset, 1.0);
     }
 </script>
 
@@ -119,7 +164,7 @@
 
     var boardProgram;
     var pieceProgram;
-
+	var highLightProgram;
 
     function initShaders() {
         var fragmentShader = getShader(gl, "boardFS");
@@ -164,6 +209,48 @@
 
         pieceProgram.pMatrixUniform = gl.getUniformLocation(pieceProgram, "uPMatrix");
         pieceProgram.mvMatrixUniform = gl.getUniformLocation(pieceProgram, "uMVMatrix");
+		
+		var fragmentShader = getShader(gl, "boardBackFS");
+        var vertexShader = getShader(gl, "boardBackVS");
+
+        boardBGProgram = gl.createProgram();
+        gl.attachShader(boardBGProgram, vertexShader);
+        gl.attachShader(boardBGProgram, fragmentShader);
+        gl.linkProgram(boardBGProgram);
+
+        if (!gl.getProgramParameter(boardBGProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise first boardbackground");
+        }
+
+        gl.useProgram(boardBGProgram);
+
+        boardBGProgram.vertexPositionAttribute = gl.getAttribLocation(boardBGProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(boardBGProgram.vertexPositionAttribute);
+
+        boardBGProgram.pMatrixUniform = gl.getUniformLocation(boardBGProgram, "uPMatrix");
+        boardBGProgram.mvMatrixUniform = gl.getUniformLocation(boardBGProgram, "uMVMatrix");
+		
+		var fragmentShader = getShader(gl, "highLightFS");
+        var vertexShader = getShader(gl, "highLightVS");
+
+        highLightProgram = gl.createProgram();
+        gl.attachShader(highLightProgram, vertexShader);
+        gl.attachShader(highLightProgram, fragmentShader);
+        gl.linkProgram(highLightProgram);
+
+        if (!gl.getProgramParameter(highLightProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise first boardbackground");
+        }
+
+        gl.useProgram(highLightProgram);
+
+        highLightProgram.vertexPositionAttribute = gl.getAttribLocation(highLightProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(highLightProgram.vertexPositionAttribute);
+		
+		highLightProgram.offsetUniform = gl.getUniformLocation(highLightProgram, "uOffset");
+
+        highLightProgram.pMatrixUniform = gl.getUniformLocation(highLightProgram, "uPMatrix");
+        highLightProgram.mvMatrixUniform = gl.getUniformLocation(highLightProgram, "uMVMatrix");
     }
 
 
@@ -196,16 +283,47 @@
         return degrees * Math.PI / 180;
     }
 
+	function initTextureFramebuffer(trg, trgTex, width, height) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, trg);
 
+        gl.bindTexture(gl.TEXTURE_2D, trgTex);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+        gl.generateMipmap(gl.TEXTURE_2D);
+
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+        trg.renderbuffer = gl.createRenderbuffer();
+        gl.bindRenderbuffer(gl.RENDERBUFFER, trg.renderbuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, trgTex, 0);
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, trg.renderbuffer);
+
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    }
+	
     var gameBoard;
     var pieces;
     var pieceLocations;
+	var boardFrameBuffer;
+	var boardFrameTexture;
+	var highLightPoints;
 
     function initBuffers() {
+		highLightPoints = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, highLightPoints);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0,
+													0.0, 0.0, 0.2,
+													0.2, 0.0, 0.0, 
+													0.2, 0.0, 0.2]), gl.STATIC_DRAW);
+	
         gameBoard = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
         var vertices = [
-            // Front face
             -1.0, 0.0, -1.0,
             -1.0, 0.0, 1.0,
             1.0, 0.0, -1.0,
@@ -240,6 +358,11 @@
         pieceLocations = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
     		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 3.0, 0.0, 4.0, 1.0, 0.0, 1.0, 1.0, 1.0, 2.0, 1.0, 3.0]), gl.STATIC_DRAW);
+			
+		boardFrameBuffer = gl.createFramebuffer();
+		boardFrameTexture = gl.createTexture();
+		
+		initTextureFramebuffer(boardFrameBuffer, boardFrameTexture, 1200, 700);
     }
 
     function drawScene() {
@@ -250,20 +373,49 @@
         gl.useProgram(boardProgram);
         mat4.identity(mvMatrix);
 
-        mat4.translate(mvMatrix, [xPos, 0.0, -3.0]);
-        mat4.rotate(mvMatrix, degToRad(45), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(25), [1, 0, 0]);
+		mat4.translate(mvMatrix, [xPos, -1.0, -2.0+zPos]);
 
         mvPushMatrix();
+		
+		// Draw whatever on the framebuffer
+		gl.bindFramebuffer(gl.FRAMEBUFFER, boardFrameBuffer);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		
+		gl.useProgram(boardBGProgram);
+        gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
+        gl.vertexAttribPointer(boardBGProgram.vertexPositionAttribute, gameBoard.itemSize, gl.FLOAT, false, 0, 0);
 
+        setMatrixUniforms(boardBGProgram);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, gameBoard.numItems);
+		
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		
+		// Draw whatever on the output buffer
         gl.useProgram(boardProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
         gl.vertexAttribPointer(boardProgram.vertexPositionAttribute, gameBoard.itemSize, gl.FLOAT, false, 0, 0);
 
         setMatrixUniforms(boardProgram);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, gameBoard.numItems);
+		
+		//gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // This is the gl.ONE :)
+		gl.disable(gl.DEPTH_TEST);
+		
+		gl.useProgram(highLightProgram);
+		gl.bindBuffer(gl.ARRAY_BUFFER, highLightPoints);
+        gl.vertexAttribPointer(highLightProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+		
+		gl.uniform3f(highLightProgram.offsetUniform, highLiteOffset[0],0.0,highLiteOffset[1]);
+		
+		setMatrixUniforms(highLightProgram);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
         mvPopMatrix();
-
+		gl.enable(gl.DEPTH_TEST);
+		
+		
+		// Draw the pieces
         mvPushMatrix();
 
         gl.useProgram(pieceProgram);
@@ -286,15 +438,16 @@
 
     var lastTime = 0;
     var xPos = 0.0;
-    var yPos = 0.0;
+    var zPos = 0.0;
     var xSpeed = 0.0;
-    var ySpeed = 0.0;
+    var zSpeed = 0.0;
     function animate() {
         var timeNow = new Date().getTime();
         if (lastTime != 0) {
             var elapsed = timeNow - lastTime;
 
             xPos += xSpeed*elapsed;
+			zPos += zSpeed*elapsed;
             //rPyramid += (90 * elapsed) / 1000.0;
             //rCube -= (75 * elapsed) / 1000.0;
         }
@@ -302,6 +455,7 @@
     }
 
     var currentlyPressedKeys = {};
+	var highLiteOffset = [0, 0];
 
   	function handleKeyDown(event) {
         console.log("Press " + event.keyCode);
@@ -317,10 +471,10 @@
   		if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
 
   			// Left cursor key or A
-  			xSpeed = -0.0005;
+  			xSpeed = 0.0005;
   			} else if (currentlyPressedKeys[39] || currentlyPressedKeys[68]) {
   			// Right cursor key or D
-  			xSpeed = 0.0005;
+  			xSpeed = -0.0005;
   			} else {
   			xSpeed = 0;
   			}
@@ -328,10 +482,10 @@
   		if (currentlyPressedKeys[38] || currentlyPressedKeys[87]) {
 
   			// Up cursor key or W
-  			zSpeed = -0.0005;
+  			zSpeed = 0.0005;
   			} else if (currentlyPressedKeys[40] || currentlyPressedKeys[83]) {
   			// Down cursor key
-  			zSpeed = 0.0005;
+  			zSpeed = -0.0005;
   			} else {
   			zSpeed = 0;
   			}
@@ -346,7 +500,40 @@
   			wY = 0;
   			}
   		}
+		
+	function handleClick(event)	{
+		//alert(clickParams);
+		document.body.style.cursor = "auto";
+		var loc = findPos(this);
+		var rect = this.getBoundingClientRect();
+		var cpos = [(event.clientX - loc[0]), (document.getElementById("gameScreen").height - (event.clientY - loc[1]))];
+		//alert(cpos[0] + ", " + cpos[1]);
 
+		var pixelValues = new Uint8Array(4);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, boardFrameBuffer);
+		//gl.bindFramebuffer(gl.FRAMEBUFFER, terFramebuffer);
+		gl.readPixels(cpos[0], cpos[1], 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		
+		if (pixelValues[0] + pixelValues[2] > 0) {
+			highLiteOffset[0] = (Math.floor(pixelValues[0]/25.5)-5.0)*0.2;
+			highLiteOffset[1] = (Math.floor(pixelValues[2]/25.5)-5.0)*0.2;
+			}
+		
+		console.log(pixelValues[0] + " gives offset of " + highLiteOffset[0]);
+		}
+
+	
+	function findPos(obj) {
+		var curleft = curtop = 0;
+		if (obj.offsetParent) {
+			do {
+			curleft += obj.offsetLeft;
+			curtop += obj.offsetTop;
+			} while (obj = obj.offsetParent);
+			return [curleft,curtop];
+			}
+		}
 
     function tick() {
         requestAnimFrame(tick);
@@ -357,7 +544,9 @@
 
 
     function webGLStart() {
-        var canvas = document.getElementById("lesson04-canvas");
+        var canvas = document.getElementById("gameScreen");
+		canvas.addEventListener("click", handleClick);
+		//canvas.onclick = handleClick;
         initGL(canvas);
         initShaders()
         initBuffers();
@@ -379,7 +568,7 @@
 
 <body onload="webGLStart();">
 
-    <canvas id="lesson04-canvas" style="border: none;" width="500" height="500"></canvas>
+    <canvas id="gameScreen" style="border: none;" width="500" height="500"></canvas>
 
     <br/>
 </body>
