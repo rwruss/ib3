@@ -373,8 +373,11 @@
         gl.useProgram(boardProgram);
         mat4.identity(mvMatrix);
 
-        mat4.rotate(mvMatrix, degToRad(25), [1, 0, 0]);
-		mat4.translate(mvMatrix, [xPos, -1.0, -2.0+zPos]);
+        
+		mat4.rotate(mvMatrix, degToRad(180*(playerSide-2)), [0, 1, 0]);
+		mat4.rotate(mvMatrix, degToRad(25), [1, 0, 0]);
+		
+		mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.0+zPos)*flipBoard]);
 
         mvPushMatrix();
 		
@@ -424,13 +427,12 @@
 
         setMatrixUniforms(pieceProgram);
 
-
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
         gl.vertexAttribPointer(pieceProgram.pieceLocationAttribute, 2, gl.FLOAT, false, 0, 0);
         ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLocationAttribute, 1);
 
         //gl.drawArrays(gl.TRIANGLE_STRIP, 0, pieces.numItems);
-        ANGLEia.drawArraysInstancedANGLE(gl.TRIANGLE_STRIP, 0, 16, 9);
+        ANGLEia.drawArraysInstancedANGLE(gl.TRIANGLE_STRIP, 0, 16, drawPieceCount);
         //ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLocationAttribute, 0);
         mvPopMatrix();
     }
@@ -448,17 +450,16 @@
 
             xPos += xSpeed*elapsed;
 			zPos += zSpeed*elapsed;
-            //rPyramid += (90 * elapsed) / 1000.0;
-            //rCube -= (75 * elapsed) / 1000.0;
         }
         lastTime = timeNow;
+		//console.log(xPos);
     }
 
     var currentlyPressedKeys = {};
 	var highLiteOffset = [0, 0];
 
   	function handleKeyDown(event) {
-        console.log("Press " + event.keyCode);
+        //console.log("Press " + event.keyCode);
           currentlyPressedKeys[event.keyCode] = true;
   		}
 
@@ -500,7 +501,8 @@
   			wY = 0;
   			}
   		}
-		
+	
+	var selectedSquare = [];;
 	function handleClick(event)	{
 		//alert(clickParams);
 		document.body.style.cursor = "auto";
@@ -519,8 +521,11 @@
 			highLiteOffset[0] = (Math.floor(pixelValues[0]/25.5)-5.0)*0.2;
 			highLiteOffset[1] = (Math.floor(pixelValues[2]/25.5)-5.0)*0.2;
 			}
-		
-		console.log(pixelValues[0] + " gives offset of " + highLiteOffset[0]);
+
+		selectedSquare[0] = Math.round(highLiteOffset[0]*5+5);
+		selectedSquare[1] = Math.round(highLiteOffset[1]*5+5);
+		console.log("Selected square " + selectedSquare);
+
 		}
 
 	
@@ -542,7 +547,6 @@
         animate();
     }
 
-
     function webGLStart() {
         var canvas = document.getElementById("gameScreen");
 		canvas.addEventListener("click", handleClick);
@@ -559,17 +563,172 @@
 
         tick();
     }
+	
+	function addDiv(id, useClassName, target) {
+		var trg;
+		if (typeof(target) == "string") trg = document.getElementById(target);
+		else trg = target;
 
+		var newDiv = document.createElement("div");
+		newDiv.className = useClassName;
+		newDiv.id = id;
+		trg.appendChild(newDiv);
+		return newDiv;
+	}
+	
+	var flipBoard = -1;
+	function init() {
+		webGLStart();
+		loadPieces();
+		for (var i=1; i<=40; i++) {
+			thisPiece = addDiv("piece_"+i, "pieceBox", "rightPane");
+			thisPiece.pieceID = i;
+			thisPiece.addEventListener("click", selectPiece);
+		}
+		console.log(thisPiece);		
+	
+		offset = 0;
+		if (playerSide == 2) {
+			offset = 60;
+			flipBoard = 1;}
+		for (i=0; i<40; i++) {
+			boardSquares[i+offset] = 0;
+		}		
+	}
+	
+	function loadPieces() {
+		rankList = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 11, 11, 11, 11, 11, 11, 12];
+		var count = 0;
+		for (side=1; side<3; side++) {
+			console.log("Make " + rankList.length + " piece for side "+ side);
+			for (rank=0; rank<rankList.length; rank++) {
+				//console.log("make " + count + ", " + rankList[rank] + ", " + side);
+				pieceList.push(new piece(count, rankList[rank], side));
+				count++;
+			}
+		}
+	console.log(pieceList);
+	}
+	
+	function selectPiece() {
+		console.log(this);
+		squareID = selectedSquare[0] + selectedSquare[1]*10;
+
+		if (boardSquares[squareID] == 0) {
+			boardSquares[squareID] = this.pieceID;
+			pieceList[this.pieceID].changeLoc(selectedSquare[0], selectedSquare[1]);
+			pieceList[this.pieceID].newStatus(1);
+			placePieces();
+		} 
+		else if (boardSquares[squareID] < 99) {
+			// Remove the existing unit
+			pieceList[boardSquares[squareID]].changeLoc(0, 0);
+			pieceList[boardSquares[squareID]].newStatus(0);			
+			
+			// Add the new unit
+			boardSquares[squareID] = this.pieceID;
+			pieceList[this.pieceID].changeLoc(selectedSquare[0], selectedSquare[1]);
+			pieceList[this.pieceID].newStatus(1);
+			placePieces();
+		}
+		else {
+			console.log("invalid location");
+		}		
+	}
+	
+	class piece {
+		constructor (id,rank, side) {
+		this.pieceID = id;
+		this.pieceRank = rank;
+		this.position = [0,0];
+		this.status = 0; // 0 = not set, 1 = in play, 2 = dead;
+		}
+		
+		changeLoc(x, y) {
+			this.position = [x, y];
+			console.log("Set piece " + this.pieceID + " to location " + this.position);
+		}
+		
+		newStatus(val) {
+			this.status = val;
+			document.getElementById("piece_"+this.pieceID).className = "pieceStyle_"+val;
+			console.log("Change piece " + this.pieceID + " status to " + this.status);
+		}
+	}
+	
+	var drawPieceCount = 0;
+	function placePieces() {
+		var locList = [];
+		for (var i=0; i<pieceList.length; i++) {
+			if (pieceList[i].status == 1) {
+				console.log(pieceList[i].pieceID + " has status of " + pieceList[i].status);
+				locList.push(pieceList[i].position[0]-5, pieceList[i].position[1]-5);
+				}
+		}
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(locList), gl.STATIC_DRAW);
+	
+	drawPieceCount = locList.length/2;
+	console.log("draw " + drawPieceCount);
+	console.log(locList);
+	}
+		
+	var pieceList = new Array;
+	var boardSquares = Array(100).fill(99);
+	var playerSide = 2;
+	window.addEventListener("load", init);
 </script>
 
+<style>
+.infoPane {
+	width:310;
+	height:90%;
+	border: 1px solid red;
+	right:5;
+	top:5;
+	position:absolute;
+}
+
+.pieceBox {
+	width:75;
+	height:75;
+	border: 1px solid blue;
+	position:relative;
+	float:left;
+}
+
+.pieceStyle_0 {
+	width:75;
+	height:75;
+	border: 1px solid red;
+	position:relative;
+	float:left;
+}
+
+.pieceStyle_1 {
+	width:75;
+	height:75;
+	border: 1px solid green;
+	position:relative;
+	float:left;
+}
+
+pieceStyle_1 {
+	width:75;
+	height:75;
+	border: 1px solid red;
+	position:relative;
+	float:left;
+}
+</style>
 
 </head>
 
 
-<body onload="webGLStart();">
-
+<body>
     <canvas id="gameScreen" style="border: none;" width="500" height="500"></canvas>
-
+	<div id="rightPane" class="infoPane"></div>
     <br/>
 </body>
 
