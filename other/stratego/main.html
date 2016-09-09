@@ -38,25 +38,30 @@
     precision mediump float;
 
     varying vec2 vPieceLocation;
+    varying vec2 vSkinCoord;
 
     void main(void) {
-        gl_FragColor = vec4(vPieceLocation.x, vPieceLocation.y/5.0, 0.0, 1.0);
+        //gl_FragColor = vec4(vPieceLocation.x, vPieceLocation.y/5.0, 0.0, 1.0);
+        gl_FragColor = vec4(vSkinCoord.x*20.0/255.0, 0.0, 0.0, 1.0);
     }
 </script>
 
 <script id="pieceVS" type="x-shader/x-vertex">
     attribute vec3 aVertexPosition;
     attribute vec2 aPieceLocation;
+    attribute vec2 aSkinCoord;
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
 
     varying vec2 vPieceLocation;
+    varying vec2 vSkinCoord;
 
     void main(void) {
         //gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10), 1.0);
         gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10)+vec3(aPieceLocation.x, 0.0, aPieceLocation.y)*0.20, 1.0);
         vPieceLocation = aPieceLocation;
+        vSkinCoord = aSkinCoord;
     }
 </script>
 
@@ -75,7 +80,7 @@
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
-	
+
 	varying vec3 vPosition;
 
     void main(void) {
@@ -98,7 +103,7 @@
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
-	
+
 	varying vec3 vPosition;
 
     void main(void) {
@@ -207,10 +212,13 @@
         pieceProgram.pieceLocationAttribute = gl.getAttribLocation(pieceProgram, "aPieceLocation");
         gl.enableVertexAttribArray(pieceProgram.pieceLocationAttribute);
 
+        pieceProgram.pieceSkinAttribute = gl.getAttribLocation(pieceProgram, "aSkinCoord");
+        gl.enableVertexAttribArray(pieceProgram.pieceSkinAttribute);
+
         pieceProgram.pMatrixUniform = gl.getUniformLocation(pieceProgram, "uPMatrix");
         pieceProgram.mvMatrixUniform = gl.getUniformLocation(pieceProgram, "uMVMatrix");
-		
-		var fragmentShader = getShader(gl, "boardBackFS");
+
+		    var fragmentShader = getShader(gl, "boardBackFS");
         var vertexShader = getShader(gl, "boardBackVS");
 
         boardBGProgram = gl.createProgram();
@@ -229,7 +237,7 @@
 
         boardBGProgram.pMatrixUniform = gl.getUniformLocation(boardBGProgram, "uPMatrix");
         boardBGProgram.mvMatrixUniform = gl.getUniformLocation(boardBGProgram, "uMVMatrix");
-		
+
 		var fragmentShader = getShader(gl, "highLightFS");
         var vertexShader = getShader(gl, "highLightVS");
 
@@ -246,7 +254,7 @@
 
         highLightProgram.vertexPositionAttribute = gl.getAttribLocation(highLightProgram, "aVertexPosition");
         gl.enableVertexAttribArray(highLightProgram.vertexPositionAttribute);
-		
+
 		highLightProgram.offsetUniform = gl.getUniformLocation(highLightProgram, "uOffset");
 
         highLightProgram.pMatrixUniform = gl.getUniformLocation(highLightProgram, "uPMatrix");
@@ -305,22 +313,22 @@
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
-	
+
     var gameBoard;
     var pieces;
-    var pieceLocations;
-	var boardFrameBuffer;
-	var boardFrameTexture;
-	var highLightPoints;
+    var pieceLocations, pieceSkins;
+  	var boardFrameBuffer;
+  	var boardFrameTexture;
+  	var highLightPoints;
 
     function initBuffers() {
 		highLightPoints = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, highLightPoints);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0,
 													0.0, 0.0, 0.2,
-													0.2, 0.0, 0.0, 
+													0.2, 0.0, 0.0,
 													0.2, 0.0, 0.2]), gl.STATIC_DRAW);
-	
+
         gameBoard = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
         var vertices = [
@@ -358,10 +366,15 @@
         pieceLocations = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
     		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 3.0, 0.0, 4.0, 1.0, 0.0, 1.0, 1.0, 1.0, 2.0, 1.0, 3.0]), gl.STATIC_DRAW);
-			
+
+        pieceSkins = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, pieceSkins);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 3.0, 0.0, 4.0, 1.0, 0.0, 1.0, 1.0, 1.0, 2.0, 1.0, 3.0]), gl.STATIC_DRAW);
+
+
 		boardFrameBuffer = gl.createFramebuffer();
 		boardFrameTexture = gl.createTexture();
-		
+
 		initTextureFramebuffer(boardFrameBuffer, boardFrameTexture, 1200, 700);
     }
 
@@ -373,27 +386,27 @@
         gl.useProgram(boardProgram);
         mat4.identity(mvMatrix);
 
-        
-		mat4.rotate(mvMatrix, degToRad(180*(playerSide-2)), [0, 1, 0]);
-		mat4.rotate(mvMatrix, degToRad(25), [1, 0, 0]);
-		
-		mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.0+zPos)*flipBoard]);
+
+    		mat4.rotate(mvMatrix, degToRad(180*(playerSide-2)), [0, 1, 0]);
+    		mat4.rotate(mvMatrix, degToRad(25), [1, 0, 0]);
+
+    		mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.5+zPos)*flipBoard]);
 
         mvPushMatrix();
-		
-		// Draw whatever on the framebuffer
-		gl.bindFramebuffer(gl.FRAMEBUFFER, boardFrameBuffer);
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		
-		gl.useProgram(boardBGProgram);
+
+    		// Draw whatever on the framebuffer
+    		gl.bindFramebuffer(gl.FRAMEBUFFER, boardFrameBuffer);
+    		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    		gl.useProgram(boardBGProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
         gl.vertexAttribPointer(boardBGProgram.vertexPositionAttribute, gameBoard.itemSize, gl.FLOAT, false, 0, 0);
 
         setMatrixUniforms(boardBGProgram);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, gameBoard.numItems);
-		
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-		
+
+		    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
 		// Draw whatever on the output buffer
         gl.useProgram(boardProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
@@ -401,23 +414,23 @@
 
         setMatrixUniforms(boardProgram);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, gameBoard.numItems);
-		
+
 		//gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // This is the gl.ONE :)
 		gl.disable(gl.DEPTH_TEST);
-		
+
 		gl.useProgram(highLightProgram);
 		gl.bindBuffer(gl.ARRAY_BUFFER, highLightPoints);
         gl.vertexAttribPointer(highLightProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-		
+
 		gl.uniform3f(highLightProgram.offsetUniform, highLiteOffset[0],0.0,highLiteOffset[1]);
-		
+
 		setMatrixUniforms(highLightProgram);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
         mvPopMatrix();
 		gl.enable(gl.DEPTH_TEST);
-		
-		
+
+
 		// Draw the pieces
         mvPushMatrix();
 
@@ -431,9 +444,12 @@
         gl.vertexAttribPointer(pieceProgram.pieceLocationAttribute, 2, gl.FLOAT, false, 0, 0);
         ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLocationAttribute, 1);
 
-        //gl.drawArrays(gl.TRIANGLE_STRIP, 0, pieces.numItems);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, pieceSkins);
+        gl.vertexAttribPointer(pieceProgram.pieceSkinAttribute, 2, gl.FLOAT, false, 0, 0);
+        ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceSkinAttribute, 1);
+
         ANGLEia.drawArraysInstancedANGLE(gl.TRIANGLE_STRIP, 0, 16, drawPieceCount);
-        //ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLocationAttribute, 0);
         mvPopMatrix();
     }
 
@@ -501,8 +517,8 @@
   			wY = 0;
   			}
   		}
-	
-	var selectedSquare = [];;
+
+	var selectedSquare = [];
 	function handleClick(event)	{
 		//alert(clickParams);
 		document.body.style.cursor = "auto";
@@ -516,7 +532,7 @@
 		//gl.bindFramebuffer(gl.FRAMEBUFFER, terFramebuffer);
 		gl.readPixels(cpos[0], cpos[1], 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-		
+
 		if (pixelValues[0] + pixelValues[2] > 0) {
 			highLiteOffset[0] = (Math.floor(pixelValues[0]/25.5)-5.0)*0.2;
 			highLiteOffset[1] = (Math.floor(pixelValues[2]/25.5)-5.0)*0.2;
@@ -526,9 +542,41 @@
 		selectedSquare[1] = Math.round(highLiteOffset[1]*5+5);
 		console.log("Selected square " + selectedSquare);
 
-		}
+    if (gameStatus == 1) {
+      if (moveSet == 0) moveOptions();
+      else makeMove();
+    }
+	}
 
-	
+  var moveSet = 0;
+  var pvsSpot = [0,0];
+  function moveOptions() {
+    console.log("moveOptions show Move options for piece " + boardSquares[selectedSquare[0] + selectedSquare[1]*10]);
+    moveSet = 1;
+    pvsSpot[0] = selectedSquare[0];
+    pvsSpot[1] = selectedSquare[1];
+    console.log("moveOptions Previous is " + pvsSpot);
+  }
+
+  function makeMove() {
+    console.log("Previous is " + pvsSpot);
+    // check that the move is valid
+
+    // check for friendly units at the locRough
+    var newIndex = selectedSquare[0] + selectedSquare[1]*10;
+    var oldIndex = pvsSpot[0] + pvsSpot[1]*10;
+    if (boardSquares[newIndex] != 0) {
+      console.log("space is occupied");
+    } else {
+      console.log("Move piece " + boardSquares[oldIndex] + " from " + pvsSpot[0] + ", " + pvsSpot[1] + " to " + selectedSquare[0] + ", " + selectedSquare[1]);
+      pieceList[boardSquares[oldIndex]].changeLoc(selectedSquare[0], selectedSquare[1]);
+      boardSquares[newIndex] = boardSquares[oldIndex];
+      boardSquares[oldIndex] = 0;
+      moveSet = 0;
+      placePieces();
+    }
+  }
+
 	function findPos(obj) {
 		var curleft = curtop = 0;
 		if (obj.offsetParent) {
@@ -549,8 +597,8 @@
 
     function webGLStart() {
         var canvas = document.getElementById("gameScreen");
-		canvas.addEventListener("click", handleClick);
-		//canvas.onclick = handleClick;
+    		canvas.addEventListener("click", handleClick);
+    		//canvas.onclick = handleClick;
         initGL(canvas);
         initShaders()
         initBuffers();
@@ -563,7 +611,7 @@
 
         tick();
     }
-	
+
 	function addDiv(id, useClassName, target) {
 		var trg;
 		if (typeof(target) == "string") trg = document.getElementById(target);
@@ -575,41 +623,49 @@
 		trg.appendChild(newDiv);
 		return newDiv;
 	}
-	
+
 	var flipBoard = -1;
 	function init() {
 		webGLStart();
 		loadPieces();
 		for (var i=1; i<=40; i++) {
-			thisPiece = addDiv("piece_"+i, "pieceBox", "rightPane");
+			thisPiece = addDiv("piece_"+i, "pieceStyle_0", "rightPane");
 			thisPiece.pieceID = i;
 			thisPiece.addEventListener("click", selectPiece);
 		}
-		console.log(thisPiece);		
-	
+		//console.log(thisPiece);
+
 		offset = 0;
 		if (playerSide == 2) {
 			offset = 60;
 			flipBoard = 1;}
 		for (i=0; i<40; i++) {
 			boardSquares[i+offset] = 0;
-		}		
+		}
+
+  document.getElementById("startButton").addEventListener("click", startGame);
 	}
-	
+
+  var gameStatus = 0;
+  function startGame() {
+    console.log("start Game");
+    gameStatus = 1;
+  }
+
 	function loadPieces() {
 		rankList = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 11, 11, 11, 11, 11, 11, 12];
 		var count = 0;
 		for (side=1; side<3; side++) {
-			console.log("Make " + rankList.length + " piece for side "+ side);
+			//console.log("Make " + rankList.length + " piece for side "+ side);
 			for (rank=0; rank<rankList.length; rank++) {
 				//console.log("make " + count + ", " + rankList[rank] + ", " + side);
 				pieceList.push(new piece(count, rankList[rank], side));
 				count++;
 			}
 		}
-	console.log(pieceList);
+	//console.log(pieceList);
 	}
-	
+
 	function selectPiece() {
 		console.log(this);
 		squareID = selectedSquare[0] + selectedSquare[1]*10;
@@ -619,12 +675,12 @@
 			pieceList[this.pieceID].changeLoc(selectedSquare[0], selectedSquare[1]);
 			pieceList[this.pieceID].newStatus(1);
 			placePieces();
-		} 
+		}
 		else if (boardSquares[squareID] < 99) {
 			// Remove the existing unit
 			pieceList[boardSquares[squareID]].changeLoc(0, 0);
-			pieceList[boardSquares[squareID]].newStatus(0);			
-			
+			pieceList[boardSquares[squareID]].newStatus(0);
+
 			// Add the new unit
 			boardSquares[squareID] = this.pieceID;
 			pieceList[this.pieceID].changeLoc(selectedSquare[0], selectedSquare[1]);
@@ -633,9 +689,9 @@
 		}
 		else {
 			console.log("invalid location");
-		}		
+		}
 	}
-	
+
 	class piece {
 		constructor (id,rank, side) {
 		this.pieceID = id;
@@ -643,37 +699,42 @@
 		this.position = [0,0];
 		this.status = 0; // 0 = not set, 1 = in play, 2 = dead;
 		}
-		
+
 		changeLoc(x, y) {
 			this.position = [x, y];
 			console.log("Set piece " + this.pieceID + " to location " + this.position);
 		}
-		
+
 		newStatus(val) {
 			this.status = val;
 			document.getElementById("piece_"+this.pieceID).className = "pieceStyle_"+val;
-			console.log("Change piece " + this.pieceID + " status to " + this.status);
+			//console.log("Change piece " + this.pieceID + " status to " + this.status);
 		}
 	}
-	
+
 	var drawPieceCount = 0;
 	function placePieces() {
 		var locList = [];
+    var skinList = [];
 		for (var i=0; i<pieceList.length; i++) {
 			if (pieceList[i].status == 1) {
-				console.log(pieceList[i].pieceID + " has status of " + pieceList[i].status);
+				//console.log(pieceList[i].pieceID + " has status of " + pieceList[i].status + " and rank of " + pieceList[i].pieceRank);
 				locList.push(pieceList[i].position[0]-5, pieceList[i].position[1]-5);
+        skinList.push(pieceList[i].pieceRank, pieceList[i].pieceRank);
 				}
 		}
-	
+
 	gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(locList), gl.STATIC_DRAW);
-	
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(locList), gl.STATIC_DRAW);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, pieceSkins);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(skinList), gl.STATIC_DRAW);
+
 	drawPieceCount = locList.length/2;
-	console.log("draw " + drawPieceCount);
+	//console.log("draw " + drawPieceCount);
 	console.log(locList);
 	}
-		
+
 	var pieceList = new Array;
 	var boardSquares = Array(100).fill(99);
 	var playerSide = 2;
@@ -704,6 +765,7 @@
 	border: 1px solid red;
 	position:relative;
 	float:left;
+  background:#AAAAAA;
 }
 
 .pieceStyle_1 {
@@ -712,12 +774,13 @@
 	border: 1px solid green;
 	position:relative;
 	float:left;
+  background:#FFFFFF;
 }
 
-pieceStyle_1 {
+.pieceStyle_2 {
 	width:75;
 	height:75;
-	border: 1px solid red;
+	border: 1px solid purple;
 	position:relative;
 	float:left;
 }
@@ -727,8 +790,9 @@ pieceStyle_1 {
 
 
 <body>
-    <canvas id="gameScreen" style="border: none;" width="500" height="500"></canvas>
-	<div id="rightPane" class="infoPane"></div>
+    <canvas id="gameScreen" style="border: none;" width="1000" height="600"></canvas>
+	   <div id="rightPane" class="infoPane"></div>
+     <div id="startButton">Start Game</div>
     <br/>
 </body>
 
