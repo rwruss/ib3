@@ -11,7 +11,8 @@ loadGame = function () {
 	websocket.onopen = function(ev) { // connection is open
 		document.getElementById("message_box").innerHTML += "<div class=\"system_msg\">Connected!</div>"; //notify user
 		var msg = {type: "newGame", player1: 1, player2: 2};
-		websocket.send(JSON.stringify(msg));
+		//websocket.send(JSON.stringify(msg));
+		sendToSocket(msg);
 	}
 
 	document.getElementById("send-btn").addEventListener("click", function(){ //use clicks message send button
@@ -37,7 +38,8 @@ loadGame = function () {
 		};
 		//convert and send data to server
 		console.log("Send " + msg);
-		websocket.send(JSON.stringify(msg));
+		//websocket.send(JSON.stringify(msg));
+		sendToSocket(msg);
 	});
 
 	//#### Message received from server?
@@ -45,12 +47,13 @@ loadGame = function () {
 		console.log(ev.data);
 		var msg = JSON.parse(ev.data); //PHP sends Json data
 		var type = msg.type; //message type
-		var umsg = msg.message; //message text
-		var uname = msg.name; //user name
-		var ucolor = msg.color; //color
+		var 
 
 		switch (type) {
 		case 'usermsg':
+			var umsg = msg.message; //message text
+			var uname = msg.name; //user name
+			var ucolor = msg.color; //color
 			document.getElementById("message_box").innerHTML += "<div><span class=\"user_name\" style=\"color:#"+ucolor+"\">"+uname+"</span> : <span class=\"user_message\">"+umsg+"</span></div>";
 			break;
 		case 'system':
@@ -70,4 +73,9 @@ loadGame = function () {
 
 	websocket.onerror	= function(ev){document.getElementById("message_box").innerHTML += "<div class=\"system_error\">Error Occurred - "+ev.data+"</div>";};
 	websocket.onclose 	= function(ev){document.getElementById("message_box").innerHTML += "<div class=\"system_msg\">Connection Closed</div>";};
+}
+
+sendToSocket = function(msg) {
+	msg.['gameInf'] = 1234;
+	websocket.send(JSON.stringify(msg));
 }

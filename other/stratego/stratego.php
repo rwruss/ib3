@@ -54,35 +54,43 @@ while (true) {
 			echo "Received message: ".$buf.'<br>';
 			$received_text = unmask($buf); //unmask data
 			$tst_msg = json_decode($received_text); //json decode
+			
+			
 			if ($tst_msg != NULL) {
-				switch ($tst_msg->type) {
-					case "message" :
-						$user_name = $tst_msg->name; //sender name
-						$user_message = $tst_msg->message; //message text
-						$user_color = $tst_msg->color; //color
+				
+				// Verify user credintials
+				if (isset($userChecks[$tst_msg->playerID]) {
+					if ($tst_msg->gameInf == $userChecks[$tst_msg->playerID]) {
+				
+					switch ($tst_msg->type) {
+						case "message" :
+							$user_name = $tst_msg->name; //sender name
+							$user_message = $tst_msg->message; //message text
+							$user_color = $tst_msg->color; //color
 
-						//prepare data to be sent to client
-						$response_text = mask(json_encode(array('type'=>'usermsg', 'name'=>$user_name, 'message'=>$user_message, 'color'=>$user_color)));
+							//prepare data to be sent to client
+							$response_text = mask(json_encode(array('type'=>'usermsg', 'name'=>$user_name, 'message'=>$user_message, 'color'=>$user_color)));
+							send_message($response_text); //send data
+							echo "Send message ".$response_text."<br>";
+							break 3; //exist this loop
+
+						case "move":
+							makeMove($tst_msg->gameID, $tst_msg->oldSpot, $tst_msg->newSpot);
+							echo "process a move\n";
+							break;
+
+						case "start":
+						startGame($tst_msg);
+						$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'console.log("recveive a script message")', 'color'=>'')));
 						send_message($response_text); //send data
-						echo "Send message ".$response_text."<br>";
-						break 3; //exist this loop
-
-					case "move":
-						makeMove($tst_msg->gameID, $tst_msg->oldSpot, $tst_msg->newSpot);
-						echo "process a move\n";
 						break;
 
-					case "start":
-					startGame($tst_msg);
-					$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'console.log("recveive a script message")', 'color'=>'')));
-					send_message($response_text); //send data
-					break;
-
-					case "newGame":
-					createGame($tst_msg->player1, $tst_msg->player2);
-					break;
-				}
-			}
+						case "newGame":
+						createGame($tst_msg->player1, $tst_msg->player2);
+						break;
+					}
+				} else echo "invalid user";
+			} else echo "invalid message";
 		}
 
 		$buf = @socket_read($changed_socket, 1024, PHP_NORMAL_READ);

@@ -639,7 +639,8 @@ echo '
     gameID: gameID,
 		oldSpot: oldIndex,
 		newSpot: newIndex};
-	  websocket.send(JSON.stringify(msg));
+	  //websocket.send(JSON.stringify(msg));
+	  sendToSocket(msg);
 
 	  showMove();
     }
@@ -765,7 +766,8 @@ echo '
     gameID: gameID,
     startSide: sideToStart,
     startSpots: locList};
-    websocket.send(JSON.stringify(msg));
+    //websocket.send(JSON.stringify(msg));
+	sendToSocket(msg);
   }
 
 }
