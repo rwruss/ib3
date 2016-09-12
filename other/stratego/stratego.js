@@ -1,14 +1,21 @@
+ncode_general = function(data) {
+	eval(data);
+	}
+
 loadGame = function () {
-	
+
 	//create a new WebSocket object.
 	var wsUri = "ws://localhost:9000/demo/stratego.php";
 	websocket = new WebSocket(wsUri);
 
 	websocket.onopen = function(ev) { // connection is open
 		document.getElementById("message_box").innerHTML += "<div class=\"system_msg\">Connected!</div>"; //notify user
+		var msg = {type: "newGame", player1: 1, player2: 2};
+		websocket.send(JSON.stringify(msg));
 	}
 
-	document.getElementById("send-btn").click(function(){ //use clicks message send button
+	document.getElementById("send-btn").addEventListener("click", function(){ //use clicks message send button
+		console.log("click send");
 		var mymessage = document.getElementById("message").value; //get message text
 		var myname = document.getElementById("name").value; //get user name
 
@@ -23,11 +30,13 @@ loadGame = function () {
 
 		//prepare json data
 		var msg = {
+		type: "message",
 		message: mymessage,
 		name: myname,
 		color : '<?php echo $colours[$user_colour]; ?>'
 		};
 		//convert and send data to server
+		console.log("Send " + msg);
 		websocket.send(JSON.stringify(msg));
 	});
 
@@ -40,16 +49,20 @@ loadGame = function () {
 		var uname = msg.name; //user name
 		var ucolor = msg.color; //color
 
-		if(type == 'usermsg')
-		{
+		switch (type) {
+		case 'usermsg':
 			document.getElementById("message_box").innerHTML += "<div><span class=\"user_name\" style=\"color:#"+ucolor+"\">"+uname+"</span> : <span class=\"user_message\">"+umsg+"</span></div>";
-		}
-		if(type == 'system')
-		{
+			break;
+		case 'system':
 			document.getElementById("message_box").innerHTML += "<div class=\"system_msg\">"+umsg+"</div>";
-		}
-		if(type == 'gameMove') {
-			
+			break;
+
+		case 'gameMove':
+			break;
+
+		case 'script':
+			ncode_general(umsg);
+			break;
 		}
 
 		document.getElementById("message").value = ""; //reset text

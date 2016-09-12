@@ -1,4 +1,8 @@
+<?php
 
+session_start();
+$_SESSION['playerID'] = 1;
+echo '
 <html>
 
 <head>
@@ -632,6 +636,7 @@
       // check that the move is valid by sending it to the server
 	  var msg = {
     type: "move",
+    gameID: gameID,
 		oldSpot: oldIndex,
 		newSpot: newIndex};
 	  websocket.send(JSON.stringify(msg));
@@ -943,7 +948,7 @@
 	background: #CCCCCC;
 	border: 1px solid #999999;
 	padding: 10px;
-	font: 12px 'lucida grande',tahoma,verdana,arial,sans-serif;
+	font: 12px "lucida grande",tahoma,verdana,arial,sans-serif;
   position:absolute;
   top:505;
   left:200;
@@ -983,4 +988,6 @@
     <br/>
 </body>
 
-</html>
+</html>';
+
+?>
