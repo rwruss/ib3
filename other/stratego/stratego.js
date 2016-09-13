@@ -47,7 +47,6 @@ loadGame = function () {
 		console.log(ev.data);
 		var msg = JSON.parse(ev.data); //PHP sends Json data
 		var type = msg.type; //message type
-		var 
 
 		switch (type) {
 		case 'usermsg':
@@ -64,7 +63,8 @@ loadGame = function () {
 			break;
 
 		case 'script':
-			ncode_general(umsg);
+			console.log("run script message " + msg.message)
+			ncode_general(msg.message);
 			break;
 		}
 
@@ -76,6 +76,7 @@ loadGame = function () {
 }
 
 sendToSocket = function(msg) {
-	msg.['gameInf'] = 1234;
+	msg['gameInf'] = 1234;
+	msg['playerID'] = 1;
 	websocket.send(JSON.stringify(msg));
 }
