@@ -112,7 +112,7 @@ function handleMessage($tst_msg) {
 			break; //exist this loop
 
 		case "move":
-			makeMove($tst_msg->gameID, $tst_msg->oldSpot, $tst_msg->newSpot);
+			makeMove($tst_msg->gameID, $tst_msg->playerID, $tst_msg->oldSpot, $tst_msg->newSpot);
 			echo "process a move\n";
 			break;
 
@@ -224,9 +224,9 @@ function startGame($msg) {
 	$gameList[$msg->gameID]->loadSide($msg->startSpots, $msg->startSide);
 }
 
-function makeMove($gameID, $from, $to) {
+function makeMove($gameID, $playerNum, $from, $to) {
 	global $gameList;
-	$gameList[$gameID]->movePiece($from, $to);
+	$gameList[$gameID]->movePiece($playerNum, $from, $to);
 }
 
 class game {
@@ -237,6 +237,7 @@ class game {
 		$this->playerStatus = [0, 0, 0];
 		$this->boardSpots = array_fill(0,100,0);
 		$this->turn = 1;
+		$this->opponentSwitch = [0, 2, 1];
 		echo "New game created (".$id.")\n";
 	}
 }
@@ -260,11 +261,24 @@ class game {
 		}
 	}
 
-	function movePiece($from, $to) {
+	function movePiece($playerNum, $from, $to) {
 		// Verify player controls the piece
-		echo "Player ".$_SESSION['playerID']." making a move\n";
-		echo "Session vars\n";
-		print_r($_SESSION);
+		echo "Player ".$playerNum." making a move\n";
+		
+		$fromIndex = $from[0] + $from[1]*10;
+		$toIndex = $to[0] + $to[1]*10;
+		
+		var $movedPiece = $this->boardSpots[$fromIndex];
+		var $trgPiece = $this->boardSpots[$toIndex];
+		if (floor($movedPiece/40)+1 == $playerNum) {
+			// Check target location to see if it is a valid move
+			if (abs($from[0]-$to[0])+abs($from[1]-$to[1]) == 1) {
+				// This is a valid one space move -> now verify that it is a move to able spot
+				$spotCheck = loor($trgPiece/40)+1;
+				
+			}
+		}
+		
 	}
 
 ?>
