@@ -21,6 +21,10 @@ socket_listen($socket);
 //create & add listning socket to the list
 $clients = array($socket);
 
+// Load player auth File
+$pFile = fopen("players.auth", "r");
+$userChecks = array();
+
 //start endless loop, so that our script doesn't stop
 while (true) {
 	//manage multipal connections
@@ -54,44 +58,28 @@ while (true) {
 			echo "Received message: ".$buf.'<br>';
 			$received_text = unmask($buf); //unmask data
 			$tst_msg = json_decode($received_text); //json decode
-			
-			
+
+			print_r($tst_msg);
+			echo "\n";
 			if ($tst_msg != NULL) {
-				
 				// Verify user credintials
-				if (isset($userChecks[$tst_msg->playerID]) {
+				if (isset($tst_msg->playerID) && isset($tst_msg->gameInf)) {
+					if (isset($userChecks[$tst_msg->playerID])) {
+						if ($tst_msg->gameInf == $userChecks[$tst_msg->playerID]) {
+							handleMessage($tst_msg);
+					} else echo "invalid user: ".$tst_msg->gameInf. " vs ".$userChecks[$tst_msg->playerID]."\n";
+				} else {
+					// Need to load the player key to see if they are authorized
+					fseek($pFile, $tst_msg->playerID*32);
+					$userChecks[$tst_msg->playerID] = fread($pFile, 32);
+
 					if ($tst_msg->gameInf == $userChecks[$tst_msg->playerID]) {
-				
-					switch ($tst_msg->type) {
-						case "message" :
-							$user_name = $tst_msg->name; //sender name
-							$user_message = $tst_msg->message; //message text
-							$user_color = $tst_msg->color; //color
-
-							//prepare data to be sent to client
-							$response_text = mask(json_encode(array('type'=>'usermsg', 'name'=>$user_name, 'message'=>$user_message, 'color'=>$user_color)));
-							send_message($response_text); //send data
-							echo "Send message ".$response_text."<br>";
-							break 3; //exist this loop
-
-						case "move":
-							makeMove($tst_msg->gameID, $tst_msg->oldSpot, $tst_msg->newSpot);
-							echo "process a move\n";
-							break;
-
-						case "start":
-						startGame($tst_msg);
-						$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'console.log("recveive a script message")', 'color'=>'')));
-						send_message($response_text); //send data
-						break;
-
-						case "newGame":
-						createGame($tst_msg->player1, $tst_msg->player2);
-						break;
-					}
-				} else echo "invalid user";
+						handleMessage($tst_msg);
+					} else echo "invalid user: ".$tst_msg->gameInf. " vs ".$userChecks[$tst_msg->playerID]."\n";
+				}
 			} else echo "invalid message";
 		}
+	}
 
 		$buf = @socket_read($changed_socket, 1024, PHP_NORMAL_READ);
 		if ($buf === false) { // check disconnected client
@@ -108,9 +96,39 @@ while (true) {
 }
 // close the listening socket
 socket_close($socket);
+fclose($pFile);
 
-function send_message($msg)
-{
+function handleMessage($tst_msg) {
+	switch ($tst_msg->type) {
+		case "message" :
+			$user_name = $tst_msg->name; //sender name
+			$user_message = $tst_msg->message; //message text
+			$user_color = $tst_msg->color; //color
+
+			//prepare data to be sent to client
+			$response_text = mask(json_encode(array('type'=>'usermsg', 'name'=>$user_name, 'message'=>$user_message, 'color'=>$user_color)));
+			send_message($response_text); //send data
+			echo "Send message ".$response_text."<br>";
+			break; //exist this loop
+
+		case "move":
+			makeMove($tst_msg->gameID, $tst_msg->oldSpot, $tst_msg->newSpot);
+			echo "process a move\n";
+			break;
+
+		case "start":
+		startGame($tst_msg);
+		$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'console.log("recveive a script message")', 'color'=>'')));
+		send_message($response_text); //send data
+		break;
+
+		case "newGame":
+		createGame($tst_msg->player1, $tst_msg->player2);
+		break;
+	}
+}
+
+function send_message($msg) {
 	global $clients;
 	foreach($clients as $changed_socket)
 	{
@@ -143,8 +161,7 @@ function unmask($text) {
 }
 
 //Encode message for transfer to client.
-function mask($text)
-{
+function mask($text) {
 	$b1 = 0x80 | (0x1 & 0x0f);
 	$length = strlen($text);
 
@@ -158,8 +175,7 @@ function mask($text)
 }
 
 //handshake new client.
-function perform_handshaking($receved_header,$client_conn, $host, $port)
-{
+function perform_handshaking($receved_header,$client_conn, $host, $port) {
 	$headers = array();
 	$lines = preg_split("/\r\n/", $receved_header);
 	foreach($lines as $line)
@@ -221,8 +237,9 @@ class game {
 		$this->playerStatus = [0, 0, 0];
 		$this->boardSpots = array_fill(0,100,0);
 		$this->turn = 1;
-		echo "New game created\n";
+		echo "New game created (".$id.")\n";
 	}
+}
 
 	function loadSide($locList, $side) {
 		$offset = (($side-1)*80);
@@ -249,5 +266,5 @@ class game {
 		echo "Session vars\n";
 		print_r($_SESSION);
 	}
-}
+
 ?>
