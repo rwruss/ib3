@@ -14,8 +14,8 @@ $_GLOBALS['gameList'] = array();
 */
 $rankList = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 11, 11, 11, 11, 11, 11, 12, 1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 11, 11, 11, 11, 11, 11, 12];
 /*
-1 - defender dies
-2 - attacker dies
+1 - defender dies/attacker wins
+2 - attacker dies/defender wins
 3 - both die
 4 - attacker wins game
 */
@@ -90,7 +90,7 @@ while (true) {
 				if (isset($tst_msg->playerID) && isset($tst_msg->gameInf)) {
 					if (isset($userChecks[$tst_msg->playerID])) {
 						if ($tst_msg->gameInf == $userChecks[$tst_msg->playerID]) {
-							handleMessage($tst_msg);
+							handleMessage($tst_msg, $changed_socket);
 					} else echo "invalid user: ".$tst_msg->gameInf. " vs ".$userChecks[$tst_msg->playerID]."\n";
 				} else {
 					// Need to load the player key to see if they are authorized
@@ -98,7 +98,7 @@ while (true) {
 					$userChecks[$tst_msg->playerID] = fread($pFile, 32);
 
 					if ($tst_msg->gameInf == $userChecks[$tst_msg->playerID]) {
-						handleMessage($tst_msg);
+						handleMessage($tst_msg, $changed_socket);
 					} else echo "invalid user: ".$tst_msg->gameInf. " vs ".$userChecks[$tst_msg->playerID]."\n";
 				}
 			} else echo "invalid message";
@@ -122,7 +122,7 @@ while (true) {
 socket_close($socket);
 fclose($pFile);
 
-function handleMessage($tst_msg) {
+function handleMessage($tst_msg, $userSocket) {
 	switch ($tst_msg->type) {
 		case "message" :
 			$user_name = $tst_msg->name; //sender name
@@ -132,12 +132,12 @@ function handleMessage($tst_msg) {
 			//prepare data to be sent to client
 			$response_text = mask(json_encode(array('type'=>'usermsg', 'name'=>$user_name, 'message'=>$user_message, 'color'=>$user_color)));
 			send_message($response_text); //send data
-			echo "Send message ".$response_text."<br>";
+			echo "User: ".$userSocket. "Send message ".$response_text."<br>";
 			break; //exist this loop
 
 		case "move":
 			makeMove($tst_msg->gameID, $tst_msg->playerID, $tst_msg->oldSpot, $tst_msg->newSpot);
-			echo "process a move\n";
+			echo "process a move from user ".$userSocket."\n";
 			break;
 
 		case "start":
@@ -308,16 +308,62 @@ class game {
 						break;
 					case $this->opponentSwitch[$playerNum]:
 						echo "Move onto an opponents piece";
-						if ($)
+						// Review outcome of piece collision
+						$outCome = resolveCollision($attacker, $defender);
+						switch($outCome) {
+							case 1:
+								$this->kill($toIndex, $trgPiece);
+								$this->processMove($fromIndex, $toIndex, $movedPiece);
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'console.log("result 1");')));
+								break;
+								
+							case 2:
+								$this->kill($fromIndex, $movedPiece);
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'console.log("result 2");')));
+								break;
+								
+							case 3:
+								$this->kill($toIndex, $trgPiece);
+								$this->kill($fromIndex, $movedPiece);
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'console.log("result 3");')));
+								break;
+						}
 						break;
 					case 3:
 						echo "move to an empty spot\n";
+						break;
+					case 4:
+						echo "move to a closed tile\n";
 						break;
 				}
 
 			} else echo "invalid move (".($from-$to).")\n";
 		}
 	}
+	
+	function processMove($fromIndex, $toIndex, $pieceID) {
+		$this->boardSpots[$fromIndex] = 100;
+		$this->boardSpots[$toIndex] = $pieceID;
+		$this->unitLocs[$pieceID*2] = $toIndex - floor($toIndex/10);
+		$this->unitLocs[$pieceID*2+1] = floor($toIndex/10);
+	}
+	
+	function kill($index, $pieceID) {
+		$this->boardSpots[$index] = 100;
+		$this->unitLocs[$pieceID*2] = -1;
+		$this->unitLocs[$pieceID*2+1] = -1;
+	}
+}
+
+function resolveCollision($attacker, $defender) {
+	global $rankList;
+	global $results;
+	
+	$aRank = $rankList[$attacker];
+	$dRank = $rankList[$defender];
+	
+	$outCome = $results[$aRank][$dRank];
+	return $outCome;
 }
 
 ?>
