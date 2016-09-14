@@ -6,6 +6,30 @@ $host = 'localhost'; //host
 $port = '9000'; //port
 $null = NULL; //null var
 $_GLOBALS['gameList'] = array();
+/*
+1-9 is piece rank
+10 is spy
+11 is bomb
+12 is flag
+*/
+$rankList = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 11, 11, 11, 11, 11, 11, 12, 1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 11, 11, 11, 11, 11, 11, 12];
+/*
+1 - defender dies
+2 - attacker dies
+3 - both die
+4 - attacker wins game
+*/
+$results[1] = [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4];
+$results[2] = [2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4];
+$results[3] = [2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 2, 4];
+$results[4] = [2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 2, 4];
+$results[5] = [2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 2, 4];
+$results[6] = [2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 2, 4];
+$results[7] = [2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 2, 4];
+$results[8] = [2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 4];
+$results[9] = [2, 2, 2, 2, 2, 2, 2, 2, 3, 1, 2, 4];
+$results[10] = [1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 4];
+
 
 //Create TCP/IP sream socket
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -240,7 +264,7 @@ class game {
 		$this->opponentSwitch = [0, 2, 1];
 		echo "New game created (".$id.")\n";
 	}
-}
+
 
 	function loadSide($locList, $side) {
 		$offset = (($side-1)*80);
@@ -264,21 +288,36 @@ class game {
 	function movePiece($playerNum, $from, $to) {
 		// Verify player controls the piece
 		echo "Player ".$playerNum." making a move\n";
-		
+		print_r($from);
+		print_r($to);
+
 		$fromIndex = $from[0] + $from[1]*10;
 		$toIndex = $to[0] + $to[1]*10;
-		
-		var $movedPiece = $this->boardSpots[$fromIndex];
-		var $trgPiece = $this->boardSpots[$toIndex];
+
+		$movedPiece = $this->boardSpots[$fromIndex];
+		$trgPiece = $this->boardSpots[$toIndex];
 		if (floor($movedPiece/40)+1 == $playerNum) {
 			// Check target location to see if it is a valid move
-			if (abs($from[0]-$to[0])+abs($from[1]-$to[1]) == 1) {
+			if (abs($from-$to)==10 || abs($from-$to) == 1) {
 				// This is a valid one space move -> now verify that it is a move to able spot
-				$spotCheck = loor($trgPiece/40)+1;
-				
-			}
+				echo "valid move\n";
+				$spotCheck = floor($trgPiece/40)+1;
+				switch($spotCheck) {
+					case $playerNum:
+						echo "Can't move onto your own piece";
+						break;
+					case $this->opponentSwitch[$playerNum]:
+						echo "Move onto an opponents piece";
+						if ($)
+						break;
+					case 3:
+						echo "move to an empty spot\n";
+						break;
+				}
+
+			} else echo "invalid move (".($from-$to).")\n";
 		}
-		
 	}
+}
 
 ?>
