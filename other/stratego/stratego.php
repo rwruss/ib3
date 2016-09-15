@@ -295,6 +295,7 @@ class game {
 
 		$movedPiece = $this->boardSpots[$from];
 		$trgPiece = $this->boardSpots[$to];
+		
 		if (floor($movedPiece/40)+1 == $playerNum) {
 			// Check target location to see if it is a valid move
 			if (abs($from-$to)==10 || abs($from-$to) == 1) {
@@ -313,18 +314,18 @@ class game {
 							case 1:
 								$this->kill($toIndex, $trgPiece);
 								$this->processMove($from, $to, $movedPiece);
-								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'console.log("result 1");')));
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$toIndex.');showMove();')));
 								break;
 
 							case 2:
 								$this->kill($fromIndex, $movedPiece);
-								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'console.log("result 2");')));
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$fromIndex.');showMove();')));
 								break;
 
 							case 3:
 								$this->kill($toIndex, $trgPiece);
 								$this->kill($fromIndex, $movedPiece);
-								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'console.log("result 3");')));
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$toIndex.');killPiece('.$fromIndex.');sync('.implode(",", $this->unitLocs).');showMove();')));
 								break;
 						}
 						break;
@@ -339,19 +340,19 @@ class game {
 			} else echo "invalid move (".($from-$to).")\n";
 		}
 	}
-
+	function kill($index, $pieceID) {
+		$this->boardSpots[$index] = 100;
+		$this->unitLocs[$pieceID*2] = -1;
+		$this->unitLocs[$pieceID*2+1] = -1;
+	}
+	
 	function processMove($fromIndex, $toIndex, $pieceID) {
 		$this->boardSpots[$fromIndex] = 100;
 		$this->boardSpots[$toIndex] = $pieceID;
 		$this->unitLocs[$pieceID*2] = $toIndex - floor($toIndex/10);
 		$this->unitLocs[$pieceID*2+1] = floor($toIndex/10);
 	}
-
-	function kill($index, $pieceID) {
-		$this->boardSpots[$index] = 100;
-		$this->unitLocs[$pieceID*2] = -1;
-		$this->unitLocs[$pieceID*2+1] = -1;
-	}
+	
 }
 
 function resolveCollision($attacker, $defender) {

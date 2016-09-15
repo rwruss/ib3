@@ -625,7 +625,7 @@ echo '
 
   function makeMove() {
     console.log("Previous is " + pvsSpot);
-
+	
     // check for friendly units at the locRough
     var newIndex = selectedSquare[0] + selectedSquare[1]*10;
     var oldIndex = pvsSpot[0] + pvsSpot[1]*10;
@@ -642,17 +642,26 @@ echo '
 	  //websocket.send(JSON.stringify(msg));
 	  sendToSocket(msg);
 
-	  showMove();
+	  //showMove();
     }
+  }
+  
+  function sync(locs) {
+	  for (var i=0; i<40; i++) {
+		  pieceList[i].changeLoc(locs[2*i], locs[2*i+1]);
+		  boardSquares[locs[2*i]+locs[2*i+1]*10] = i;
+	  }
   }
 
   function showMove() {
 	var newIndex = selectedSquare[0] + selectedSquare[1]*10;
     var oldIndex = pvsSpot[0] + pvsSpot[1]*10;
 	console.log("Move piece " + boardSquares[oldIndex] + " from " + pvsSpot[0] + ", " + pvsSpot[1] + " to " + selectedSquare[0] + ", " + selectedSquare[1]);
-	pieceList[boardSquares[oldIndex]].changeLoc(selectedSquare[0], selectedSquare[1]);
-	boardSquares[newIndex] = boardSquares[oldIndex];
-	boardSquares[oldIndex] = 99;
+	if (pieceList[boardSquares[oldIndex]].status == 1) {
+		pieceList[boardSquares[oldIndex]].changeLoc(selectedSquare[0], selectedSquare[1]);
+		boardSquares[newIndex] = boardSquares[oldIndex];
+	}
+	boardSquares[oldIndex] = 100;
 	moveSet = 0;
 	placePieces();
   }
@@ -792,13 +801,15 @@ echo '
 		squareID = selectedSquare[0] + selectedSquare[1]*10;
 
 		if (gameStatus == 0) {
-			if (boardSquares[squareID] == 0) {
+			if (boardSquares[squareID] == 100) {
+				// Place the piece in an empty tile
 				boardSquares[squareID] = this.pieceID;
 				pieceList[this.pieceID].changeLoc(selectedSquare[0], selectedSquare[1]);
 				pieceList[this.pieceID].newStatus(1);
 				placePieces();
 			}
-			else if (boardSquares[squareID] < 99) {
+			else if (boardSquares[squareID] < 80) {
+				// Swithc pieces already placed on a tile
 				// Remove the existing unit
 				pieceList[boardSquares[squareID]].changeLoc(0, 0);
 				pieceList[boardSquares[squareID]].newStatus(0);
@@ -837,6 +848,12 @@ echo '
 	}
 
 	var drawPieceCount = 0;
+	function killPiece(tileID) {
+		var trg = boardSquares[tileID];
+		boardSquares[tileID]= 100;
+		pieceList[trg].newStatus(2);
+	}
+	
 	function placePieces() {
 		var locList = [];
 		var skinList = [];
@@ -895,7 +912,7 @@ echo '
 	}
 
 	var pieceList = new Array;
-	var boardSquares = Array(100).fill(99);
+	var boardSquares = Array(100).fill(100);
 	var playerSide = 2;
   var gameID = 0;
 	window.addEventListener("load", init);
@@ -942,6 +959,7 @@ echo '
 	height:75;
 	border: 1px solid purple;
 	position:relative;
+	background:#000000;
 	float:left;
 }
 
