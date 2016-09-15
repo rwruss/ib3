@@ -751,6 +751,7 @@ echo '
     var offset = (sideToStart-1)*40;
     var locList = [];
     var gameReady = true;
+
     for (var i=0; i<40; i++) {
       //console.log(pieceList[i+offset].status);
       if (pieceList[i+offset].status ==1) {
@@ -767,8 +768,9 @@ echo '
     startSide: sideToStart,
     startSpots: locList};
     //websocket.send(JSON.stringify(msg));
-	sendToSocket(msg);
-  }
+    //console.log("start message prepared")
+	   sendToSocket(msg);
+  } else console.log("Start not sent");
 
 }
 

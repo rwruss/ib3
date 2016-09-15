@@ -78,5 +78,6 @@ loadGame = function () {
 sendToSocket = function(msg) {
 	msg['gameInf'] = 1234;
 	msg['playerID'] = 1;
+	console.log("SEND " + JSON.stringify(msg));
 	websocket.send(JSON.stringify(msg));
 }

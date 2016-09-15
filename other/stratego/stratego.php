@@ -101,7 +101,7 @@ while (true) {
 						handleMessage($tst_msg, $changed_socket);
 					} else echo "invalid user: ".$tst_msg->gameInf. " vs ".$userChecks[$tst_msg->playerID]."\n";
 				}
-			} else echo "invalid message";
+			} else echo "invalid message 104 ".$tst_msg->playerID." and ".$tst_msg->gameInf."\n";
 		}
 	}
 
@@ -259,7 +259,7 @@ class game {
 		$this->unitLocs = array_fill(0, 160, 0);
 		$this->unitStatus = array_fill(0, 80, 1);
 		$this->playerStatus = [0, 0, 0];
-		$this->boardSpots = array_fill(0,100,0);
+		$this->boardSpots = array_fill(0,100,81);
 		$this->turn = 1;
 		$this->opponentSwitch = [0, 2, 1];
 		echo "New game created (".$id.")\n";
@@ -287,15 +287,14 @@ class game {
 
 	function movePiece($playerNum, $from, $to) {
 		// Verify player controls the piece
-		echo "Player ".$playerNum." making a move\n";
-		print_r($from);
-		print_r($to);
+		echo "Player ".$playerNum." making a move ".$from." --> ".$to."\n";
+		print_r($this->boardSpots);
 
 		$fromIndex = $from[0] + $from[1]*10;
 		$toIndex = $to[0] + $to[1]*10;
 
-		$movedPiece = $this->boardSpots[$fromIndex];
-		$trgPiece = $this->boardSpots[$toIndex];
+		$movedPiece = $this->boardSpots[$from];
+		$trgPiece = $this->boardSpots[$to];
 		if (floor($movedPiece/40)+1 == $playerNum) {
 			// Check target location to see if it is a valid move
 			if (abs($from-$to)==10 || abs($from-$to) == 1) {
@@ -304,24 +303,24 @@ class game {
 				$spotCheck = floor($trgPiece/40)+1;
 				switch($spotCheck) {
 					case $playerNum:
-						echo "Can't move onto your own piece";
+						echo "Can't move onto your own piece(".$movedPiece." vs ".$trgPiece.")\n";
 						break;
 					case $this->opponentSwitch[$playerNum]:
-						echo "Move onto an opponents piece";
+						echo "Move onto an opponents piece (".$trgPiece." vs ".$this->opponentSwitch[$playerNum].")\n";
 						// Review outcome of piece collision
 						$outCome = resolveCollision($attacker, $defender);
 						switch($outCome) {
 							case 1:
 								$this->kill($toIndex, $trgPiece);
-								$this->processMove($fromIndex, $toIndex, $movedPiece);
+								$this->processMove($from, $to, $movedPiece);
 								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'console.log("result 1");')));
 								break;
-								
+
 							case 2:
 								$this->kill($fromIndex, $movedPiece);
 								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'console.log("result 2");')));
 								break;
-								
+
 							case 3:
 								$this->kill($toIndex, $trgPiece);
 								$this->kill($fromIndex, $movedPiece);
@@ -340,14 +339,14 @@ class game {
 			} else echo "invalid move (".($from-$to).")\n";
 		}
 	}
-	
+
 	function processMove($fromIndex, $toIndex, $pieceID) {
 		$this->boardSpots[$fromIndex] = 100;
 		$this->boardSpots[$toIndex] = $pieceID;
 		$this->unitLocs[$pieceID*2] = $toIndex - floor($toIndex/10);
 		$this->unitLocs[$pieceID*2+1] = floor($toIndex/10);
 	}
-	
+
 	function kill($index, $pieceID) {
 		$this->boardSpots[$index] = 100;
 		$this->unitLocs[$pieceID*2] = -1;
@@ -358,10 +357,10 @@ class game {
 function resolveCollision($attacker, $defender) {
 	global $rankList;
 	global $results;
-	
+
 	$aRank = $rankList[$attacker];
 	$dRank = $rankList[$defender];
-	
+
 	$outCome = $results[$aRank][$dRank];
 	return $outCome;
 }
