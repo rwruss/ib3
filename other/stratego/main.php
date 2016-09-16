@@ -2,6 +2,8 @@
 
 session_start();
 $_SESSION['playerID'] = 1;
+if (isset($_GET['side'])) $playerSide = $_GET['side'];
+else $playerSide = 1;
 echo '
 <html>
 
@@ -625,7 +627,7 @@ echo '
 
   function makeMove() {
     console.log("Previous is " + pvsSpot);
-	
+
     // check for friendly units at the locRough
     var newIndex = selectedSquare[0] + selectedSquare[1]*10;
     var oldIndex = pvsSpot[0] + pvsSpot[1]*10;
@@ -645,7 +647,7 @@ echo '
 	  //showMove();
     }
   }
-  
+
   function sync(locs) {
 	  for (var i=0; i<40; i++) {
 		  pieceList[i].changeLoc(locs[2*i], locs[2*i+1]);
@@ -853,7 +855,7 @@ echo '
 		boardSquares[tileID]= 100;
 		pieceList[trg].newStatus(2);
 	}
-	
+
 	function placePieces() {
 		var locList = [];
 		var skinList = [];
@@ -882,7 +884,6 @@ echo '
 	}
 
 	function importSetup(playerNum) {
-		//console.log("set up player " + playerNum);
 		var pieceOffset = 0;
 		var boardOffset = 0;
 		if (playerNum == 2) {
@@ -913,7 +914,7 @@ echo '
 
 	var pieceList = new Array;
 	var boardSquares = Array(100).fill(100);
-	var playerSide = 2;
+	var playerSide = '.$playerSide.';
   var gameID = 0;
 	window.addEventListener("load", init);
 </script>

@@ -56,7 +56,8 @@ loadGame = function () {
 			document.getElementById("message_box").innerHTML += "<div><span class=\"user_name\" style=\"color:#"+ucolor+"\">"+uname+"</span> : <span class=\"user_message\">"+umsg+"</span></div>";
 			break;
 		case 'system':
-			document.getElementById("message_box").innerHTML += "<div class=\"system_msg\">"+umsg+"</div>";
+			console.log("System message " + msg.message);
+			document.getElementById("message_box").innerHTML += "<div class=\"system_msg\">"+msg.message+"</div>";
 			break;
 
 		case 'gameMove':

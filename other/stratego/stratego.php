@@ -54,10 +54,12 @@ while (true) {
 	//manage multipal connections
 	$changed = $clients;
 	//returns the socket resources in $changed array
-	socket_select($changed, $null, $null, 0, 10);
+	socket_select($changed, $null, $null, 0, 2);
+	//print_r($changed);
 
 	//check for new socket
 	if (in_array($socket, $changed)) {
+		echo "New socket found\n";
 		$socket_new = socket_accept($socket); //accpet new socket
 		$clients[] = $socket_new; //add socket to client array
 
@@ -75,16 +77,15 @@ while (true) {
 
 	//loop through all connected sockets
 	foreach ($changed as $changed_socket) {
-
+		echo "changed socket ".$changed_socket."\n";
 		//check for any incomming data
-		while(socket_recv($changed_socket, $buf, 1024, 0) >= 1)
-		{
+		while(socket_recv($changed_socket, $buf, 1024, 0) >= 1) {
 			echo "Received message: ".$buf.'<br>';
 			$received_text = unmask($buf); //unmask data
 			$tst_msg = json_decode($received_text); //json decode
 
-			print_r($tst_msg);
-			echo "\n";
+			//print_r($tst_msg);
+			//echo "\n";
 			if ($tst_msg != NULL) {
 				// Verify user credintials
 				if (isset($tst_msg->playerID) && isset($tst_msg->gameInf)) {
@@ -103,8 +104,10 @@ while (true) {
 				}
 			} else echo "invalid message 104 ".$tst_msg->playerID." and ".$tst_msg->gameInf."\n";
 		}
+		echo "RECEIPT DONE\n";
+		break 2;
 	}
-
+	echo "Check some kind of buffer or smthing\n";
 		$buf = @socket_read($changed_socket, 1024, PHP_NORMAL_READ);
 		if ($buf === false) { // check disconnected client
 			// remove client for $clients array
@@ -116,9 +119,11 @@ while (true) {
 			$response = mask(json_encode(array('type'=>'system', 'message'=>$ip.' disconnected')));
 			send_message($response);
 		}
+	echo "Done with ".$changed_socket."\n";
 	}
 }
 // close the listening socket
+echo "PROGRAM END";
 socket_close($socket);
 fclose($pFile);
 
@@ -280,7 +285,7 @@ class game {
 		// Check if both players are ready and send a start message
 		if ($this->playerStatus[1] ==1 && $this->playerStatus[2] == 1) {
 			echo "Both sides loaded - start the game!\n";
-			$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'gameStatus=1;', 'color'=>'')));
+			$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'gameStatus=1;sync('.implode(",", $this->unitLocs).');showMove();', 'color'=>'')));
 			send_message($response_text); //send data
 		}
 	}
@@ -288,14 +293,14 @@ class game {
 	function movePiece($playerNum, $from, $to) {
 		// Verify player controls the piece
 		echo "Player ".$playerNum." making a move ".$from." --> ".$to."\n";
-		print_r($this->boardSpots);
+		//print_r($this->boardSpots);
 
 		$fromIndex = $from[0] + $from[1]*10;
 		$toIndex = $to[0] + $to[1]*10;
 
 		$movedPiece = $this->boardSpots[$from];
 		$trgPiece = $this->boardSpots[$to];
-		
+
 		if (floor($movedPiece/40)+1 == $playerNum) {
 			// Check target location to see if it is a valid move
 			if (abs($from-$to)==10 || abs($from-$to) == 1) {
@@ -328,9 +333,13 @@ class game {
 								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$toIndex.');killPiece('.$fromIndex.');sync('.implode(",", $this->unitLocs).');showMove();')));
 								break;
 						}
+						send_message($response_text); //send data
 						break;
 					case 3:
 						echo "move to an empty spot\n";
+						$this->processMove($from, $to, $movedPiece);
+						$response_text = mask(json_encode(array('type'=>'script', 'message'=>'showMove();')));
+						send_message($response_text); //send data
 						break;
 					case 4:
 						echo "move to a closed tile\n";
@@ -345,14 +354,14 @@ class game {
 		$this->unitLocs[$pieceID*2] = -1;
 		$this->unitLocs[$pieceID*2+1] = -1;
 	}
-	
+
 	function processMove($fromIndex, $toIndex, $pieceID) {
 		$this->boardSpots[$fromIndex] = 100;
 		$this->boardSpots[$toIndex] = $pieceID;
 		$this->unitLocs[$pieceID*2] = $toIndex - floor($toIndex/10);
 		$this->unitLocs[$pieceID*2+1] = floor($toIndex/10);
 	}
-	
+
 }
 
 function resolveCollision($attacker, $defender) {
