@@ -18,3 +18,8 @@ WebSockets: http://socketo.me/
 WebSockets: http://stackoverflow.com/questions/11077857/what-are-long-polling-websockets-server-sent-events-sse-and-comet
 WebSockets: http://www.phpbuilder.com/articles/application-architecture/optimization/creating-real-time-applications-with-php-and-websockets.html
 WebSockets: https://www.sanwebe.com/2013/05/chat-using-websocket-php-socket
+
+Server Set up:
+https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-14-04
+http://www.instructables.com/id/Set-up-your-very-own-Web-server/step2/Get-the-OS/
+http://howtoubuntu.org/how-to-install-lamp-on-ubuntu

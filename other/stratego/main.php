@@ -777,22 +777,31 @@ echo '
     var msg = {type: "start",
     gameID: gameID,
     startSide: sideToStart,
-    startSpots: locList};
+    startSpots: locList
+	startRanks: useRanks};
     //websocket.send(JSON.stringify(msg));
     //console.log("start message prepared")
 	   sendToSocket(msg);
   } else console.log("Start not sent");
 
 }
-
+	var useRanks;
 	function loadPieces() {
 		rankList = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 11, 11, 11, 11, 11, 11, 12];
+		useRanks = [];
+		var placeNum;
+		while (rankList.length>0) {
+			placeNum = Math.floor(Math.random()*rankList.length);
+			useRanks.push(rankList[placeNum]);
+			rankList.splice(placeNum, 1);
+		}
 		var count = 0;
 		for (side=1; side<3; side++) {
 			//console.log("Make " + rankList.length + " piece for side "+ side);
 			for (rank=0; rank<rankList.length; rank++) {
 				//console.log("make " + count + ", " + rankList[rank] + ", " + side);
-				pieceList.push(new piece(count, rankList[rank], side));
+				if (side == playerSide) pieceList.push(new piece(count, rankList[rank], side));
+				else pieceList.push(new piece(count, 0, side));
 				count++;
 			}
 		}

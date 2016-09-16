@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 $host = 'localhost'; //host
 $port = '9000'; //port
 $null = NULL; //null var
@@ -250,7 +248,7 @@ function startGame($msg) {
 	//echo $msg."\n";*/
 	global $gameList;
 	$postions = $msg->startSpots;
-	$gameList[$msg->gameID]->loadSide($msg->startSpots, $msg->startSide);
+	$gameList[$msg->gameID]->loadSide($msg->startSpots, $msg->startSide, $msg->startRanks);
 }
 
 function makeMove($gameID, $playerNum, $from, $to) {
@@ -262,6 +260,7 @@ class game {
 	public $unitLocs, $unitStatus, $playerStatus, $turn, $boardSpots;
 	function __construct($id, $player1, $player2) {
 		$this->unitLocs = array_fill(0, 160, 0);
+		$this->unitRanks = array_fill(0, 80, 0);
 		$this->unitStatus = array_fill(0, 80, 1);
 		$this->playerStatus = [0, 0, 0];
 		$this->boardSpots = array_fill(0,100,81);
@@ -271,17 +270,17 @@ class game {
 	}
 
 
-	function loadSide($locList, $side) {
+	function loadSide($locList, $side, $ranks) {
 		$offset = (($side-1)*80);
 		for ($i=0; $i<40; $i++) {
 			$boardIndex = $locList[$i*2]+$locList[$i*2+1]*10;
 			$this->unitLocs[$i*2+$offset] = $locList[$i*2];
 			$this->unitLocs[$i*2+$offset+1] = $locList[$i*2+1];
-			$this->playerStatus[$side] = 1;
+			$this->unitRanks[$i] = $ranks[$i+$offset];
 
 			$this->boardSpots[$boardIndex] = $i;
 		}
-
+		$this->playerStatus[$side] = 1;
 		// Check if both players are ready and send a start message
 		if ($this->playerStatus[1] ==1 && $this->playerStatus[2] == 1) {
 			echo "Both sides loaded - start the game!\n";
@@ -314,7 +313,7 @@ class game {
 					case $this->opponentSwitch[$playerNum]:
 						echo "Move onto an opponents piece (".$trgPiece." vs ".$this->opponentSwitch[$playerNum].")\n";
 						// Review outcome of piece collision
-						$outCome = resolveCollision($attacker, $defender);
+						$outCome = resolveCollision($attacker, $defender, $this->unitRanks);
 						switch($outCome) {
 							case 1:
 								$this->kill($toIndex, $trgPiece);
@@ -364,8 +363,7 @@ class game {
 
 }
 
-function resolveCollision($attacker, $defender) {
-	global $rankList;
+function resolveCollision($attacker, $defender, $rankLsit) {
 	global $results;
 
 	$aRank = $rankList[$attacker];
