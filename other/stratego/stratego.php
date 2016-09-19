@@ -17,16 +17,17 @@ $rankList = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8
 3 - both die
 4 - attacker wins game
 */
-$results[1] = [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4];
-$results[2] = [2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4];
-$results[3] = [2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 2, 4];
-$results[4] = [2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 2, 4];
-$results[5] = [2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 2, 4];
-$results[6] = [2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 2, 4];
-$results[7] = [2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 2, 4];
-$results[8] = [2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 4];
-$results[9] = [2, 2, 2, 2, 2, 2, 2, 2, 3, 1, 2, 4];
-$results[10] = [1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 4];
+$results[1] = [0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4];
+$results[2] = [0, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4];
+$results[3] = [0, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 2, 4];
+$results[4] = [0, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 2, 4];
+$results[5] = [0, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 2, 4];
+$results[6] = [0, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 2, 4];
+$results[7] = [0, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 2, 4];
+$results[8] = [0, 2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 4];
+$results[9] = [0, 2, 2, 2, 2, 2, 2, 2, 2, 3, 1, 2, 4];
+$results[10] = [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 4];
+$openGames = [];
 
 
 //Create TCP/IP sream socket
@@ -57,10 +58,10 @@ while (true) {
 
 	//check for new socket
 	if (in_array($socket, $changed)) {
-		echo "New socket found\n";
+
 		$socket_new = socket_accept($socket); //accpet new socket
 		$clients[] = $socket_new; //add socket to client array
-
+		echo "New socket found (".$socket_new.")\n";
 		$header = socket_read($socket_new, 1024); //read data sent by the socket
 		perform_handshaking($header, $socket_new, $host, $port); //perform websocket handshake
 
@@ -126,6 +127,7 @@ socket_close($socket);
 fclose($pFile);
 
 function handleMessage($tst_msg, $userSocket) {
+	global $openGames;
 	switch ($tst_msg->type) {
 		case "message" :
 			$user_name = $tst_msg->name; //sender name
@@ -143,14 +145,25 @@ function handleMessage($tst_msg, $userSocket) {
 			echo "process a move from user ".$userSocket."\n";
 			break;
 
-		case "start":
+		case "showOpenGames":
+			echo "Show open games:\n";
+			print_r($openGames);
+			$response_text = mask(json_encode(array('type'=>'script', 'message'=>'showGames(['.implode(",", $openGames).'])')));
+			send_message($response_text); //send data
+			break;
+
+		case "startGame":
 		startGame($tst_msg);
-		$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'console.log("recveive a script message")', 'color'=>'')));
-		send_message($response_text); //send data
+		//$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'console.log("recveive a script message")')));
+		//send_message($response_text); //send data
 		break;
 
+		case "join":
+			joinGame($tst_msg, $userSocket);
+			break;
+
 		case "newGame":
-		createGame($tst_msg->player1, $tst_msg->player2);
+		createGame($tst_msg->playerID, $userSocket);
 		break;
 	}
 }
@@ -159,6 +172,17 @@ function send_message($msg) {
 	global $clients;
 	foreach($clients as $changed_socket)
 	{
+		@socket_write($changed_socket,$msg,strlen($msg));
+	}
+	return true;
+}
+
+function send_message_group($msg, $group) {
+	global $clients;
+	echo "send to message group\n";
+	foreach($group as $changed_socket)
+	{
+		echo "send to ".$changed_socket."\n";
 		@socket_write($changed_socket,$msg,strlen($msg));
 	}
 	return true;
@@ -226,29 +250,34 @@ function perform_handshaking($receved_header,$client_conn, $host, $port) {
 	socket_write($client_conn,$upgrade,strlen($upgrade));
 }
 
-function createGame($player1, $player2) {
+function createGame($player1, $userSocket) {
 	global $gameList;
+	global $openGames;
 	$newID = sizeof($gameList)+1;
-	$gameList[$newID] = new game($newID, 1, 2);
-	$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'gameID = '.$newID, 'color'=>'')));
+	$gameList[$newID] = new game($newID, 1, $userSocket);
+	$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'gameID = '.$newID.';document.getElementById("gameID").innerHTML = "Game '.$newID.'";setSide('.$player1.', 1)', 'color'=>'')));
 	send_message($response_text); //send data
+	$openGames[] = $newID;
 }
 
 function startGame($msg) {
 	echo "\n\nSTART Player Side ".$msg->startSide." in game ".$msg->gameID."\n";
-	//print_r($msg);
-	/*
-	$offset = (($msg->startSide-1)*80);
-	$postions = $msg->startSpots;
-	for ($i=0; $i<80; $i+=2) {
-		$pieceTracking[$i+$offset] = $msg->startSpots[$i];
-		$pieceTracking[$i+$offset+1] = $msg->startSpots[$i+1];
-	}
-	//print_r($pieceTracking);
-	//echo $msg."\n";*/
 	global $gameList;
 	$postions = $msg->startSpots;
 	$gameList[$msg->gameID]->loadSide($msg->startSpots, $msg->startSide, $msg->startRanks);
+}
+
+function joinGame($msg, $userSocket) {
+	global $gameList;
+
+	if ($gameList[$msg->gameID]->players[2] == 0)	{
+		$gameList[$msg->gameID]->players[2] = $msg->playerID;
+		$gameList[$msg->gameID]->sockets[2] = $userSocket;
+		$response_text = mask(json_encode(array('type'=>'script', 'message'=>'setSide('.$msg->playerID.', 2)')));
+	} else {
+		$response_text = mask(json_encode(array('type'=>'usermsg', 'name'=>'system', 'message'=>'Game join error')));
+	}
+	send_message($response_text); //send data
 }
 
 function makeMove($gameID, $playerNum, $from, $to) {
@@ -257,8 +286,8 @@ function makeMove($gameID, $playerNum, $from, $to) {
 }
 
 class game {
-	public $unitLocs, $unitStatus, $playerStatus, $turn, $boardSpots;
-	function __construct($id, $player1, $player2) {
+	public $unitLocs, $unitStatus, $playerStatus, $turn, $boardSpots, $accessCode, $players, $sockets;
+	function __construct($id, $player1, $userSocket) {
 		$this->unitLocs = array_fill(0, 160, 0);
 		$this->unitRanks = array_fill(0, 80, 0);
 		$this->unitStatus = array_fill(0, 80, 1);
@@ -266,25 +295,37 @@ class game {
 		$this->boardSpots = array_fill(0,100,81);
 		$this->turn = 1;
 		$this->opponentSwitch = [0, 2, 1];
+		$this->sockets = [0, $userSocket, 0];
+		$this->players = [0, $player1, 0];
 		echo "New game created (".$id.")\n";
 	}
 
 
 	function loadSide($locList, $side, $ranks) {
 		$offset = (($side-1)*80);
+		$pieceOffset = $offset/2;
 		for ($i=0; $i<40; $i++) {
 			$boardIndex = $locList[$i*2]+$locList[$i*2+1]*10;
 			$this->unitLocs[$i*2+$offset] = $locList[$i*2];
 			$this->unitLocs[$i*2+$offset+1] = $locList[$i*2+1];
-			$this->unitRanks[$i] = $ranks[$i+$offset];
+			$this->unitRanks[$i+$pieceOffset] = $ranks[$i];
 
-			$this->boardSpots[$boardIndex] = $i;
+			$this->boardSpots[$boardIndex] = $i+$pieceOffset;
 		}
 		$this->playerStatus[$side] = 1;
 		// Check if both players are ready and send a start message
 		if ($this->playerStatus[1] ==1 && $this->playerStatus[2] == 1) {
 			echo "Both sides loaded - start the game!\n";
-			$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'gameStatus=1;sync('.implode(",", $this->unitLocs).');showMove();', 'color'=>'')));
+			echo "scokets:\n";
+			print_R($this->sockets);
+			$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'gameStatus=1;sync(['.implode(",", $this->unitLocs).'], ['.implode(",", $this->unitStatus).']);')));
+			send_message($response_text); //send data
+		} else {
+			echo "One side loaded!\n";
+			print_r($this->unitLocs);
+			$sideList = array_chunk($this->unitLocs, 80);
+			$statusList = array_chunk($this->unitStatus, 40);
+			$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'syncSide('.$side.', ['.implode(",", $sideList[$side-1]).'], ['.implode(",", $statusList[$side-1]).']);')));
 			send_message($response_text); //send data
 		}
 	}
@@ -294,14 +335,24 @@ class game {
 		echo "Player ".$playerNum." making a move ".$from." --> ".$to."\n";
 		//print_r($this->boardSpots);
 
-		$fromIndex = $from[0] + $from[1]*10;
-		$toIndex = $to[0] + $to[1]*10;
+
+		//$toIndex = $to[0] + $to[1]*10;
+		$toY = floor($to/10);
+		$toX = $to - $toY*10;
 
 		$movedPiece = $this->boardSpots[$from];
 		$trgPiece = $this->boardSpots[$to];
 
+		if ($this->unitRanks[$movedPiece] > 10) {
+			echo "invalid piece\n";
+			$response_text = mask(json_encode(array('type'=>'gameMessage', 'message'=>'can\'t move this piece')));
+			send_message_group($response_text, [$this->sockets[$playerNum]]); //send data
+			return;
+		}
+
 		if (floor($movedPiece/40)+1 == $playerNum) {
 			// Check target location to see if it is a valid move
+			echo "You can move this one\n";
 			if (abs($from-$to)==10 || abs($from-$to) == 1) {
 				// This is a valid one space move -> now verify that it is a move to able spot
 				echo "valid move\n";
@@ -311,25 +362,38 @@ class game {
 						echo "Can't move onto your own piece(".$movedPiece." vs ".$trgPiece.")\n";
 						break;
 					case $this->opponentSwitch[$playerNum]:
-						echo "Move onto an opponents piece (".$trgPiece." vs ".$this->opponentSwitch[$playerNum].")\n";
+					print_r($this->unitRanks);
+						echo "Move onto an opponents piece ID: (".$movedPiece." vs ".$trgPiece.") ranks (".$this->unitRanks[$movedPiece]." vs ".$this->unitRanks[$trgPiece].")\n";
 						// Review outcome of piece collision
-						$outCome = resolveCollision($attacker, $defender, $this->unitRanks);
+						$outCome = resolveCollision($movedPiece, $trgPiece, $this->unitRanks);
 						switch($outCome) {
 							case 1:
-								$this->kill($toIndex, $trgPiece);
+								$this->kill($to, $trgPiece);
 								$this->processMove($from, $to, $movedPiece);
-								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$toIndex.');showMove();')));
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$to.');showMove('.$from.', '.$to.', ['.$toX.', '.$toY.']);')));
 								break;
 
 							case 2:
-								$this->kill($fromIndex, $movedPiece);
-								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$fromIndex.');showMove();')));
+								$this->kill($from, $movedPiece);
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$from.');')));
 								break;
 
 							case 3:
-								$this->kill($toIndex, $trgPiece);
-								$this->kill($fromIndex, $movedPiece);
-								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$toIndex.');killPiece('.$fromIndex.');sync('.implode(",", $this->unitLocs).');showMove();')));
+								$this->kill($to, $trgPiece);
+								$this->kill($from, $movedPiece);
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$to.');killPiece('.$from.');sync('.implode(",", $this->unitLocs).');showMove('.$from.', '.$to.', ['.$toX.', '.$toY.']);')));
+								break;
+
+							case 4:
+								echo "A winner is you!";
+								$response_text = mask(json_encode(array('type'=>'gameMessage', 'message'=>'Player '.$playerNum.' - A WINNER IS YOU!')));
+								send_message($response_text); //send data
+								break;
+
+							default:
+								echo "an error has occured";
+								$response_text = mask(json_encode(array('type'=>'gameMessage', 'message'=>'it broke')));
+								send_message($response_text); //send data
 								break;
 						}
 						send_message($response_text); //send data
@@ -337,16 +401,21 @@ class game {
 					case 3:
 						echo "move to an empty spot\n";
 						$this->processMove($from, $to, $movedPiece);
-						$response_text = mask(json_encode(array('type'=>'script', 'message'=>'showMove();')));
+						$response_text = mask(json_encode(array('type'=>'script', 'message'=>'showMove('.$from.', '.$to.', ['.$toX.', '.$toY.']);')));
 						send_message($response_text); //send data
 						break;
 					case 4:
 						echo "move to a closed tile\n";
 						break;
+
 				}
 
-			} else echo "invalid move (".($from-$to).")\n";
-		}
+			} else {
+				echo "invalid move (".($from-$to).")\n";
+				$response_text = mask(json_encode(array('type'=>'gameMessage', 'message'=>'invalid move')));
+				send_message_group($response_text, [$this->sockets[$playerNum]]); //send data
+			}
+		} else echo "you no control this one ".$movedPiece." vs ".$playerNum."\n";
 	}
 	function kill($index, $pieceID) {
 		$this->boardSpots[$index] = 100;
@@ -363,13 +432,16 @@ class game {
 
 }
 
-function resolveCollision($attacker, $defender, $rankLsit) {
+function resolveCollision($attacker, $defender, $rankList) {
 	global $results;
 
 	$aRank = $rankList[$attacker];
 	$dRank = $rankList[$defender];
 
 	$outCome = $results[$aRank][$dRank];
+
+	echo "\n\npiece rank ".$aRank." attacks rank ".$dRank." for a result of ".$outCome."\n\n";
+
 	return $outCome;
 }
 

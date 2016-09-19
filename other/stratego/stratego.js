@@ -1,18 +1,77 @@
+
+addDiv = function(id, useClassName, target) {
+	var trg;
+	if (typeof(target) == "string") trg = document.getElementById(target);
+	else trg = target;
+
+	var newDiv = document.createElement("div");
+	newDiv.className = useClassName;
+	newDiv.id = id;
+	trg.appendChild(newDiv);
+	return newDiv;
+}
+
 ncode_general = function(data) {
 	eval(data);
 	}
 
-loadGame = function () {
+gameMenu = function () {
+	menuContain = addDiv("createGameMenu", "createGameMenu", "container");
+	sendButton = addDiv("createButton", "createButton", menuContain);
+	sendButton.addEventListener("click", function () {createGame();})
+	openGames = addDiv("openGames", "openGames", menuContain);
+	var msg = {type: "showOpenGames"};
+	sendToSocket(msg);
+}
 
+joinGame = function(id) {
+	var msg = {type:"join", gameID: id};
+	console.log("join game with message " + id + ", " + msg);
+	sendToSocket(msg);
+}
+
+showGames = function (games) {
+	console.log("showGames");
+	for (var i=0; i<games.length; i++) {
+		console.log("SHow game " + games[i])
+	gameContain = addDiv("", "gameContain", "openGames");
+	gameContain.gameID = games[i];
+	gameContain.innerHTML = "Game "+ games[i];
+	gameContain.addEventListener("click", function () {joinGame(this.gameID)});}
+}
+
+setSide = function (player, newside) {
+	if (playerID == player) {playerSide = newside;
+		document.getElementById("createGameMenu").remove();
+		loadPieces();
+		var pieceOffset = 0;
+		if (playerSide == 2) pieceOffset = 40;
+		for (var i=0+pieceOffset; i<40+pieceOffset; i++) {
+			thisPiece = addDiv("piece_"+i, "pieceStyle_0", "rightPane");
+			thisPiece.pieceID = i;
+			thisPiece.addEventListener("click", selectPiece);
+			thisPiece.innerHTML = i;
+		}
+	}
+}
+
+gameMessage = function(msg) {
+	document.getElementById("gameMessageBox").innerHTML += "<div><span class=\"user_name\" style=\"color:#000000\">System:</span> : <span class=\"user_message\">"+msg+"</span></div>"
+}
+
+createGame = function() {
+	var msg = {type: "newGame", player1: playerSide};
+	//websocket.send(JSON.stringify(msg));
+	sendToSocket(msg);
+}
+
+loadSocket = function () {
 	//create a new WebSocket object.
 	var wsUri = "ws://localhost:9000/demo/stratego.php";
 	websocket = new WebSocket(wsUri);
 
 	websocket.onopen = function(ev) { // connection is open
 		document.getElementById("message_box").innerHTML += "<div class=\"system_msg\">Connected!</div>"; //notify user
-		var msg = {type: "newGame", player1: 1, player2: 2};
-		//websocket.send(JSON.stringify(msg));
-		sendToSocket(msg);
 	}
 
 	document.getElementById("send-btn").addEventListener("click", function(){ //use clicks message send button
@@ -63,6 +122,10 @@ loadGame = function () {
 		case 'gameMove':
 			break;
 
+		case 'gameMessage':
+			gameMessage(msg.message);
+			break;
+
 		case 'script':
 			console.log("run script message " + msg.message)
 			ncode_general(msg.message);
@@ -77,8 +140,8 @@ loadGame = function () {
 }
 
 sendToSocket = function(msg) {
-	msg['gameInf'] = 1234;
-	msg['playerID'] = 1;
+	msg['gameInf'] = '12340000000000000000000000000000';
+	msg['playerID'] = playerID;
 	console.log("SEND " + JSON.stringify(msg));
 	websocket.send(JSON.stringify(msg));
 }

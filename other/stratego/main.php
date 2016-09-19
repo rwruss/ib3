@@ -1,9 +1,10 @@
 <?php
 
 session_start();
-$_SESSION['playerID'] = 1;
-if (isset($_GET['side'])) $playerSide = $_GET['side'];
-else $playerSide = 1;
+
+if (isset($_GET['side'])) $playerID = $_GET['side'];
+else $playerID = 1;
+$_SESSION['side'] = $playerID;
 echo '
 <html>
 
@@ -46,11 +47,15 @@ echo '
 
     varying vec2 vPieceLocation;
     varying vec2 vSkinCoord;
-	varying float vSideColor;
+    varying vec2 vTextureCoord;
+	   varying float vSideColor;
+
+     uniform sampler2D uSampler;
 
     void main(void) {
         //gl_FragColor = vec4(vPieceLocation.x, vPieceLocation.y/5.0, 0.0, 1.0);
-        gl_FragColor = vec4(vSkinCoord.x*20.0/255.0, 0.0, vSideColor-1., 1.0);
+        //gl_FragColor = vec4(vSkinCoord.x*20.0/255.0, 0.0, vSideColor-1., 1.0);
+        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
     }
 </script>
 
@@ -58,13 +63,15 @@ echo '
     attribute vec3 aVertexPosition;
     attribute vec2 aPieceLocation;
     attribute vec2 aSkinCoord;
-	attribute float aSideColor;
+    attribute vec2 aTextureCoord;
+	  attribute float aSideColor;
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
 
     varying vec2 vPieceLocation;
     varying vec2 vSkinCoord;
+    varying vec2 vTextureCoord;
     varying float vSideColor;
 
     void main(void) {
@@ -73,6 +80,7 @@ echo '
         vPieceLocation = aPieceLocation;
         vSkinCoord = aSkinCoord;
 		vSideColor = aSideColor;
+    vTextureCoord = aTextureCoord;
     }
 </script>
 
@@ -115,7 +123,7 @@ echo '
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
 
-	varying vec3 vPosition;
+	   //varying vec3 vPosition;
 
     void main(void) {
         gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition+uOffset, 1.0);
@@ -226,8 +234,13 @@ echo '
         pieceProgram.pieceSkinAttribute = gl.getAttribLocation(pieceProgram, "aSkinCoord");
         gl.enableVertexAttribArray(pieceProgram.pieceSkinAttribute);
 
-		      pieceProgram.pieceSideAttribute = gl.getAttribLocation(pieceProgram, "aSideColor");
+		    pieceProgram.pieceSideAttribute = gl.getAttribLocation(pieceProgram, "aSideColor");
         gl.enableVertexAttribArray(pieceProgram.pieceSideAttribute);
+
+        pieceProgram.pieceTextureAttribute = gl.getAttribLocation(pieceProgram, "aTextureCoord");
+        gl.enableVertexAttribArray(pieceProgram.pieceTextureAttribute);
+
+        pieceProgram.samplerUniform = gl.getUniformLocation(pieceProgram, "uSampler");
 
         pieceProgram.pMatrixUniform = gl.getUniformLocation(pieceProgram, "uPMatrix");
         pieceProgram.mvMatrixUniform = gl.getUniformLocation(pieceProgram, "uMVMatrix");
@@ -252,7 +265,7 @@ echo '
         boardBGProgram.pMatrixUniform = gl.getUniformLocation(boardBGProgram, "uPMatrix");
         boardBGProgram.mvMatrixUniform = gl.getUniformLocation(boardBGProgram, "uMVMatrix");
 
-		var fragmentShader = getShader(gl, "highLightFS");
+		    var fragmentShader = getShader(gl, "highLightFS");
         var vertexShader = getShader(gl, "highLightVS");
 
         highLightProgram = gl.createProgram();
@@ -269,7 +282,7 @@ echo '
         highLightProgram.vertexPositionAttribute = gl.getAttribLocation(highLightProgram, "aVertexPosition");
         gl.enableVertexAttribArray(highLightProgram.vertexPositionAttribute);
 
-		      highLightProgram.offsetUniform = gl.getUniformLocation(highLightProgram, "uOffset");
+		    highLightProgram.offsetUniform = gl.getUniformLocation(highLightProgram, "uOffset");
 
         highLightProgram.pMatrixUniform = gl.getUniformLocation(highLightProgram, "uPMatrix");
         highLightProgram.mvMatrixUniform = gl.getUniformLocation(highLightProgram, "uMVMatrix");
@@ -334,6 +347,7 @@ echo '
   	var boardFrameBuffer;
   	var boardFrameTexture;
   	var highLightPoints;
+    var textureCoords;
 
     function initBuffers() {
 		highLightPoints = gl.createBuffer();
@@ -377,6 +391,26 @@ echo '
         pieces.itemSize = 3;
         pieces.numItems = 16;
 
+        textureCoords = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoords);
+        var coords = [0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.750,
+                    0.0, 0.750,
+                    0.0, 1.0,
+                    0.250, 0.750,
+                    0.250, 1.0];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(coords), gl.STATIC_DRAW);
+
         pieceLocations = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
     		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 3.0, 0.0, 4.0, 1.0, 0.0, 1.0, 1.0, 1.0, 2.0, 1.0, 3.0]), gl.STATIC_DRAW);
@@ -404,6 +438,27 @@ echo '
 		initTextureFramebuffer(boardFrameBuffer, boardFrameTexture, 1000, 600);
     }
 
+    var pieceTexture;
+    function initTextures() {
+      pieceTexture = gl.createTexture();
+      pieceTexture.image = new Image();
+      pieceTexture.image.onload = function() {
+        handleLoadedTexture(pieceTexture)
+      }
+
+    pieceTexture.image.src = "pieceSkins2.png";
+    }
+
+    function handleLoadedTexture(texture) {
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.bindTexture(gl.TEXTURE_2D, null);
+    }
+
+
     function drawScene() {
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -413,11 +468,13 @@ echo '
         mat4.identity(mvMatrix);
 
     	  mat4.rotate(mvMatrix, degToRad(25), [1, 0, 0]);
-		    mat4.rotate(mvMatrix, degToRad(180*(playerSide-2)), [0, 1, 0]);
 
-      	mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.5+zPos)*flipBoard]);
-      	//mat4.translate(mvMatrix, [xPos*1.0, -1.0, (-2.5+zPos)*1.0]);
+		    //mat4.rotate(mvMatrix, degToRad(180*(playerSide-2)), [0, 1, 0]);
+      	//mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.5+zPos)]);
 
+
+        mat4.rotate(mvMatrix, degToRad(0), [0, 1, 0]);
+      	mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.5+zPos)]);
         mvPushMatrix();
 
     		// Draw whatever on the framebuffer
@@ -464,6 +521,13 @@ echo '
         gl.bindBuffer(gl.ARRAY_BUFFER, pieces);
         gl.vertexAttribPointer(pieceProgram.vertexPositionAttribute, pieces.itemSize, gl.FLOAT, false, 0, 0);
 
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoords);
+        gl.vertexAttribPointer(pieceProgram.pieceTextureAttribute, 2, gl.FLOAT, false, 0, 0);
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, pieceTexture);
+        gl.uniform1i(pieceProgram.samplerUniform, 0);
+
         setMatrixUniforms(pieceProgram);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
@@ -475,7 +539,7 @@ echo '
         gl.vertexAttribPointer(pieceProgram.pieceSkinAttribute, 2, gl.FLOAT, false, 0, 0);
         ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceSkinAttribute, 1);
 
-		      gl.bindBuffer(gl.ARRAY_BUFFER, pieceSides);
+		    gl.bindBuffer(gl.ARRAY_BUFFER, pieceSides);
         gl.vertexAttribPointer(pieceProgram.pieceSideAttribute, 1, gl.FLOAT, false, 0, 0);
         ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceSideAttribute, 1);
 
@@ -569,8 +633,7 @@ echo '
 		var newY = event.clientY;
 
 		var deltaX = newX - lastMouseX;
-		xPos += deltaX/500;
-		//console.log(deltaX);
+		xPos -= deltaX/500;
 
 		var deltaY = newY - lastMouseY;
 		zPos += deltaY/500;
@@ -581,16 +644,13 @@ echo '
 
 	var selectedSquare = [];
 	function handleClick(event)	{
-		//alert(clickParams);
 		document.body.style.cursor = "auto";
 		var loc = findPos(this);
 		var rect = this.getBoundingClientRect();
 		var cpos = [(event.clientX - loc[0]), (document.getElementById("gameScreen").height - (event.clientY - loc[1]))];
-		//alert(cpos[0] + ", " + cpos[1]);
 
 		var pixelValues = new Uint8Array(4);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, boardFrameBuffer);
-		//gl.bindFramebuffer(gl.FRAMEBUFFER, terFramebuffer);
 		gl.readPixels(cpos[0], cpos[1], 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -621,7 +681,7 @@ echo '
         moveSet = 1;
         pvsSpot[0] = selectedSquare[0];
         pvsSpot[1] = selectedSquare[1];
-      } else console.log("not youur pieces");
+      } else console.log("not youur pieces Moveset:" + moveSet);
     } else console.log("epty sq");
   }
 
@@ -631,7 +691,7 @@ echo '
     // check for friendly units at the locRough
     var newIndex = selectedSquare[0] + selectedSquare[1]*10;
     var oldIndex = pvsSpot[0] + pvsSpot[1]*10;
-    if (boardSquares[newIndex] < 99) {
+    if (boardSquares[newIndex] < 99 && Math.floor(boardSquares[newIndex]/40)+1== playerSide) {
       console.log("space is occupied - " + boardSquares[newIndex]);
       moveOptions();
     } else {
@@ -643,29 +703,40 @@ echo '
 		newSpot: newIndex};
 	  //websocket.send(JSON.stringify(msg));
 	  sendToSocket(msg);
-
-	  //showMove();
     }
   }
 
-  function sync(locs) {
-	  for (var i=0; i<40; i++) {
+  function sync(locs, status) {
+	  for (var i=0; i<80; i++) {
 		  pieceList[i].changeLoc(locs[2*i], locs[2*i+1]);
 		  boardSquares[locs[2*i]+locs[2*i+1]*10] = i;
-	  }
+      pieceList[i].newStatus(status[i]);
+      }
+    placePieces();
   }
 
-  function showMove() {
-	var newIndex = selectedSquare[0] + selectedSquare[1]*10;
-    var oldIndex = pvsSpot[0] + pvsSpot[1]*10;
-	console.log("Move piece " + boardSquares[oldIndex] + " from " + pvsSpot[0] + ", " + pvsSpot[1] + " to " + selectedSquare[0] + ", " + selectedSquare[1]);
-	if (pieceList[boardSquares[oldIndex]].status == 1) {
-		pieceList[boardSquares[oldIndex]].changeLoc(selectedSquare[0], selectedSquare[1]);
-		boardSquares[newIndex] = boardSquares[oldIndex];
-	}
-	boardSquares[oldIndex] = 100;
-	moveSet = 0;
-	placePieces();
+  function syncSide(side, locs, status) {
+    var offset = (side-1)*40;
+    for (var i=0; i<40; i++) {
+      //console.log("synce piece " + (i+offset) + " at (" + locs[i*2] +  ", " + locs[i*2+1] +")");
+      pieceList[i+offset].changeLoc(locs[i*2], locs[i*2+1]);
+      pieceList[i+offset].newStatus(status[i]);
+      boardSquares[locs[2*i]+locs[2*i+1]*10] = i;
+    }
+    placePieces();
+  }
+
+  function showMove(oldSquare, newSquare, oldPos) {
+  	//var newSquare = selectedSquare[0] + selectedSquare[1]*10;
+    //var oldSquare = pvsSpot[0] + pvsSpot[1]*10;
+  	console.log("Move piece " + boardSquares[oldSquare] + " from " + pvsSpot[0] + ", " + pvsSpot[1] + " to " + oldPos[0] + ", " + oldPos[1]);
+  	if (pieceList[boardSquares[oldSquare]].status == 1) {
+  		pieceList[boardSquares[oldSquare]].changeLoc(oldPos[0], oldPos[1]);
+  		boardSquares[newSquare] = boardSquares[oldSquare];
+  	}
+  	boardSquares[oldSquare] = 100;
+  	moveSet = 0;
+  	placePieces();
   }
 
 	function findPos(obj) {
@@ -696,6 +767,7 @@ echo '
         initGL(canvas);
         initShaders()
         initBuffers();
+        initTextures();
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
@@ -720,35 +792,21 @@ echo '
 
 	var flipBoard = -1;
 	function init() {
-		loadGame();
 		webGLStart();
-		loadPieces();
-		var pieceOffset = 0;
-		if (playerSide == 2) pieceOffset = 40;
-		for (var i=0+pieceOffset; i<40+pieceOffset; i++) {
-			thisPiece = addDiv("piece_"+i, "pieceStyle_0", "rightPane");
-			thisPiece.pieceID = i;
-			thisPiece.addEventListener("click", selectPiece);
-			thisPiece.innerHTML = i;
-		}
+    loadSocket();
+
 		//console.log(thisPiece);
 
 		offset = 0;
 		if (playerSide == 2) {
 			offset = 60;
-			flipBoard = 1;}
+			flipBoard = 0;}
 		for (i=0; i<40; i++) {
 			boardSquares[i+offset] = 0;
 		}
 
 		document.getElementById("startButton").addEventListener("click", function() {startGame(playerSide)});
-		document.getElementById("startOpp").addEventListener("click", function() {if (playerSide == 2) startGame(1);
-      else startGame(2)});
-		document.getElementById("importButton").addEventListener("click", function () {
-		if (gameStatus == 0) {
-			if (playerSide == 2) importSetup(1);
-			else importSetup(2)}});
-
+    document.getElementById("makeGame").addEventListener("click", gameMenu);
 		document.getElementById("randomSetup").addEventListener("click", function () {
 		if (gameStatus == 0) {
 		importSetup(playerSide)}});
@@ -774,10 +832,10 @@ echo '
       }
     }
   if (gameReady) {
-    var msg = {type: "start",
+    var msg = {type: "startGame",
     gameID: gameID,
     startSide: sideToStart,
-    startSpots: locList
+    startSpots: locList,
 	startRanks: useRanks};
     //websocket.send(JSON.stringify(msg));
     //console.log("start message prepared")
@@ -798,9 +856,9 @@ echo '
 		var count = 0;
 		for (side=1; side<3; side++) {
 			//console.log("Make " + rankList.length + " piece for side "+ side);
-			for (rank=0; rank<rankList.length; rank++) {
-				//console.log("make " + count + ", " + rankList[rank] + ", " + side);
-				if (side == playerSide) pieceList.push(new piece(count, rankList[rank], side));
+			for (rank=0; rank<useRanks.length; rank++) {
+				//console.log("make " + count + ", " + useRanks[rank] + ", " + side);
+				if (side == playerSide) pieceList.push(new piece(count, useRanks[rank], side));
 				else pieceList.push(new piece(count, 0, side));
 				count++;
 			}
@@ -863,6 +921,7 @@ echo '
 		var trg = boardSquares[tileID];
 		boardSquares[tileID]= 100;
 		pieceList[trg].newStatus(2);
+    placePieces();
 	}
 
 	function placePieces() {
@@ -871,7 +930,7 @@ echo '
 		var sideList = [];
 		for (var i=0; i<pieceList.length; i++) {
 			if (pieceList[i].status == 1) {
-				//console.log(pieceList[i].pieceID + " has status of " + pieceList[i].status + " and rank of " + pieceList[i].pieceRank);
+				//console.log(pieceList[i].pieceID + " has status of " + pieceList[i].status + " and rank of " + pieceList[i].pieceRank + " and a loc of " + pieceList[i].position);
 				locList.push(pieceList[i].position[0]-5, pieceList[i].position[1]-5);
 				skinList.push(pieceList[i].pieceRank, pieceList[i].pieceRank);
 				sideList.push(pieceList[i].side);
@@ -912,7 +971,8 @@ echo '
 			y = Math.floor((i+boardOffset)/10);
 			x = (i+boardOffset)-y*10;
 			boardSquares[i+boardOffset] = pieceNum;
-			//console.log("set square " + (i+boardOffset) + " with piece " + pieceNum);
+
+      //console.log("set square " + (i+boardOffset) + " with piece " + pieceNum);
 			pieceList[pieceNum].changeLoc(x, y);
 			pieceList[pieceNum].newStatus(1);
 		}
@@ -923,7 +983,8 @@ echo '
 
 	var pieceList = new Array;
 	var boardSquares = Array(100).fill(100);
-	var playerSide = '.$playerSide.';
+	var playerSide = 1;
+  var playerID = '.$playerID.';
   var gameID = 0;
 	window.addEventListener("load", init);
 </script>
@@ -998,18 +1059,62 @@ echo '
 .system_msg{color: #BDBDBD;font-style: italic;}
 .user_name{font-weight:bold;}
 .user_message{color: #88B6E0;}
+
+.createGameMenu{
+  position:absolute;
+  left:100;
+  top:100;
+  height:500;
+  width:500;
+  border:1px solid red;
+  background-color: white;
+}
+
+.createButton{
+  height:50;
+  width:100;
+  border:1px solid red;
+}
+
+.openGames{
+  height:400;
+  width:500;
+  border:1px solid red;
+  background-color: white;
+}
+.gameContain{
+  height:50;
+  width:500;
+  border:1px solid blue;
+}
+
+.gameMessageBox{
+  position:absolute;
+  left:750;
+  top:500;
+  border:1px solid red;
+  background-color: white;
+  height:200;
+  width:200;
+}
 </style>
 
 </head>
 
 
 <body>
+  <div id="container">
     <canvas id="gameScreen" style="border: none;" width="1000" height="600"></canvas>
-	<div id="rightPane" class="infoPane"></div>
+	  <div id="rightPane" class="infoPane"></div>
     <div id="startButton">Start Game</div>
-    <div id="startOpp">Start Opp</div>
-    <div id="importButton">Import opponent</div>
+    <div id="makeGame">Create a Game</div>
+    <div id="gameMessageBox" class="gameMessageBox">Game Messages</div>
+
     <div id="randomSetup">Random Setup</div>
+    <div id="infoPanel">
+      <div id="gameID"></div>
+    </div>
+
 
 	<div class="chat_wrapper">
 	<div class="message_box" id="message_box"></div>
@@ -1018,6 +1123,7 @@ echo '
 	<input type="text" name="message" id="message" placeholder="Message" maxlength="80" style="width:60%" />
 	<button id="send-btn">Send</button>
     <br/>
+  </div>
 </body>
 
 </html>';
