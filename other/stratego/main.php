@@ -48,7 +48,6 @@ echo '
     varying vec2 vPieceLocation;
     varying vec2 vSkinCoord;
     varying vec2 vTextureCoord;
-	   varying float vSideColor;
 
      uniform sampler2D uSampler;
 
@@ -72,7 +71,6 @@ echo '
     varying vec2 vPieceLocation;
     varying vec2 vSkinCoord;
     varying vec2 vTextureCoord;
-    varying float vSideColor;
 
     void main(void) {
         //gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10), 1.0);
@@ -80,7 +78,9 @@ echo '
         vPieceLocation = aPieceLocation;
         vSkinCoord = aSkinCoord;
 		vSideColor = aSideColor;
-    vTextureCoord = aTextureCoord;
+		
+	float yOff = floor(aSideColor-1.0, 4.0);
+    vTextureCoord = vec2(aTextureCoord.x+0.25*((aSideColor-1)-yOff*4.0), aTextureCoord.y-yOff*0.25);
     }
 </script>
 
@@ -207,6 +207,11 @@ echo '
 
         boardProgram.vertexPositionAttribute = gl.getAttribLocation(boardProgram, "aVertexPosition");
         gl.enableVertexAttribArray(boardProgram.vertexPositionAttribute);
+		
+		boardProgram.boardTextureAttribute = gl.getAttribLocation(boardProgram, "aTextureCoord");
+        gl.enableVertexAttribArray(boardProgram.boardTextureAttribute);
+		
+		boardProgram.samplerUniform = gl.getUniformLocation(boardProgram, "uSampler");
 
         boardProgram.pMatrixUniform = gl.getUniformLocation(boardProgram, "uPMatrix");
         boardProgram.mvMatrixUniform = gl.getUniformLocation(boardProgram, "uMVMatrix");
@@ -341,7 +346,7 @@ echo '
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 
-    var gameBoard;
+    var gameBoard, boardTexCoords;
     var pieces;
     var pieceLocations, pieceSkins, pieceSides;
   	var boardFrameBuffer;
@@ -368,6 +373,11 @@ echo '
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         gameBoard.itemSize = 3;
         gameBoard.numItems = 4;
+		
+		boardTexCoords = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, boardTexCoords);
+        var vertices = [0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
         pieces = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieces);
@@ -420,13 +430,7 @@ echo '
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 3.0, 0.0, 4.0, 1.0, 0.0, 1.0, 1.0, 1.0, 2.0, 1.0, 3.0]), gl.STATIC_DRAW);
 
 		var sideList = [];
-		/*
-		for (i=0; i<40; i++) {
-			sideList.push(1);
-		}
-		for (i=0; i<40; i++) {
-			sideList.push(2);
-		}*/
+
 		pieceSides = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceSides);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sideList), gl.STATIC_DRAW);
@@ -438,15 +442,15 @@ echo '
 		initTextureFramebuffer(boardFrameBuffer, boardFrameTexture, 1000, 600);
     }
 
-    var pieceTexture;
-    function initTextures() {
-      pieceTexture = gl.createTexture();
-      pieceTexture.image = new Image();
-      pieceTexture.image.onload = function() {
-        handleLoadedTexture(pieceTexture)
+    var pieceTexture, boardTexture;
+    function initTextures(buffer, src) {
+      buffer = gl.createTexture();
+      buffer.image = new Image();
+      buffer.image.onload = function() {
+        handleLoadedTexture(buffer)
       }
 
-    pieceTexture.image.src = "pieceSkins2.png";
+    buffer.image.src = src;
     }
 
     function handleLoadedTexture(texture) {
@@ -493,10 +497,17 @@ echo '
 		    // Draw whatever on the output buffer
         gl.useProgram(boardProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
-        gl.vertexAttribPointer(boardProgram.vertexPositionAttribute, gameBoard.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(boardProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, boardTexCoords);
+        gl.vertexAttribPointer(boardProgram.pieceTextureAttribute, 2, gl.FLOAT, false, 0, 0);
+		
+		gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, boardTexture);
+        gl.uniform1i(boardProgram.samplerUniform, 0);
 
         setMatrixUniforms(boardProgram);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, gameBoard.numItems);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     		//gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // This is the gl.ONE :)
     		gl.disable(gl.DEPTH_TEST);
@@ -767,13 +778,15 @@ echo '
         initGL(canvas);
         initShaders()
         initBuffers();
-        initTextures();
+        
+		initTextures(pieceTexture, "pieceSkins2.png");
+		initTextures(boardTexture, "boardBackGround.png");
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
 
-        document.onkeydown = handleKeyDown;
-    	document.onkeyup = handleKeyUp;
+        //document.onkeydown = handleKeyDown;
+    	//document.onkeyup = handleKeyUp;
 
         tick();
     }
@@ -984,6 +997,7 @@ echo '
 	var pieceList = new Array;
 	var boardSquares = Array(100).fill(100);
 	var playerSide = 1;
+	var turn = 1;
   var playerID = '.$playerID.';
   var gameID = 0;
 	window.addEventListener("load", init);

@@ -349,6 +349,13 @@ class game {
 			send_message_group($response_text, [$this->sockets[$playerNum]]); //send data
 			return;
 		}
+		
+		if ($this->turn != $playerNum) {
+			echo "wront turn\n";
+			$response_text = mask(json_encode(array('type'=>'gameMessage', 'message'=>'It is not your turn')));
+			send_message_group($response_text, [$this->sockets[$playerNum]]); //send data
+			return;
+		}
 
 		if (floor($movedPiece/40)+1 == $playerNum) {
 			// Check target location to see if it is a valid move
@@ -367,6 +374,7 @@ class game {
 						// Review outcome of piece collision
 						$outCome = resolveCollision($movedPiece, $trgPiece, $this->unitRanks);
 						switch($outCome) {
+							$this->turn = $this->opponentSwitch[$playerNum];
 							case 1:
 								$this->kill($to, $trgPiece);
 								$this->processMove($from, $to, $movedPiece);
@@ -399,6 +407,7 @@ class game {
 						send_message($response_text); //send data
 						break;
 					case 3:
+						$this->turn = $this->opponentSwitch[$playerNum];
 						echo "move to an empty spot\n";
 						$this->processMove($from, $to, $movedPiece);
 						$response_text = mask(json_encode(array('type'=>'script', 'message'=>'showMove('.$from.', '.$to.', ['.$toX.', '.$toY.']);')));
