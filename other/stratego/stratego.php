@@ -349,7 +349,7 @@ class game {
 			send_message_group($response_text, [$this->sockets[$playerNum]]); //send data
 			return;
 		}
-		
+
 		if ($this->turn != $playerNum) {
 			echo "wront turn\n";
 			$response_text = mask(json_encode(array('type'=>'gameMessage', 'message'=>'It is not your turn')));
@@ -373,8 +373,9 @@ class game {
 						echo "Move onto an opponents piece ID: (".$movedPiece." vs ".$trgPiece.") ranks (".$this->unitRanks[$movedPiece]." vs ".$this->unitRanks[$trgPiece].")\n";
 						// Review outcome of piece collision
 						$outCome = resolveCollision($movedPiece, $trgPiece, $this->unitRanks);
+						$this->turn = $this->opponentSwitch[$playerNum];
 						switch($outCome) {
-							$this->turn = $this->opponentSwitch[$playerNum];
+
 							case 1:
 								$this->kill($to, $trgPiece);
 								$this->processMove($from, $to, $movedPiece);
