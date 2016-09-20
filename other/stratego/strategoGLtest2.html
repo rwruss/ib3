@@ -1,11 +1,4 @@
 <?php
-
-session_start();
-
-if (isset($_GET['side'])) $playerID = $_GET['side'];
-else $playerID = 1;
-$_SESSION['side'] = $playerID;
-echo '
 <html>
 
 <head>
@@ -1171,6 +1164,6 @@ echo '
   </div>
 </body>
 
-</html>';
+</html>
 
 ?>

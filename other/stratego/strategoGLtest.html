@@ -19,38 +19,25 @@ echo '
 
 <script id="boardFS" type="x-shader/x-fragment">
     precision mediump float;
-	
-	uniform sampler2D uSampler;
 
-    varying vec3 vBoardVertex;
-	varying vec3 vThree;
-	varying vec2 vBoardTex;
+    varying vec3 vVertexPos;
 
     void main(void) {
-    //gl_FragColor = vec4(vBoardVertex, 1.0);
-	//gl_FragColor = texture2D(uSampler, vec2(vBoardTex.s, vBoardTex.t));
-	gl_FragColor = vec4(vBoardTex, 0.5, 1.0);
-	//gl_FragColor = vec4(vThree, 1.0);
+    gl_FragColor = vec4(vVertexPos, 1.0);
     }
 </script>
 
 <script id="boardVS" type="x-shader/x-vertex">
-    attribute vec3 aBoardVertex;
-	attribute vec2 aBoardTex;
-	attribute vec3 aThree;
+    attribute vec3 aVertexPosition;
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
 
-    varying vec3 vBoardVertex;
-	varying vec3 vThree;
-	varying vec2 vBoardTex;
+    varying vec3 vVertexPos;
 
     void main(void) {
-        gl_Position = uPMatrix * uMVMatrix * vec4(aBoardVertex, 1.0);
-        vBoardVertex = aBoardVertex;
-		vBoardTex = aBoardTex;
-		vThree = aThree;
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vVertexPos = aVertexPosition;
     }
 </script>
 
@@ -61,7 +48,7 @@ echo '
     varying vec2 vSkinCoord;
     varying vec2 vTextureCoord;
 
-    uniform sampler2D uSampler;
+     uniform sampler2D uSampler;
 
     void main(void) {
         //gl_FragColor = vec4(vPieceLocation.x, vPieceLocation.y/5.0, 0.0, 1.0);
@@ -70,24 +57,23 @@ echo '
 </script>
 
 <script id="pieceVS" type="x-shader/x-vertex">
-    attribute vec3 aVertexPosition;
-    attribute vec2 aPieceLocation;
+    attribute vec3 aVertPos;
+    attribute vec2 aPieceLoc;
     attribute vec2 aSkinCoord;
     attribute vec2 aTextureCoord;
-	  attribute float aSideColor;
+	attribute float aSideColor;
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
-	uniform sampler2D uSampler;
 
     varying vec2 vPieceLocation;
     varying vec2 vSkinCoord;
     varying vec2 vTextureCoord;
 
     void main(void) {
-        //gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10), 1.0);
-        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10)+vec3(aPieceLocation.x, 0.0, aPieceLocation.y)*0.20, 1.0);
-        vPieceLocation = aPieceLocation;
+        //gl_Position = uPMatrix * uMVMatrix * vec4(aVertPos*0.1+vec3(0.1, 0.0, 0.10), 1.0);
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertPos*0.1+vec3(0.1, 0.0, 0.10)+vec3(aPieceLoc.x, 0.0, aPieceLoc.y)*0.20, 1.0);
+        vPieceLocation = aPieceLoc;
         vSkinCoord = aSkinCoord;
 
 
@@ -199,7 +185,7 @@ echo '
     var boardProgram;
     var boardBGProgram;
     var pieceProgram;
-	   var highLightProgram;
+	var highLightProgram;
 
     function initShaders() {
         var fragmentShader = getShader(gl, "boardFS");
@@ -215,70 +201,14 @@ echo '
         }
 
         gl.useProgram(boardProgram);
-		
-		boardProgram.textureCoordAttr = gl.getAttribLocation(boardProgram, "aBoardTex");
-        gl.enableVertexAttribArray(boardProgram.textureCoordAttr);
 
-        boardProgram.VPA = gl.getAttribLocation(boardProgram, "aBoardVertex");
-        gl.enableVertexAttribArray(boardProgram.VPA);		
-		
-		boardProgram.thirdAttr = gl.getAttribLocation(boardProgram, "aThree");
-        gl.enableVertexAttribArray(boardProgram.thirdAttr);
-		
-		boardProgram.samplerUniform = gl.getUniformLocation(boardProgram, "uSampler");
+        boardProgram.vertexPositionAttribute = gl.getAttribLocation(boardProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(boardProgram.vertexPositionAttribute);
 
         boardProgram.pMatrixUniform = gl.getUniformLocation(boardProgram, "uPMatrix");
         boardProgram.mvMatrixUniform = gl.getUniformLocation(boardProgram, "uMVMatrix");
 		
-        var fragmentShader = getShader(gl, "pieceFS");
-        var vertexShader = getShader(gl, "pieceVS");
-
-        pieceProgram = gl.createProgram();
-        gl.attachShader(pieceProgram, vertexShader);
-        gl.attachShader(pieceProgram, fragmentShader);
-        gl.linkProgram(pieceProgram);
-
-        if (!gl.getProgramParameter(pieceProgram, gl.LINK_STATUS)) {
-            alert("Could not initialise first pieceProgram");
-        }
-
-        gl.useProgram(pieceProgram);
-
-        pieceProgram.vertexPositionAttribute = gl.getAttribLocation(pieceProgram, "aVertexPosition");
-        gl.enableVertexAttribArray(pieceProgram.vertexPositionAttribute);
-
-        pieceProgram.pieceLA = gl.getAttribLocation(pieceProgram, "aPieceLocation");
-        gl.enableVertexAttribArray(pieceProgram.pieceLA);
-
-        pieceProgram.pieceSkinAttribute = gl.getAttribLocation(pieceProgram, "aSkinCoord");
-        gl.enableVertexAttribArray(pieceProgram.pieceSkinAttribute);
-
-		pieceProgram.pieceSideAttribute = gl.getAttribLocation(pieceProgram, "aSideColor");
-        gl.enableVertexAttribArray(pieceProgram.pieceSideAttribute);
-
-        pieceProgram.pieceTextureAttribute = gl.getAttribLocation(pieceProgram, "aTextureCoord");
-        gl.enableVertexAttribArray(pieceProgram.pieceTextureAttribute);
-
-        pieceProgram.samplerUniform = gl.getUniformLocation(pieceProgram, "uSampler");
-
-        pieceProgram.pMatrixUniform = gl.getUniformLocation(pieceProgram, "uPMatrix");
-        pieceProgram.mvMatrixUniform = gl.getUniformLocation(pieceProgram, "uMVMatrix");
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
-        gl.vertexAttribPointer(pieceProgram.vertexPositionAttribute, 1, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
-        gl.vertexAttribPointer(pieceProgram.pieceLA, 1, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
-        gl.vertexAttribPointer(pieceProgram.pieceSkinAttribute, 1, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
-        gl.vertexAttribPointer(pieceProgram.pieceSideAttribute, 1, gl.FLOAT, false, 0, 0);
-		gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
-        gl.vertexAttribPointer(pieceProgram.pieceTextureAttribute, 1, gl.FLOAT, false, 0, 0);
-		
-		var fragmentShader = getShader(gl, "boardBackFS");
-        var vertexShader = getShader(gl, "boardBackVS");
-
-        boardBGProgram = gl.createProgram();
+		boardBGProgram = gl.createProgram();
         gl.attachShader(boardBGProgram, vertexShader);
         gl.attachShader(boardBGProgram, fragmentShader);
         gl.linkProgram(boardBGProgram);
@@ -287,17 +217,51 @@ echo '
             alert("Could not initialise first boardbackground");
         }
 
-        gl.useProgram(boardBGProgram);
+        //gl.useProgram(boardBGProgram);
 
         boardBGProgram.vertexPos = gl.getAttribLocation(boardBGProgram, "aVertexPosition");
         gl.enableVertexAttribArray(boardBGProgram.vertexPos);
 
         boardBGProgram.pMatrixUniform = gl.getUniformLocation(boardBGProgram, "uPMatrix");
         boardBGProgram.mvMatrixUniform = gl.getUniformLocation(boardBGProgram, "uMVMatrix");
+		
+        pieceProgram = gl.createProgram();
+        gl.attachShader(pieceProgram, getShader(gl, "pieceVS"));
+        gl.attachShader(pieceProgram, getShader(gl, "pieceFS"));
+        gl.linkProgram(pieceProgram);
+		
+        if (!gl.getProgramParameter(pieceProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise first pieceProgram");
+        }
 
-		    var fragmentShader = getShader(gl, "highLightFS");
+        //gl.useProgram(pieceProgram);
+		
+        pieceProgram.vertexPositionAttribute = gl.getAttribLocation(pieceProgram, "aVertPos");
+        gl.enableVertexAttribArray(pieceProgram.vertexPositionAttribute);
+		
+        pieceProgram.pieceLocationAttribute = gl.getAttribLocation(pieceProgram, "aPieceLoc");
+        gl.enableVertexAttribArray(pieceProgram.pieceLocationAttribute);
+
+        pieceProgram.pieceSkinAttribute = gl.getAttribLocation(pieceProgram, "aSkinCoord");
+        gl.enableVertexAttribArray(pieceProgram.pieceSkinAttribute);
+		
+		pieceProgram.pieceSideAttribute = gl.getAttribLocation(pieceProgram, "aSideColor");
+        gl.enableVertexAttribArray(pieceProgram.pieceSideAttribute);
+
+        pieceProgram.pieceTextureAttribute = gl.getAttribLocation(pieceProgram, "aTextureCoord");
+        gl.enableVertexAttribArray(pieceProgram.pieceTextureAttribute);
+		
+        pieceProgram.samplerUniform = gl.getUniformLocation(pieceProgram, "uSampler");
+		
+        pieceProgram.pMatrixUniform = gl.getUniformLocation(pieceProgram, "uPMatrix");
+        pieceProgram.mvMatrixUniform = gl.getUniformLocation(pieceProgram, "uMVMatrix");
+		
+		var fragmentShader = getShader(gl, "boardBackFS");
+        var vertexShader = getShader(gl, "boardBackVS");        
+
+		var fragmentShader = getShader(gl, "highLightFS");
         var vertexShader = getShader(gl, "highLightVS");
-
+		
         highLightProgram = gl.createProgram();
         gl.attachShader(highLightProgram, vertexShader);
         gl.attachShader(highLightProgram, fragmentShader);
@@ -307,7 +271,7 @@ echo '
             alert("Could not initialise first boardbackground");
         }
 
-        gl.useProgram(highLightProgram);
+        //gl.useProgram(highLightProgram);
 
         highLightProgram.vertexPositionAttribute = gl.getAttribLocation(highLightProgram, "aVertexPosition");
         gl.enableVertexAttribArray(highLightProgram.vertexPositionAttribute);
@@ -317,7 +281,14 @@ echo '
         highLightProgram.pMatrixUniform = gl.getUniformLocation(highLightProgram, "uPMatrix");
         highLightProgram.mvMatrixUniform = gl.getUniformLocation(highLightProgram, "uMVMatrix");
 		
-		tick();
+		console.log("Attrs for boardPorgam:" + gl.getProgramParameter(boardProgram, gl.ACTIVE_ATTRIBUTES));
+		console.log("Attrs for pieceProgram:" + gl.getProgramParameter(pieceProgram, gl.ACTIVE_ATTRIBUTES));
+		
+		//gl.disableVertexAttribArray(1);
+		//gl.disableVertexAttribArray(2);
+		//gl.disableVertexAttribArray(3);
+		//gl.disableVertexAttribArray(4);
+		//gl.disableVertexAttribArray(5);
     }
 
 
@@ -373,7 +344,7 @@ echo '
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 
-    var gameBoard, gameBoardTex, emptyBuffer;
+    var gameBoard;
     var pieces;
     var pieceLocations, pieceSkins, pieceSides;
   	var boardFrameBuffer;
@@ -389,17 +360,9 @@ echo '
 													0.2, 0.0, 0.0,
 													0.2, 0.0, 0.2]), gl.STATIC_DRAW);
 
-        emptyBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
-		
-		gameBoard = gl.createBuffer();
+        gameBoard = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,1.0,0.0,1.0]), gl.STATIC_DRAW);
-		
-		gameBoardTex = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, gameBoardTex);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0]), gl.STATIC_DRAW);
 
         pieces = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieces);
@@ -442,13 +405,9 @@ echo '
                     0.250, 1.0];
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(coords), gl.STATIC_DRAW);
 
-        var locList = [];
-		for (i=0; i<80; i++ ) {
-			locList.push(0.0, 0.0, 0.0, 0.0);
-		}
-		pieceLocations = gl.createBuffer();
+        pieceLocations = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
-    	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(locList), gl.STATIC_DRAW);
+    		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 3.0, 0.0, 4.0, 1.0, 0.0, 1.0, 1.0, 1.0, 2.0, 1.0, 3.0]), gl.STATIC_DRAW);
 
         pieceSkins = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceSkins);
@@ -458,7 +417,7 @@ echo '
 
 		pieceSides = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceSides);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(locList), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sideList), gl.STATIC_DRAW);
 
 
 		boardFrameBuffer = gl.createFramebuffer();
@@ -496,96 +455,55 @@ echo '
         mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
         mat4.identity(mvMatrix);
 
-    	mat4.rotate(mvMatrix, degToRad(25), [1, 0, 0]);
+    	  mat4.rotate(mvMatrix, degToRad(25), [1, 0, 0]);
 
-		//mat4.rotate(mvMatrix, degToRad(180*(playerSide-2)), [0, 1, 0]);
-      	//mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.5+zPos)]);
 
         mat4.rotate(mvMatrix, degToRad(0), [0, 1, 0]);
       	mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.5+zPos)]);
-        mvPushMatrix();
 
-		
-    	// Draw whatever on the framebuffer
-        
-    	gl.bindFramebuffer(gl.FRAMEBUFFER, boardFrameBuffer);
-    	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    	gl.useProgram(boardBGProgram);
-        gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
-        gl.vertexAttribPointer(boardBGProgram.vertexPos, 3, gl.FLOAT, false, 0, 0);
-
-        setMatrixUniforms(boardBGProgram);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        
 		// Draw whatever on the output buffer
-
-        gl.useProgram(boardProgram);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
-        gl.vertexAttribPointer(boardProgram.VPA, 3, gl.FLOAT, false, 0, 0);
 		
-		gl.bindBuffer(gl.ARRAY_BUFFER, gameBoardTex);
-        gl.vertexAttribPointer(boardProgram.textureCoordAttr, 2, gl.FLOAT, false, 0, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
-        gl.vertexAttribPointer(boardProgram.thirdAttr, 3, gl.FLOAT, false, 0, 0);
-		
-		gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, textureList[0]);
-        gl.uniform1i(boardProgram.samplerUniform, 1);
-
-        setMatrixUniforms(boardProgram);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-		
-    	//gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // This is the gl.ONE :)
-    	gl.disable(gl.DEPTH_TEST);
-
-    	gl.useProgram(highLightProgram);
-    	gl.bindBuffer(gl.ARRAY_BUFFER, highLightPoints);
-        gl.vertexAttribPointer(highLightProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-
-    	gl.uniform3f(highLightProgram.offsetUniform, highLiteOffset[0],0.0,highLiteOffset[1]);
-
-    	setMatrixUniforms(highLightProgram);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-        
-        mvPopMatrix();
-
-		gl.enable(gl.DEPTH_TEST);
-
-		
-		// Draw the pieces
-        gl.useProgram(pieceProgram);
+		gl.useProgram(pieceProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, pieces);
         gl.vertexAttribPointer(pieceProgram.vertexPositionAttribute, pieces.itemSize, gl.FLOAT, false, 0, 0);
-	
+
         gl.bindBuffer(gl.ARRAY_BUFFER, textureCoords);
         gl.vertexAttribPointer(pieceProgram.pieceTextureAttribute, 2, gl.FLOAT, false, 0, 0);
-		
+
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, textureList[0]);
         gl.uniform1i(pieceProgram.samplerUniform, 0);
 
-        setMatrixUniforms(pieceProgram);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, pieceSkins);
-        gl.vertexAttribPointer(pieceProgram.pieceSkinAttribute, 2, gl.FLOAT, false, 8, 0);
-        ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceSkinAttribute, 1);        
+		gl.uniformMatrix4fv(pieceProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(pieceProgram.mvMatrixUniform, false, mvMatrix);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
+        gl.vertexAttribPointer(pieceProgram.pieceLocationAttribute, 2, gl.FLOAT, false, 0, 0);
+        ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLocationAttribute, 1);
+
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, pieceSkins);
+        gl.vertexAttribPointer(pieceProgram.pieceSkinAttribute, 2, gl.FLOAT, false, 0, 0);
+        ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceSkinAttribute, 1);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, pieceSides);
         gl.vertexAttribPointer(pieceProgram.pieceSideAttribute, 1, gl.FLOAT, false, 0, 0);
         ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceSideAttribute, 1);
 		
-		gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);		
-        gl.vertexAttribPointer(pieceProgram.pieceLA, 2, gl.FLOAT, false, 8, 0);
-		ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLA, 1);
+		ANGLEia.drawArraysInstancedANGLE(gl.TRIANGLE_STRIP, 0, 16, drawPieceCount);
 		
-        ANGLEia.drawArraysInstancedANGLE(gl.TRIANGLE_STRIP, 0, 16, drawPieceCount);
-		ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLA, 0);
+		gl.useProgram(boardProgram);
 
+        gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
+        gl.vertexAttribPointer(boardProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+
+        gl.uniformMatrix4fv(boardProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(boardProgram.mvMatrixUniform, false, mvMatrix);
+		
+		//console.log("Index 1: " + gl.getActiveAttrib(boardProgram,0).name);
+		//console.log("Index 1: " + gl.getActiveAttrib(boardProgram,1).name);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
 
 
@@ -806,9 +724,8 @@ echo '
 		document.onmousemove = handleMouseMove;
     		//canvas.onclick = handleClick;
         initGL(canvas);
+        initShaders()
         initBuffers();
-		initShaders();
-        
 
 		initTextures(0, "pieceSkins2.png");
 		initTextures(1, "boardBackGround.jpg");
@@ -819,7 +736,7 @@ echo '
         //document.onkeydown = handleKeyDown;
     	//document.onkeyup = handleKeyUp;
 
-        
+        tick();
     }
 
 	function addDiv(id, useClassName, target) {
