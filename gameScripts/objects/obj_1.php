@@ -45,6 +45,7 @@ if ($approved) {
 	  <div style="position:absolute; bottom:0; left:0;">hideMove</div>';
 } else {
 	// Show basics about city
+	$intelTrg = $unitID;
 	include('../gameScripts/1096.php');
 	//echo '<div style="position:absolute; bottom:20; left:0;" onclick="scrMod(\'1096,'.$unitID.'\');">Intelligence</div>';
 

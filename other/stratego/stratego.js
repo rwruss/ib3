@@ -30,6 +30,27 @@ joinGame = function(id) {
 	sendToSocket(msg);
 }
 
+loadPieces = function () {
+	console.log("Load pieces");
+		rankList = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 11, 11, 11, 11, 11, 11, 12];
+		useRanks = [];
+		var placeNum;
+		// randomize the rank list
+		while (rankList.length>0) {
+			placeNum = Math.floor(Math.random()*rankList.length);
+			useRanks.push(rankList[placeNum]);
+			rankList.splice(placeNum, 1);
+		}
+		var count = 0;
+		for (side=1; side<3; side++) {
+			for (rank=0; rank<useRanks.length; rank++) {
+				if (side == playerSide) pieceList.push(new piece(count, useRanks[rank], side));
+				else pieceList.push(new piece(count, 0, side));
+				count++;
+			}
+		}
+	}
+
 showGames = function (games) {
 	console.log("showGames");
 	for (var i=0; i<games.length; i++) {

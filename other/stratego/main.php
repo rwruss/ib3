@@ -28,9 +28,9 @@ echo '
 
     void main(void) {
     //gl_FragColor = vec4(vBoardVertex, 1.0);
-	gl_FragColor = texture2D(uSampler, vec2(vBoardTex.s, vBoardTex.t));
+	//gl_FragColor = texture2D(uSampler, vec2(vBoardTex.s, vBoardTex.t));
 	//gl_FragColor = vec4(vBoardTex, 0.5, 1.0);
-	//gl_FragColor = vec4(vThree, 1.0);
+	gl_FragColor = vec4(1.0, 0.5, 0.5, 1.0);
     }
 </script>
 
@@ -839,7 +839,7 @@ echo '
 	var flipBoard = -1;
 	function init() {
 		webGLStart();
-    loadSocket();
+		loadSocket();
 
 		//console.log(thisPiece);
 
@@ -854,7 +854,7 @@ echo '
 		document.getElementById("startButton").addEventListener("click", function() {startGame(playerSide)});
     document.getElementById("makeGame").addEventListener("click", gameMenu);
 		document.getElementById("randomSetup").addEventListener("click", function () {
-		if (gameStatus == 0) {
+		if (gameStatus == 0 && gameID > 0) {
 		importSetup(playerSide)}});
 	}
 
@@ -890,27 +890,6 @@ echo '
 
 }
 	var useRanks;
-	function loadPieces() {
-		rankList = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 10, 11, 11, 11, 11, 11, 11, 12];
-		useRanks = [];
-		var placeNum;
-		while (rankList.length>0) {
-			placeNum = Math.floor(Math.random()*rankList.length);
-			useRanks.push(rankList[placeNum]);
-			rankList.splice(placeNum, 1);
-		}
-		var count = 0;
-		for (side=1; side<3; side++) {
-			//console.log("Make " + rankList.length + " piece for side "+ side);
-			for (rank=0; rank<useRanks.length; rank++) {
-				//console.log("make " + count + ", " + useRanks[rank] + ", " + side);
-				if (side == playerSide) pieceList.push(new piece(count, useRanks[rank], side));
-				else pieceList.push(new piece(count, 0, side));
-				count++;
-			}
-		}
-	//console.log(pieceList);
-	}
 
 	function selectPiece() {
 		squareID = selectedSquare[0] + selectedSquare[1]*10;

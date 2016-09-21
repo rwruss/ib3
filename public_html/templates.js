@@ -575,6 +575,10 @@ addtion = function () {
 	unitList.add(trg, "strength", amt);
 }
 
+class intel {
+	constructor(object);
+}
+
 class unitList {
 
 	newUnit (object) {

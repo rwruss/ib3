@@ -152,6 +152,7 @@ class player extends unit {
 		$this->attrList['unitSlot'] = 22;
 		$this->attrList['dipSlot'] = 23;
 		$this->attrList['warList'] = 32;
+		$this->attrList['intelSlot'] = 24;
 	}
 }
 
