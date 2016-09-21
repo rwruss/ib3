@@ -19,7 +19,7 @@ echo '
 
 <script id="boardFS" type="x-shader/x-fragment">
     precision mediump float;
-	
+
 	uniform sampler2D uSampler;
 
     varying vec3 vBoardVertex;
@@ -28,8 +28,8 @@ echo '
 
     void main(void) {
     //gl_FragColor = vec4(vBoardVertex, 1.0);
-	//gl_FragColor = texture2D(uSampler, vec2(vBoardTex.s, vBoardTex.t));
-	gl_FragColor = vec4(vBoardTex, 0.5, 1.0);
+	gl_FragColor = texture2D(uSampler, vec2(vBoardTex.s, vBoardTex.t));
+	//gl_FragColor = vec4(vBoardTex, 0.5, 1.0);
 	//gl_FragColor = vec4(vThree, 1.0);
     }
 </script>
@@ -57,15 +57,17 @@ echo '
 <script id="pieceFS" type="x-shader/x-fragment">
     precision mediump float;
 
-    varying vec2 vPieceLocation;
     varying vec2 vSkinCoord;
     varying vec2 vTextureCoord;
+
+    varying float pieceColor;
 
     uniform sampler2D uSampler;
 
     void main(void) {
-        //gl_FragColor = vec4(vPieceLocation.x, vPieceLocation.y/5.0, 0.0, 1.0);
-        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        vec4 texColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        //gl_FragColor = texColor.x*vec4(pieceColor, 0.0, 1.0) + (1.-texColor.x)*vec4(pieceColor, 1.0, 1.0);
+        gl_FragColor = vec4(pieceColor-1.0, 1.0, 0.0, 1.0);
     }
 </script>
 
@@ -78,21 +80,21 @@ echo '
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
-	uniform sampler2D uSampler;
+	  uniform sampler2D uSampler;
 
-    varying vec2 vPieceLocation;
     varying vec2 vSkinCoord;
     varying vec2 vTextureCoord;
+    varying float pieceColor;
 
     void main(void) {
         //gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10), 1.0);
         gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10)+vec3(aPieceLocation.x, 0.0, aPieceLocation.y)*0.20, 1.0);
-        vPieceLocation = aPieceLocation;
         vSkinCoord = aSkinCoord;
 
 
-	   float yOff = floor((aSideColor-1.0)/4.0);
-    vTextureCoord = vec2(aTextureCoord.x+0.25*((aSideColor-1.)-yOff*4.0), aTextureCoord.y-yOff*0.25);
+	   float yOff = floor((aSkinCoord.x-1.0)/4.0);
+     pieceColor = aSideColor;
+    vTextureCoord = vec2(aTextureCoord.x+0.25*((aSkinCoord.x-1.)-yOff*4.0), aTextureCoord.y-yOff*0.25);
     }
 </script>
 
@@ -215,21 +217,21 @@ echo '
         }
 
         gl.useProgram(boardProgram);
-		
+
 		boardProgram.textureCoordAttr = gl.getAttribLocation(boardProgram, "aBoardTex");
         gl.enableVertexAttribArray(boardProgram.textureCoordAttr);
 
         boardProgram.VPA = gl.getAttribLocation(boardProgram, "aBoardVertex");
-        gl.enableVertexAttribArray(boardProgram.VPA);		
-		
+        gl.enableVertexAttribArray(boardProgram.VPA);
+
 		boardProgram.thirdAttr = gl.getAttribLocation(boardProgram, "aThree");
         gl.enableVertexAttribArray(boardProgram.thirdAttr);
-		
+
 		boardProgram.samplerUniform = gl.getUniformLocation(boardProgram, "uSampler");
 
         boardProgram.pMatrixUniform = gl.getUniformLocation(boardProgram, "uPMatrix");
         boardProgram.mvMatrixUniform = gl.getUniformLocation(boardProgram, "uMVMatrix");
-		
+
         var fragmentShader = getShader(gl, "pieceFS");
         var vertexShader = getShader(gl, "pieceVS");
 
@@ -263,7 +265,7 @@ echo '
 
         pieceProgram.pMatrixUniform = gl.getUniformLocation(pieceProgram, "uPMatrix");
         pieceProgram.mvMatrixUniform = gl.getUniformLocation(pieceProgram, "uMVMatrix");
-		
+
 		gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
         gl.vertexAttribPointer(pieceProgram.vertexPositionAttribute, 1, gl.FLOAT, false, 0, 0);
 		gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
@@ -274,7 +276,7 @@ echo '
         gl.vertexAttribPointer(pieceProgram.pieceSideAttribute, 1, gl.FLOAT, false, 0, 0);
 		gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
         gl.vertexAttribPointer(pieceProgram.pieceTextureAttribute, 1, gl.FLOAT, false, 0, 0);
-		
+
 		var fragmentShader = getShader(gl, "boardBackFS");
         var vertexShader = getShader(gl, "boardBackVS");
 
@@ -316,7 +318,7 @@ echo '
 
         highLightProgram.pMatrixUniform = gl.getUniformLocation(highLightProgram, "uPMatrix");
         highLightProgram.mvMatrixUniform = gl.getUniformLocation(highLightProgram, "uMVMatrix");
-		
+
 		tick();
     }
 
@@ -392,11 +394,11 @@ echo '
         emptyBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, emptyBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
-		
+
 		gameBoard = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,1.0,0.0,1.0]), gl.STATIC_DRAW);
-		
+
 		gameBoardTex = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, gameBoardTex);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0]), gl.STATIC_DRAW);
@@ -454,11 +456,11 @@ echo '
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceSkins);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 3.0, 0.0, 4.0, 1.0, 0.0, 1.0, 1.0, 1.0, 2.0, 1.0, 3.0]), gl.STATIC_DRAW);
 
-		var sideList = [];
+		var sideList = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2];
 
 		pieceSides = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, pieceSides);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(locList), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
 
 
 		boardFrameBuffer = gl.createFramebuffer();
@@ -498,48 +500,47 @@ echo '
 
     	mat4.rotate(mvMatrix, degToRad(25), [1, 0, 0]);
 
-		//mat4.rotate(mvMatrix, degToRad(180*(playerSide-2)), [0, 1, 0]);
+    		//mat4.rotate(mvMatrix, degToRad(180*(playerSide-2)), [0, 1, 0]);
       	//mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.5+zPos)]);
 
         mat4.rotate(mvMatrix, degToRad(0), [0, 1, 0]);
       	mat4.translate(mvMatrix, [xPos*flipBoard, -1.0, (-2.5+zPos)]);
         mvPushMatrix();
 
-		
+
     	// Draw whatever on the framebuffer
-        
+
     	gl.bindFramebuffer(gl.FRAMEBUFFER, boardFrameBuffer);
     	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.useProgram(boardBGProgram);
+      gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
+      gl.vertexAttribPointer(boardBGProgram.vertexPos, 3, gl.FLOAT, false, 0, 0);
 
-    	gl.useProgram(boardBGProgram);
-        gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
-        gl.vertexAttribPointer(boardBGProgram.vertexPos, 3, gl.FLOAT, false, 0, 0);
+      setMatrixUniforms(boardBGProgram);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        setMatrixUniforms(boardBGProgram);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+		  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        
-		// Draw whatever on the output buffer
+		  // Draw whatever on the output buffer
 
-        gl.useProgram(boardProgram);
+      gl.useProgram(boardProgram);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
-        gl.vertexAttribPointer(boardProgram.VPA, 3, gl.FLOAT, false, 0, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, gameBoardTex);
-        gl.vertexAttribPointer(boardProgram.textureCoordAttr, 2, gl.FLOAT, false, 0, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
-        gl.vertexAttribPointer(boardProgram.thirdAttr, 3, gl.FLOAT, false, 0, 0);
-		
-		gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, textureList[0]);
-        gl.uniform1i(boardProgram.samplerUniform, 1);
+      gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
+      gl.vertexAttribPointer(boardProgram.VPA, 3, gl.FLOAT, false, 0, 0);
 
-        setMatrixUniforms(boardProgram);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-		
+		  gl.bindBuffer(gl.ARRAY_BUFFER, gameBoardTex);
+      gl.vertexAttribPointer(boardProgram.textureCoordAttr, 2, gl.FLOAT, false, 0, 0);
+
+		  gl.bindBuffer(gl.ARRAY_BUFFER, gameBoard);
+      gl.vertexAttribPointer(boardProgram.thirdAttr, 3, gl.FLOAT, false, 0, 0);
+
+		  gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, textureList[1]);
+      gl.uniform1i(boardProgram.samplerUniform, 1);
+
+      setMatrixUniforms(boardProgram);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
     	//gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // This is the gl.ONE :)
     	gl.disable(gl.DEPTH_TEST);
 
@@ -551,40 +552,40 @@ echo '
 
     	setMatrixUniforms(highLightProgram);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-        
+
         mvPopMatrix();
 
 		gl.enable(gl.DEPTH_TEST);
 
-		
+
 		// Draw the pieces
         gl.useProgram(pieceProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, pieces);
         gl.vertexAttribPointer(pieceProgram.vertexPositionAttribute, pieces.itemSize, gl.FLOAT, false, 0, 0);
-	
+
         gl.bindBuffer(gl.ARRAY_BUFFER, textureCoords);
         gl.vertexAttribPointer(pieceProgram.pieceTextureAttribute, 2, gl.FLOAT, false, 0, 0);
-		
+
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, textureList[0]);
         gl.uniform1i(pieceProgram.samplerUniform, 0);
 
         setMatrixUniforms(pieceProgram);
-		
+
 		gl.bindBuffer(gl.ARRAY_BUFFER, pieceSkins);
         gl.vertexAttribPointer(pieceProgram.pieceSkinAttribute, 2, gl.FLOAT, false, 8, 0);
-        ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceSkinAttribute, 1);        
+        ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceSkinAttribute, 1);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, pieceSides);
+		    gl.bindBuffer(gl.ARRAY_BUFFER, pieceSides);
         gl.vertexAttribPointer(pieceProgram.pieceSideAttribute, 1, gl.FLOAT, false, 0, 0);
         ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceSideAttribute, 1);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);		
+
+		    gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
         gl.vertexAttribPointer(pieceProgram.pieceLA, 2, gl.FLOAT, false, 8, 0);
-		ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLA, 1);
-		
+		    ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLA, 1);
+
         ANGLEia.drawArraysInstancedANGLE(gl.TRIANGLE_STRIP, 0, 16, drawPieceCount);
-		ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLA, 0);
+		    //ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLA, 0);
 
     }
 
@@ -759,11 +760,12 @@ echo '
   function syncSide(side, locs, status) {
     var offset = (side-1)*40;
     for (var i=0; i<40; i++) {
-      //console.log("synce piece " + (i+offset) + " at (" + locs[i*2] +  ", " + locs[i*2+1] +")");
+      console.log("synce piece " + (i+offset) + " at (" + locs[i*2] +  ", " + locs[i*2+1] +")");
       pieceList[i+offset].changeLoc(locs[i*2], locs[i*2+1]);
       pieceList[i+offset].newStatus(status[i]);
       boardSquares[locs[2*i]+locs[2*i+1]*10] = i;
     }
+    console.log("complete side synce for player " + side);
     placePieces();
   }
 
@@ -808,7 +810,7 @@ echo '
         initGL(canvas);
         initBuffers();
 		initShaders();
-        
+
 
 		initTextures(0, "pieceSkins2.png");
 		initTextures(1, "boardBackGround.jpg");
@@ -819,7 +821,7 @@ echo '
         //document.onkeydown = handleKeyDown;
     	//document.onkeyup = handleKeyUp;
 
-        
+
     }
 
 	function addDiv(id, useClassName, target) {
@@ -980,7 +982,7 @@ echo '
 				sideList.push(pieceList[i].side);
 				}
 		}
-
+  console.log("Sidelist = " + sideList);
 	gl.bindBuffer(gl.ARRAY_BUFFER, pieceLocations);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(locList), gl.STATIC_DRAW);
 
@@ -996,6 +998,7 @@ echo '
 	}
 
 	function importSetup(playerNum) {
+    console.log("start import");;
 		var pieceOffset = 0;
 		var boardOffset = 0;
 		if (playerNum == 2) {
@@ -1021,7 +1024,7 @@ echo '
 			pieceList[pieceNum].newStatus(1);
 		}
 
-
+    console.log("complete import");
 		placePieces();
 	}
 

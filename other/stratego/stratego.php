@@ -256,7 +256,7 @@ function createGame($player1, $userSocket) {
 	$newID = sizeof($gameList)+1;
 	$gameList[$newID] = new game($newID, 1, $userSocket);
 	$response_text = mask(json_encode(array('type'=>'script', 'name'=>'nada', 'message'=>'gameID = '.$newID.';document.getElementById("gameID").innerHTML = "Game '.$newID.'";setSide('.$player1.', 1)', 'color'=>'')));
-	send_message($response_text); //send data
+	send_message_group($response_text, [$userSocket]); //send data
 	$openGames[] = $newID;
 }
 
@@ -273,11 +273,11 @@ function joinGame($msg, $userSocket) {
 	if ($gameList[$msg->gameID]->players[2] == 0)	{
 		$gameList[$msg->gameID]->players[2] = $msg->playerID;
 		$gameList[$msg->gameID]->sockets[2] = $userSocket;
-		$response_text = mask(json_encode(array('type'=>'script', 'message'=>'setSide('.$msg->playerID.', 2)')));
+		$response_text = mask(json_encode(array('type'=>'script', 'message'=>'gameID='.$msg->gameID.';setSide('.$msg->playerID.', 2)')));
 	} else {
 		$response_text = mask(json_encode(array('type'=>'usermsg', 'name'=>'system', 'message'=>'Game join error')));
 	}
-	send_message($response_text); //send data
+	send_message_group($response_text, $gameList[$msg->gameID]->sockets); //send data
 }
 
 function makeMove($gameID, $playerNum, $from, $to) {
