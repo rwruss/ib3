@@ -27,30 +27,30 @@ echo '
 	varying vec2 vBoardTex;
 
     void main(void) {
-    //gl_FragColor = vec4(vBoardVertex, 1.0);
-	//gl_FragColor = texture2D(uSampler, vec2(vBoardTex.s, vBoardTex.t));
-	//gl_FragColor = vec4(vBoardTex, 0.5, 1.0);
-	gl_FragColor = vec4(1.0, 0.5, 0.5, 1.0);
+        //gl_FragColor = vec4(vBoardVertex, 1.0);
+	      gl_FragColor = texture2D(uSampler, vec2(vBoardTex.s, vBoardTex.t));
+	      //gl_FragColor = vec4(vBoardTex, 0.5, 1.0);
+	      //gl_FragColor = vec4(1.0, 0.5, 0.5, 1.0);
     }
 </script>
 
 <script id="boardVS" type="x-shader/x-vertex">
     attribute vec3 aBoardVertex;
-	attribute vec2 aBoardTex;
-	attribute vec3 aThree;
+	  attribute vec2 aBoardTex;
+	  attribute vec3 aThree;
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
 
     varying vec3 vBoardVertex;
-	varying vec3 vThree;
-	varying vec2 vBoardTex;
+	  varying vec3 vThree;
+	  varying vec2 vBoardTex;
 
     void main(void) {
         gl_Position = uPMatrix * uMVMatrix * vec4(aBoardVertex, 1.0);
         vBoardVertex = aBoardVertex;
-		vBoardTex = aBoardTex;
-		vThree = aThree;
+		    vBoardTex = aBoardTex;
+		    vThree = aThree;
     }
 </script>
 
@@ -60,14 +60,16 @@ echo '
     varying vec2 vSkinCoord;
     varying vec2 vTextureCoord;
 
-    varying float pieceColor;
+    varying vec2 pieceColorCoord;
 
     uniform sampler2D uSampler;
 
     void main(void) {
         vec4 texColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        //gl_FragColor = texColor.x*vec4(pieceColor, 0.0, 1.0) + (1.-texColor.x)*vec4(pieceColor, 1.0, 1.0);
-        gl_FragColor = vec4(pieceColor-1.0, 1.0, 0.0, 1.0);
+        vec4 sideColor = texture2D(uSampler, pieceColorCoord);
+        gl_FragColor = texColor.x*sideColor + (1.-texColor.x)*vec4(0.0, 0.0, 0.0, 1.0);
+        //gl_FragColor = vec4(texColor.x, 1.0, 0.0, 1.0);
+
     }
 </script>
 
@@ -84,7 +86,7 @@ echo '
 
     varying vec2 vSkinCoord;
     varying vec2 vTextureCoord;
-    varying float pieceColor;
+    varying vec2 pieceColorCoord;
 
     void main(void) {
         //gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition*0.1+vec3(0.1, 0.0, 0.10), 1.0);
@@ -93,8 +95,8 @@ echo '
 
 
 	   float yOff = floor((aSkinCoord.x-1.0)/4.0);
-     pieceColor = aSideColor;
-    vTextureCoord = vec2(aTextureCoord.x+0.25*((aSkinCoord.x-1.)-yOff*4.0), aTextureCoord.y-yOff*0.25);
+     pieceColorCoord = vec2(0.125+(aSideColor-1.0)*0.25, 0.0);
+     vTextureCoord = vec2(aTextureCoord.x+0.25*((aSkinCoord.x-1.)-yOff*4.0), aTextureCoord.y-yOff*0.25);
     }
 </script>
 
@@ -585,7 +587,7 @@ echo '
 		    ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLA, 1);
 
         ANGLEia.drawArraysInstancedANGLE(gl.TRIANGLE_STRIP, 0, 16, drawPieceCount);
-		    //ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLA, 0);
+		    ANGLEia.vertexAttribDivisorANGLE(pieceProgram.pieceLA, 0);
 
     }
 

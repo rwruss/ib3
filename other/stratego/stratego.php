@@ -390,7 +390,7 @@ class game {
 							case 3:
 								$this->kill($to, $trgPiece);
 								$this->kill($from, $movedPiece);
-								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$to.');killPiece('.$from.');sync('.implode(",", $this->unitLocs).');showMove('.$from.', '.$to.', ['.$toX.', '.$toY.']);')));
+								$response_text = mask(json_encode(array('type'=>'script', 'message'=>'killPiece('.$to.');killPiece('.$from.');sync(['.implode(",", $this->unitLocs).'], ['.implode(",", $this->unitStatus).']);')));
 								break;
 
 							case 4:
@@ -431,6 +431,7 @@ class game {
 		$this->boardSpots[$index] = 100;
 		$this->unitLocs[$pieceID*2] = -1;
 		$this->unitLocs[$pieceID*2+1] = -1;
+		$this->unitStatus[$pieceID] = 0;
 	}
 
 	function processMove($fromIndex, $toIndex, $pieceID) {
