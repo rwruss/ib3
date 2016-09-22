@@ -3,6 +3,7 @@ Disband/create army options
 Assign a commander/chars to an army
 Give units to a player to control
 Buying/Selling mercenary units
+Gather intel on an object
 
 Long Term:
 Battle resolution

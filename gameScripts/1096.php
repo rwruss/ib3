@@ -10,7 +10,7 @@ class intel {
 function intelFactory($type, $params) {
 	switch($value) {
 		default:
-		$intelItem = new intel($trgID, $type, $value, $time, $reportingChar);
+		$intelItem = new intel($reportData);
 		break;
 	}
 
@@ -30,9 +30,19 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 // Search for intel relating to the target item
 $intelList = new itemSlot($thisPlayer->get('intelSlot'), $intelFile, 40);
 
+
 // Display any found intel relating to the target item
+$noInfo = true;
 for ($i=1; $i<sizeof($intelList->slotData); $i+=3) {
-	if ($intelList->slotData[$i] == )
+	if ($intelList->slotData[$i] == $intelTrg) {
+		fseek($intelFile, $intelList->slotData[$i+1]);
+		$reportData = unpack('i*', fread($intelFile, $intelList->slotData[$i+2]));
+	}
+	$noInfo = false;
+}
+
+if ($noInfo) {
+	echo "No intel on this object";
 }
 
 fclose($slotFile);
