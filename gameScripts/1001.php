@@ -21,20 +21,11 @@ thisDiv = useDeskTop.getPane("characters");';
 foreach ($unitList as $unitID) {
 	fseek($unitFile, $unitID*$defaultBlockSize);
 	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
-	$actionPoints = 150;
 	echo '
 
 		unitList.newUnit({unitType:"character", unitID:'.$unitID.', unitName:"char name", actionPoints:1000, strength:75});
 		unitList.renderSum('.$unitID.', thisDiv);';
-	/*
-	echo '
-			newUnitDetail('.$unitID.', "charListContent");
-			//newMoveBox('.$unitID.', '.$unitDat[1].', '.$unitDat[2].', "rtPnl");
-			document.getElementById("Udtl_'.$unitID.'_name").innerHTML = "Char '.$unitID.'";
-			document.getElementById("Udtl_'.$unitID.'").addEventListener("click", function() {passClick("1074,'.$unitID.'", "rtPnl")});
-			setUnitAction('.$unitID.', '.($actionPoints/1000).');
-			setUnitExp('.$unitID.', 0.5);';
-	//print_r($unitDat);*/
+
 }
 echo '</script>';
 

@@ -58,10 +58,10 @@ foreach ($unitList->slotData as $unitID) {
 			$noUnitsHere = false;
 
 			// Get total number of production points available for this unit
-      $actionReplenishRate = max(1, $unitDat[17]);
+      
       //$actionPoints = min(1000, $workUnit->unitDat[16] + floor((time()-$workUnit->unitDat[27])*$workUnit->unitDat[17]/360000));
 			$actionPoints = min(1000, $unitDat[16] + 10*floor((time()-$unitDat[27])*$unitDat[17]/360000));
-      //echo 'Replensih: '.$actionReplenishRate;
+      
 
 			// Show option to add production points to this task
 
