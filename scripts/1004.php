@@ -3,7 +3,7 @@ include('./slotFunctions.php');
 session_start();
 if (isset($_SESSION['playerId'])) {
 	$playerId = $_SESSION['playerId'];
-	echo 'conPanePlayer Games<p>
+	echo 'conPanePlayer Games ('.$playerId.')<p>
 	<a href="javascript:void(0)" onclick=passClick("1009,0")>Join a Game</a>|
 	<a href="javascript:void(0)" onclick=passClick(1010)>Create a new Game</a><hr>';
 

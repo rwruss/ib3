@@ -7,7 +7,7 @@ $slotFile = fopen($gamePath.'/msgSlots.slt', 'rb');
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 
 // Read message slot for player
-$trgPlayer = new player($pGameID, $unitFile, 400);
+$trgPlayer = loadPlayer($pGameID, $unitFile, 400);
 echo 'Check player '.$pGameID.' message slot '.$trgPlayer->unitDat[25];
 if ($trgPlayer->unitDat[25] == 0) {
   echo 'No messages';

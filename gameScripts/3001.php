@@ -12,8 +12,8 @@ $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 
 
 // Determine which players should receive the message
-
-$trgObject = new unit($msg[0], $unitFile, 400);
+$trgObject = loadUnit($msg[0], $unitFile, 400);
+//$trgObject = new unit($msg[0], $unitFile, 400);
 //fseek($unitFile, $msg[0]*$defaultBlockSize);
 //$trgDat = unpack('i*', fread($unitFile, 400));
 print_r($trgObject->unitDat);
@@ -43,7 +43,7 @@ $sendList = array_unique($toList);
 if (sizeof($sendList) > 0) {
   for ($i=0; $i<sizeof($sendList); $i++) {
     echo 'Record message for player '.$sendList[$i];
-    $trgPlayer = new player($sendList[$i], $unitFile, 400);
+    $trgPlayer = loadPlayer($sendList[$i], $unitFile, 400);
     if ($trgPlayer->unitDat[25] == 0) {
       if (flock($slotFile, LOCK_EX)) {
         fseek($slotFile, 0, SEEK_END);

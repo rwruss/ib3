@@ -1,14 +1,14 @@
 <?php
 include("./slotFunctions.php");
-include("./unitClass.php");
-echo 'This is a resource point (#'.$unitID.') for resource type '.$unitDat[10];
+
+echo 'This is a resource point (#'.$unitID.') for resource type '.$thisUnit->unitDat[10];
 
 // Get list of available labor at this location
-fseek($unitFile, $unitDat[15]*$defaultBlockSize);
+fseek($unitFile, $thisUnit->unitDat[15]*$defaultBlockSize);
 $cityDat = unpack('i*', fread($unitFile, 400));
 //print_r($cityDat);
 
-echo 'Got data for city #'.$unitDat[15];
+echo 'Got data for city #'.$thisUnit->unitDat[15];
 
 // Get list of player units to check if they can work here
 $playerObj = new player($pGameID, $unitFile, 400);

@@ -33,7 +33,7 @@ for ($i=1; $i<=sizeof($mapItems->slotData); $i+=2) {
 }
 $checkItems = array_filter($mapItems->slotData);
 
-print_r($checkItems);
+//print_r($checkItems);
 
 echo '<script>
 useDeskTop.newPane("charOrders_'.$postVals[1].'");

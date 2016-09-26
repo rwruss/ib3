@@ -22,13 +22,13 @@ echo '
 
 	var orders = addDiv("unitOrders", "stdFloatDiv", document.getElementById("rtPnl"));
 	orders.innerHTML = "Unit Orders";
-	orders.addEventListener("click", function () {makeBox("orders", "1059,'.$unitID.'", 500, 500, 200, 50)});
+	orders.addEventListener("click", function () {passClick("1059,'.$unitID.'", rtPnl)});
 	';
 
 	if ($thisUnit->get('armyID') > 0) {
 		echo 'var armyDtl = addDiv("unitUpgrades", "stdFloatDiv", document.getElementById("rtPnl"));
 		armyDtl.innerHTML = "Army Detail";
-		armyDtl.addEventListener("click", passClick("1027,'.$thisUnit->get('armyID').'", rtPnl););';
+		armyDtl.addEventListener("click", function () {passClick("1027,'.$thisUnit->get('armyID').'", rtPnl);});';
 	} else {
 		echo 'var armyDtl = addDiv("unitUpgrades", "stdFloatDiv", document.getElementById("rtPnl"));
 		armyDtl.innerHTML = "Army Detail";

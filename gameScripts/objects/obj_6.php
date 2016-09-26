@@ -30,19 +30,19 @@ switch ($thisUnit->get('status')) {
 			echo '
 			var armyDtl = addDiv("unitUpgrades", "stdFloatDiv", document.getElementById("rtPnl"));
 			armyDtl.innerHTML = "Army Detail";
-			armyDtl.addEventListener("click", passClick("1027,'.$thisUnit->get('armyID').'", rtPnl););';
+			armyDtl.addEventListener("click", function () {passClick("1027,'.$thisUnit->get('armyID').'", rtPnl);});';
 		} else {
 			echo '
 			var armyDtl = addDiv("unitUpgrades", "stdFloatDiv", document.getElementById("rtPnl"));
 			armyDtl.innerHTML = "Army Detail";
-			armyDtl.addEventListener("click", passClick("1113,'.$unitID.'", rtPnl););';
+			armyDtl.addEventListener("click", function () {passClick("1113,'.$unitID.'", rtPnl);});';
 		}
-		
+
 		echo '
 		var controlOpt = addDiv("unitUpgrades", "stdFloatDiv", document.getElementById("rtPnl"));
 		controlOpt.innerHTML = "Upgrade";
 		controlOpt.addEventListener("click", function () {passClick("1115,'.$postVals[1].'")});';
-		
+
 		break;
 
 	case 2: // Involved in a battle

@@ -24,7 +24,7 @@ if ($approved) {
 	//echo 'Options for construction of building type '.$postVals[1].' at location '.$_SESSION['selectedItem'];
 
 	// Load building Names and Costs
-	$buildingInfo = explode('<->', file_get_contents($scnPath.'/buildings.desc'));
+	$buildingDesc = explode('<->', file_get_contents($scnPath.'/buildings.desc'));
 
 	if ($postVals[1] < 100) {
 		// This is a community owned building
@@ -89,15 +89,16 @@ if ($approved) {
 	useDeskTop.newPane("bldgStart");
 	thisDiv = useDeskTop.getPane("bldgStart");
 	addDiv("test", "reqHolder", thisDiv);';
-	$selectedBldg = explode('<-->', $buildingInfo[$postVals[1]]);
+	$selectedBldg = explode('<-->', $buildingDesc[$postVals[1]]);
 	$prereqs = explode(',', $selectedBldg[3]);
-	//echo 'Explode '.$buildingInfo[$postVals[1]*7+3].' ('.strlen($buildingInfo[$postVals[1]*7+3]).')';
+	//echo 'Explode '.$buildingDesc[$postVals[1]*7+3].' ('.strlen($buildingDesc[$postVals[1]*7+3]).')';
 	//print_r($prereqs);
 	$preCheck = true;
 	$buildingsNeeded = [];
 	if ($prereqs[0] != '') {
 		for ($i=0; $i<sizeof($prereqs); $i+=2) {
-			echo 'reqBox("Pre '.$prereqs[$i].'", "test", '.$buildingsPresent[$prereqs[$i]].','.$prereqs[$i+1].');';
+			$buildingInfo = explode('<-->', $buildingDesc[$prereqs[$i]]);
+			echo 'reqBox("'.$buildingInfo[0].'", "test", '.$buildingsPresent[$prereqs[$i]].','.$prereqs[$i+1].');';
 			if ($buildingsPresent[$prereqs[$i]] < $prereqs[$i+1]) {
 				$preCheck = false;
 				$buildingsNeeded[$prereqs[$i]] = $prereqs[$i+1]-$buildingsPresent[$prereqs[$i]];

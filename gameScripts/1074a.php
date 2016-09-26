@@ -30,6 +30,11 @@ skills.addEventListener("click", function () {makeBox("plotList", "1083,'.$postV
 var traits = addDiv("unitEquip", "stdFloatDiv", document.getElementById("rtPnl"));
 traits.innerHTML = "Character Traits";
 traits.addEventListener("click", function () {makeBox("traits", "1077,'.$postVals[1].'", 500, 500, 200, 50)});
+
+
+var gatherIntel = addDiv("gatherIntel", "stdFloatDiv", document.getElementById("rtPnl"));
+gatherIntel.innerHTML = "gather Intel";
+gatherIntel.addEventListener("click", function () {makeBox("gatherIntel", "1121,'.$postVals[1].'", 500, 500, 200, 50)});
 </script>';
 fclose($unitFile);
 

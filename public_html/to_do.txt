@@ -4,6 +4,8 @@ Assign a commander/chars to an army
 Give units to a player to control
 Buying/Selling mercenary units
 Gather intel on an object
+Actions/Orders for characters and units
+verify city priviledge in obj2 (resource site)
 
 Long Term:
 Battle resolution

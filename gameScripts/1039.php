@@ -76,7 +76,7 @@ if ($approved != false) {
 		}
 		// Record information for new building
 		fseek($unitFile, $newID*$defaultBlockSize);
-		fwrite($unitFile, pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2, 0, 2, $cityID, $cityID, 0, 1, 1, $bldgTypeInfo[11], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
+		fwrite($unitFile, pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2, 0, 2, 0, 0, 0, 1, 1, $bldgTypeInfo[11], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
 
 		// add the building to the town as an "in progress" building
 

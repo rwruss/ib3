@@ -30,6 +30,7 @@ if ($queueSpot) {
 	// Load the unit dat from the parameters file
 	$unitDesc = explode('<->', file_get_contents($scnPath.'/units.desc'));
 	$uTypeDesc = explode('<-->', $unitDesc[$unitType]);
+	print_r($uTypeDesc);
 
 	// Verify that the building can create this unit type
 
@@ -52,13 +53,14 @@ if ($queueSpot) {
 
 
 	// Record specifics for this unit
+	$typeDetails = explode(",", $uTypeDesc[1]);
 	$newUnit->set("xLoc", $cityDat[1]);
 	$newUnit->set("yLoc", $cityDat[2]);
 	$newUnit->set("owner", $pGameID);
 	$newUnit->set("controller", $pGameID);
 	$newUnit->set("updateTime", time());
 	$newUnit->set("troopType", $postVals[2]);
-	$newUnit->unitDat[4] = 6;
+	$newUnit->unitDat[4] = $typeDetails[3];
 	$newUnit->unitDat[19] = $uTypeDesc[2];
 
 	// Need to get a new unit ID and save to that unit ID in the unit file

@@ -16,7 +16,7 @@ $unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
 $unitDesc = explode('<->', file_get_contents($scnPath.'/units.desc'));
 $typeDesc = explode('<-->', $unitDesc[$unitDat[10]]);
 $unitTasks = explode(',', $typeDesc[8]);
-print_R($unitTasks);
+//print_R($unitTasks);
 
 // Load task file to get list of tasks that can be done by this unit
 $jobsDesc = explode('<->', file_get_contents($scnPath.'/jobs.desc'));
@@ -24,7 +24,7 @@ $typeInfo = explode('<-->', $jobsDesc[$postVals[1]]);
 $jobType = explode(',', $typeInfo[1]);
 
 if (array_search($postVals[1], $unitTasks) !== false) {
-	echo 'Approved ('.$postVals[1].') - ../gameScripts/1060-'.$jobType[0].'.php';
+	//echo 'Approved ('.$postVals[1].') - ../gameScripts/1060-'.$jobType[0].'.php';
 	include('../gameScripts/1060-'.$jobType[0].'.php');
 } else {
 	echo 'This unit cannot perfrom this task';

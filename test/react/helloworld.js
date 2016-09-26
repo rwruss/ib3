@@ -7,13 +7,14 @@ var SecondBox = React.createClass({displayName: 'secondBox', render: function() 
 }
 });
 
-var FirstBox = React.createClass({displayName: 'CommentBox', 
+var FirstBox = React.createClass({displayName: 'CommentBox',
 	render: function () {
 		console.log("render something");
 		return (
 			<div className="commentBox">
 				<SecondBox content="ox1">title</SecondBox>
 				<SecondBox content="ox2">title 2</SecondBox>
+				<SomeButton>hi</SomeButton>
 			</div>
 			);
 	}
@@ -27,11 +28,11 @@ class SomeButton extends React.Component {
 		}
 		this.handleClick = this.handleClick.bind(this);
 	}
-	
+
 	handleClick() {
 		this.setState({selected: !this.state.selected});
 	}
-	
+
 	render() {
     const text = this.state.selected ? 'liked' : 'haven\'t liked';
     return (

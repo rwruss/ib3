@@ -7,7 +7,7 @@ include('./unitClass.php');
 $playerList = unpack("i*", file_get_contents("../games/".$gameID."/players.dat"));
 $idSpot = array_search($_SESSION['playerId'], $playerList);
 
-$startLocation = [4800, 5260];
+
 $startTown = false;
 
 $unitFile = fopen($gamePath."/unitDat.dat", "r+b");
@@ -60,7 +60,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		$pGameID = intval($playerList[$idSpot+1]*-1);
 	}
 
-
+	$startLocation = [4800+$pGameID*4, 5260+$pGameID*4];
 	//$pGameID = $_SESSION['gameIDs'][$_GET['gid']];
 
 
@@ -163,7 +163,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 	fwrite($unitFile, pack("i", $newCharID));
 	*/
 
-	$newPlayer = new unit($pGameID, $unitFile, 400);
+	$newPlayer = new unit($pGameID, [], $unitFile);
 
 	$newPlayer->unitDat[1] = 1;  // Status
 	$newPlayer->unitDat[2] = $postVals[1];  // Race
@@ -205,7 +205,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
 		fwrite($unitFile, pack("i", 0));
 
-		$newUnit = new unit($newId, $unitFile, 400);
+		$newUnit = new unit($newId, [], $unitFile);
 		$newUnit->unitDat[1] = $startLocation[0]; // X Loc
 		$newUnit->unitDat[2] = $startLocation[1]; // Y Loc
 		$newUnit->unitDat[3] = 1; // Icon
@@ -269,7 +269,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		fseek($unitFile, ($newId)*$defaultBlockSize+$unitBlockSize-4);
 		fwrite($unitFile, pack("i", 0));
 
-		$newUnit = new unit($newId, $unitFile, 400);
+		$newUnit = new unit($newId, [], $unitFile);
 		$newUnit->unitDat[1] = $startLocation[0]; // X Loc
 		$newUnit->unitDat[2] = $startLocation[1]; // Y Loc
 		$newUnit->unitDat[3] = 1; // Icon

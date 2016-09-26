@@ -576,7 +576,7 @@ addtion = function () {
 }
 
 class intel {
-	constructor(object);
+	constructor(object) {}
 }
 
 class unitList {

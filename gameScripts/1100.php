@@ -6,7 +6,7 @@ include("./unitClass.php");
 $slotFile = fopen($gamePath.'/msgSlots.slt', 'rb');
 $msgFile = fopen($gamePath.'/messages.dat', 'rb');
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-$trgPlayer = new player($pGameID, $unitFile, 400);
+$trgPlayer = loadPlayer($pGameID, $unitFile, 400);
 $msgSlot = new blockSlot($trgPlayer->unitDat[25], $slotFile, 40);
 
 // Verify that message is listed in players slot
