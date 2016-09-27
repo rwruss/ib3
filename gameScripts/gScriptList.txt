@@ -91,7 +91,7 @@
 1082 - Add character to plot
 1083 - List of plots character is involved in
 1084 - Character contribute to plot
-1085 - Assign RingLeader to a Plot
+1085 - Menu for Assign RingLeader to a Plot
 1086 - Run a plot
 1087 - Process assign ringleader to a Plot
 1088 - Leave a plot
@@ -127,7 +127,7 @@
 1118 - Menu for sale of mercenary unit
 1119 - Processs putting a unit up for sale as a merc
 1120 - Process spying on an object
-1120 - Spy on an object - spy options
+1121 - Menu for Spy on an object - spy options
 
 // Manual Override Functions
 2001 - Add Resources to a city menu

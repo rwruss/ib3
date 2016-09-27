@@ -30,7 +30,9 @@ for ($i=1; $i<=sizeof($mapItems->slotData); $i++) {
 		$yDiff = $checkUnit->unitDat[2] - $trgUnit->unitDat[2];
 		if ($xDiff*$xDiff + $yDiff*$yDiff < $oRadiusSq) {
 			// output option box for this unit
-			echo 'textBlob("aye", "", thisDiv);';
+			echo 'unitList.newUnit({unitID : '.$mapItems->slotData[$i].', unitType : "character", rating : 50, status : 1, unitName : "char '.$mapItems->slotData[$i].'", cost: 90});
+			objBox = actionBox(thisDiv, "1120,'.$mapItems->slotData[$i].','.$postVals[1].'", '.$checkUnit->actionPoints().');
+			unitList.renderSum('.$mapItems->slotData[$i].', objBox.unitSpace);';
 		}
 	}
 }

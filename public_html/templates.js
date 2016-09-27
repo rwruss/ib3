@@ -1,3 +1,16 @@
+actionBox(trg, prm, maxPoints) {
+	let thisBox = addDiv("", "stdContain", trg);
+	thisBox.unitSpace = addDiv("", "stdContain", thisBox);
+	thisBox.slider = slideValBar(thisBox, "", 0, maxPoints);
+	thisBox.orderButton = addDiv("", "cBoxA", thisBox);
+	
+	thisBox.addEventListener("click", function() {
+		let prm = prm + "," + thisBox.slider.slide.value;
+		sendClick(prm);
+		})
+		
+	return actionBox;
+}
 
 addDiv = function(id, useClassName, target) {
 	var trg;

@@ -53,6 +53,10 @@ class unit {
 			$this->unitDat[$this->attrList[$desc]] = $val;
 		}
 	}
+	
+	function actionPoints() {
+		return min(1000, $this->get('energy') + floor((time()-$this->get('updateTime'))*4167/360000))+500;
+	}
 
 	function changeID($newID) {
 		$this->unitID = $newID;
@@ -110,10 +114,6 @@ class battle extends unit {
 class building extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
-	}
-
-	function actionPoints() {
-		return min(1000, $this->unitDat[16] + floor((time()-$this->unitDat[27])*4167/360000))+500;
 	}
 }
 
