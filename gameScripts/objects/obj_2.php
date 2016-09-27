@@ -5,7 +5,7 @@ include("./cityClass.php");
 echo 'This is a resource point (#'.$unitID.') for resource type '.$thisUnit->unitDat[10];
 
 // Verify priviedge to look at this site
-$cityID = thisUnit->unitDat[15];
+$cityID = $thisUnit->unitDat[15];
 $thisCity = new city([$cityID, $unitFile]);
 
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');

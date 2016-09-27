@@ -23,9 +23,9 @@ if ($numTraits > 0) {
 	for ($i=1; $i<sizeof($showTraits); $i++) {
 		$thisTrait = explode('<-->', $showTraits[$i]);
 		echo 'textBlob("", thisDiv, "'.$thisTrait[0].'")';
-	} else {
-		
 	}
+
+} else {
 }
 
 echo '</script>';
