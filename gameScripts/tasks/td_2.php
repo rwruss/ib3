@@ -39,19 +39,17 @@ tabSelect("newChars", 1);';
 //print_r($unitList->slotData);
 foreach ($unitList->slotData as $unitID) {
   //echo 'CHeck '.$unitID;
-	fseek($unitFile, $unitID*$defaultBlockSize);
-	$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
+	//fseek($unitFile, $unitID*$defaultBlockSize);
+	//$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
+	$unitDetail = loadUnit($unitID, $unitFile);
 
 
-	if ($unitDat[4] == 8) { // this is an elligable civilian unit
-		if ($unitDat[1] == $taskDat[1] && $unitDat[2] == $taskDat[2]) {
+	if ($unitDetail->get('uType') == 8) { // this is an elligable civilian unit
+		if ($unitDetail->get('xLoc') == $taskDat[1] && $unitDetail->get('yLoc') == $taskDat[2]) {
 			// this unit is at the task location and can add points
 			$noUnitsHere = false;
 
 			// Get total number of production points available for this unit
-
-      //$actionPoints = min(1000, $workUnit->unitDat[16] + floor((time()-$workUnit->unitDat[27])*$workUnit->unitDat[17]/360000));
-			$actionPoints = min(1000, $unitDat[16] + 10*floor((time()-$unitDat[27])*$unitDat[17]/360000));
 
 
 			// Show option to add production points to this task
@@ -71,8 +69,7 @@ foreach ($unitList->slotData as $unitID) {
   			newButton.addEventListener("click", function () {scrMod("1093,"+this.objectID)});';
         */
         echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});
-        var orderBox = actionBox(taskWork, "1122", 100);
-        console.log(orderBox);
+        var orderBox = actionBox(taskWork, "1093,"+this.objectID, 100);
         unitList.renderSum('.$unitID.', orderBox.unitSpace);';
 		} else {
       //echo 'Wrong loc';
@@ -84,7 +81,7 @@ foreach ($unitList->slotData as $unitID) {
 }
 echo '</script>';
 if ($noUnitsHere) {
-		//echo 'There are no units here that can contribute to the progress of this task.';
+		echo 'There are no units here that can contribute to the progress of this task.';
 	}
 fclose($slotFile);
 fclose($unitFile);

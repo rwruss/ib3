@@ -120,6 +120,8 @@ class building extends unit {
 }
 
 class char extends unit {
+		public $buffs;
+	
 		function __construct($id, $dat, $file) {
 			parent::__construct($id, $dat, $file);
 
@@ -133,7 +135,38 @@ class char extends unit {
 			$this->attrList['enRegen'] = 17;
 			$this->attrList['publicReligion'] = 18;
 			$this->attrList['experience'] = 18;
+			$this->attrList['skillSlot'] = 20;
+			$this->attrList['traitSlot'] = 21;
+			$this->attrList['trait1'] = 47;
+			$this->attrList['trait2'] = 48;
+			$this->attrList['trait3'] = 49;
+			$this->attrList['trait4'] = 50;
+			$this->attrList['trait5'] = 51;
+			$this->attrList['trait6'] = 52;
+			$this->attrList['trait7'] = 53;
+			$this->attrList['trait8'] = 54;
+			$this->attrList['trait9'] = 55;
+			$this->attrList['trait10'] = 56;
+			
+			$buffs = array();
 		}
+		
+	function calcBuffs($traitList, &$traitDescs) {
+		$buffs = array();
+		for ($i=1; $i<=sizeof($rawList); $i+=3) {
+			if isset($buffs['t'.$rawList[$i].'-'.$rawList[$i+1]]) {
+				$buffs['t'.$rawList[$i].'-'.$rawList[$i+1]] += $rawList[$i+2];
+			} else {
+				$buffs['t'.$rawList[$i].'-'.$rawList[$i+1]] = $rawList[$i+2];
+			}
+		}
+	}
+	
+	function getBuff($id) {
+		if (isset($boosts[$id]) {
+			return $boosts[$id];
+		} else return 0;
+	}
 }
 
 class settlement extends unit {

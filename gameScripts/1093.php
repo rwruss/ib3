@@ -19,12 +19,14 @@ $workUnit = loadUnit($postVals[2], $unitFile, 400);
 //$bldgDat = unpack('i*', fread($unitFile, 200));
 
 // Caluclate action points available
-$divisor = max(1,$workUnit->unitDat[17]);
-$actionPoints = min(1000, $workUnit->unitDat[16] + floor((time()-$workUnit->unitDat[27])*$workUnit->unitDat[17]/360000));
+//$divisor = max(1,$workUnit->unitDat[17]);
+//$actionPoints = min(1000, $workUnit->unitDat[16] + floor((time()-$workUnit->unitDat[27])*$workUnit->unitDat[17]/360000));
 
-$actionPct = [0, 250, 500, 1000];
-//$maxPoints = $actionPct[$postVals[3]]*10;
-$availablePoints = min($actionPct[$postVals[3]], $actionPoints);
+//$actionPct = [0, 250, 500, 1000];
+$availablePoints = min($postVals[3], $workUnit->actionPoints());
+
+// Check for buffs/nerfs for the city
+$parentCity = loadUnit($trgTask->taskDat[10]);
 
 $neededPts = $trgTask->taskDat[5]-$trgTask->taskDat[6];
 $usedPoints = min($availablePoints, $neededPts);

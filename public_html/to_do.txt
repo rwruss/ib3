@@ -6,6 +6,7 @@ Buying/Selling mercenary units
 Gather intel on an object
 Actions/Orders for characters and units
 implement map concealment/detection
+Traits and buffs/nerfs
 
 ** verify city priviledge in obj2 (resource site)
 
