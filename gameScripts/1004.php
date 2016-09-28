@@ -60,7 +60,7 @@ if (flock($unitFile, LOCK_EX)) {  // acquire an exclusive lock
 		$pGameID = intval($playerList[$idSpot+1]*-1);
 	}
 
-	$startLocation = [4800+$pGameID*4, 5260+$pGameID*4];
+	$startLocation = [4800+$pGameID, 5260+$pGameID];
 	//$pGameID = $_SESSION['gameIDs'][$_GET['gid']];
 
 

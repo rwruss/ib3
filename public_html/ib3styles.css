@@ -496,6 +496,8 @@
 }
 
 .stdContainer {
+	position:relative;
+	float:left;
 	display:inline-block;
 	overflow:auto;
 	width:100%;
@@ -652,8 +654,6 @@
 .selectContain {
 	position:relative;
 	float:left;
-	width:160;
-	height:180;
 	border: 1px solid black;
 	text-align:center;
 	margin:5;
@@ -662,13 +662,16 @@
 .slideContain {
 	display:inline-block;
 	border:1px solid blue;
+	width:300px;
 }
 
 .slideMin {
+	width:40px;
 	float:left;
 }
 
 .slideBar {
+	width:100px;
 	float:left;
 }
 
@@ -680,4 +683,5 @@
 .slideVal {
 	width: 50%;
 	float:left;
+	clear:left;
 }

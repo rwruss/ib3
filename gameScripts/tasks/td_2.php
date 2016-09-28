@@ -16,23 +16,14 @@ if (isset($unitAssign)) {
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 fseek($unitFile, $pGameID*$defaultBlockSize);
 $pDat = unpack('i*', fread($unitFile, 400));
-$playerObj = new player($pGameID, $pDat);
+$playerObj = new player($pGameID, $pDat, $unitFile);
 //print_R($playerObj);
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 //$unitList = array_filter(unpack("i*", readSlotData($slotFile, $playerObj->unitSlot, 40)));
 $unitList = new itemSlot($playerObj->get('unitSlot'), $slotFile, 40);
 //echo 'Check unit tslot '.$playerObj->get('unitSlot');
 $noUnitsHere = true;
-//print_r($taskDat);
 
-/*
-newTabMenu("task_'.$postVals[1].'");
-newTab("task_'.$postVals[1].'", 1, "Description");
-workers = newTab("task_'.$postVals[1].'", 2, "Workers available");
-tabSelect("task_'.$postVals[1].'", 1);
-
-newTaskDetail("tDtl_'.$postVals[1].'", "task_'.$postVals[1].'_header", '.($taskDat[6]/$taskDat[5]).', 1);
-*/
 echo '<script>
 useDeskTop.newPane("characters");
 thisDiv = useDeskTop.getPane("characters");
@@ -58,13 +49,13 @@ foreach ($unitList->slotData as $unitID) {
 			$noUnitsHere = false;
 
 			// Get total number of production points available for this unit
-      
+
       //$actionPoints = min(1000, $workUnit->unitDat[16] + floor((time()-$workUnit->unitDat[27])*$workUnit->unitDat[17]/360000));
 			$actionPoints = min(1000, $unitDat[16] + 10*floor((time()-$unitDat[27])*$unitDat[17]/360000));
-      
+
 
 			// Show option to add production points to this task
-
+      /*
       echo '
         unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});
         var objContain = addDiv("", "selectContain", taskWork);
@@ -78,6 +69,11 @@ foreach ($unitList->slotData as $unitID) {
   			var newButton = optionButton("", objContain, "100%");
   			newButton.objectID = "'.$postVals[1].','.$unitID.',3";
   			newButton.addEventListener("click", function () {scrMod("1093,"+this.objectID)});';
+        */
+        echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});
+        var orderBox = actionBox(taskWork, "1122", 100);
+        console.log(orderBox);
+        unitList.renderSum('.$unitID.', orderBox.unitSpace);';
 		} else {
       //echo 'Wrong loc';
     }

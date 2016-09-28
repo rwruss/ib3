@@ -42,7 +42,7 @@ class unit {
 		if (array_key_exists($desc, $this->attrList)) {
 			return $this->unitDat[$this->attrList[$desc]];
 		} else {
-			echo 'Not found';
+			echo 'Not found ('.$desc.')';
 			return false;
 		}
 	}
@@ -53,7 +53,7 @@ class unit {
 			$this->unitDat[$this->attrList[$desc]] = $val;
 		}
 	}
-	
+
 	function actionPoints() {
 		return min(1000, $this->get('energy') + floor((time()-$this->get('updateTime'))*4167/360000))+500;
 	}
@@ -114,6 +114,8 @@ class battle extends unit {
 class building extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
+
+		$this->attrList['energy'] = 16;
 	}
 }
 
@@ -185,11 +187,11 @@ class warband extends unit {
 		$this->attrList['carrySlot'] = 30;
 		$this->attrList['battleID'] = 31;
 		}
-		
+
 	function actionPoints() {
 		return min(1000, $this->unitDat[16] + floor((time()-$this->unitDat[27])*4167/360000))+500;
 	}
-	
+
 	function adjustEnergy($delta) {
 		$this->save('energy', max(0, $this->get('energy')+$delta));
 		$this->save('updateTime', time());

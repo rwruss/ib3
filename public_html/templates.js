@@ -1,15 +1,17 @@
-actionBox(trg, prm, maxPoints) {
-	let thisBox = addDiv("", "stdContain", trg);
-	thisBox.unitSpace = addDiv("", "stdContain", thisBox);
+actionBox = function(trg, prm, maxPoints) {
+	let thisBox = addDiv("", "selectContain", trg);
+	thisBox.unitSpace = addDiv("", "selectContain", thisBox);
 	thisBox.slider = slideValBar(thisBox, "", 0, maxPoints);
-	thisBox.orderButton = addDiv("", "cBoxA", thisBox);
-	
+	thisBox.orderButton = optionButton("", thisBox, "100%");
+
 	thisBox.addEventListener("click", function() {
-		let prm = prm + "," + thisBox.slider.slide.value;
-		sendClick(prm);
+		console.log("functin to " + prm);
+		let msg = prm + "," + thisBox.slider.slide.value;
+		console.log(msg)
+		scrMod(msg);
 		})
-		
-	return actionBox;
+
+	return thisBox;
 }
 
 addDiv = function(id, useClassName, target) {
@@ -1254,12 +1256,13 @@ slideValBar = function (trg, slideID, low, hi) {
 	contain.slide.value = "0";
 	contain.slide.step = "1";
 	contain.slide.id = slideID;
+	contain.slide.className = "slideBar";
 	contain.appendChild(contain.slide);
-
 	var maxVal = addDiv("", "slideMin", contain);
 	maxVal.innerHTML = hi;
 
 	var setVal = addDiv("", "slideVal", contain);
+	setVal.innerHTML = 0;
 
 	minVal.addEventListener("click", function (event) {event.stopPropagation();contain.slide.stepDown(1); setVal.innerHTML = contain.slide.value;});
 	maxVal.addEventListener("click", function (event) {event.stopPropagation();contain.slide.stepUp(1); setVal.innerHTML = contain.slide.value;});
