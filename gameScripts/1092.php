@@ -12,6 +12,89 @@ $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 
 // Get data for building producing the item
 $useBldg = loadUnit($postVals[1], $unitFile, 400);
+$trgUnit = loadUnit($useBldg->unitDat[$postVals[2]+18], $unitFile, 400);
+$trgTown = loadUnit($useBldg->get('parentCity'), $unitFile, 400);
+
+// Load applicable building and character boosts
+
+/*/// Run through list of city offices/characters and apply relevant boosts
+$numTraits = 100;
+$numBuildings = 100;
+// Load buff mask for this production item
+	$buffFile = fopen($scnPath.'/type2buffs.bdf', 'rb');
+	fseek($buffFile, $trgUnit->get('uType')*($numTraits+$numBuildings)*2);
+	$buffDat = fread($buffFile, ($numTraits+$numBuildings)*2);
+	$charBuffMask = unpack('s*', substr($buffDat, 0, $numTraits*2);
+	$bldgBuffMask = unpack('s*', substr($buffDat, $numTraits*2);
+
+
+$totalBuff = 0;
+if ($trgTown->get($townerLeaders) > 0 ) {
+	// Load list of city characters
+	$townLeaders = new itemSlot($trgTown->get('townLeaders'), $slotFile, 40);
+	$leaderList = [];
+	for ($i=1; $i<sizeof($townLeaders->slotData); $i+=2) {
+		$leaderList[] = 
+	}
+
+	// Load character and traits
+	for ($j=0; $j<sizeof($leaderList); $j++) {
+		$testChar = loadUnit($leaderList[$j], $unitFile, 400);
+		$charTraits = new itemSlot($testchar->get('traitSlot'), $slotFile, 40);
+		
+		for ($i=1; $i<=sizeof($charTraits->slotData); $i++) {
+			$totalBuff += $charBuffMask[$charTraits->slotData];
+		}
+	}
+	
+	// Load and apply boosts from city buildings
+	$bldgList = [];
+	$townBuildings = new itemSlot($trgTown->get('buildingSlot'), $slotFile, 40);
+	for ($i=1; $i<=sizeof($townBuildings->slotData); $i++) {
+		$checkBuilding = loadUnit($townBuildings->slotData[$i], $unitFile);
+		$bldgList[] = $checkBuilding->get('uType');
+	}
+	
+	for ($i=0; $i<=sizeof($bldgList); $i++) {
+		$totalBuff += $bldgBuffMask[$bldgList[$i]];
+	}
+}
+
+//Load and apply boosts from common/joint city leaders
+if ($trgTown->get('parentCity') > 0) {
+	$bigCity = loadUnit($trgTown->get('parentCity'), $unitFile, 400);
+	$bigLeaders = new itemSlot($bigCity->get('townLeaders'), $slotFile, 40);
+	$leaderList = [];
+	for ($i=1; $i<sizeof($townLeaders->slotData); $i+=2) {
+		$leaderList[] = 
+	}
+
+	// Load character and traits
+	for ($j=0; $j<sizeof($leaderList); $j++) {
+		$testChar = loadUnit($leaderList[$j], $unitFile, 400);
+		$charTraits = new itemSlot($testchar->get('traitSlot'), $slotFile, 40);
+		
+		for ($i=1; $i<=sizeof($charTraits->slotData); $i++) {
+			$totalBuff += $charBuffMask[$charTraits->slotData];
+		}
+	}
+	
+	//Load and apply boosts from common/joint city buildings
+	$bldgList = [];
+	$townBuildings = new itemSlot($bigCity->get('buildingSlot'), $slotFile, 40);
+	for ($i=1; $i<=sizeof($townBuildings->slotData); $i++) {
+		$checkBuilding = loadUnit($townBuildings->slotData[$i], $unitFile);
+		$bldgList[] = $checkBuilding->get('uType');
+	}
+	
+	for ($i=0; $i<=sizeof($bldgList); $i++) {
+		$totalBuff += $bldgBuffMask[$bldgList[$i]];
+	}
+}
+
+*/
+
+
 
 // Caluclate action points available
 echo 'Rate is '.$useBldg->unitDat[17].' Time is '.(time()-$useBldg->unitDat[27]);
@@ -22,7 +105,7 @@ $availablePoints = min($actionPct[$postVals[3]], $useBldg->actionPoints());
 echo 'Points available min('.$actionPct[$postVals[3]].', '.$useBldg->actionPoints().'):'.$availablePoints.' = '.$useBldg->unitDat[16].' +  Time: '.time().' - '.$useBldg->unitDat[27].' = '.(time()-$useBldg->unitDat[27]);
 echo 'Since update 100*floor(('.time().' - '.$useBldg->unitDat[27].') * '.$useBldg->unitDat[17].'/360000) = ('.($useBldg->unitDat[16] + 100*floor((time()-$useBldg->unitDat[27])*$useBldg->unitDat[17]/360000)).')';
 // Calculate points needed to complete the training
-$trgUnit = loadUnit($useBldg->unitDat[$postVals[2]+18], $unitFile, 400);
+
 
 $neededPts = $trgUnit->unitDat[19]-$trgUnit->unitDat[18];
 $usedPoints = min($availablePoints, $neededPts);

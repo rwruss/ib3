@@ -91,6 +91,7 @@ class army extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
 		//echo 'Load an army';
+		$this->attrList['commander'] = 10;
 		$this->attrList['unitListSlot'] = 14;
 		$this->attrList['carryCap'] = 29;
 		$this->attrList['carrySlot'] = 30;
@@ -114,8 +115,28 @@ class battle extends unit {
 class building extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
-
+		$this->attrList['parentCity'] = 15;
 		$this->attrList['energy'] = 16;
+		
+		$this->attrList['trait1'] = 29;
+		$this->attrList['trait2'] = 30;
+		$this->attrList['trait3'] = 31;
+		$this->attrList['trait4'] = 32;
+		$this->attrList['trait5'] = 33;
+	}
+}
+
+class resourcePoint extends unit {
+	function __construct($id, $dat, $file) {
+		parent::__construct($id, $dat, $file);
+		$this->attrList['parentCity'] = 15;
+		$this->attrList['energy'] = 16;
+		
+		$this->attrList['trait1'] = 29;
+		$this->attrList['trait2'] = 30;
+		$this->attrList['trait3'] = 31;
+		$this->attrList['trait4'] = 32;
+		$this->attrList['trait5'] = 33;
 	}
 }
 
@@ -136,7 +157,6 @@ class char extends unit {
 			$this->attrList['publicReligion'] = 18;
 			$this->attrList['experience'] = 18;
 			$this->attrList['skillSlot'] = 20;
-			$this->attrList['traitSlot'] = 21;
 			$this->attrList['trait1'] = 47;
 			$this->attrList['trait2'] = 48;
 			$this->attrList['trait3'] = 49;
@@ -173,8 +193,11 @@ class settlement extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
 
-		$this->attrList['carryCap'] = 33;
 		$this->attrList['carrySlot'] = 11;
+		$this->attrList['townLeaders'] = 13;
+		$this->attrList['buildingSlot'] = 17;
+		$this->attrList['carryCap'] = 33;
+		$this->attrList['parentCity'] = 29;
 	}
 }
 
@@ -271,6 +294,10 @@ function loadUnit($id, $file, $size) {
 	switch($dat[4]) {
 		case 1:
 			return new settlement($id, $dat, $file);
+			break;
+			
+		case 2:
+			return new resourcePoint($id, $dat, $file);
 			break;
 
 		case 3:

@@ -40,7 +40,7 @@
 	1034c - show non-owner details
 1035 - Process order given for a character (NOT USED)
 1036 - Get description of a task and return
-1037 - Building detail information
+1037 - Building detail information - (NOT USED??)
 1038 - Send a scout to a location
 1039 - Process building creation
 1040 - Task Detail Screen
@@ -101,7 +101,7 @@
 1092 - Add progress on building production item
 1093 - Add progress on building construction via a task
 1094 - Battle Detail
-1095 - Gathering options for a resource point
+1095 - MENU: Gathering options for a resource point
 1096 - Review intelligence about an object
 1097 - Write a message to an object or unit
 1098 - Process sending a message to object/unit <--- EMPTY!!!
@@ -128,6 +128,7 @@
 1119 - Processs putting a unit up for sale as a merc
 1120 - Process spying on an object
 1121 - Menu for Spy on an object - spy options
+1122 - PROCESS: Gather resources from a resource point
 
 // Manual Override Functions
 2001 - Add Resources to a city menu
