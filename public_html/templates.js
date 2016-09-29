@@ -4,7 +4,7 @@ actionBox = function(trg, prm, maxPoints) {
 	thisBox.slider = slideValBar(thisBox, "", 0, maxPoints);
 	thisBox.orderButton = optionButton("", thisBox, "100%");
 
-	thisBox.addEventListener("click", function() {
+	thisBox.orderButton.addEventListener("click", function() {
 		console.log("functin to " + prm);
 		let msg = prm + "," + thisBox.slider.slide.value;
 		console.log(msg)

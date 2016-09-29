@@ -41,13 +41,14 @@ foreach ($unitList->slotData as $unitID) {
   //echo 'CHeck '.$unitID;
 	//fseek($unitFile, $unitID*$defaultBlockSize);
 	//$unitDat = unpack('i*', fread($unitFile, $unitBlockSize));
-	$unitDetail = loadUnit($unitID, $unitFile);
+	$unitDetail = loadUnit($unitID, $unitFile, 400);
 
 
 	if ($unitDetail->get('uType') == 8) { // this is an elligable civilian unit
 		if ($unitDetail->get('xLoc') == $taskDat[1] && $unitDetail->get('yLoc') == $taskDat[2]) {
 			// this unit is at the task location and can add points
 			$noUnitsHere = false;
+      $actionPoints = $unitDetail->actionPoints();
 
 			// Get total number of production points available for this unit
 
@@ -68,8 +69,8 @@ foreach ($unitList->slotData as $unitID) {
   			newButton.objectID = "'.$postVals[1].','.$unitID.',3";
   			newButton.addEventListener("click", function () {scrMod("1093,"+this.objectID)});';
         */
-        echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDat[4].'});
-        var orderBox = actionBox(taskWork, "1093,"+this.objectID, 100);
+        echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitID.', unitName:"unit name", actionPoints:'.$actionPoints.', strength:75, tNum:'.$unitDetail->get('uType').'});
+        var orderBox = actionBox(taskWork, "1093,'.$postVals[1].','.$unitID.'", '.$actionPoints.');
         unitList.renderSum('.$unitID.', orderBox.unitSpace);';
 		} else {
       //echo 'Wrong loc';

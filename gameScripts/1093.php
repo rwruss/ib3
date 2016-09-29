@@ -26,7 +26,7 @@ $workUnit = loadUnit($postVals[2], $unitFile, 400);
 $availablePoints = min($postVals[3], $workUnit->actionPoints());
 
 // Check for buffs/nerfs for the city
-$parentCity = loadUnit($trgTask->taskDat[10]);
+$parentCity = loadUnit($trgTask->taskDat[10], $unitFile, 400);
 
 $neededPts = $trgTask->taskDat[5]-$trgTask->taskDat[6];
 $usedPoints = min($availablePoints, $neededPts);
@@ -36,7 +36,7 @@ echo 'Use '.$usedPoints.' Points';
 // Record new stats for unit production
 if ($usedPoints > 0) {
 	// Updadate stats for producing building
-	$workUnit->unitDat[16] = $actionPoints-$usedPoints;
+	$workUnit->unitDat[16] = $workUnit->actionPoints()-$usedPoints;
 	$workUnit->unitDat[27] = time();
 
 	if ($trgTask->taskDat[6]+$usedPoints >= $trgTask->taskDat[5]) {
