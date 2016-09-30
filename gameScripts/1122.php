@@ -24,7 +24,9 @@ echo 'Point at ('.$trgPoint->get('xLoc').', '.$trgPoint->get('yLoc').')<br>
 $xDist = $trgPoint->get('xLoc') - $trgUnit->get('xLoc');
 $yDist = $trgPoint->get('yLoc') - $trgUnit->get('yLoc');
 if ($xDist*$xDist + $yDist*$yDist > 400) exit('This unit is too far away - '.$xDist.', '.$yDist);
+$trgDst = floor(sqrt($xDist*$xDist + $yDist*$yDist));
 
+$totalBuff = 1.0;
 // Adjust for boosts and nerfs
 /*
 $buffFile = fopen($scnPath.'/type1buffs.bdf', 'rb');
@@ -53,11 +55,31 @@ if ($trgUnit->get('armyID') > 0) {
 */
 
 // Calculate actionpoints used in transporting to the city
-
+$parentCity = loadUnit($trgPoint, $unitFile, 400);
+$xDist = $trgPoint->get('xLoc') - $parentCity->get('xLoc');
+$yDist = $trgPoint->get('yLoc') - $parentCity->get('yLoc');
+$parentDst = floor(sqrt($xDist*$xDist + $yDist*$yDist));
 
 // Calculate amount of resources produced
+$usedPoints = min($trgUnit->actionPoints(), $postVals[2]);
+$productionPoints = max(0, $usedPoints - $trgDst - $parentDst);
+
+$useTime = time();
+$currentCondition = min($trgPoint->get('maxCondition'), floor($trgPoint->get('conditionPoints')+$trgPoint->get('recoveryRate')*($useTime-$trgPoint->get('updateTime'))/3600);
+
+$rscProd = $totalBuff*$productionPoints*$trgPoint->get('baseProd')*($currentCondition)/$trgPoint->get('maxCondition');
+$currentCondition -= $productionPoints;
+
+// Record the new condition for the site
+trgPoint->save('updateTime', $useTime);
+trgPoint->save('conditionPoints', $currentCondtion);
+
+// Record the new energy points for the unit
+trgUnit->save('updateTime', $useTime);
+trgUnit->save('energy', $trgUnit->actionPoints()-$usedPoints);
 
 // Transfer the resoruces to the controlling city
+$parentRsc->adjustRsc($trgPoint->get('rscType'), $rscProd, $slotFile);
 
 // Add and affect for this resource spot
 

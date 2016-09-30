@@ -1,13 +1,13 @@
 Short Term:
+Character renown generation and usage
 Disband/create army options
-Assign a commander/chars to an army
+* Assign a commander/chars to an army
 Give units to a player to control
-Buying/Selling mercenary units
+* Buying/Selling mercenary units
 Gather intel on an object
-Actions/Orders for characters and units
+* Actions/Orders for characters and units
 implement map concealment/detection
 Traits and buffs/nerfs
-Assign parent city to buildings when they are started
 
 ** verify city priviledge in obj2 (resource site)
 

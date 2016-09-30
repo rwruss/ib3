@@ -52,7 +52,6 @@ if ($usedPoints > 0) {
 		$newBuilding->unitDat[10] = $trgTask->taskDat[12]; // Building Type
 		$newBuilding->unitDat[16] = 0; // Energy
 		$newBuilding->unitDat[17] = 4167; // Energy Regen Rate
-		$newBuilding->unitDat[19] = 0; // Energy Regen Rate
 		$newBuilding->unitDat[27] = time(); // Update time
 
 		$newBuilding->saveAll($unitFile);
@@ -60,6 +59,10 @@ if ($usedPoints > 0) {
 		$trgTask->taskDat[3] = 2;
 
 		// Need to remove the task from the player's que.
+		
+		// Update renown production for the city and the city leaders
+		$newRenown = $parentCity->get('renownGen')+$newBuilding->get('renownGen');
+		$parentCity->save('renownGen', $newRenown);
 
 	} else {
 		// Update stats for unit in production

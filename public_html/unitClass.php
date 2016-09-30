@@ -117,6 +117,7 @@ class building extends unit {
 		parent::__construct($id, $dat, $file);
 		$this->attrList['parentCity'] = 15;
 		$this->attrList['energy'] = 16;
+		$this->attrList['renownGen'] = 23;
 
 		$this->attrList['trait1'] = 29;
 		$this->attrList['trait2'] = 30;
@@ -129,8 +130,15 @@ class building extends unit {
 class resourcePoint extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
+		
+		$this->attrList['rscType'] = 10;
 		$this->attrList['parentCity'] = 14;
 		$this->attrList['energy'] = 16;
+		$this->attrList['baseProd'] = 18;
+		
+		$this->attrList['conditionPoints'] = 22;
+		$this->attrList['maxCondition'] = 23;
+		$this->attrList['recoveryRate'] = 24;
 
 		$this->attrList['trait1'] = 29;
 		$this->attrList['trait2'] = 30;
@@ -157,6 +165,8 @@ class char extends unit {
 			$this->attrList['publicReligion'] = 18;
 			$this->attrList['experience'] = 18;
 			$this->attrList['skillSlot'] = 20;
+			$this->attrList['renown'] = 22;
+			$this->attrList['renownRate'] = 22;
 			$this->attrList['trait1'] = 47;
 			$this->attrList['trait2'] = 48;
 			$this->attrList['trait3'] = 49;
@@ -170,6 +180,10 @@ class char extends unit {
 
 			$buffs = array();
 		}
+		
+	function renownPoints() {
+		return $this->get('renown')+$this->get('renownRate')*(time() - $this->updateTime)/3600;
+	}
 
 	function calcBuffs($traitList, &$traitDescs) {
 		$buffs = array();
@@ -196,8 +210,30 @@ class settlement extends unit {
 		$this->attrList['carrySlot'] = 11;
 		$this->attrList['townLeaders'] = 13;
 		$this->attrList['buildingSlot'] = 17;
-		$this->attrList['carryCap'] = 33;
 		$this->attrList['parentCity'] = 29;
+		$this->attrList['carryCap'] = 33;
+		$this->attrList['renownGen'] = 35;		
+		
+	}
+	
+	function adjustRsc($rscID, $qty, $slotFile) {
+		$location = 0;
+		$townRsc = new blockSlot($this->get('carrySlot'), $slotFile, 40);
+		$data = pack('i*', $rscID, $qty);
+		for ($i=1; $i<=sizeof($blockSlot->slotData); $i+=2) {
+			if ($blockSlot->slotData[$i] == $rscID) {
+				$location = $i;
+				$data = pack('i*', $rscID, $blockSlot->slotData[$i+1]+$qty);
+				break;
+			}
+			else if ($blockSlot->slotData[$i] == 0) $location = $i;
+		}
+		
+		if ($location > 0) {
+			$townRsc->addItem($slotFile, $data, $location);
+		} else {
+			$townRsc->addItem($slotFile, $data);
+		}
 	}
 }
 
