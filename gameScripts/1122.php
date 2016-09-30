@@ -11,17 +11,19 @@ $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 $slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 
 // Load the resource point
-$trgPoint = loadUnit($postVals[1], $unitFile);
+$trgPoint = loadUnit($postVals[1], $unitFile, 400);
 
 // Load the gathering unit
-$trgUnit = loadUnit($postVals[2], $unitFile);
+$trgUnit = loadUnit($postVals[2], $unitFile, 400);
 
 // Verify the unit is the right type and close enough and controlled by the right person
 if ($trgUnit->get('uType') != 8) exit('Incorrect unit type');
+echo 'Point at ('.$trgPoint->get('xLoc').', '.$trgPoint->get('yLoc').')<br>
+	Unit at ('.$trgUnit->get('xLoc').', '.$trgUnit->get('yLoc').')';
 
 $xDist = $trgPoint->get('xLoc') - $trgUnit->get('xLoc');
 $yDist = $trgPoint->get('yLoc') - $trgUnit->get('yLoc');
-if ($xDist*$xDist + $yDist*$yDist > 100) exit('This unit is too far away');
+if ($xDist*$xDist + $yDist*$yDist > 400) exit('This unit is too far away - '.$xDist.', '.$yDist);
 
 // Adjust for boosts and nerfs
 /*
@@ -40,7 +42,7 @@ if ($trgUnit->get('armyID') > 0) {
 	if ($army->get('commander') > 0) {
 		$commander = loadUnit($army->get('commander'), $unitFile, 40);
 		$commandTraits = new itemSlot($commander->get('traitSlot'), $slotFile, 40);
-		
+
 		for ($i=1; $i<=sizeof($commandTraits->slotData); $i++) {
 			$totalBuff += $charBuffMask[$commandTraits->slotData];
 		}

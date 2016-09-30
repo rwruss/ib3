@@ -2,7 +2,7 @@
 include("./slotFunctions.php");
 include("./cityClass.php");
 
-echo 'This is a resource point (#'.$unitID.') for resource type '.$thisUnit->unitDat[10];
+echo 'This is a resource point (#'.$unitID.') for resource type '.$thisUnit->unitDat[10].' at ('.$thisUnit->unitDat[1].', '.$thisUnit->unitDat[2].')';
 
 // Verify priviedge to look at this site
 $cityID = $thisUnit->unitDat[15];

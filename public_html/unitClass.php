@@ -117,7 +117,7 @@ class building extends unit {
 		parent::__construct($id, $dat, $file);
 		$this->attrList['parentCity'] = 15;
 		$this->attrList['energy'] = 16;
-		
+
 		$this->attrList['trait1'] = 29;
 		$this->attrList['trait2'] = 30;
 		$this->attrList['trait3'] = 31;
@@ -129,9 +129,9 @@ class building extends unit {
 class resourcePoint extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
-		$this->attrList['parentCity'] = 15;
+		$this->attrList['parentCity'] = 14;
 		$this->attrList['energy'] = 16;
-		
+
 		$this->attrList['trait1'] = 29;
 		$this->attrList['trait2'] = 30;
 		$this->attrList['trait3'] = 31;
@@ -295,7 +295,7 @@ function loadUnit($id, $file, $size) {
 		case 1:
 			return new settlement($id, $dat, $file);
 			break;
-			
+
 		case 2:
 			return new resourcePoint($id, $dat, $file);
 			break;
