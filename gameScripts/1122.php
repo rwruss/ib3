@@ -7,8 +7,8 @@ Process gathering resources from a resource point
 include('./slotFunctions.php');
 include('./unitClass.php');
 
-$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 
 // Load the resource point
 $trgPoint = loadUnit($postVals[1], $unitFile, 400);
@@ -55,31 +55,38 @@ if ($trgUnit->get('armyID') > 0) {
 */
 
 // Calculate actionpoints used in transporting to the city
-$parentCity = loadUnit($trgPoint, $unitFile, 400);
+
+$parentCity = loadUnit($trgPoint->get('parentCity'), $unitFile, 400);
 $xDist = $trgPoint->get('xLoc') - $parentCity->get('xLoc');
 $yDist = $trgPoint->get('yLoc') - $parentCity->get('yLoc');
 $parentDst = floor(sqrt($xDist*$xDist + $yDist*$yDist));
 
 // Calculate amount of resources produced
-$usedPoints = min($trgUnit->actionPoints(), $postVals[2]);
+$usedPoints = min($trgUnit->actionPoints(), $postVals[3]);
 $productionPoints = max(0, $usedPoints - $trgDst - $parentDst);
+echo 'Production Points = min('.$trgUnit->actionPoints().', '.$postVals[3].') - '.$trgDst.' - '.$parentDst;
 
 $useTime = time();
-$currentCondition = min($trgPoint->get('maxCondition'), floor($trgPoint->get('conditionPoints')+$trgPoint->get('recoveryRate')*($useTime-$trgPoint->get('updateTime'))/3600);
+$currentCondition = min($trgPoint->get('maxCondition'), floor($trgPoint->get('conditionPoints')+$trgPoint->get('recoveryRate')*($useTime-$trgPoint->get('updateTime'))/3600));
 
-$rscProd = $totalBuff*$productionPoints*$trgPoint->get('baseProd')*($currentCondition)/$trgPoint->get('maxCondition');
+$maxCond = max($trgPoint->get('maxCondition'),1);
+$rscProd = $totalBuff*$productionPoints*$trgPoint->get('baseProd')*($currentCondition)/($maxCond*100);
+echo 'Production = '.$totalBuff.' * '.$productionPoints.' * '.$trgPoint->get('baseProd').' * '.$currentCondition.' / ('.$maxCond.' * 100)';
+
 $currentCondition -= $productionPoints;
 
+
 // Record the new condition for the site
-trgPoint->save('updateTime', $useTime);
-trgPoint->save('conditionPoints', $currentCondtion);
+$trgPoint->save('updateTime', $useTime);
+$trgPoint->save('conditionPoints', $currentCondition);
 
 // Record the new energy points for the unit
-trgUnit->save('updateTime', $useTime);
-trgUnit->save('energy', $trgUnit->actionPoints()-$usedPoints);
+$trgUnit->save('updateTime', $useTime);
+$trgUnit->save('energy', $trgUnit->actionPoints()-$usedPoints);
 
 // Transfer the resoruces to the controlling city
-$parentRsc->adjustRsc($trgPoint->get('rscType'), $rscProd, $slotFile);
+echo 'Add'.$rscProd.' of resource '.$trgPoint->get('rscType').' to parent city';
+$parentCity->adjustRsc($trgPoint->get('rscType'), $rscProd, $slotFile);
 
 // Add and affect for this resource spot
 

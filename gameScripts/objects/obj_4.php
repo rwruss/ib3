@@ -37,7 +37,7 @@ gatherIntel.innerHTML = "gather Intel";
 gatherIntel.addEventListener("click", function () {makeBox("gatherIntel", "1121,'.$unitID.'", 500, 500, 200, 50)});
 </script>';
 
-?>
+
 
 
 ?>

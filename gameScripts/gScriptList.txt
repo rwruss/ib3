@@ -129,6 +129,10 @@
 1120 - Process spying on an object
 1121 - Menu for Spy on an object - spy options
 1122 - PROCESS: Gather resources from a resource point
+1123 - MENU: Declare war on a player!!
+1124 - PROCESS: Declare warID
+1125 - MENU: Offer to end war
+1126 - PROCESS: Offer to end war
 
 // Manual Override Functions
 2001 - Add Resources to a city menu

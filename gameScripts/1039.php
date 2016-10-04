@@ -1,6 +1,7 @@
 <?php
 include("./slotFunctions.php");
 include("./taskFunctions.php");
+include('./unitClass.php');
 echo 'Start production of the building.';
 
 echo '<p>PostVals:<br>';
@@ -75,8 +76,25 @@ if ($approved != false) {
 			echo 'Major lock error';
 		}
 		// Record information for new building
-		fseek($unitFile, $newID*$defaultBlockSize);
-		fwrite($unitFile, pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2, 0, 2, 0, 0, 0, 1, 1, $bldgTypeInfo[11], 0, 0, 0, 0, $cityID, 0, 0, 0, 1, 0, 0));
+		$newBldg = loadUnit($newID, $unitFile, 400);
+		$newBldg->unitDat[1] = intval($postVals[1]/2)*2;
+		$newBldg->unitDat[2] = intval($postVals[2]/2)*2;
+		$newBldg->unitDat[4] = 2;
+		$newBldg->unitDat[8] = 1;
+		$newBldg->unitDat[9] = 1;
+		$newBldg->unitDat[10] = $bldgTypeInfo[11];
+		$newBldg->unitDat[15] = $cityID;
+		$newBldg->unitDat[18] = 100;
+		$newBldg->unitDat[19] = 1;
+		$newBldg->unitDat[20] = 100;
+		$newBldg->unitDat[22] = 10000;
+		$newBldg->unitDat[23] = 10000;
+		$newBldg->unitDat[24] = 100;
+		$newBldg->unitDat[27] = time();
+
+		$newBldg->saveAll($unitFile);
+		//fseek($unitFile, $newID*$defaultBlockSize);
+		//fwrite($unitFile, pack('i*', intval($postVals[1]/2)*2, intval($postVals[2]/2)*2, 0, 2, 0, 0, 0, 1, 1, $bldgTypeInfo[11], 0, 0, 0, 0, $cityID, 0, 0, 100, 1, 0, 0));
 
 		// add the building to the town as an "in progress" building
 

@@ -407,6 +407,7 @@ function newSlot($slotFile) {
 		{
 		echo 'something else ('.$check_slot[1].')';
 		}
+	echo 'Create slot #'.$use_slot;
 	return $use_slot;
 }
 

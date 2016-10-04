@@ -1,6 +1,6 @@
 <?php
 
-include("./slotFunctions.php");
+require_once("./slotFunctions.php");
 $unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
 
 // Get player information
@@ -25,16 +25,40 @@ foreach ($dipTree as $trgID => $action) {
 	echo 'Action '.$action[0].' with faction '.$trgID.' at time '.$action[1].'<br>';
 }
 
+$warFile = fopen($gamePath.'/wars.war', 'rb');
 foreach ($warList->slotData as $warID) {
-	fseek($unitFile, $warID*$defaultBlockSize);
-	$warDat = unpack('i*', fread($unitFile, 100));
-	
-	echo 'warDetail('.$warID.')';
-}
+	if ($warID > 0) {
+		fseek($warFile, $warID*$defaultBlockSize);
+		$warDat = unpack('i*', fread($warFile, 100));
 
+		echo '<p>Player '.$warDat[5].' vs '.$warDat[6].'<br>';
+		switch ($warDat[1]) {
+			case 0:
+				echo 'War for no reason!';
+				break;
+
+			case 1:
+				echo 'War for no reason!';
+				break;
+
+			case 2:
+				echo 'War for no religious conversion!';
+				break;
+
+			case 3:
+				echo 'War for no land/towns!';
+				break;
+
+			case 4:
+				echo 'War for conquest';
+				break;
+		}
+	echo '<p>Score is '.$warDat[8].'<br>';
+	echo '<span onclick="scrMod(1125,'.$warID.',1)">Surrender</span>, Offer Peace, Enforce Demands';
+	}
+}
+fclose($warFile);
 fclose($unitFile);
 fclose($slotFile);
-
-echo 'end of 1008';
 
 ?>

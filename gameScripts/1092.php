@@ -21,7 +21,7 @@ $trgTown = loadUnit($useBldg->get('parentCity'), $unitFile, 400);
 $numTraits = 100;
 $numBuildings = 100;
 // Load buff mask for this production item
-	$buffFile = fopen($scnPath.'/type2buffs.bdf', 'rb');
+	$buffFile = fopen($scnPath.'/type2buffs.bdf', 'r+b');
 	fseek($buffFile, $trgUnit->get('uType')*($numTraits+$numBuildings)*2);
 	$buffDat = fread($buffFile, ($numTraits+$numBuildings)*2);
 	$charBuffMask = unpack('s*', substr($buffDat, 0, $numTraits*2);
@@ -34,19 +34,19 @@ if ($trgTown->get($townerLeaders) > 0 ) {
 	$townLeaders = new itemSlot($trgTown->get('townLeaders'), $slotFile, 40);
 	$leaderList = [];
 	for ($i=1; $i<sizeof($townLeaders->slotData); $i+=2) {
-		$leaderList[] = 
+		$leaderList[] =
 	}
 
 	// Load character and traits
 	for ($j=0; $j<sizeof($leaderList); $j++) {
 		$testChar = loadUnit($leaderList[$j], $unitFile, 400);
 		$charTraits = new itemSlot($testchar->get('traitSlot'), $slotFile, 40);
-		
+
 		for ($i=1; $i<=sizeof($charTraits->slotData); $i++) {
 			$totalBuff += $charBuffMask[$charTraits->slotData];
 		}
 	}
-	
+
 	// Load and apply boosts from city buildings
 	$bldgList = [];
 	$townBuildings = new itemSlot($trgTown->get('buildingSlot'), $slotFile, 40);
@@ -54,7 +54,7 @@ if ($trgTown->get($townerLeaders) > 0 ) {
 		$checkBuilding = loadUnit($townBuildings->slotData[$i], $unitFile);
 		$bldgList[] = $checkBuilding->get('uType');
 	}
-	
+
 	for ($i=0; $i<=sizeof($bldgList); $i++) {
 		$totalBuff += $bldgBuffMask[$bldgList[$i]];
 	}
@@ -66,19 +66,19 @@ if ($trgTown->get('parentCity') > 0) {
 	$bigLeaders = new itemSlot($bigCity->get('townLeaders'), $slotFile, 40);
 	$leaderList = [];
 	for ($i=1; $i<sizeof($townLeaders->slotData); $i+=2) {
-		$leaderList[] = 
+		$leaderList[] =
 	}
 
 	// Load character and traits
 	for ($j=0; $j<sizeof($leaderList); $j++) {
 		$testChar = loadUnit($leaderList[$j], $unitFile, 400);
 		$charTraits = new itemSlot($testchar->get('traitSlot'), $slotFile, 40);
-		
+
 		for ($i=1; $i<=sizeof($charTraits->slotData); $i++) {
 			$totalBuff += $charBuffMask[$charTraits->slotData];
 		}
 	}
-	
+
 	//Load and apply boosts from common/joint city buildings
 	$bldgList = [];
 	$townBuildings = new itemSlot($bigCity->get('buildingSlot'), $slotFile, 40);
@@ -86,7 +86,7 @@ if ($trgTown->get('parentCity') > 0) {
 		$checkBuilding = loadUnit($townBuildings->slotData[$i], $unitFile);
 		$bldgList[] = $checkBuilding->get('uType');
 	}
-	
+
 	for ($i=0; $i<=sizeof($bldgList); $i++) {
 		$totalBuff += $bldgBuffMask[$bldgList[$i]];
 	}
@@ -100,9 +100,9 @@ if ($trgTown->get('parentCity') > 0) {
 echo 'Rate is '.$useBldg->unitDat[17].' Time is '.(time()-$useBldg->unitDat[27]);
 $actionPoints = min(1000, $useBldg->unitDat[16] + 100*floor((time()-$useBldg->unitDat[27])*$useBldg->unitDat[17]/360000));
 
-$actionPct = [0, 250, 500, 1000];
-$availablePoints = min($actionPct[$postVals[3]], $useBldg->actionPoints());
-echo 'Points available min('.$actionPct[$postVals[3]].', '.$useBldg->actionPoints().'):'.$availablePoints.' = '.$useBldg->unitDat[16].' +  Time: '.time().' - '.$useBldg->unitDat[27].' = '.(time()-$useBldg->unitDat[27]);
+
+$availablePoints = min($postVals[3], $useBldg->actionPoints());
+//echo 'Points available min('.$actionPct[$postVals[3]].', '.$useBldg->actionPoints().'):'.$availablePoints.' = '.$useBldg->unitDat[16].' +  Time: '.time().' - '.$useBldg->unitDat[27].' = '.(time()-$useBldg->unitDat[27]);
 echo 'Since update 100*floor(('.time().' - '.$useBldg->unitDat[27].') * '.$useBldg->unitDat[17].'/360000) = ('.($useBldg->unitDat[16] + 100*floor((time()-$useBldg->unitDat[27])*$useBldg->unitDat[17]/360000)).')';
 // Calculate points needed to complete the training
 
@@ -145,9 +145,19 @@ if ($usedPoints > 0) {
 				break;
 
 			case 6:
-				// made a new war+band
+				// made a new warband
 
 				// Record in player unit list
+				echo 'Add to slot '.$playerDat[22];
+				$unitList = new itemSlot($playerDat[22], $slotFile, 40);
+				$unitList->addItem($useBldg->unitDat[$postVals[2]+18],$slotFile);
+				break;
+
+			case 8:
+				// made a new warband
+
+				// Record in player unit list
+				echo 'Add to slot '.$playerDat[22];
 				$unitList = new itemSlot($playerDat[22], $slotFile, 40);
 				$unitList->addItem($useBldg->unitDat[$postVals[2]+18],$slotFile);
 				break;
@@ -168,7 +178,7 @@ if ($usedPoints > 0) {
 					break;
 				}
 			}
-			$mapSlot->addItem($mapSlotFile, pack('i*', $useBldg->unitDat[$postVals[2]], 0), $loc); // unit ID, not visible
+			$mapSlot->addItem($mapSlotFile, pack('i*', $useBldg->unitDat[$postVals[2]+18], 0), $loc); // unit ID, not visible
 
 			fflush($mapSlotFile);
 			flock($mapSlotFile, LOCK_UN);
@@ -187,6 +197,6 @@ if ($usedPoints > 0) {
 	echo '<script>unitList.newUnit({unitType:"trainingUnit", unitID:'.$useBldg->unitDat[$postVals[2]+18].', unitName:"Training", trainPts:'.($trgUnit->unitDat[18]).', trainReq:'.$trgUnit->unitDat[19].'});</script>';
 }
 
-print_r($trgUnit->unitDat);
+//print_r($trgUnit->unitDat);
 fclose($unitFile);
 ?>

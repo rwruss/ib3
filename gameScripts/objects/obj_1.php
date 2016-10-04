@@ -1,8 +1,8 @@
 <?php
 // Detail for a town
 
-include("./slotFunctions.php");
-include("./cityClass.php");
+require_once ("./slotFunctions.php");
+require_once ("./cityClass.php");
 
 // Verify that player is authorized to view the resources at this city
 $cityID = $_SESSION['selectedItem'];

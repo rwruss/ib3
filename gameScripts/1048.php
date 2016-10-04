@@ -79,6 +79,7 @@ switch ($targetBuilding->unitDat[7]) {
   			// Get data on object being made
   			fseek($unitFile, $targetBuilding->unitDat[$i+18]*$defaultBlockSize);
   			$itemDat = unpack('i*', fread($unitFile, 400));
+        /*
   			echo '
   			unitList.newUnit({unitType:"trainingUnit", unitID:'.$targetBuilding->unitDat[$i+18].', unitName:"Training", trainPts:'.$itemDat[18].', trainReq:'.$itemDat[19].'});
   			var objContain = addDiv("", "selectContain", bldgQueue);
@@ -91,7 +92,12 @@ switch ($targetBuilding->unitDat[7]) {
   			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});
   			var newButton = optionButton("", objContain, "100%");
   			newButton.objectID = "'.$postVals[1].','.$i.',3";
-  			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});';
+  			newButton.addEventListener("click", function () {scrMod("1092,"+this.objectID)});';*/
+
+        echo '
+        unitList.newUnit({unitType:"trainingUnit", unitID:'.$targetBuilding->unitDat[$i+18].', unitName:"Training", trainPts:'.$itemDat[18].', trainReq:'.$itemDat[19].'});
+        var orderBox = actionBox(bldgQueue, "1092,'.$postVals[1].','.$i.'", '.$targetBuilding->actionPoints().');
+        unitList.renderSum('.$targetBuilding->unitDat[18+$i].', orderBox.unitSpace);';
   		} else {
         echo 'var objContain = addDiv("", "selectContain", bldgQueue);
         objContain.innerHTML = "empty production slot";';

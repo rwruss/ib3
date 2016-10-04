@@ -1,7 +1,7 @@
 <?php
 
 //include('./unitClass.php');
-include('./slotFunctions.php');
+require_once ('./slotFunctions.php');
 
 class intel {
 	function __construct($trgID, $params) {
@@ -21,9 +21,10 @@ function intelFactory($type, $params) {
 $thisPlayer = loadPlayer($pGameID, $unitFile, 400);
 
 // Review intel on an object
-echo 'Intel on this object ('.$unitID.')
+echo 'Intel on this object 1096 ('.$unitID.')
 <div style="position:absolute; bottom:40; left:0;" onclick="scrMod(\'1097,'.$unitID.'\');">Message</div>
-<div style="position:absolute; bottom:0; left:0;" onclick="scrMod(\'1121,'.$unitID.'\');">Gather Intel</div>';
+<div style="position:absolute; bottom:20; left:0;" onclick="scrMod(\'1121,'.$unitID.'\');">Gather Intel</div>
+<div style="position:absolute; bottom:0; left:0;" onclick="scrMod(\'1123,'.$unitID.'\');">War</div>';
 
 // Load Intel file and read intel slot for the player
 $intelFile = fopen($gamePath.'/intel.slt', 'rb');

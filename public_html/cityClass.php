@@ -5,11 +5,11 @@ class city {
 	private $cityID, $cityDatStr, $actionPoints;
 
 	function __construct($args) {
-		echo 'Load a city';
+		//echo 'Load a city';
 		if (sizeof($args) == 2) {
 			if (gettype($args[0]) == 'integer' && gettype($args[1]) == 'resource') {
-				echo 'From a file';
-			echo 'TYpes: '.gettype($args[0]).', '.gettype($args[1]);
+			//	echo 'From a file';
+			//echo 'TYpes: '.gettype($args[0]).', '.gettype($args[1]);
 			$this->init($args[0], $args[1]);
 
 		} else echo 'City class error 1 - '.gettype($args[0]).', '.gettype($args[1]);

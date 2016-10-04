@@ -1,6 +1,6 @@
 <?php
 
-include('./unitClass.php');
+require_once('./unitClass.php');
 
 // get unit Data
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
@@ -8,6 +8,7 @@ $unitID = $postVals[1];
 $thisUnit = loadUnit($postVals[1], $unitFile, 400);
 
 $_SESSION['selectedItem'] = $unitID;
+echo 'Load type ('.$thisUnit->get('uType').') '.get_class($thisUnit);
 
 if ($thisUnit->get('controller') == $pGameID) {
 	include('../gameScripts/objects/obj_'.$thisUnit->get('uType').'.php');

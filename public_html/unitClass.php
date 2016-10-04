@@ -70,7 +70,7 @@ class unit {
 			fwrite($this->linkFile, pack('i', $val));
 			echo 'ID: '.$this->unitID;
 			echo 'Save '.$val.' at spot '.($this->unitID*$defaultBlockSize + $this->attrList[$desc]*4-4);
-			$this->attrList[$desc] = $val;
+			$this->unitDat[$this->attrList[$desc]] = $val;
 		} else {
 			return false;
 		}
@@ -84,6 +84,11 @@ class unit {
 		}
 		fseek($file, $this->unitID*100);
 		$saveLen = fwrite($file, $packStr);
+	}
+
+	function adjustEnergy($delta) {
+		$this->save('energy', max(0, $this->get('energy')+$delta));
+		$this->save('updateTime', time());
 	}
 }
 
@@ -130,12 +135,12 @@ class building extends unit {
 class resourcePoint extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
-		
+
 		$this->attrList['rscType'] = 10;
-		$this->attrList['parentCity'] = 14;
+		$this->attrList['parentCity'] = 15;
 		$this->attrList['energy'] = 16;
 		$this->attrList['baseProd'] = 18;
-		
+
 		$this->attrList['conditionPoints'] = 22;
 		$this->attrList['maxCondition'] = 23;
 		$this->attrList['recoveryRate'] = 24;
@@ -180,7 +185,7 @@ class char extends unit {
 
 			$buffs = array();
 		}
-		
+
 	function renownPoints() {
 		return $this->get('renown')+$this->get('renownRate')*(time() - $this->updateTime)/3600;
 	}
@@ -212,23 +217,23 @@ class settlement extends unit {
 		$this->attrList['buildingSlot'] = 17;
 		$this->attrList['parentCity'] = 29;
 		$this->attrList['carryCap'] = 33;
-		$this->attrList['renownGen'] = 35;		
-		
+		$this->attrList['renownGen'] = 35;
+
 	}
-	
+
 	function adjustRsc($rscID, $qty, $slotFile) {
 		$location = 0;
 		$townRsc = new blockSlot($this->get('carrySlot'), $slotFile, 40);
 		$data = pack('i*', $rscID, $qty);
-		for ($i=1; $i<=sizeof($blockSlot->slotData); $i+=2) {
-			if ($blockSlot->slotData[$i] == $rscID) {
+		for ($i=1; $i<=sizeof($townRsc->slotData); $i+=2) {
+			if ($townRsc->slotData[$i] == $rscID) {
 				$location = $i;
-				$data = pack('i*', $rscID, $blockSlot->slotData[$i+1]+$qty);
+				$data = pack('i*', $rscID, $townRsc->slotData[$i+1]+$qty);
 				break;
 			}
-			else if ($blockSlot->slotData[$i] == 0) $location = $i;
+			else if ($townRsc->slotData[$i] == 0) $location = $i;
 		}
-		
+
 		if ($location > 0) {
 			$townRsc->addItem($slotFile, $data, $location);
 		} else {
@@ -283,10 +288,15 @@ class warband extends unit {
 	function actionPoints() {
 		return min(1000, $this->unitDat[16] + floor((time()-$this->unitDat[27])*4167/360000))+500;
 	}
+}
 
-	function adjustEnergy($delta) {
-		$this->save('energy', max(0, $this->get('energy')+$delta));
-		$this->save('updateTime', time());
+class tribeObject extends unit {
+	function __construct($id, $dat, $file) {
+		parent::__construct($id, $dat, $file);
+	}
+
+	function objectTarget() {
+		return $this->get('controller');
 	}
 }
 
@@ -355,6 +365,10 @@ function loadUnit($id, $file, $size) {
 		case 9:
 			//echo 'Load a building object';
 			return new building($id, $dat, $file);
+			break;
+
+		case 10:
+			return new tribeObject($id, $dat, $file);
 			break;
 
 		default:
