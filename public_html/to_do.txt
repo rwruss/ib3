@@ -8,6 +8,7 @@ Gather intel on an object
 * Actions/Orders for characters and units
 implement map concealment/detection
 Traits and buffs/nerfs
+FInish war end options
 
 ** verify city priviledge in obj2 (resource site)
 

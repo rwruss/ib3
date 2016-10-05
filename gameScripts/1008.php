@@ -54,7 +54,7 @@ foreach ($warList->slotData as $warID) {
 				break;
 		}
 	echo '<p>Score is '.$warDat[8].'<br>';
-	echo '<span onclick="scrMod(1125,'.$warID.',1)">Surrender</span>, Offer Peace, Enforce Demands';
+	echo '<span onclick=scrMod("1125,'.$warID.',1")>Surrender</span>, <span onclick=scrMod("1125,'.$warID.',2")>Offer Peace</span>, <span onclick=scrMod("1125,'.$warID.',3")>Enforce Demands</span>';
 	}
 }
 fclose($warFile);
