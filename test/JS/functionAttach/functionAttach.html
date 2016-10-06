@@ -1,0 +1,163 @@
+<style>
+
+.container {
+	width:95%;
+	height:95%;
+	border:1px solid black;
+}
+
+.button {
+	border: 2px solid green;
+	clear:left;
+	vertical-align: text-bottom;
+}
+
+.objContain {
+	width:200;
+	height:200;
+	border: 2px solid green;
+	float: left;
+}
+
+.objContainSelected {
+	display: table; text-align: center;
+	width:200;
+	height:200;
+	border: 2px solid red;
+	float: left;
+}
+
+.objContent {
+	width:200;
+	height:100;
+	border: 2px solid yellow;
+	float: left;
+}
+
+.selectMenu {
+	position:absolute;
+	left:0;
+	top:0;
+	background-color:#000000;
+	opacity:0.70;
+	width:100%;
+	height:100%;
+}
+.selectHead {
+	width:100%;
+	height:500;
+	border:1px solid red;
+}
+
+</style>
+
+<script>
+
+function addDiv(id, useClassName, target) {
+	var trg;
+	if (typeof(target) == "string") trg = document.getElementById(target);
+	else trg = target;
+
+	var newDiv = document.createElement("div");
+	newDiv.className = useClassName;
+	newDiv.id = id;
+	trg.appendChild(newDiv);
+	return newDiv;
+}
+
+function newButton(trg, action) {
+	button1 = addDiv("button1", "button", trg);
+	button1.addEventListener("click", action);
+	
+	button1.innerHTML = "button";
+	
+	return button1;
+}
+
+var showListItems = [1, 2, 3];
+var showList;
+function showList (listAction, limit, target) {
+	console.log(showListItems);
+	let showContain = addDiv("", "selectMenu", "testContain");
+	for (var i=0; i<showListItems.length; i++) {
+		object = renderObj(showListItems[i], showContain);
+		object.addEventListener("click", showListSelect);
+		object.objID = showListItems[i];
+	}
+	showList.selected = [];
+	showList.limit = limit;
+	showList.target = target;
+	finishButton = newButton(showContain, listAction);
+}
+
+function showListSelect () {
+	let checkIndex = showList.selected.indexOf(this.objID);
+	console.log("Look for " + this.objID + " in " + showList.selected);
+	if (checkIndex >= 0) {
+		console.log("Delete " + this.className + " at index " + checkIndex);
+			this.className = "objContain";
+			showList.selected.splice(checkIndex, 1);
+			//showList.selected = [];
+			console.log("class is now " + this.className);
+		}
+	else if (showList.selected.length < showList.limit) {
+		this.className = "objContainSelected";
+		showList.selected.push(this.objID);
+	}
+	console.log(showList.selected);
+}
+
+
+function showSelected (trg) {
+	console.log("Do something with the list " + showList.selected);
+	renderObj(showList.selected[0], showList.target);
+}
+
+function singleSelect (target) {
+	let showContain = addDiv("", "selectMenu", "testContain");
+	showList.selected = [];
+	for (var i=0; i<showListItems.length; i++) {
+		object = renderObj(showListItems[i], showContain);
+		object.objID = showListItems[i];
+		object.addEventListener("click", function () {showList.selected[0] = this.objID;this.parentNode.remove();showSingle(this.objID, target)});
+	}
+}
+
+function showSingle(id, trg) {
+	console.log("show object " + this);
+	while (trg.firstChild) {
+		trg.removeChild(trg.firstChild);
+	}
+	renderObj(id, trg);
+}
+
+function renderObj(id, trg) {
+	objBox = addDiv("", "objContain", trg);
+	objContent = addDiv("", "objContent", objBox);
+	objContent.innerHTML = id;
+	
+	return objBox;
+}
+
+function sendSelection() {
+	console.log("send " + showList.selected);
+}
+
+function init() {
+	console.log("started");
+	
+	selectHead = addDiv("", "selectHead", "testContain")
+	selectBox = addDiv("", "objContain", selectHead);	
+	selectBox.addEventListener("click", function() {singleSelect(selectBox)});
+	newButton(selectHead, sendSelection);
+}
+
+window.addEventListener("load", init);
+</script>
+
+<html>
+<body>
+<div id="testContain" class="container"></div>
+
+</body>
+</html>
