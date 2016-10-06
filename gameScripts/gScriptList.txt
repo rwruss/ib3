@@ -132,7 +132,11 @@
 1123 - MENU: Declare war on a player!!
 1124 - PROCESS: Declare warID
 1125 - MENU: Offer to end war
-1126 - PROCESS: Offer to end war
+1126 - MENU: Select unit as war end requirement (NOT USED)
+1127 - PROCESS: input from 1126 (NOT USED)
+1128 - MENU: Select Resources to give to opponent in peace offering
+1129 - Process receiving 1128
+1130 - PROCESS - make city your primary city
 
 // Manual Override Functions
 2001 - Add Resources to a city menu

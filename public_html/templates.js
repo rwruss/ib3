@@ -14,6 +14,12 @@ actionBox = function(trg, prm, maxPoints) {
 	return thisBox;
 }
 
+slideBox = function (trg, maxPoints) {
+	let thisBox = addDiv("", "selectContain", trg);
+	thisBox.unitSpace = addDiv("", "selectContain", thisBox);
+	thisBox.slider = slideValBar(thisBox, "", 0, maxPoints);
+}
+
 addDiv = function(id, useClassName, target) {
 	var trg;
 	if (typeof(target) == "string") trg = document.getElementById(target);
@@ -308,6 +314,19 @@ textBlob = function (id, target, content) {
 	thisBlob.style.width = "100%";
 
 	return thisBlob;
+}
+
+optionScreen = function(prm) {
+	console.log("create option box");
+	targetBox = addDiv("optScreen", "optionScreen", "gmPnl");
+
+	let killButton = addDiv("", "paneCloseButton", targetBox);
+	killButton.innerHTML = 'X';
+
+	//var killBut = document.createElement('div');
+	//killBut.className = "paneCloseButton";
+	//killBut.innerHTML = 'X';
+	passClick(prm, targetBox);
 }
 
 newBldgOpt = function(id, base, target, desc) {
@@ -1174,7 +1193,7 @@ selectItem = function (trg, id, others) {
 }
 
 var sortList;
-groupSort = function (trg, id, dir) {
+groupSort = function (trg, id, dir, limit) {
 	var groupContainer = addDiv("", "stdContain", trg);
 	groupContainer.left = addDiv("groupSort_1", "stdContain", groupContainer);
 	groupContainer.centerBar = addDiv("", "stdContain", groupContainer);
@@ -1186,6 +1205,7 @@ groupSort = function (trg, id, dir) {
 
 	sortList = [];
 	sortList.moved = [id];
+	sortList.limit = limit;
 	return groupContainer;
 }
 
@@ -1194,22 +1214,24 @@ groupButton = function (trg, id) {
 	newButton.innerHTML = "asd";
 	newButton.objId = id;
 	newButton.addEventListener("click", function () {
-		var check = sortList.indexOf(this.parentNode);
-		if (check >= 0) {
-			this.parentNode.style.borderColor = "#000000";
-			sortList.splice(check, 1);
-			console.log("found at " + check + ". Size is  " + sortList.length);
+			var check = sortList.indexOf(this.parentNode);
+			if (check >= 0) {
+				this.parentNode.style.borderColor = "#000000";
+				sortList.splice(check, 1);
+				console.log("found at " + check + ". Size is  " + sortList.length);
 
-			var moveCheck = sortList.moved.indexOf(this.objId);
-			if (moveCheck >= 0) sortList.moved.splice(moveCheck, 1);
-		} else {
-			console.log("not found " + check);
-			this.parentNode.style.borderColor = "#FF0000";
-			sortList.push(this.parentNode);
+				var moveCheck = sortList.moved.indexOf(this.objId);
+				if (moveCheck >= 0) sortList.moved.splice(moveCheck, 1);
+			} else {
+				if (sortList.limit > sortList.moved.length-1) {
+					console.log("not found " + check);
+					this.parentNode.style.borderColor = "#FF0000";
+					sortList.push(this.parentNode);
 
-			sortList.moved.push(this.objId);
-		}
-		console.log(sortList);
+					sortList.moved.push(this.objId);
+				}
+			}
+			console.log(sortList);
 	})
 }
 
@@ -1240,6 +1262,7 @@ collect = function (group) {
 	console.log(retStr);
 	return retStr;
 }
+
 
 slideValBar = function (trg, slideID, low, hi) {
 	console.log("Add a slide bar to " + trg)

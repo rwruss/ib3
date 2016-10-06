@@ -41,6 +41,8 @@ if ($approved) {
 	  <div style="position:absolute; bottom:40; left:0;" onclick="setClick(['.$unitID.',1],\'progress\')">Move to Loc</div>
 	  <div style="position:absolute; bottom:20; left:0;" onclick="scrMod(\'1018,'.$unitID.'\', \'scrBox\');">show Move</div>
 
+		<div style="position:absolute; bottom:240; left:0;" onclick="scrMod(\'1130,'.$unitID.'\', \'scrBox\');">Make my primary city</div>
+
 
 	  <div style="position:absolute; bottom:0; left:0;">hideMove</div>';
 } else {

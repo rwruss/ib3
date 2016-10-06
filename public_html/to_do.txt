@@ -18,6 +18,7 @@ Character trait development and exp points
 Character prestige from subordinates
 Permanant exp points generation and use
 Convert all unit interfaces to unit class
+Merchants, trade routes, sea routes, and node connections
 
 
 Useful Links:

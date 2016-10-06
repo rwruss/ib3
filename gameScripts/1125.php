@@ -33,7 +33,15 @@ switch($postVals[2]) {
   break;
 
   case 2:
-  echo 'textBlob("", thisDiv, "Offer terms<br>Term 1<br>Term 2<br>Term 3")';
+  // Get list of resources the player owns
+  $thisPlayer = loadPlayer($pGameID, $unitFile, 400);
+  $playerCity = loadUnit($thisPlayer->get('homeCity'), $unitFile, 400);
+  echo 'Loaded city ('.$thisPlayer->get('homeCity').') type:'.get_class($playerCity);
+  $resources = new itemSlot($playerCity->get('carrySlot'), $slotFile, 40);
+  print_r($resources->slotData);
+  echo 'let optionBox1 = slideBox(thisDiv, 10000)
+    let optionBox2 = slideBox(thisDiv, 10000)
+    let optionBox3 = slideBox(thisDiv, 10000)';
   break;
 
   case 3:
