@@ -692,3 +692,53 @@
 	background-color:#F0F0F0;
 	opacity:0.5;
 }
+
+.rscImg {
+	height:100;
+	width:100;
+}
+
+.selectMenu {
+	position:absolute;
+	left:0;
+	top:0;
+	background-color:#000000;
+	opacity:0.70;
+	width:100%;
+	height:100%;
+	z-Index:9999;
+}
+.selectHead {
+	width:100%;
+	height:500;
+	border:1px solid red;
+}
+
+.rscContain {
+	width:100;
+	height:150;
+	border: 2px solid green;
+	float: left;
+}
+
+.objContain {
+	width:200;
+	height:200;
+	border: 2px solid green;
+	float: left;
+}
+
+.objContainSelected {
+	display: table; text-align: center;
+	width:200;
+	height:200;
+	border: 2px solid red;
+	float: left;
+}
+
+.objContent {
+	width:200;
+	height:100;
+	border: 2px solid yellow;
+	float: left;
+}

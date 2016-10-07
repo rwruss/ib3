@@ -18,6 +18,14 @@ slideBox = function (trg, maxPoints) {
 	let thisBox = addDiv("", "selectContain", trg);
 	thisBox.unitSpace = addDiv("", "selectContain", thisBox);
 	thisBox.slider = slideValBar(thisBox, "", 0, maxPoints);
+
+	return thisBox;
+}
+
+setSlideQty = function(trg, max) {
+	console.log(trg.slider);
+	trg.slider.slide.max = max;
+	trg.slider.maxVal.innerHTML = max;
 }
 
 addDiv = function(id, useClassName, target) {
@@ -38,6 +46,8 @@ addImg = function(id, useClassName, target) {
 	newImg.id = id;
 	//alert(target)
 	target.appendChild(newImg);
+
+	return newImg;
 }
 
 confirmBox = function (msg, prm, type, trg, aSrc, dSrc) {
@@ -1281,14 +1291,14 @@ slideValBar = function (trg, slideID, low, hi) {
 	contain.slide.id = slideID;
 	contain.slide.className = "slideBar";
 	contain.appendChild(contain.slide);
-	var maxVal = addDiv("", "slideMin", contain);
-	maxVal.innerHTML = hi;
+	contain.maxVal = addDiv("", "slideMin", contain);
+	contain.maxVal.innerHTML = hi;
 
 	var setVal = addDiv("", "slideVal", contain);
 	setVal.innerHTML = 0;
 
 	minVal.addEventListener("click", function (event) {event.stopPropagation();contain.slide.stepDown(1); setVal.innerHTML = contain.slide.value;});
-	maxVal.addEventListener("click", function (event) {event.stopPropagation();contain.slide.stepUp(1); setVal.innerHTML = contain.slide.value;});
+	contain.maxVal.addEventListener("click", function (event) {event.stopPropagation();contain.slide.stepUp(1); setVal.innerHTML = contain.slide.value;});
 
 	//groupList.push(slide);
 
@@ -1298,6 +1308,7 @@ slideValBar = function (trg, slideID, low, hi) {
 	return contain;
 }
 
+/*
 selectList = function (trg, options) {
 		var newMenu = document.createElement("select");
 		newMenu.id = "99";
@@ -1311,4 +1322,4 @@ selectList = function (trg, options) {
 
 		trg.appendChild(newMenu);
 		return newMenu;
-}
+}*/

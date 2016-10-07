@@ -1,71 +1,5 @@
-<style>
 
-.container {
-	width:95%;
-	height:95%;
-	border:1px solid black;
-}
-
-.button {
-	border: 2px solid green;
-	clear:left;
-	vertical-align: text-bottom;
-}
-
-.objContain {
-	width:200;
-	height:200;
-	border: 2px solid green;
-	float: left;
-}
-
-.objContainSelected {
-	display: table; text-align: center;
-	width:200;
-	height:200;
-	border: 2px solid red;
-	float: left;
-}
-
-.objContent {
-	width:200;
-	height:100;
-	border: 2px solid yellow;
-	float: left;
-}
-
-.selectMenu {
-	position:absolute;
-	left:0;
-	top:0;
-	background-color:#000000;
-	opacity:0.70;
-	width:100%;
-	height:100%;
-}
-.selectHead {
-	width:100%;
-	height:500;
-	border:1px solid red;
-}
-
-</style>
-
-<script>
-
-function addDiv(id, useClassName, target) {
-	var trg;
-	if (typeof(target) == "string") trg = document.getElementById(target);
-	else trg = target;
-
-	var newDiv = document.createElement("div");
-	newDiv.className = useClassName;
-	newDiv.id = id;
-	trg.appendChild(newDiv);
-	return newDiv;
-}
-
-function newButton(trg, action) {
+newButton = function(trg, action) {
 	button1 = addDiv("button1", "button", trg);
 	button1.addEventListener("click", action);
 
@@ -77,7 +11,7 @@ function newButton(trg, action) {
 var SLshowListItems = [1, 2, 3];
 var SLshowList = [];
 
-function SLnewList (listAction, limit, target) {
+SLnewList = function (listAction, limit, target) {
 	console.log(SLshowListItems);
 	let showContain = addDiv("", "selectMenu", "testContain");
 	for (var i=0; i<SLshowListItems.length; i++) {
@@ -91,7 +25,7 @@ function SLnewList (listAction, limit, target) {
 	finishButton = newButton(showContain, listAction);
 }
 
-function SLselect () {
+SLselect = function () {
 	let checkIndex = SLshowList.selected.indexOf(this.objID);
 	console.log("Look for " + this.objID + " in " + SLshowList.selected);
 	if (checkIndex >= 0) {
@@ -108,42 +42,63 @@ function SLselect () {
 }
 
 
-function SLshowSelected (trg) {
+SLshowSelected = function(trg) {
 	console.log("Do something with the list " + SLshowList.selected);
 	renderObj(SLshowList.selected[0], SLshowList.target);
 }
 
-function SLsingleSelect (target) {
-	let showContain = addDiv("", "selectMenu", "testContain");
+SLsingleSelect = function(target) {
+	let showContain = addDiv("", "selectMenu", "gmPnl");
 	SLshowList.selected = [];
 	console.log(SLshowList);
 	for (var i=0; i<SLshowListItems.length; i++) {
 		object = renderObj(SLshowListItems[i], showContain);
 		object.objID = SLshowListItems[i];
-		object.addEventListener("click", function () {SLshowList.selected[0] = this.objID;this.parentNode.remove();SLshowSingle(this.objID, target)});
+		object.addEventListener("click", function () {SLshowList.selected[0] = this.objID;this.parentNode.remove();SLshowSingle(target);});
 	}
 }
 
-function SLshowSingle(id, trg) {
+SLsingleRsc = function(target) {
+	// Show all resources
+	let showContain = addDiv("", "selectMenu", "gmPnl");
+	SLshowList.selected = [];
+	console.log(SLshowList);
+	for (var i=0; i<playerRsc.length; i+=2) {
+		object = SLrenderImage(playerRsc[i], showContain, "");
+		object.objID = playerRsc[i];
+		object.qty = playerRsc[i+1];
+		object.addEventListener("click", function () {SLshowList.selected[0] = this.objID;showContain.remove();SLshowSingle(target);SLrenderImage(this.objID, target, "");setSlideQty(target.parentNode, this.qty);});
+	}
+}
+
+SLshowSingle = function(trg) {
 	console.log("show object " + this);
 	while (trg.firstChild) {
 		trg.removeChild(trg.firstChild);
 	}
-	renderObj(id, trg);
 }
 
-function renderObj(id, trg) {
+SLrenderImage = function(id, trg, path) {
+	objBox = addDiv("", "rscContain", trg);
+	objContent = addDiv("", "rscImg", objBox);
+	let newImg = addImg(id, "rscImg", objContent);
+	newImg.src = path;
+
+	return newImg;
+}
+/*
+renderObj(id, trg) {
 	objBox = addDiv("", "objContain", trg);
 	objContent = addDiv("", "objContent", objBox);
 	objContent.innerHTML = id;
 
 	return objBox;
 }
-
-function sendSelection() {
+*/
+sendSelection = function() {
 	console.log("send " + SLshowList.selected);
 }
-
+/*
 function init() {
 	console.log("started var " + SLshowList);
 
@@ -153,12 +108,4 @@ function init() {
 	newButton(selectHead, sendSelection);
 }
 
-window.addEventListener("load", init);
-</script>
-
-<html>
-<body>
-<div id="testContain" class="container"></div>
-
-</body>
-</html>
+window.addEventListener("load", init);*/

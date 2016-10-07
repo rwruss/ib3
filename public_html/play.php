@@ -68,6 +68,7 @@ echo '
 <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
 <script type="text/javascript" src="webgl-utils.js"></script>
 <script type="text/javascript" src="templates.js"></script>
+<script type="text/javascript" src="selectList.js"></script>
 
 <script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
@@ -891,7 +892,7 @@ precision mediump float;
 	function makeBox(bName, val, h, w, x, y) {
 		console.log(arguments);
 		e = window.event || arguments[0];
-		console.log(window.event);
+		//console.log(window.event);
 		useDeskTop.newPane(bName);
 		//console.log(bName + " = " + useDeskTop.getPane(bName));
 		//console.log("passClick to " + useDeskTop.getPane(bName));
@@ -2723,7 +2724,7 @@ precision mediump float;
 		info = info  + ","+document.getElementById(src).value;
 		passClick(info, trg);
 	}
-
+var playerRsc = [];
 window.addEventListener("load", webGLStart);
 </script>
 
