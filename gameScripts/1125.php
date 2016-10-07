@@ -43,12 +43,14 @@ switch($postVals[2]) {
   echo ' playerRsc = [1, 1000, 2, 2000, 3, 3000];
   let optionBox1 = slideBox(thisDiv, 0);
       optionBox1.unitSpace.innerHTML = "rsc";
-      optionBox1.unitSpace.addEventListener("click", function () {
+	  SLenable(optionBox1.unitSpace, function () {
           SLsingleRsc(optionBox1.unitSpace)});
     let optionBox2 = slideBox(thisDiv, 10000);
     let optionBox3 = slideBox(thisDiv, 10000);
 
-    newButton(thisDiv, function() {console.log("hi")})';
+    newButton(thisDiv, function() {console.log("hi");
+		returnVals = 
+	})';
   break;
 
   case 3:

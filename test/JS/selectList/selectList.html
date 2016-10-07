@@ -1,0 +1,358 @@
+<style>
+
+.container {
+	width:95%;
+	height:95%;
+	border:1px solid black;
+}
+
+.button {
+	width:100;
+	border: 2px solid green;
+	clear:left;
+	vertical-align: text-bottom;
+}
+
+.objContain {
+	width:200;
+	height:200;
+	border: 2px solid green;
+	float: left;
+}
+
+.objContainSelected {
+	display: table; text-align: center;
+	width:200;
+	height:200;
+	border: 2px solid red;
+	float: left;
+}
+
+.objContent {
+	width:200;
+	height:100;
+	border: 2px solid yellow;
+	float: left;
+}
+
+.selectMenu {
+	position:absolute;
+	left:0;
+	top:0;
+	background-color:#000000;
+	opacity:0.70;
+	width:100%;
+	height:100%;
+}
+.selectHead {
+	width:100%;
+	height:500;
+	border:1px solid red;
+}
+
+.rscContain {
+	width:100;
+	height:125;
+	border: 2px solid green;
+	float: left;
+}
+
+.rscContainSelected {
+	width:100;
+	height:125;
+	border: 2px solid red;
+	float: left;
+}
+
+</style>
+
+<script>
+class objectList {
+	constructor () {
+		
+	}
+	
+	SLsingleSelect(target) {
+		let showContain = addDiv("", "selectMenu", "testContain");
+		this.selected = [];
+		target.selected = [];
+		console.log(target);
+		for (var i=0; i<this.listItems.length; i++) {
+			let object = this.showItem(this.listItems[i], showContain);
+			object.owner = this;
+			object.objID = this.listItems[i];
+			object.addEventListener("click", function () {
+				object.owner.selected[0] = object.objID;
+				console.log("set slected to " + object.objID)
+				object.parentNode.remove();
+				SlclearTarget(target);
+				target.appendChild(this);
+				target.selected[0] = object.objID;
+				});
+		}
+	}
+	
+	SLmultiSelect(target, limit) {
+		let showContain = addDiv("", "selectMenu", "testContain");
+		this.selected = [];
+		this.limit = limit;
+		target.selected = [];
+		console.log(target);
+		for (var i=0; i<this.listItems.length; i++) {
+			let object = this.showItem(this.listItems[i], showContain);
+			object.owner = this;
+			object.objID = this.listItems[i];
+			object.addEventListener("click", function () {
+				var checkIndex = this.owner.selected.indexOf(this.objID);
+				//console.log(checkIndex+ " look for " + this.objID + " in " + this.owner.selected);
+				//console.log(this.owner.selected);
+				if(checkIndex >= 0) {
+					console.log("already in list");
+					this.owner.selected.splice(checkIndex, 1);
+					this.owner.unselectItem(this);
+				}
+				else {
+					console.log(this.owner.limit + " vs " + this.owner.selected.length)
+					if (this.owner.limit > this.owner.selected.length) {
+					this.owner.selected.push(this.objID);
+					console.log(this.owner.selected);
+					this.owner.selectItem(this);
+					}
+				}
+				});
+		}
+		
+		var selButton = addDiv("", "button", showContain);
+		selButton.innerHTML = "Select Thsese";
+		selButton.owner = this;
+		selButton.addEventListener("click", function () {
+			selButton.parentNode.remove();
+			SlclearTarget(target);
+			console.log(this.owner.selected);
+			for (var i=0; i<this.owner.selected.length; i++) {
+				this.owner.showItem(this.owner.selected[i], target);
+			}
+			target.selected = this.owner.selected;
+			});
+	}
+	
+	getSelection() {
+		return this.selected;
+	}
+}
+
+class resourceList extends objectList {
+	constructor(listItems) {
+		super();
+		this.listType = "rscList";
+		this.listItems = listItems;
+	}
+	
+	showItem(id, trg) {
+		let objBox = addDiv("", "rscContain", trg);
+		let objContent = addDiv("", "rscImg", objBox);
+		let newImg = addImg(id, "rscImg", objContent);
+		newImg.src = "./rscImages/"+id+".png";
+		newImg.alt = id;
+
+		return objBox;
+	}
+	
+	selectItem (trg) {
+		trg.className = "rscContainSelected";
+	}
+	
+	unselectItem(trg) {
+		trg.className = "rscContain";
+	}
+	
+}
+
+class unitList extends objectList {
+	constructor(listItems) {
+		super();
+		this.listType = "unitList";
+		this.listItems = listItems;
+	}
+	
+	showItem(id, trg) {
+		objBox = addDiv("", "objContain", trg);
+		objContent = addDiv("", "objContent", objBox);
+		objContent.innerHTML = id;
+
+		return objBox;
+	}
+}
+
+newButton = function(trg, action) {
+	button1 = addDiv("button1", "button", trg);
+	button1.addEventListener("click", action);
+
+	button1.innerHTML = "button";
+
+	return button1;
+}
+
+var SLshowListItems = [1, 2, 3];
+var SLshowList = [];
+
+/*
+SLenable = function(trg, action) {
+	trg.selectedValue = [];
+	trg.addEventListener("click", action);
+}
+
+SLnewList = function (listAction, limit, target) {
+	console.log(SLshowListItems);
+	let showContain = addDiv("", "selectMenu", "testContain");
+	for (var i=0; i<SLshowListItems.length; i++) {
+		object = renderObj(SLshowListItems[i], showContain);
+		object.addEventListener("click", SLselect);
+		object.objID = SLshowListItems[i];
+	}
+	SLshowList.selected = [];
+	SLshowList.limit = limit;
+	SLshowList.target = target;
+	finishButton = newButton(showContain, listAction);
+}
+
+SLselect = function () {
+	let checkIndex = SLshowList.selected.indexOf(this.objID);
+	console.log("Look for " + this.objID + " in " + SLshowList.selected);
+	if (checkIndex >= 0) {
+		console.log("Delete " + this.className + " at index " + checkIndex);
+			this.className = "objContain";
+			SLshowList.selected.splice(checkIndex, 1);
+			console.log("class is now " + this.className);
+		}
+	else if (SLshowList.selected.length < SLshowList.limit) {
+		this.className = "objContainSelected";
+		SLshowList.selected.push(this.objID);
+	}
+	console.log(SLshowList.selected);
+}
+
+
+SLshowSelected = function(trg) {
+	console.log("Do something with the list " + SLshowList.selected);
+	renderObj(SLshowList.selected[0], SLshowList.target);
+}
+
+SLsingleSelect = function(target) {
+	let showContain = addDiv("", "selectMenu", "gmPnl");
+	SLshowList.selected = [];
+	console.log(SLshowList);
+	for (var i=0; i<SLshowListItems.length; i++) {
+		object = renderObj(SLshowListItems[i], showContain);
+		object.objID = SLshowListItems[i];
+		object.addEventListener("click", function () {SLshowList.selected[0] = this.objID;this.parentNode.remove();SlclearTarget(target);});
+	}
+}
+
+SLsingleRsc = function(target) {
+	// Show all resources
+	let showContain = addDiv("", "selectMenu", "gmPnl");
+	SLshowList.selected = [];
+	console.log(SLshowList);
+	for (var i=0; i<playerRsc.length; i+=2) {
+		object = SLrenderImage(playerRsc[i], showContain, "");
+		object.objID = playerRsc[i];
+		object.qty = playerRsc[i+1];
+		object.addEventListener("click", function () {SLshowList.selected[0] = this.objID;showContain.remove();SlclearTarget(target);SLrenderImage(this.objID, target, "");setSlideQty(target.parentNode, this.qty);});
+	}
+}
+*/
+SlclearTarget = function(trg) {
+	console.log("show object " + this);
+	while (trg.firstChild) {
+		trg.removeChild(trg.firstChild);
+	}
+}
+/*
+SLrenderImage = function(id, trg, path) {
+	objBox = addDiv("", "rscContain", trg);
+	objContent = addDiv("", "rscImg", objBox);
+	let newImg = addImg(id, "rscImg", objContent);
+	newImg.src = path;
+
+	return newImg;
+}
+*/
+addDiv = function(id, useClassName, target) {
+	var trg;
+	if (typeof(target) == "string") trg = document.getElementById(target);
+	else trg = target;
+
+	var newDiv = document.createElement("div");
+	newDiv.className = useClassName;
+	newDiv.id = id;
+	trg.appendChild(newDiv);
+	return newDiv;
+}
+
+addImg = function(id, useClassName, target) {
+	var newImg = document.createElement("img");
+	newImg.className = useClassName;
+	newImg.id = id;
+	//alert(target)
+	target.appendChild(newImg);
+
+	return newImg;
+}
+/*
+renderObj(id, trg) {
+	objBox = addDiv("", "objContain", trg);
+	objContent = addDiv("", "objContent", objBox);
+	objContent.innerHTML = id;
+
+	return objBox;
+}
+*/
+sendSelection = function() {
+	console.log("send " + SLshowList.selected);
+}
+
+readLists = function (targetList) {
+	returnArray = [];
+	console.log(targetList);
+	for (var i=0; i<targetList.length; i++) {
+		console.log("check " + targetList[i]);
+		if (targetList[i].selected == "undefined") {
+			console.log("not ready");
+			return 0;
+		} else {
+			console.log("fouind " + targetList[i].selected);
+			returnArray = returnArray.concat(targetList[i].selected)
+		}
+	}
+	console.log(returnArray);
+}
+
+function init() {
+	rscList = new resourceList([1, 2, 3, 4, 5]);
+
+	selectButton1 = addDiv("b1", "button", "testContain");
+	selectButton1.innerHTML = "button";
+	selectButton1.addEventListener("click", function () {rscList.SLsingleSelect(this)});
+	
+	selectButton2 = addDiv("", "button", "testContain");
+	selectButton2.innerHTML = "button";
+	selectButton2.addEventListener("click", function () {rscList.SLmultiSelect(this,2)});
+	
+	sendButton = addDiv("b2", "button", "testContain");
+	sendButton.innerHTML = "send";
+	sendButton.addEventListener("click", function () {readLists([selectButton1, selectButton2])});
+	/*
+	selectHead = addDiv("", "selectHead", "testContain")
+	selectBox = addDiv("", "objContain", selectHead);
+	selectBox.addEventListener("click", function() {SLsingleSelect(selectBox)});
+	newButton(selectHead, sendSelection);
+	*/
+}
+
+window.addEventListener("load", init);
+</script>
+
+<div id="testContain" class="container"></div>
+
+

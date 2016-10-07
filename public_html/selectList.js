@@ -1,4 +1,42 @@
 
+class objectList {
+	constructor () {
+		
+	}
+}
+
+class resourceList extends objectList {
+	constructor(listItems) {
+		super();
+		this.listType = "rscList";
+	}
+	
+	showItem(id, trg) {
+		objBox = addDiv("", "rscContain", trg);
+		objContent = addDiv("", "rscImg", objBox);
+		let newImg = addImg(id, "rscImg", objContent);
+		newImg.src = "./rscImages/"+id+".png";
+
+		return newImg;
+	}
+	
+}
+
+class unitList extends objectList {
+	constructor(listItems) {
+		super();
+		this.listType = "unitList";
+	}
+	
+	showItem(id, trg) {
+		objBox = addDiv("", "objContain", trg);
+		objContent = addDiv("", "objContent", objBox);
+		objContent.innerHTML = id;
+
+		return objBox;
+	}
+}
+
 newButton = function(trg, action) {
 	button1 = addDiv("button1", "button", trg);
 	button1.addEventListener("click", action);
@@ -10,6 +48,11 @@ newButton = function(trg, action) {
 
 var SLshowListItems = [1, 2, 3];
 var SLshowList = [];
+
+SLenable = function(trg, action) {
+	trg.selectedValue = [];
+	trg.addEventListener("click", action);
+}
 
 SLnewList = function (listAction, limit, target) {
 	console.log(SLshowListItems);
@@ -54,7 +97,7 @@ SLsingleSelect = function(target) {
 	for (var i=0; i<SLshowListItems.length; i++) {
 		object = renderObj(SLshowListItems[i], showContain);
 		object.objID = SLshowListItems[i];
-		object.addEventListener("click", function () {SLshowList.selected[0] = this.objID;this.parentNode.remove();SLshowSingle(target);});
+		object.addEventListener("click", function () {SLshowList.selected[0] = this.objID;this.parentNode.remove();SlclearTarget(target);});
 	}
 }
 
@@ -67,11 +110,11 @@ SLsingleRsc = function(target) {
 		object = SLrenderImage(playerRsc[i], showContain, "");
 		object.objID = playerRsc[i];
 		object.qty = playerRsc[i+1];
-		object.addEventListener("click", function () {SLshowList.selected[0] = this.objID;showContain.remove();SLshowSingle(target);SLrenderImage(this.objID, target, "");setSlideQty(target.parentNode, this.qty);});
+		object.addEventListener("click", function () {SLshowList.selected[0] = this.objID;showContain.remove();SlclearTarget(target);SLrenderImage(this.objID, target, "");setSlideQty(target.parentNode, this.qty);});
 	}
 }
 
-SLshowSingle = function(trg) {
+SlclearTarget = function(trg) {
 	console.log("show object " + this);
 	while (trg.firstChild) {
 		trg.removeChild(trg.firstChild);
