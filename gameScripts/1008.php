@@ -31,7 +31,7 @@ foreach ($warList->slotData as $warID) {
 		fseek($warFile, $warID*$defaultBlockSize);
 		$warDat = unpack('i*', fread($warFile, 100));
 
-		echo '<p>Player '.$warDat[5].' vs '.$warDat[6].'<br>';
+		echo '<p>War '.$warID.' - Player '.$warDat[5].' vs '.$warDat[6].'<br>';
 		switch ($warDat[1]) {
 			case 0:
 				echo 'War for no reason!';

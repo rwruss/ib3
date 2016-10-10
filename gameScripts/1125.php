@@ -3,9 +3,9 @@
 require_once('./slotFunctions.php');
 require_once('./unitClass.php');
 
-$warFile = fopen($gamePath.'/wars.war', 'r+b');
-$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
-$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
+$warFile = fopen($gamePath.'/wars.war', 'rb');
+$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 
 echo '<script>
 useDeskTop.newPane("warOpts");
@@ -40,17 +40,24 @@ switch($postVals[2]) {
   $resources = new itemSlot($playerCity->get('carrySlot'), $slotFile, 40);
   //print_r($resources->slotData);
   //unitList.renderSum(armyItems[i+1], "armyList_"+armyItems[i]);
-  echo ' playerRsc = [1, 1000, 2, 2000, 3, 3000];
-  let optionBox1 = slideBox(thisDiv, 0);
-      optionBox1.unitSpace.innerHTML = "rsc";
-	  SLenable(optionBox1.unitSpace, function () {
-          SLsingleRsc(optionBox1.unitSpace)});
-    let optionBox2 = slideBox(thisDiv, 10000);
-    let optionBox3 = slideBox(thisDiv, 10000);
+  echo 'rscList = new resourceList([1, 2, 3, 4, 5]);;
+    let optionBox1 = slideBox(thisDiv, 0);
+    optionBox1.unitSpace.innerHTML = "rsc";
+	  optionBox1.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox1, playerRsc[optionBox1.unitSpace.selected[0]])})});
 
-    newButton(thisDiv, function() {console.log("hi");
-		returnVals = 
-	})';
+    let optionBox2 = slideBox(thisDiv, 10000);
+    optionBox2.unitSpace.innerHTML = "rsc";
+	  optionBox2.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox2, playerRsc[optionBox2.unitSpace.selected[0]])})});
+
+    let optionBox3 = slideBox(thisDiv, 10000);
+    optionBox3.unitSpace.innerHTML = "rsc";
+	  optionBox3.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox3, playerRsc[optionBox3.unitSpace.selected[0]])})});
+
+    sendButton = newButton(thisDiv, function () {
+      scrMod("1126,'.$postVals[1].'," + [optionBox1.unitSpace.selected[0], optionBox1.slider.slide.value, optionBox2.unitSpace.selected[0], optionBox2.slider.slide.value, optionBox3.unitSpace.selected[0], optionBox3.slider.slide.value])
+      console.log(optionBox1.unitSpace.selected[0] + "," + optionBox1.slider.slide.value);
+    });
+    ';
   break;
 
   case 3:

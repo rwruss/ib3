@@ -9,6 +9,7 @@ Gather intel on an object
 implement map concealment/detection
 Traits and buffs/nerfs
 FInish war end options
+Mouse drag scroll
 
 ** verify city priviledge in obj2 (resource site)
 

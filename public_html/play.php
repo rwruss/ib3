@@ -2724,7 +2724,7 @@ precision mediump float;
 		info = info  + ","+document.getElementById(src).value;
 		passClick(info, trg);
 	}
-var playerRsc = [];
+var playerRsc = [0, 1000, 2000, 3000, 4000, 500];
 window.addEventListener("load", webGLStart);
 </script>
 

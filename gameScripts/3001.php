@@ -1,5 +1,13 @@
 <?php
 
+/*
+Process sending a message to something - this script determines the object type and players that should receive the message.
+Send the message to this script in the following form form:
+
+
+
+*/
+
 include("./slotFunctions.php");
 include("./unitClass.php");
 $slotFile = fopen($gamePath.'/msgSlots.slt', 'r+b');

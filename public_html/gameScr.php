@@ -54,8 +54,8 @@ function read_slot($file, $slot_num, $slot_size)
 		}
 	return $units_a;
 	}
-
+/*
 function sendMessage($mOpt, $content, $toList) {
 	include("../gameScripts/msg/messageSend.php");
-}
+}*/
 ?>

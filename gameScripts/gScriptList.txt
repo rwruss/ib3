@@ -142,6 +142,9 @@
 2001 - Add Resources to a city menu
 2002 - process resource add
 
+// Other stuff
+3001 - Process a message to a town
+
 CL255 - City interface
 
 wbSC1 - Unit detail and options for a civilian unit
