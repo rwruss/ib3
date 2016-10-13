@@ -12,7 +12,7 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 //Load war info
 fseek($warFile, $postVals[1]*100);
 $warDat = unpack('i*', fread($warFile, 100));
-print_r($postVals);
+print_r($warDat);
 
 // verify that player can make offer and get place
 if ($warDat[5] == $pGameID) {
@@ -42,7 +42,7 @@ for ($i=2; $i<sizeof($postVals); $i+=2) {
 if (sizeof($rscCheck)>0) exit("not enough rsc");
 
 // Record the offer and notify the other player
-fseek($warFile, $postVals[1]*100+14+$warPosition*24);
+fseek($warFile, $postVals[1]*100+52+$warPosition*24);
 fwrite($warFile, pack('i*', $postVals[2], $postVals[3], $postVals[4], $postVals[5], $postVals[6], $postVals[7]));
 
 

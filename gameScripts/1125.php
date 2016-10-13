@@ -16,9 +16,11 @@ fseek($warFile, $postVals[1]*100);
 $warDat = unpack('i*', fread($warFile, 100));
 
 $sideSwitch = 1;
+$warSide = 1;
 if ($warDat[6] == $pGameID) {
   // player is the defender
   $sideSwitch = -1;
+  $warSide = 2;
 }
 
 
@@ -40,6 +42,9 @@ switch($postVals[2]) {
   $resources = new itemSlot($playerCity->get('carrySlot'), $slotFile, 40);
   //print_r($resources->slotData);
   //unitList.renderSum(armyItems[i+1], "armyList_"+armyItems[i]);
+  if ($warDat[$warSide*6+8] + $warDat[$warSide*6+12] + $warDat[$warSide*6+16] > 0) {
+    echo 'textBlob("", thisDiv, "You have offered a truce");';
+  }
   echo 'rscList = new resourceList([1, 2, 3, 4, 5]);;
     let optionBox1 = slideBox(thisDiv, 0);
     optionBox1.unitSpace.innerHTML = "rsc";

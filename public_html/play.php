@@ -170,7 +170,7 @@ echo '
 
 		vec4 baseRef = texture2D(uMaskSampler, vec2(baseX, baseY/255.));
 		vec4 useMask = texture2D(uMaskSampler, vec2(255.*baseRef.g*0.125+mod(vVertexPosition.x*12.0,1.0)*0.125, 0.125*baseRef.r*255.+0.125+mod(vVertexPosition.y*12.0,1.0)*0.125));
-
+		/*
 		if (ptElevation <= 0.002) {
 			vec4 bumpColor = texture2D(uBumpSampler, vec2(vVertexPosition.x/2., vVertexPosition.y/2.));
 			vec3 lightDirection = normalize(worldLightDirection.xyz - vPosition.xyz);
@@ -186,9 +186,10 @@ echo '
 			vec3 lightWeighting = vec3(0.20) + vec3(1.0) * 50.*specularLightWeighting + 1.*vec3(0.9, 0.9, 0.9);
 
 			gl_FragColor = vec4(vec3(0.1, bumpColor.r, 0.7)*lightWeighting, 1.0)*(1.0-flatColor.a) + flatColor;
+			//gl_FragColor = vec4(1.0, 0.0, 1.0, 1.);
 			if (uUseColor == 1.) gl_FragColor = vec4(ter.b/12., 0.,0.,1.);
 			}
-		else {
+		else {*/
 			if (ptElevation > 0.25) {
 				gl_FragColor = ((2.0 - ptElevation*4.0)*texture2D(uTSampler, vec2(0.75+fract(vVertexPosition.x*12.0)*0.25, 0.75+fract(vVertexPosition.y*12.0)*0.25)) + vec4(0.9, 0.9, 0.85, 1.0)*(1.0 - 2.0 + ptElevation*4.0)+vec4(normalWeight, 1.0))*(1.0-flatColor.a)+flatColor;
 				}
@@ -203,23 +204,30 @@ echo '
 				float xMod = mod(vVertexPosition.x,1.0);
 				float yMod = mod(vVertexPosition.y,1.0);
 
-				texColor = texture2D(uSampler, vec2(vTextureCoord.s+1.0/128.0, vTextureCoord.t+1.0/128.0));
-
-
-				terColor = texture2D(uTSampler, vec2(mod(ter.b, 4.0)*0.25+xMod*0.25, floor(ter.b/4.0)*0.25+yMod*0.25));
-				terColorDn = texture2D(uTSampler, vec2(mod(terDn.b*255.0, 4.0)*0.25+xMod*0.25, floor(terDn.b*255.0/4.0)*0.25+yMod*0.25));
-				terColorDnRt = texture2D(uTSampler, vec2(mod(texColorDnRt.b*255.0, 4.0)*0.25+xMod*0.25, floor(texColorDnRt.b*255.0/4.0)*0.25+yMod*0.25));
-				terColorRt = texture2D(uTSampler, vec2(mod(texColorRt.b*255.0, 4.0)*0.25+xMod*0.25, floor(texColorRt.b*255.0/4.0)*0.25+yMod*0.25));
 				vec4 terColorGrass = texture2D(uTSampler, vec2(mod(8.0, 4.0)*0.25+xMod*0.25, floor(8.0/4.0)*0.25+yMod*0.25));
 				float xFract = fract(vVertexPosition.x*3.0);
 				float yFract = fract(vVertexPosition.y*3.0);
 
+				// vec4 useMask = texture2D(uMaskSampler, vec2(255.*baseRef.g*0.125+mod(vVertexPosition.x*12.0,1.0)*0.125, 0.125*baseRef.r*255.+0.125+mod(vVertexPosition.y*12.0,1.0)*0.125));
+				if (ter.b > 16.) ter.b = 0.;
+				if (terDn.b > 16.) terDn.b = 0.;
+				if (terRt.b > 16.) terRt.b = 0.;
+				if (terRtDn.b > 16.) terRtDn.b = 0.;
+				float baseWaterX = (1.0-min(ter.b, 1.))*0.25;
+				float waterScreenX = (1.-min(terDn.b, 1.))*0.125+baseWaterX;
+				float waterScreenY = 0.25*(1.-min(terRt.b, 1.))+.125*(1.-min(terRtDn.b, 1.));
+
+				vec4 waterMask = texture2D(uMaskSampler, vec2(waterScreenX+fract(vVertexPosition.x*12.)*0.125, waterScreenY+fract(vVertexPosition.y*12.)*0.125));
+
 				//gl_FragColor = ((1.0 - borderMask.r - borderMask.g - borderMask.b)*terColor + borderMask.r*terColor + borderMask.g*terColor + borderMask.b*terColor)*0.65+vec4(normalWeight, 1.0);
 
-				float useColor = ((ter.b*(1.-useMask.r)*(1.-useMask.g)*(1.-useMask.b))+terRt.b*useMask.r+terRtDn.b*useMask.g + terDn.b*useMask.b);
-				terColor = texture2D(uTSampler, vec2(mod(useColor, 4.0)*0.25+xFract*0.25, floor(useColor/4.0)*0.25+yFract*0.25));
+				float useColor = ((ter.b*(1.-useMask.r)*(1.-useMask.g)*(1.-useMask.b))+terRt.b*useMask.r+terRtDn.b*useMask.g + terDn.b*useMask.b)*(1.0-waterMask.r);
+				useColor = ter.b*(1.0-waterMask.r);
+				//terColor = texture2D(uTSampler, vec2(mod(useColor, 4.0)*0.25+xFract*0.25, floor(useColor/4.0)*0.25+yFract*0.25));
 				//terColor = texture2D(uTSampler, vec2(mod(ter.b, 4.0)*0.25+xFract*0.25, floor(ter.b/4.0)*0.25+yFract*0.25));
-					if (useColor == 0.) {
+					if (waterMask.r>0.1) {
+					//if (useColor == 0. || useColor > 16.) {
+						// water
 						vec4 bumpColor = texture2D(uBumpSampler, vec2(vVertexPosition.x/2., vVertexPosition.y/2.));
 						vec3 lightDirection = normalize(worldLightDirection.xyz - vPosition.xyz);
 						vec3 normal = normalize(vTransformedNormal+5.*bumpColor.r*vec3(0.,1.,0.));
@@ -234,8 +242,27 @@ echo '
 						vec3 lightWeighting = vec3(0.20) + vec3(1.0) * 50.*specularLightWeighting + 1.*vec3(0.9, 0.9, 0.9);
 
 						gl_FragColor = vec4(vec3(0.1, bumpColor.r, 0.7)*lightWeighting, 1.0)*(1.0-flatColor.a)+flatColor+useMask*0.5*uHexOn+ addMarks;
-						}
+						//gl_FragColor = waterMask;
+					} else {
+						terColor = texture2D(uTSampler, vec2(mod(ter.b, 4.0)*0.25+xMod*0.25, floor(ter.b/4.0)*0.25+yMod*0.25));
+						terColorDn = texture2D(uTSampler, vec2(mod(terDn.b, 4.0)*0.25+xMod*0.25, floor(terDn.b/4.0)*0.25+yMod*0.25));
+						terColorDnRt = texture2D(uTSampler, vec2(mod(terRtDn.b, 4.0)*0.25+xMod*0.25, floor(terRtDn.b/4.0)*0.25+yMod*0.25));
+						terColorRt = texture2D(uTSampler, vec2(mod(terRt.b, 4.0)*0.25+xMod*0.25, floor(terRt.b/4.0)*0.25+yMod*0.25));
+
+						vec4 mixColor = texture2D(uMaskSampler, vec2(0.25+fract(vVertexPosition.x*12.)*0.5, 0.5+fract(vVertexPosition.y*12.)*0.5));
+
+
+						float totalWeight = ((1.-mixColor.r)*(1.-mixColor.g)*(1.-mixColor.b))+mixColor.r+mixColor.g+mixColor.b;
+						vec3 color1 = (((1.-mixColor.r)*(1.-mixColor.g)*(1.-mixColor.b))*terColor.rgb)/totalWeight;
+						vec3 color2 = mixColor.r*terColorRt.rgb/totalWeight;
+						vec3 color3 = mixColor.g*terColorDnRt.rgb/totalWeight;
+						vec3 color4 = mixColor.b*terColorDn.rgb/totalWeight;
+
+						gl_FragColor = vec4((color1+color2+color3+color4)+normalWeight, (1.0-flatColor.a))*(1.0-flatColor.a)+flatColor+useMask*0.5*uHexOn + addMarks;;
+					}
+						/*
 					else if (useColor >0. && useColor <7.) {
+						// forest
 						float xFract = fract(vVertexPosition.x*6.0);
 						float yFract = fract(vVertexPosition.y*6.0);
 						vec4 grassColor = texture2D(uTSampler, vec2(0.75+xMod*0.25, 0.25+yMod*0.25));
@@ -244,13 +271,15 @@ echo '
 						gl_FragColor = vec4((terColor.rgb*(1.-screenColor.r) + terColorGrass.rgb*screenColor.r+normalWeight),(1.0-flatColor.a))*(1.0-flatColor.a)+flatColor+useMask*0.5*uHexOn + addMarks;
 						}
 					else {
+						// other
 						gl_FragColor = vec4(terColor.rgb+normalWeight, (1.0-flatColor.a))*(1.0-flatColor.a)+flatColor+useMask*0.5*uHexOn + addMarks;
-						}
+					}*/
 				//if (uUseColor == 1.) gl_FragColor = vec4(useColor/5., 0.,0.,1.)*uUseColor;
 				//gl_FragColor = vec4(ter.b, 0.,0.,1.);
+				//gl_FragColor = waterMask;
 				}
-
-			}
+				//gl_FragColor = vec4(ter.b-150., 0.0, 0., 1.);
+			//}
 
 		}
 </script>
