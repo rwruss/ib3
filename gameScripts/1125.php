@@ -42,8 +42,10 @@ switch($postVals[2]) {
   $resources = new itemSlot($playerCity->get('carrySlot'), $slotFile, 40);
   //print_r($resources->slotData);
   //unitList.renderSum(armyItems[i+1], "armyList_"+armyItems[i]);
-  if ($warDat[$warSide*6+8] + $warDat[$warSide*6+12] + $warDat[$warSide*6+16] > 0) {
-    echo 'textBlob("", thisDiv, "You have offered a truce");';
+  if ($warDat[$warSide*6+9] + $warDat[$warSide*6+11] + $warDat[$warSide*6+13] > 0) {
+    echo 'textBlob("", thisDiv, "You have offered the following items for a truce:<br>  
+	R'.$warDat[$warSide*6+8].'->'.$warDat[$warSide*6+9].', R'.$warDat[$warSide*6+10].'->'.$warDat[$warSide*6+11].', R'.$warDat[$warSide*6+12].'->'.$warDat[$warSide*6+13].'
+	<p>If you would like, propose new terms below.");';
   }
   echo 'rscList = new resourceList([1, 2, 3, 4, 5]);;
     let optionBox1 = slideBox(thisDiv, 0);
