@@ -1,0 +1,31 @@
+<link rel="stylesheet" type="text/css" href="e:/websites/ib3/public_html/ib3styles.css">
+<script src="e:/websites/ib3/public_html/templates.js"></script>
+<script src="e:/websites/ib3/public_html/selectList.js"></script>
+<script>
+function initTest() {
+	rscList = new resourceList([1, 2, 3, 4, 5]);
+	rscList2 = new uList([6, 7, 8, 9, 10]);
+	multiList = new resourceList([rscList, rscList2]);
+
+	selectButton1 = addDiv("b1", "button", "gmPnl");
+	selectButton1.innerHTML = "button";
+	selectButton1.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox1, playerRsc[optionBox1.unitSpace.selected[0]])})});
+	//selectButton1.addEventListener("click", function () {rscList.SLsingleSelect(this)});
+	
+	selectButton2 = addDiv("b2", "button", "gmPnl");
+	selectButton2.innerHTML = "button";
+	selectButton2.addEventListener("click", function () {multiList.SLsingleSelect(this, function() {setSlideQty(optionBox1, playerRsc[optionBox1.unitSpace.selected[0]])})});
+	
+	sendButton = addDiv("b2", "button", "gmPnl");
+	sendButton.innerHTML = "send";
+	sendButton.addEventListener("click", function () {readLists([selectButton1, selectButton2])});
+	
+	console.log(multiList.listItems[0]);
+}
+
+window.addEventListener("load", initTest);
+</script>
+
+<div id="gmPnl" class="container"></div>
+
+

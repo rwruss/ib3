@@ -12,7 +12,7 @@ $slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 // Start a new war
 if (flock($warFile, LOCK_EX)) {
   fseek($warFile, 0, SEEK_END);
-  $newWar = max(1,ftell($warFile)/100);
+  $newWar = max(1,ftell($warFile)/$warBlockSize);
 
 
   $warDat = array_fill(1, 25, 0);
@@ -31,14 +31,14 @@ if (flock($warFile, LOCK_EX)) {
   for ($i=1; $i<=25; $i++) {
     $writeDat .= pack('i', $warDat[$i]);
   }
-  fseek($warFile, $newWar*100);
+  fseek($warFile, $newWar*$warBlockSize);
   fwrite($warFile, $writeDat);
 
   // Record new side slot information
   fwrite($warFile, pack('i*', 0, 1, $pGameID, 2, $postVals[1]));
 
   // finish out the slot
-  fseek($warFile, ($newWar+1)*100+96);
+  fseek($warFile, ($newWar+1)*$warBlockSize-4);
   fwrite($warFile, pack('i', 0));
 
   flock($warFile, LOCK_UN);

@@ -4,12 +4,25 @@ class objectList {
 	}
 
 	SLsingleSelect(target, action) {
+		
 		console.log(target);
-		let showContain = addDiv("", "selectMenu", "gmPnl");
+		var showContain;
+		if (document.getElementById("selectMenu")) showContain = document.getElementById("selectMenu");
+		else showContain = addDiv("selectMenu", "selectMenu", "gmPnl");
+		showContain.innerHTML = "";
 		this.selected = [];
 		target.selected = [];
-
+		console.log(this.listItems);
 		for (var i=0; i<this.listItems.length; i++) {
+			if (this.listItems[i] instanceof objectList) {
+				console.log(this.listItems);
+				let object = this.listItems[i].typeIcon(showContain);
+				var subtarg = this.listItems[i];
+				if (this.listItems[i] != "undefined") object.addEventListener("click", function () {
+					//console.log(subtarg);
+					subtarg.SLsingleSelect(target, function() {})
+					});
+			} else {
 			let object = this.showItem(this.listItems[i], showContain);
 			object.owner = this;
 			object.objID = this.listItems[i];
@@ -24,6 +37,7 @@ class objectList {
 				target.selected[0] = object.objID;
 				action();
 				});
+			}
 		}
 	}
 
@@ -70,9 +84,23 @@ class objectList {
 			target.selected = this.owner.selected;
 			});
 	}
+	
+	SLtierSelect() {
+		
+	}
 
 	getSelection() {
 		return this.selected;
+	}
+}
+
+class subListOptions extends objectList {
+	showItem(id, trg) {
+		let objBox = addDiv("", "objContain", trg);
+		objContent = addDiv("", "objContent", objBox);
+		objContent.innerHTML = id;
+
+		return objBox;
 	}
 }
 
@@ -92,6 +120,13 @@ class resourceList extends objectList {
 
 		return objBox;
 	}
+	
+	typeIcon(trg) {
+		let objBox = addDiv("", "rscContain", trg);
+		objBox.innerHTML = "resources";
+
+		return objBox;
+	} 
 
 	selectItem (trg) {
 		trg.className = "rscContainSelected";
@@ -111,12 +146,19 @@ class uList extends objectList {
 	}
 
 	showItem(id, trg) {
-		objBox = addDiv("", "objContain", trg);
-		objContent = addDiv("", "objContent", objBox);
+		let objBox = addDiv("", "objContain", trg);
+		let objContent = addDiv("", "objContent", objBox);
 		objContent.innerHTML = id;
 
 		return objBox;
 	}
+	
+	typeIcon(trg) {
+		let objBox = addDiv("", "rscContain", trg);
+		objBox.innerHTML = "resources";
+
+		return objBox;
+	} 
 }
 
 newButton = function(trg, action) {

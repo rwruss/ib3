@@ -11,7 +11,7 @@ $warList = new itemSlot($playerDat[32], $slotFile, 40);
 
 // Load the war details 
 fseek($unitFile, $postVals[1]*$defaultBlockSize);
-$warDat = unpack('i*', fread($unitFile, 100));
+$warDat = unpack('i*', fread($unitFile, $warBlockSize));
 
 if (array_search($postVals[1], $warList->slotData)) {
 
