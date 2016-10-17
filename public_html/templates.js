@@ -921,7 +921,7 @@ class plot extends unit {
 		this.tResist = object.tResist || 1;
 		this.lSkill = object.lSkill || 1;
 		this.plotType = object.plotType || 1;
-		//console.log("plot target = " + this.target)
+		//console.log("plot target = " + this.target);
 		console.log("Plot aps " + this.aps);
 	}
 

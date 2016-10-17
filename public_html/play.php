@@ -28,12 +28,12 @@ $gamePath = "../games/".$_GET["gameID"];
 $gameID = $_GET["gameID"];
 // Read game parameters
 $paramDat = file_get_contents($gamePath."/params.ini");
-$mapBounds = unpack("S*", substr($paramDat, 100, 8));
+//$mapBounds = unpack("S*", substr($paramDat, 100, 8));
 $gameTimes = unpack("N*", substr($paramDat, 0, 8));
 
 $paramFile = fopen('../games/'.$gameID.'/params.ini', 'rb');
-$params = unpack('i*', fread($paramFile, 40));
-$_SESSION['game_'.$gameID]['scenario'] = $params[8];
+$params = unpack('i*', fread($paramFile, 100));
+$_SESSION['game_'.$gameID]['scenario'] = $params[9];
 $_SESSION['game_'.$gameID]['scenario'] = 1;
 $_SESSION['game_'.$gameID]['culture'] = 1; // Set and record player culture
 fclose($paramFile);
@@ -2634,7 +2634,7 @@ precision mediump float;
 		return texture;
 		}
 
-
+	var genCharList = [];
 	function webGLStart() {
 		document.getElementById("readMsg").addEventListener("click", function(event) {console.log(event);makeBox(\'inBox\', 1099, 500, 500, 200, 50)});
 
@@ -2748,6 +2748,10 @@ precision mediump float;
 		fclose($unitFile);
 		fclose($slotFile);
 		echo '
+		
+		genCharList[0] = new character({unitType:"character", unitID:1, unitName:"Faction Leader", actionPoints:0, strength:0});
+		genCharList[1] = new character({unitType:"character", unitID:2, unitName:"Faction Heir", actionPoints:0, strength:0});
+		genCharList[2] = new character({unitType:"character", unitID:3, unitName:"General", actionPoints:0, strength:0});
 		}
 
 	function showDiagnostics() {

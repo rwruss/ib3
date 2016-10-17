@@ -11,8 +11,8 @@ if (!isset($_SESSION['gameIDs'][$gameID])) echo "<script>window.location.replace
 
 if (!isset($_SESSION['game_'.$gameID])) {
 	$paramFile = fopen('../games/'.$gameID.'/params.ini', 'rb');
-	$params = unpack('i*', fread($paramFile, 40));
-	$_SESSION['game_'.$gameID]['scenario'] = $params[8];
+	$params = unpack('i*', fread($paramFile, 100));
+	$_SESSION['game_'.$gameID]['scenario'] = $params[9];
 	$_SESSION['game_'.$gameID]['scenario'] = 1;
 	$_SESSION['game_'.$gameID]['culture'] = 1; // Set and record player culture
 	fclose($paramFile);

@@ -31,8 +31,6 @@ class objectList {
 	}
 
 	SLmultiSelect(target, limit) {
-
-
 		var selButton = addDiv("", "button", showContain);
 		selButton.innerHTML = "Select Thsese";
 		selButton.owner = this;
@@ -51,7 +49,7 @@ class resourceList extends objectList {
 	}
 
 	getValue(trg) {
-		let returnVal = "1,"+this.selection+","+trg.showBox.slider.slide.value;
+		//let returnVal = "1,"+this.selection+","+trg.showBox.slider.slide.value;
 		return "1,"+trg.selectedValue+","+trg.showBox.slider.slide.value;
 	}
 
@@ -98,9 +96,7 @@ class uList extends objectList {
 	}
 
 	getValue(trg) {
-		//console.log("type ul");
-		//console.log("selection " + this.selection);
-		return "2,"+this.selection;
+		return "3,"+this.selection;
 	}
 
 	showItem(id, trg) {
@@ -114,6 +110,41 @@ class uList extends objectList {
 	showSelected(id, trg) {
 		this.selection = id;
 		trg.innerHTML = id;
+		trg.listItem = this;
+	}
+
+	typeIcon(trg) {
+		let objBox = addDiv("", "rscContain", trg);
+		objBox.innerHTML = "resources";
+
+		return objBox;
+	}
+}
+
+class charList extends objectList {
+	constructor(listItems, parentList) {
+		super();
+		this.listItems = listItems;
+		this.parentList = parentList;
+	}
+
+	getValue(trg) {
+		//console.log("type ul");
+		//console.log("selection " + this.selection);
+		return "2,"+this.selection;
+	}
+
+	showItem(id, trg) {
+		let objBox = addDiv("", "objContain", trg);
+		let objContent = addDiv("", "objContent", objBox);
+
+		return objBox;
+	}
+
+	showSelected(id, trg) {
+		this.selection = id;
+		this.parentList.renderSum(id, trg);
+		//trg.innerHTML = id;
 		trg.listItem = this;
 	}
 

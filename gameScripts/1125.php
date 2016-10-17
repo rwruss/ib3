@@ -54,24 +54,46 @@ switch($postVals[2]) {
 
   echo 'rscList = new resourceList([1, 2, 3, 4, 5]);
     testUnitList = new uList(playerUnits);
-    multiList = new resourceList([rscList, testUnitList]);
+	charRankList = new uList([]);
+    offerMultiList = new resourceList([rscList, testUnitList]);
+	
     optionBox1 = addDiv("", "selectContain", thisDiv);
     optionBox1.innerHTML = "1";
-    optionBox1.addEventListener("click", function () {multiList.SLsingleSelect(this)});
+    optionBox1.addEventListener("click", function () {offerMultiList.SLsingleSelect(this)});
 
     optionBox2 = addDiv("", "selectContain", thisDiv);
     optionBox2.innerHTML = "2";
-    optionBox2.addEventListener("click", function () {multiList.SLsingleSelect(this)});
+    optionBox2.addEventListener("click", function () {offerMultiList.SLsingleSelect(this)});
 
-    let optionBox3 = addDiv("", "selectContain", thisDiv);
+    optionBox3 = addDiv("", "selectContain", thisDiv);
     optionBox3.innerHTML = "3";
-    optionBox3.addEventListener("click", function () {multiList.SLsingleSelect(this)});
+    optionBox3.addEventListener("click", function () {offerMultiList.SLsingleSelect(this)});
+	
+	textBlob("", thisDiv, "Your enemy has demanded the following items for a truce:<br>
+	R'.$warDat[$oppside*6+8].'->'.$warDat[$oppside*6+9].', R'.$warDat[$oppside*6+10].'->'.$warDat[$oppside*6+11].', R'.$warDat[$oppside*6+12].'->'.$warDat[$oppside*6+13].'
+	<p>Make your demands below:");
+	
+	demandMultiList = new resourceList([rscList, testUnitList]);
+	rscTypes = new resourcesList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+	charTyles = new uList([genCharList]);
+	
+	demandBox1 = addDiv("", "selectContain", thisDiv);
+    demandBox1.innerHTML = "1";
+    demandBox1.addEventListener("click", function () {demandMultiList.SLsingleSelect(this)});
 
-    sendButton = newButton(thisDiv, function () {
+    demandBox2 = addDiv("", "selectContain", thisDiv);
+    demandBox2.innerHTML = "2";
+    demandBox2.addEventListener("click", function () {demandMultiList.SLsingleSelect(this)});
+
+    demandBox3 = addDiv("", "selectContain", thisDiv);
+    demandBox3.innerHTML = "3";
+    demandBox3.addEventListener("click", function () {demandMultiList.SLsingleSelect(this)});
+	
+	sendButton = newButton(thisDiv, function () {
       console.log(SLreadSelection(optionBox1) + "," + SLreadSelection(optionBox2));
-      scrMod("1126,'.$postVals[1].',"+SLreadSelection(optionBox1) + "," + SLreadSelection(optionBox2) + "," + SLreadSelection(optionBox3));
+      scrMod("1126,'.$postVals[1].',"+SLreadSelection(optionBox1) + "," + SLreadSelection(optionBox2) + "," + SLreadSelection(optionBox3) + "," + SLreadSelection(demandBox1) + "," + SLreadSelection(demandBox2) + "," + SLreadSelection(demandBox3));
     });
-    ';
+	';
   break;
 
   case 3:

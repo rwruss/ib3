@@ -8,9 +8,9 @@ Gather intel on an object
 * Actions/Orders for characters and units
 implement map concealment/detection
 Traits and buffs/nerfs
-FInish war end options
+Finish war end options
 Mouse drag scroll
-Put scenario number in game ini file (I think at spot 8)
+Put scenario number in game ini file (I think at spot 9)  - partially complete - need to revise ini file for each scenario to be imported when a game is started.
 
 ** verify city priviledge in obj2 (resource site)
 
