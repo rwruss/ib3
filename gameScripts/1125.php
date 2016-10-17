@@ -12,7 +12,7 @@ useDeskTop.newPane("warOpts");
 thisDiv = useDeskTop.getPane("warOpts");';
 
 // Verify that the viewing player is an owner of the war
-fseek($warFile, $postVals[1]*$warBlockSize);
+fseek($warFile, $postVals[1]*$defaultBlockSize);
 $warDat = unpack('i*', fread($warFile, $warBlockSize));
 
 $sideSwitch = 1;
@@ -43,33 +43,33 @@ switch($postVals[2]) {
   //print_r($resources->slotData);
   //unitList.renderSum(armyItems[i+1], "armyList_"+armyItems[i]);
   if ($warDat[$playerSide*6+9] + $warDat[$playerSide*6+11] + $warDat[$playerSide*6+13] > 0) {
-    echo 'textBlob("", thisDiv, "You have offered the following items for a truce:<br>  
-	R'.$warDat[$playerSide*6+8].'->'.$warDat[$playerSide*6+9].', R'.$warDat[$playerSide*6+10].'->'.$warDat[$playerSide*6+11].', R'.$warDat[$playerSide*6+12].'->'.$warDat[$playerSide*6+13].'
-	<p>If you would like, propose new terms below.");';
+    echo 'textBlob("", thisDiv, "You have offered the following items for a truce:<br>	R'.$warDat[$playerSide*6+8].'->'.$warDat[$playerSide*6+9].', R'.$warDat[$playerSide*6+10].'->'.$warDat[$playerSide*6+11].', R'.$warDat[$playerSide*6+12].'->'.$warDat[$playerSide*6+13].'	<p>If you would like, propose new terms below.");';
   }
-  
+
   if ($warDat[$oppside*6+9] + $warDat[$oppside*6+11] + $warDat[$oppside*6+13] > 0) {
-    echo 'textBlob("", thisDiv, "Your enemy has offered the following items for a truce:<br>  
+    echo 'textBlob("", thisDiv, "Your enemy has offered the following items for a truce:<br>
 	R'.$warDat[$oppside*6+8].'->'.$warDat[$oppside*6+9].', R'.$warDat[$oppside*6+10].'->'.$warDat[$oppside*6+11].', R'.$warDat[$oppside*6+12].'->'.$warDat[$oppside*6+13].'
 	<p>If you would like, propose new terms below.");';
   }
-  
-  echo 'rscList = new resourceList([1, 2, 3, 4, 5]);;
-    let optionBox1 = slideBox(thisDiv, 0);
-    optionBox1.unitSpace.innerHTML = "rsc";
-	  optionBox1.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox1, playerRsc[optionBox1.unitSpace.selected[0]])})});
 
-    let optionBox2 = slideBox(thisDiv, 10000);
-    optionBox2.unitSpace.innerHTML = "rsc";
-	  optionBox2.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox2, playerRsc[optionBox2.unitSpace.selected[0]])})});
+  echo 'rscList = new resourceList([1, 2, 3, 4, 5]);
+    testUnitList = new uList(playerUnits);
+    multiList = new resourceList([rscList, testUnitList]);
+    optionBox1 = addDiv("", "selectContain", thisDiv);
+    optionBox1.innerHTML = "1";
+    optionBox1.addEventListener("click", function () {multiList.SLsingleSelect(this)});
 
-    let optionBox3 = slideBox(thisDiv, 10000);
-    optionBox3.unitSpace.innerHTML = "rsc";
-	  optionBox3.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox3, playerRsc[optionBox3.unitSpace.selected[0]])})});
+    optionBox2 = addDiv("", "selectContain", thisDiv);
+    optionBox2.innerHTML = "2";
+    optionBox2.addEventListener("click", function () {multiList.SLsingleSelect(this)});
+
+    let optionBox3 = addDiv("", "selectContain", thisDiv);
+    optionBox3.innerHTML = "3";
+    optionBox3.addEventListener("click", function () {multiList.SLsingleSelect(this)});
 
     sendButton = newButton(thisDiv, function () {
-      scrMod("1126,'.$postVals[1].'," + [optionBox1.unitSpace.selected[0], optionBox1.slider.slide.value, optionBox2.unitSpace.selected[0], optionBox2.slider.slide.value, optionBox3.unitSpace.selected[0], optionBox3.slider.slide.value])
-      console.log(optionBox1.unitSpace.selected[0] + "," + optionBox1.slider.slide.value);
+      console.log(SLreadSelection(optionBox1) + "," + SLreadSelection(optionBox2));
+      scrMod("1126,'.$postVals[1].',"+SLreadSelection(optionBox1) + "," + SLreadSelection(optionBox2) + "," + SLreadSelection(optionBox3));
     });
     ';
   break;
@@ -77,7 +77,7 @@ switch($postVals[2]) {
   case 3:
   if ($playerSide == 1) {
 	  echo 'textBlob("", thisDiv, "This goal of this war is to '.$warDat[3].' on the target of '.$warDat[2].'.  You may add additional demands below.");
-	  
+
 	let optionBox1 = slideBox(thisDiv, 0);
 	optionBox1.unitSpace.innerHTML = "rsc";
 	  optionBox1.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox1, playerRsc[optionBox1.unitSpace.selected[0]])})});
@@ -91,10 +91,12 @@ switch($postVals[2]) {
 	  optionBox3.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox3, playerRsc[optionBox3.unitSpace.selected[0]])})});
 
     sendButton = newButton(thisDiv, function () {
-      scrMod("1126,'.$postVals[1].'," + [optionBox1.unitSpace.selected[0], optionBox1.slider.slide.value, optionBox2.unitSpace.selected[0], optionBox2.slider.slide.value, optionBox3.unitSpace.selected[0], optionBox3.slider.slide.value])
-      console.log(optionBox1.unitSpace.selected[0] + "," + optionBox1.slider.slide.value);
+      //scrMod("1126,'.$postVals[1].'," + [optionBox1.unitSpace.selected[0], optionBox1.slider.slide.value, optionBox2.unitSpace.selected[0], optionBox2.slider.slide.value, optionBox3.unitSpace.selected[0], optionBox3.slider.slide.value])//
+      //console.log(optionBox1.unitSpace.selected[0] + "," + optionBox1.slider.slide.value);
+      SLreadSelection(optionBox1);
+      SLreadSelection(optionBox2);
     });';
-	  
+
   }
   /*
   if ($warDat[7]*$sideSwitch > 100) {

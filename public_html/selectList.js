@@ -3,23 +3,17 @@ class objectList {
 
 	}
 
-	SLsingleSelect(target, action) {
-		
-		console.log(target);
+	SLsingleSelect(target) {
 		var showContain;
+		target.selectedValue = 0;
 		if (document.getElementById("selectMenu")) showContain = document.getElementById("selectMenu");
 		else showContain = addDiv("selectMenu", "selectMenu", "gmPnl");
 		showContain.innerHTML = "";
-		this.selected = [];
-		target.selected = [];
-		console.log(this.listItems);
 		for (var i=0; i<this.listItems.length; i++) {
 			if (this.listItems[i] instanceof objectList) {
-				console.log(this.listItems);
 				let object = this.listItems[i].typeIcon(showContain);
-				var subtarg = this.listItems[i];
+				let subtarg = this.listItems[i];
 				if (this.listItems[i] != "undefined") object.addEventListener("click", function () {
-					//console.log(subtarg);
 					subtarg.SLsingleSelect(target, function() {})
 					});
 			} else {
@@ -27,49 +21,17 @@ class objectList {
 			object.owner = this;
 			object.objID = this.listItems[i];
 			object.addEventListener("click", function () {
-				object.owner.selected[0] = object.objID;
 				console.log("set slected to " + object.objID)
 				object.parentNode.remove();
 				SlclearTarget(target);
-				//target.innerHTML = object.objID;
-				this.owner.showItem(object.objID, target);
-				//target.appendChild(this);
-				target.selected[0] = object.objID;
-				action();
+				this.owner.showSelected(object.objID, target);
 				});
 			}
 		}
 	}
 
 	SLmultiSelect(target, limit) {
-		let showContain = addDiv("", "selectMenu", "testContain");
-		this.selected = [];
-		this.limit = limit;
-		target.selected = [];
-		console.log(target);
-		for (var i=0; i<this.listItems.length; i++) {
-			let object = this.showItem(this.listItems[i], showContain);
-			object.owner = this;
-			object.objID = this.listItems[i];
-			object.addEventListener("click", function () {
-				var checkIndex = this.owner.selected.indexOf(this.objID);
-				//console.log(checkIndex+ " look for " + this.objID + " in " + this.owner.selected);
-				//console.log(this.owner.selected);
-				if(checkIndex >= 0) {
-					console.log("already in list");
-					this.owner.selected.splice(checkIndex, 1);
-					this.owner.unselectItem(this);
-				}
-				else {
-					console.log(this.owner.limit + " vs " + this.owner.selected.length)
-					if (this.owner.limit > this.owner.selected.length) {
-					this.owner.selected.push(this.objID);
-					console.log(this.owner.selected);
-					this.owner.selectItem(this);
-					}
-				}
-				});
-		}
+
 
 		var selButton = addDiv("", "button", showContain);
 		selButton.innerHTML = "Select Thsese";
@@ -77,38 +39,20 @@ class objectList {
 		selButton.addEventListener("click", function () {
 			selButton.parentNode.remove();
 			SlclearTarget(target);
-			console.log(this.owner.selected);
-			for (var i=0; i<this.owner.selected.length; i++) {
-				this.owner.showItem(this.owner.selected[i], target);
-			}
-			target.selected = this.owner.selected;
 			});
 	}
-	
-	SLtierSelect() {
-		
-	}
-
-	getSelection() {
-		return this.selected;
-	}
 }
 
-class subListOptions extends objectList {
-	showItem(id, trg) {
-		let objBox = addDiv("", "objContain", trg);
-		objContent = addDiv("", "objContent", objBox);
-		objContent.innerHTML = id;
-
-		return objBox;
-	}
-}
 
 class resourceList extends objectList {
 	constructor(listItems) {
 		super();
-		this.listType = "rscList";
 		this.listItems = listItems;
+	}
+
+	getValue(trg) {
+		let returnVal = "1,"+this.selection+","+trg.showBox.slider.slide.value;
+		return "1,"+trg.selectedValue+","+trg.showBox.slider.slide.value;
 	}
 
 	showItem(id, trg) {
@@ -120,13 +64,22 @@ class resourceList extends objectList {
 
 		return objBox;
 	}
-	
+
+	showSelected(id, trg) {
+		this.selection = id;
+		trg.selectedValue = id;
+		trg.showBox = slideBox(trg,0);
+		trg.showBox.unitSpace.innerHTML = id;
+		setSlideQty(trg.showBox, playerRsc[id]);
+		trg.listItem = this;
+	}
+
 	typeIcon(trg) {
 		let objBox = addDiv("", "rscContain", trg);
 		objBox.innerHTML = "resources";
 
 		return objBox;
-	} 
+	}
 
 	selectItem (trg) {
 		trg.className = "rscContainSelected";
@@ -141,8 +94,13 @@ class resourceList extends objectList {
 class uList extends objectList {
 	constructor(listItems) {
 		super();
-		this.listType = "uList";
 		this.listItems = listItems;
+	}
+
+	getValue(trg) {
+		//console.log("type ul");
+		//console.log("selection " + this.selection);
+		return "2,"+this.selection;
 	}
 
 	showItem(id, trg) {
@@ -152,13 +110,19 @@ class uList extends objectList {
 
 		return objBox;
 	}
-	
+
+	showSelected(id, trg) {
+		this.selection = id;
+		trg.innerHTML = id;
+		trg.listItem = this;
+	}
+
 	typeIcon(trg) {
 		let objBox = addDiv("", "rscContain", trg);
 		objBox.innerHTML = "resources";
 
 		return objBox;
-	} 
+	}
 }
 
 newButton = function(trg, action) {
@@ -178,22 +142,6 @@ SlclearTarget = function(trg) {
 	}
 }
 
-sendSelection = function() {
-	console.log("send " + SLshowList.selected);
-}
-
-readLists = function (targetList) {
-	returnArray = [];
-	console.log(targetList);
-	for (var i=0; i<targetList.length; i++) {
-		console.log("check " + targetList[i]);
-		if (targetList[i].selected == "undefined") {
-			console.log("not ready");
-			return 0;
-		} else {
-			console.log("fouind " + targetList[i].selected);
-			returnArray = returnArray.concat(targetList[i].selected)
-		}
-	}
-	console.log(returnArray);
+SLreadSelection = function(trg) {
+	return(trg.listItem.getValue(trg));
 }

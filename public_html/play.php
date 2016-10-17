@@ -1,5 +1,8 @@
 <?php
 
+require_once('./slotFunctions.php');
+require_once('./unitClass.php');
+
 session_start();
 if (!isset($_SESSION["playerId"])) echo "<script>window.location.replace(./index.php)</script>";
 if (!isset($_GET["gameID"])) echo "<script>window.location.replace(./index.php)</script>";
@@ -28,40 +31,28 @@ $paramDat = file_get_contents($gamePath."/params.ini");
 $mapBounds = unpack("S*", substr($paramDat, 100, 8));
 $gameTimes = unpack("N*", substr($paramDat, 0, 8));
 
+$paramFile = fopen('../games/'.$gameID.'/params.ini', 'rb');
+$params = unpack('i*', fread($paramFile, 40));
+$_SESSION['game_'.$gameID]['scenario'] = $params[8];
+$_SESSION['game_'.$gameID]['scenario'] = 1;
+$_SESSION['game_'.$gameID]['culture'] = 1; // Set and record player culture
+fclose($paramFile);
+
+
+$gamePath = "../games/".$gameID;
+$scnPath = "../scenarios/".$_SESSION['game_'.$gameID]['scenario'];
 // Read player info
+$defaultBlockSize = 100;
+$unitFile = fopen($gamePath."/unitDat.dat", "rb");
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
 //$playerDat = file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*400, 400);
-
-$playerDat = unpack("i*", file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*100, 400));
-
-/*
-$pStatus = unpack("C*", substr($playerDat, 0, 5));
-$playerOther = unpack("s*", substr($playerDat, 24, 42));
-$playerSlots = unpack("N*", substr($playerDat, 66, 100));
-$startTile = unpack("S", substr($playerDat, 24, 2));
-*/
-
-// Read faction leader info
-/*
-$leaderID = unpack("N", substr($playerDat, 66, 4));
-$leaderDat = file_get_contents($gamePath."/chars.dat", NULL, NULL, $leaderID[1]*200, 200);
-$leader_C = unpack("C*", substr($leaderDat, 0, 4));
-$leaderNameKeys = unpack("S*", substr($leaderDat, 20, 6));
-*/
+$thisPlayer = loadPlayer($pGameID, $unitFile, 400);
+//$playerDat = unpack("i*", file_get_contents($gamePath."/unitDat.dat", NULL, NULL, $pGameID*100, 400));
 
 
-if ($playerDat[1] == 0) {include("../gameScripts/1003.php"); exit;}
-/*
-$nameFile = fopen("../games/common/names_".$leader_C[3].".dat", "rb");
-fseek($nameFile, $leaderNameKeys[1]*20);
-$charName[0] = trim(fread($nameFile, 20));
-fseek($nameFile, $leaderNameKeys[2]*20);
-$charName[1] = trim(fread($nameFile, 20));
-if ($leaderNameKeys[3] > 0) {
-	fseek($nameFile, $leaderNameKeys[3]*20);
-	$charName[2] = trim(fread($nameFile, 20));
-	}
-else $charName[2] = "";
-*/
+if ($thisPlayer->unitDat[1] == 0) {include("../gameScripts/1003.php"); exit;}
+
+
 
 echo '
 <link rel="stylesheet" type="text/css" href="ib3styles.css">
@@ -745,7 +736,7 @@ precision mediump float;
 			document.getElementById("selOpt_"+selNum).className="selected";
 		}
 	}
-
+	var playerUnits;
 	var moveString = new Array();
 	var umList = [];
 	var umFauxVerts = [];
@@ -2734,7 +2725,29 @@ precision mediump float;
 		document.onkeydown = handleKeyDown;
 		document.onkeyup = handleKeyUp;
 
-		initShaders();
+		initShaders();';
+
+		// Load all units for this palyer
+		$warbandNums = [];
+		//echo '<script>';
+		if ($thisPlayer->get('unitSlot') > 0) {
+			$unitList = new itemSlot($thisPlayer->get('unitSlot'), $slotFile, 40);
+			if (sizeof($unitList->slotData)>0) {
+				$unitDesc = explode('<->', file_get_contents($scnPath.'/units.desc'));
+				for ($i=1; $i<=sizeof($unitList->slotData); $i++) {
+					if ($unitList->slotData[$i] > 0) {
+						$warbandNums[] = $unitList->slotData[$i];
+						$thisUnit = loadUnit($unitList->slotData[$i], $unitFile, 400);
+						$thisInfo = explode('<-->', $unitDesc[$thisUnit->unitDat[10]]);
+						echo 'unitList.newUnit({unitType:"warband", unitID:'.$unitList->slotData[$i].', unitName:"'.trim($thisInfo[0]).'", actionPoints:'.$thisUnit->actionPoints().', strength:75, tNum:'.$thisUnit->unitDat[4].'});';
+					}
+				}
+			}
+		}
+		echo 'playerUnits = new Array('.implode(",", $warbandNums).');';
+		fclose($unitFile);
+		fclose($slotFile);
+		echo '
 		}
 
 	function showDiagnostics() {
@@ -2753,14 +2766,18 @@ precision mediump float;
 		info = info  + ","+document.getElementById(src).value;
 		passClick(info, trg);
 	}
-var playerRsc = [0, 1000, 2000, 3000, 4000, 500];
+var playerRsc = [0, 1000, 2000, 3000, 4000, 500];';
+
+
+
+echo '
 window.addEventListener("load", webGLStart);
 </script>
 
 	<html>
 	<body>
 	<div id="ltPnl" style="position:absolute; top:15; left:10; height:675; width:100; border:1px solid #000000">
-		Culture: '.$playerDat[3].'<br>
+		Culture: '.$thisPlayer->unitDat[3].'<br>
 		ID: '.$pGameID.'<br>
 		<a href="javascript:void(0);" onclick="scrMod(1001)">Faction chars</a>
 		<a href="javascript:void(0);" onclick="makeBox(\'fOrders\', 1005, 500, 500, 200, 50)">Lands</a><br>

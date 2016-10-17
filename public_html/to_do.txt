@@ -10,6 +10,7 @@ implement map concealment/detection
 Traits and buffs/nerfs
 FInish war end options
 Mouse drag scroll
+Put scenario number in game ini file (I think at spot 8)
 
 ** verify city priviledge in obj2 (resource site)
 

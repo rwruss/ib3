@@ -1,6 +1,6 @@
 <?php
-include('./slotFunctions.php');
-include('./unitClass.php');
+require_once('./slotFunctions.php');
+require_once('./unitClass.php');
 // Get list of all units for this faction
 $unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
 //fseek($unitFile, $pGameID*$defaultBlockSize);

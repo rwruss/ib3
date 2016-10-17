@@ -42,7 +42,7 @@ class unit {
 		if (array_key_exists($desc, $this->attrList)) {
 			return $this->unitDat[$this->attrList[$desc]];
 		} else {
-			echo 'Not found ('.$desc.')';
+			echo 'Not found in type '.$this->unitDat[4].' ('.$desc.')';
 			return false;
 		}
 	}
@@ -100,6 +100,7 @@ class army extends unit {
 		$this->attrList['unitListSlot'] = 14;
 		$this->attrList['carryCap'] = 29;
 		$this->attrList['carrySlot'] = 30;
+		$this->attrList['energy'] = 99; // Undefined for this type
 	}
 }
 
@@ -140,6 +141,7 @@ class resourcePoint extends unit {
 		$this->attrList['parentCity'] = 15;
 		$this->attrList['energy'] = 16;
 		$this->attrList['baseProd'] = 18;
+		$this->attrList['warPrize'] = 34;
 
 		$this->attrList['conditionPoints'] = 22;
 		$this->attrList['maxCondition'] = 23;
@@ -171,7 +173,8 @@ class char extends unit {
 			$this->attrList['experience'] = 18;
 			$this->attrList['skillSlot'] = 20;
 			$this->attrList['renown'] = 22;
-			$this->attrList['renownRate'] = 22;
+			$this->attrList['renownRate'] = 23;
+			$this->attrList['warPrize'] = 24;
 			$this->attrList['trait1'] = 47;
 			$this->attrList['trait2'] = 48;
 			$this->attrList['trait3'] = 49;
@@ -218,6 +221,8 @@ class settlement extends unit {
 		$this->attrList['parentCity'] = 29;
 		$this->attrList['carryCap'] = 33;
 		$this->attrList['renownGen'] = 35;
+		$this->attrList['warPrize'] = 36;
+		$this->attrList['energy'] = 99; // undefined for this type
 
 	}
 
@@ -283,6 +288,7 @@ class warband extends unit {
 		$this->attrList['carryCap'] = 29;
 		$this->attrList['carrySlot'] = 30;
 		$this->attrList['battleID'] = 31;
+		$this->attrList['warPrize'] = 43;
 		}
 
 	function actionPoints() {
@@ -293,6 +299,8 @@ class warband extends unit {
 class tribeObject extends unit {
 	function __construct($id, $dat, $file) {
 		parent::__construct($id, $dat, $file);
+
+		$this->attrList['energy'] = 16;
 	}
 
 	function objectTarget() {

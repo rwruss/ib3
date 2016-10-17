@@ -18,6 +18,7 @@ slideBox = function (trg, maxPoints) {
 	let thisBox = addDiv("", "selectContain", trg);
 	thisBox.unitSpace = addDiv("", "selectContain", thisBox);
 	thisBox.slider = slideValBar(thisBox, "", 0, maxPoints);
+	thisBox.selectHolder = thisBox.unitSpace;
 
 	return thisBox;
 }
@@ -1298,6 +1299,7 @@ slideValBar = function (trg, slideID, low, hi) {
 	setVal.innerHTML = 0;
 
 	minVal.addEventListener("click", function (event) {event.stopPropagation();contain.slide.stepDown(1); setVal.innerHTML = contain.slide.value;});
+	contain.addEventListener("click", function() {event.stopPropagation()});
 	contain.maxVal.addEventListener("click", function (event) {event.stopPropagation();contain.slide.stepUp(1); setVal.innerHTML = contain.slide.value;});
 
 	//groupList.push(slide);
