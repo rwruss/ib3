@@ -3,15 +3,17 @@
 <script src="e:/websites/ib3/public_html/selectList.js"></script>
 <script>
 function initTest() {
-	rscList = new resourceList([1, 2, 3, 4, 5]);
-	rscList2 = new uList([6, 7, 8, 9, 10]);
-	multiList = new resourceList([rscList, rscList2]);
+	playerResources = [10,1,2,3,4,6,7];
+	otherResources = [2,3,4,5,6,7,8,9,0];
+	rscList = new resourceList(playerResources, {items:[1, 2]});
+	rscList2 = new uList(otherResources, {items:[1, 2, 3, 4]});
+	doubleList = new multiList([rscList, rscList2]);
 
-	selectButton1 = addDiv("b1", "button", "gmPnl");
-	selectButton1.innerHTML = "button";
-	selectButton1.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox1, playerRsc[optionBox1.unitSpace.selected[0]])})});
+	selectButton1 = rscList.SLsingleButton("gmPnl", {setVal:2, setQty:2000});
+	selectButton2 = rscList2.SLsingleButton("gmPnl", {setVal:4});
+	selectButton3 = doubleList.SLsingleButton("gmPnl", {setVal:2, setQty:1200, list:rscList});
 	//selectButton1.addEventListener("click", function () {rscList.SLsingleSelect(this)});
-	
+	/*
 	selectButton2 = addDiv("b2", "button", "gmPnl");
 	selectButton2.innerHTML = "button";
 	selectButton2.addEventListener("click", function () {multiList.SLsingleSelect(this, function() {setSlideQty(optionBox1, playerRsc[optionBox1.unitSpace.selected[0]])})});
@@ -19,8 +21,13 @@ function initTest() {
 	sendButton = addDiv("b2", "button", "gmPnl");
 	sendButton.innerHTML = "send";
 	sendButton.addEventListener("click", function () {readLists([selectButton1, selectButton2])});
+	*/
+	//console.log(multiList.listItems[0]);
 	
-	console.log(multiList.listItems[0]);
+	sendButton = newButton("gmPnl", function () {
+      console.log(SLreadSelection(selectButton1) + "," + SLreadSelection(selectButton2));
+      console.log("1126,"+SLreadSelection(selectButton1) + "," + SLreadSelection(selectButton2) + "," + SLreadSelection(selectButton3));
+    });
 }
 
 window.addEventListener("load", initTest);

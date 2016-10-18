@@ -52,11 +52,15 @@ switch($postVals[2]) {
 	<p>If you would like, propose new terms below.");';
   }
 
-  echo 'rscList = new resourceList([1, 2, 3, 4, 5]);
+  echo 'rscList = new resourceList(playerRsc);
     testUnitList = new uList(playerUnits);
-	charRankList = new uList([]);
-    offerMultiList = new resourceList([rscList, testUnitList]);
+    offerMultiList = new uList([rscList, testUnitList]);
 	
+	optionBox1 = rscList.SLsingleButton(thisDiv);
+	optionBox2 = offerMultiList.SLsingleButton(thisDiv);
+	optionBox3 = offerMultiList.SLsingleButton(thisDiv);
+	
+	/*
     optionBox1 = addDiv("", "selectContain", thisDiv);
     optionBox1.innerHTML = "1";
     optionBox1.addEventListener("click", function () {offerMultiList.SLsingleSelect(this)});
@@ -68,14 +72,15 @@ switch($postVals[2]) {
     optionBox3 = addDiv("", "selectContain", thisDiv);
     optionBox3.innerHTML = "3";
     optionBox3.addEventListener("click", function () {offerMultiList.SLsingleSelect(this)});
-	
+	*/
 	textBlob("", thisDiv, "Your enemy has demanded the following items for a truce:<br>
 	R'.$warDat[$oppside*6+8].'->'.$warDat[$oppside*6+9].', R'.$warDat[$oppside*6+10].'->'.$warDat[$oppside*6+11].', R'.$warDat[$oppside*6+12].'->'.$warDat[$oppside*6+13].'
 	<p>Make your demands below:");
 	
-	demandMultiList = new resourceList([rscList, testUnitList]);
-	rscTypes = new resourcesList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-	charTyles = new uList([genCharList]);
+	rscTypes = new resourcesList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], {max:10000});
+	charTypesList = new charList(defaultChars, {prefix:3});
+	unitTypesList = new charList(defaultUnits, {prefix:4});
+	demandMultiList = new resourceList([rscTypes, charTypesList, unitTypesList]);
 	
 	demandBox1 = addDiv("", "selectContain", thisDiv);
     demandBox1.innerHTML = "1";
