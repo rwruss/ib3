@@ -278,7 +278,15 @@ class blockSlot extends dataSlot {
 		return $loc;
 	}
 }
-
+/*
+class resourceSlot extends blockSlot {
+	function __construct($start, $slotFile, $size) {
+		parent::__construct($start, $slotFile, $size);
+	}
+	
+	function adjustRsc($rscID, $adjustVal);
+}
+*/
 class mapEventSlot extends dataSlot {
 	public $numEffects, $version;
 	function __construct($start, $slotFile, $size) {

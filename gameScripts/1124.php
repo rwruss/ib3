@@ -2,6 +2,10 @@
 
 echo 'Declared war on player '.$postVals[1];
 
+// Get owner of the object that you are declaring war on
+$trgObj = loadUnit($postVals[1], $unitFile, 400);
+$trgPlayer = $trgObj->get('controller');
+
 require_once('./slotFunctions.php');
 require_once('./unitClass.php');
 
@@ -22,7 +26,7 @@ if (flock($warFile, LOCK_EX)) {
   $warDat[3] = 0; // war goal
   $warDat[4] = time(); // time started
   $warDat[5] = $pGameID; // side A (attacker)
-  $warDat[6] = $postVals[1]; // side A (attacker)
+  $warDat[6] = $trgPlayer; // side D (defender)
   $warDat[7] = $newWar+1; // player side spot
   $warDat[8] = 0; //warscore
   //fwrite($warFile, pack('i', 0));
@@ -46,27 +50,33 @@ if (flock($warFile, LOCK_EX)) {
 
 // Record the war in each player's war list
 
-$firstPlayer = loadPlayer($pGameID, $unitFile, 400);
-if ($firstPlayer->get('warList') == 0) {
+$aPlayer = loadPlayer($pGameID, $unitFile, 400);
+if ($aPlayer->get('warList') == 0) {
   $addedSlot = newSlot($slotFile);
-  //$firstPlayer->set('warList', $addedSlot);
-  $firstPlayer->save('warList', $addedSlot);
+  //$aPlayer->set('warList', $addedSlot);
+  $aPlayer->save('warList', $addedSlot);
 }
-$firstSlot = new itemSlot($firstPlayer->get('warList'), $slotFile, 40);
-echo 'Add war to slot '.$firstPlayer->get('warList').' for player 1';
+$firstSlot = new itemSlot($aPlayer->get('warList'), $slotFile, 40);
+echo 'Add war to slot '.$aPlayer->get('warList').' for player 1';
 $firstSlot->addItem($newWar, $slotFile);
 
-$trgObj = loadUnit($postVals[1], $unitFile, 400);
 echo 'Target object is a ('.$trgObj->get('uType').') - '.get_class($trgObj).' War target is '.$trgObj->objectTarget();
-$secondPlayer = loadPlayer($trgObj->objectTarget(), $unitFile, 400);
-if ($secondPlayer->get('warList') == 0) {
+$dPlayer = loadPlayer($trgObj->objectTarget(), $unitFile, 400);
+if ($dPlayer->get('warList') == 0) {
   $addedSlot = newSlot($slotFile);
-  $secondPlayer->set('warList', $addedSlot);
-  $secondPlayer->save('warList', $addedSlot);
+  $dPlayer->set('warList', $addedSlot);
+  $dPlayer->save('warList', $addedSlot);
 }
-echo 'Add war to slot '.$secondPlayer->get('warList').' for player 2';
-$secondSlot = new itemSlot($secondPlayer->get('warList'), $slotFile, 40);
+echo 'Add war to slot '.$dPlayer->get('warList').' for player 2';
+$secondSlot = new itemSlot($dPlayer->get('warList'), $slotFile, 40);
 $secondSlot->addItem($newWar, $slotFile);
+
+// Record in each players diplomacy list
+$aDipSlot = new blockSlot($aPlayer->get('dipSlot'), $slotFile, 40);
+$dDipSlot = new blockSlot($dPlayer->get('dipSlot'), $slotFile, 40);
+
+$aDipSlot->addItem($slotFile, pack('i*', $warDat[6], 1, time(), 0);
+$dDipSlot->addItem($slotFile, pack('i*', $warDat[5], 2, time(), 0);
 
 fclose($warFile);
 fclose($unitFile);

@@ -1,5 +1,8 @@
 <?php
 
+echo 'File 1109 is no long in use and should not be referenced';
+
+/*
 include('./unitClass.php');
 include('./slotFunctions.php');
 
@@ -55,8 +58,8 @@ foreach ($warList->slotData as $warID) {
 	echo 'warDetail('.$warID.')';
 }
 */
-
+/*
 fclose($slotFile);
 fclose($unitFile);
-
+*/
 ?>

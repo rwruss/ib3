@@ -102,6 +102,10 @@ class army extends unit {
 		$this->attrList['carrySlot'] = 30;
 		$this->attrList['energy'] = 99; // Undefined for this type
 	}
+	
+	function objectTarget() {
+		return $this->get('controller');
+	}
 }
 
 class battle extends unit {
@@ -131,6 +135,10 @@ class building extends unit {
 		$this->attrList['trait4'] = 32;
 		$this->attrList['trait5'] = 33;
 	}
+	
+	function objectTarget() {
+		return $this->get('controller');
+	}
 }
 
 class resourcePoint extends unit {
@@ -152,6 +160,10 @@ class resourcePoint extends unit {
 		$this->attrList['trait3'] = 31;
 		$this->attrList['trait4'] = 32;
 		$this->attrList['trait5'] = 33;
+	}
+	
+	function objectTarget() {
+		return $this->get('controller');
 	}
 }
 
@@ -203,6 +215,10 @@ class char extends unit {
 			}
 		}
 	}
+	
+	function objectTarget() {
+		return $this->get('controller');
+	}
 
 	function getBuff($id) {
 		if (isset($boosts[$id])) {
@@ -244,6 +260,10 @@ class settlement extends unit {
 		} else {
 			$townRsc->addItem($slotFile, $data);
 		}
+	}
+	
+	function objectTarget() {
+		return $this->get('controller');
 	}
 }
 
@@ -293,6 +313,10 @@ class warband extends unit {
 
 	function actionPoints() {
 		return min(1000, $this->unitDat[16] + floor((time()-$this->unitDat[27])*4167/360000))+500;
+	}
+	
+	function objectTarget() {
+		return $this->get('controller');
 	}
 }
 

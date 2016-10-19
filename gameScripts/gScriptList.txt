@@ -115,7 +115,7 @@
 1106 - Process resource transfer from units
 1107 - Menu for Add/Drop units from an army
 1108 - Process add/drop units from an army
-1109 - Get information about another player - Same as 1074?
+1109 - Get information about another player - Same as 1074?  NO LONGER IN USE!
 1110 - Menu for Transfer units to another player
 1111 - Process transfer of units from one player to another
 1112 - Process disband an army
@@ -137,6 +137,8 @@
 1128 - MENU: Select Resources to give to opponent in peace offering
 1129 - Process receiving 1128
 1130 - PROCESS - make city your primary city
+1131 - PROCESS - Accpet terms of ending a war - from 1125
+1132 - PROCESS - Enforce terms of ending a war
 
 // Manual Override Functions
 2001 - Add Resources to a city menu

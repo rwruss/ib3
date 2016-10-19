@@ -16,7 +16,7 @@ $warList = new itemSlot($playerDat[32], $slotFile, 40);
 
 // Build diplomacy tree and history
 $dipTree = [];
-for ($i=3; $i<=sizeof($diplSlot->slotData); $i+=3) {
+for ($i=1; $i<=sizeof($diplSlot->slotData); $i+=4) {
 	$dipTree[$dipSlot->$slotData[$i]][] = $dipTree[$dipSlot->$slotData[$i+1]]; // Action #
 	$dipTree[$dipSlot->$slotData[$i]][] = $dipTree[$dipSlot->$slotData[$i+2]]; // Time
 }
@@ -42,11 +42,11 @@ foreach ($warList->slotData as $warID) {
 				break;
 
 			case 2:
-				echo 'War for no religious conversion!';
+				echo 'War for religious conversion!';
 				break;
 
 			case 3:
-				echo 'War for no land/towns!';
+				echo 'War for land/towns!';
 				break;
 
 			case 4:
@@ -54,7 +54,7 @@ foreach ($warList->slotData as $warID) {
 				break;
 		}
 	echo '<p>Score is '.$warDat[8].'<br>';
-	echo '<span onclick=scrMod("1126,'.$warID.',1")>Surrender</span>, <span onclick=scrMod("1125,'.$warID.',2")>Negotiate</span>, <span onclick=scrMod("1126,'.$warID.',3")>Enforce Demands</span>';
+	echo '<span onclick=scrMod("1126,'.$warID.',1")>Surrender</span>, <span onclick=scrMod("1125,'.$warID.',2")>Negotiate</span>, <span onclick=scrMod("1125,'.$warID.',3")>Enforce Demands</span>';
 	}
 }
 fclose($warFile);

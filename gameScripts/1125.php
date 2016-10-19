@@ -51,14 +51,17 @@ switch($postVals[2]) {
 	R'.$warDat[$oppside*6+8].'->'.$warDat[$oppside*6+9].', R'.$warDat[$oppside*6+10].'->'.$warDat[$oppside*6+11].', R'.$warDat[$oppside*6+12].'->'.$warDat[$oppside*6+13].'
 	<p>If you would like, propose new terms below.");';
   }
+  
+  // Read current offerings and demands
+  $playerOffer1 = 
 
   echo 'rscList = new resourceList(playerRsc);
     testUnitList = new uList(playerUnits);
     offerMultiList = new uList([rscList, testUnitList]);
 	
-	optionBox1 = rscList.SLsingleButton(thisDiv);
-	optionBox2 = offerMultiList.SLsingleButton(thisDiv);
-	optionBox3 = offerMultiList.SLsingleButton(thisDiv);
+	optionBox1 = rscList.SLsingleButton(thisDiv'.$readOffer($warDat[$playerSide*9+1], $warDat[$playerSide*9+2], $warDat[$playerSide*9+3]).');
+	optionBox2 = offerMultiList.SLsingleButton(thisDiv'.$readOffer($warDat[$playerSide*9+4], $warDat[$playerSide*9+5], $warDat[$playerSide*9+6]).');
+	optionBox3 = offerMultiList.SLsingleButton(thisDiv'.$readOffer($warDat[$playerSide*9+7], $warDat[$playerSide*9+8], $warDat[$playerSide*9+9]).');
 	
 	/*
     optionBox1 = addDiv("", "selectContain", thisDiv);
@@ -76,12 +79,7 @@ switch($postVals[2]) {
 	textBlob("", thisDiv, "Your enemy has demanded the following items for a truce:<br>
 	R'.$warDat[$oppside*6+8].'->'.$warDat[$oppside*6+9].', R'.$warDat[$oppside*6+10].'->'.$warDat[$oppside*6+11].', R'.$warDat[$oppside*6+12].'->'.$warDat[$oppside*6+13].'
 	<p>Make your demands below:");
-	
-	rscTypes = new resourcesList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], {max:10000});
-	charTypesList = new charList(defaultChars, {prefix:3});
-	unitTypesList = new charList(defaultUnits, {prefix:4});
-	demandMultiList = new resourceList([rscTypes, charTypesList, unitTypesList]);
-	
+	/*
 	demandBox1 = addDiv("", "selectContain", thisDiv);
     demandBox1.innerHTML = "1";
     demandBox1.addEventListener("click", function () {demandMultiList.SLsingleSelect(this)});
@@ -93,36 +91,32 @@ switch($postVals[2]) {
     demandBox3 = addDiv("", "selectContain", thisDiv);
     demandBox3.innerHTML = "3";
     demandBox3.addEventListener("click", function () {demandMultiList.SLsingleSelect(this)});
-	
+	*/
 	sendButton = newButton(thisDiv, function () {
       console.log(SLreadSelection(optionBox1) + "," + SLreadSelection(optionBox2));
       scrMod("1126,'.$postVals[1].',"+SLreadSelection(optionBox1) + "," + SLreadSelection(optionBox2) + "," + SLreadSelection(optionBox3) + "," + SLreadSelection(demandBox1) + "," + SLreadSelection(demandBox2) + "," + SLreadSelection(demandBox3));
     });
+	
+	sendButton = newButton(thisDiv, function () {scrMod("1131,'.$postVals[1].'")});
+	sendButton.innerHTML = "Accept These Terms";
 	';
   break;
 
   case 3:
   if ($playerSide == 1) {
-	  echo 'textBlob("", thisDiv, "This goal of this war is to '.$warDat[3].' on the target of '.$warDat[2].'.  You may add additional demands below.");
-
-	let optionBox1 = slideBox(thisDiv, 0);
-	optionBox1.unitSpace.innerHTML = "rsc";
-	  optionBox1.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox1, playerRsc[optionBox1.unitSpace.selected[0]])})});
-
-    let optionBox2 = slideBox(thisDiv, 10000);
-    optionBox2.unitSpace.innerHTML = "rsc";
-	  optionBox2.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox2, playerRsc[optionBox2.unitSpace.selected[0]])})});
-
-    let optionBox3 = slideBox(thisDiv, 10000);
-    optionBox3.unitSpace.innerHTML = "rsc";
-	  optionBox3.unitSpace.addEventListener("click", function () {rscList.SLsingleSelect(this, function() {setSlideQty(optionBox3, playerRsc[optionBox3.unitSpace.selected[0]])})});
-
-    sendButton = newButton(thisDiv, function () {
-      //scrMod("1126,'.$postVals[1].'," + [optionBox1.unitSpace.selected[0], optionBox1.slider.slide.value, optionBox2.unitSpace.selected[0], optionBox2.slider.slide.value, optionBox3.unitSpace.selected[0], optionBox3.slider.slide.value])//
-      //console.log(optionBox1.unitSpace.selected[0] + "," + optionBox1.slider.slide.value);
-      SLreadSelection(optionBox1);
-      SLreadSelection(optionBox2);
-    });';
+	  echo 'textBlob("", thisDiv, "You are now able to enforce your conditions on the enemy.  This goal of this war is to '.$warDat[3].' on the target of '.$warDat[2].'.  You may add additional demands below.");
+	  
+	  rscTypes = new resourcesList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], {max:10000});
+	charTypesList = new charList(defaultChars, {prefix:3});
+	unitTypesList = new charList(defaultUnits, {prefix:4});
+	demandMultiList = new resourceList([rscTypes, charTypesList, unitTypesList]);
+	
+	demandBox1 = demandMultiList.SLsingleButton(thisDiv'.$readOffer($warDat[$playerSide*9+19], $warDat[$playerSide*9+20], $warDat[$playerSide*9+21]).');
+	demandBox2 = demandMultiList.SLsingleButton(thisDiv'.$readOffer($warDat[$playerSide*9+22], $warDat[$playerSide*9+23], $warDat[$playerSide*9+24]).');
+	demandBox3 = demandMultiList.SLsingleButton(thisDiv'.$readOffer($warDat[$playerSide*9+25], $warDat[$playerSide*9+26], $warDat[$playerSide*9+27]).');
+	  
+	sendButton = newButton(thisDiv, function () {scrMod("1132,'.$postVals[1].'")});
+	sendButton.innerHTML = "Accept These Terms";'
 
   }
   /*
@@ -138,5 +132,29 @@ switch($postVals[2]) {
 fclose($warFile);
 fclose($unitFile);
 fclose($slotFile);
+
+function readOffer($type, $index, $amount) {
+	switch($type) {
+		case 0:
+			return '';
+		break;
+		
+		case 1: // offer a resource
+			return ',{setVal:'.$index.', setQty:'.$amount.', list:rscList}';
+		break;
+		
+		case 2: // offer a specific unit or character
+			return ',{setVal:'.$index.', list:testUnitList}';
+		break;
+		
+		case 3:  // Offer a character tpye
+			return ',{setVal:'.$index.', list:charTypesList}';
+		break;
+		
+		case 4: // offer a unit type
+			return ',{setVal:'.$index.', list:unitTypesList}';
+		break;
+	}
+}
 
 ?>
