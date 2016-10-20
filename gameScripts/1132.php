@@ -23,9 +23,9 @@ if ($warDat[6] == $pGameID) {
   $oppside = 1;
 }
 
-$requiredScore = [0, 100, 75, 75];
+$requiredScore = [0, 0, 0, 0];
 // Verify that the warscore is high enough to enforce the demand
-if ($warDat[8] < $requiredScore[$warDat[1]) exit ('You cannot enforce these conditions');
+if ($warDat[8] < $requiredScore[$warDat[1]]) exit ('You cannot enforce these conditions');
 
 $aPlayer = loadPlayer($warDat[5], $unitFile, 400);
 $dPlayer = loadPlayer($warDat[6], $unitFile, 400);
@@ -34,8 +34,8 @@ $dPlayer = loadPlayer($warDat[6], $unitFile, 400);
 $aDipSlot = new blockSlot($aPlayer->get('dipSlot'), $slotFile, 40);
 $dDipSlot = new blockSlot($dPlayer->get('dipSlot'), $slotFile, 40);
 
-$aDipSlot->addItem($slotFile, pack('i*', $warDat[6], 3, time(), 3*24*3600);
-$dDipSlot->addItem($slotFile, pack('i*', $warDat[5], 3, time(), 3*24*3600);
+$aDipSlot->addItem($slotFile, pack('i*', $warDat[6], 3, time(), 3*24*3600));
+$dDipSlot->addItem($slotFile, pack('i*', $warDat[5], 3, time(), 3*24*3600));
 
 // Make the demanded changes on the defender
 

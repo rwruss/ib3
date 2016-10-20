@@ -4,10 +4,11 @@ require_once('./slotFunctions.php');
 require_once('./unitClass.php');
 require_once('./sysMessage.php');
 
-$warFile = fopen($gamePath.'/wars.war', 'rb');
-$unitFile = fopen($gamePath.'/unitDat.dat', 'rb');
-$slotFile = fopen($gamePath.'/gameSlots.slt', 'rb');
+$warFile = fopen($gamePath.'/wars.war', 'r+b');
+$unitFile = fopen($gamePath.'/unitDat.dat', 'r+b');
+$slotFile = fopen($gamePath.'/gameSlots.slt', 'r+b');
 
+print_r($postVals);
 
 //Load war info
 fseek($warFile, $postVals[1]*$defaultBlockSize);
@@ -34,7 +35,7 @@ $objList = [];
 $offers = 0;
 $offerStrings = [];
 while ($check < sizeof($postVals) && $offers < 3) {
-	//echo $check.' vs '.sizeof($postVals);
+	echo 'Offer #'.$offers;
 	switch($postVals[$check]) {
 		case 1: // resources
 			echo 'Resources';
@@ -44,8 +45,9 @@ while ($check < sizeof($postVals) && $offers < 3) {
 				$resources[$postVals[$check+1]] = $postVals[$check+2];
 			}
 			$rscCheck = true;
-			$check +=3;
 			$offerStrings[$offers] = pack('i*', 1, $postVals[$check+1], $postVals[$check+2]);
+			$check +=3;
+
 		break;
 
 		case 2: //  object
@@ -56,11 +58,11 @@ while ($check < sizeof($postVals) && $offers < 3) {
 				echo 'Cant offer this unit';
 				$objPass = false;
 			} else $objList[] = $postVals[$check+1];
-
-			$check +=2;
 			$offerStrings[$offers] = pack('i*', 2, $postVals[$check+1]);
+			$check +=2;
+
 		break;
-		
+
 		default:
 			$offerStrings[$offers] = pack('i*', 0, 0, 0);
 		break;
@@ -105,16 +107,18 @@ if ($rscPass && $objPass) {
 	for ($i=0; $i<sizeof($objList); $i++) {
 		echo 'Reserve object '.$objList[$i];
 	}
+	// Record the offered items
+	echo ' Record the offerings';
+	fseek($warFile, $postVals[1]*$defaultBlockSize+36+36*$warPosition);
+	fwrite($warFile, $offerStrings[0].$offerStrings[1].$offerStrings[2]);
 } else {
 	for ($i=0; $i<sizeof($neededRsc); $i++) {
 		echo 'You need more '.$neededRsc[$i];
 	}
-	
-	// Record the offered items
-	fseek($warFile, $postVals[1]*$defaultBlockSize+36+36*$warPosition);
-	fwrite($warFile, $offerStrings[0].$offerStrings[1].$offerStrings[2]);
-}
 
+
+}
+/*
 // Process demands made
 $demands = 0;
 $demandStrings = [];
@@ -138,17 +142,17 @@ while ($check < sizeof($postVals) && $demands < 3) {
 			$check +=2;
 			$demandStrings[$demands] = pack('i*', 2, $postVals[$check+1]);
 		break;
-		
+
 		case 3: // A default character type/rank
 			$check+=2;
 			$demandStrings[$demands] = pack('i*', 3, $postVals[$check+1]);
 		break;
-		
+
 		case 4: // A default unit type/rank
 			$check+=2;
 			$demandStrings[$demands] = pack('i*', 3, $postVals[$check+1]);
 		break;
-		
+
 		default:
 			$demandStrings[$demands] = pack('i*', 0,0,0);
 		break;
@@ -159,7 +163,7 @@ while ($check < sizeof($postVals) && $demands < 3) {
 // Record the demanded items
 fseek($warFile, $postVals[1]*$defaultBlockSize+108+36*$warPosition);
 fwrite($warFile, $demandStrings[0].$demandStrings[1].$demandStrings[2]);
-
+*/
 echo 'Done';
 // Verify that the player has enouh resources in they treasury
 /*

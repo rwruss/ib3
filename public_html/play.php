@@ -2748,7 +2748,7 @@ precision mediump float;
 		fclose($unitFile);
 		fclose($slotFile);
 		echo '
-		
+
 		genCharList[0] = new character({unitType:"character", unitID:1, unitName:"Faction Leader", actionPoints:0, strength:0});
 		genCharList[1] = new character({unitType:"character", unitID:2, unitName:"Faction Heir", actionPoints:0, strength:0});
 		genCharList[2] = new character({unitType:"character", unitID:3, unitName:"General", actionPoints:0, strength:0});
@@ -2770,7 +2770,16 @@ precision mediump float;
 		info = info  + ","+document.getElementById(src).value;
 		passClick(info, trg);
 	}
-var playerRsc = [0, 1000, 2000, 3000, 4000, 500];';
+var playerRsc = [0, 1000, 2000, 3000, 4000, 500];
+var defaultChars = [new character({unitType:"character", unitID:1, 	unitName:"Faction Leader", actionPoints:1000, strength:75}),
+	new character({unitType:"character", unitID:2, unitName:"Faction Heir", actionPoints:1000, strength:75}),
+	new character({unitType:"character", unitID:3, unitName:"General", actionPoints:1000, strength:75}),
+	new character({unitType:"character", unitID:4, unitName:"Other", actionPoints:1000, strength:75})];
+
+var defaultUnits = [new warband({unitType:"warband", unitID:1, unitName:"Infantry", actionPoints:100, strength:75, tNum:0}),
+	new warband({unitType:"warband", unitID:2, unitName:"Cavalry", actionPoints:100, strength:75, tNum:0}),
+	new warband({unitType:"warband", unitID:3, unitName:"U3", actionPoints:100, strength:75, tNum:0}),
+	new warband({unitType:"warband", unitID:4, unitName:"U4", actionPoints:100, strength:75, tNum:0})]';
 
 
 

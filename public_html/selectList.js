@@ -2,21 +2,21 @@ class objectList {
 	constructor () {
 
 	}
-	
+
 	SLsingleButton(target, opts) {
 		console.log(this);
-		let selectButton = addDiv("b1", "button", target);
+		var selectButton = addDiv("b1", "button", target);
 		selectButton.innerHTML = "button";
 		let item = this;
 		selectButton.addEventListener("click", function () {item.SLsingleSelect(selectButton)});
-		
+
 		if (typeof opts !== "undefined") {
 			if (opts.setVal) {
 				console.log("set existing");
 				this.existingValue(selectButton, opts);
 			}
 		}
-		
+
 		return selectButton;
 	}
 
@@ -67,22 +67,27 @@ class resourceList extends objectList {
 	constructor(parentList, opts) {
 		super();
 		this.listItems = Object.keys(parentList);
+		this.prefix = 1;
+		this.slideDefault = false;
 		//console.log(opts);
 		if (typeof opts !== "undefined") {
 			//console.log("run opts");
-			if (opts.items.length > 0) this.listItems = opts.items;					
+			//if (opts.items.length > 0) this.listItems = opts.items;
+			this.listItems = opts.items || this.listItems;
 			this.prefix = opts.prefix || 1;
+			this.slideDefault = opts.max || false;
 		}
 		this.parentList = parentList;
-		
+
 		//console.log(this);
 	}
 
 	getValue(trg) {
 		return this.prefix + "," + trg.selectedValue+","+trg.showBox.slider.slide.value;
 	}
-	
+
 	existingValue(target, opts) {
+		console.log("set exsit ofr rsc")
 		this.showSelected(opts.setVal, target);
 		setSlideQty(target.showBox, opts.setQty);
 		target.showBox.slider.slide.value = opts.setQty;
@@ -104,7 +109,8 @@ class resourceList extends objectList {
 		trg.selectedValue = id;
 		trg.showBox = slideBox(trg,0);
 		trg.showBox.unitSpace.innerHTML = id;
-		//setSlideQty(trg.showBox, playerRsc[id]);
+		if (this.slideDefault) setSlideQty(trg.showBox, this.slideDefault);
+		else setSlideQty(trg.showBox, playerRsc[id]);
 		trg.listItem = this;
 	}
 
@@ -130,13 +136,15 @@ class uList extends objectList {
 		super();
 		this.listItems = Object.keys(parentList);
 		if (typeof opts !== "undefined") {
-			if (opts.items.length > 0) this.listItems = opts.items;					
+			//if (opts.items.length > 0) this.listItems = opts.items;
+			this.listItems = opts.items || this.listItems;
 			this.prefix = opts[1] || 1;
 		}
 		this.parentList = parentList;
 	}
-	
+
 	existingValue(target, opts) {
+		console.log("ulist existing");
 		this.showSelected(opts.setVal, target);
 	}
 
@@ -154,9 +162,11 @@ class uList extends objectList {
 
 	showSelected(id, trg) {
 		SlclearTarget(trg);
-		trg.innerHTML = id;
+		//trg.innerHTML = id;
 		trg.listItem = this;
 		trg.selectedValue = id;
+		console.log(this.parentList[id]);
+		this.parentList[id].renderSummary(trg);
 	}
 
 	typeIcon(trg) {
@@ -172,12 +182,12 @@ class multiList extends objectList {
 		super();
 		this.listItems = Object.keys(parentList);
 		if (typeof opts !== "undefined") {
-			if (opts.items.length > 0) this.listItems = opts.items;					
+			if (opts.items.length > 0) this.listItems = opts.items;
 			this.prefix = opts[1] || 1;
 		}
 		this.parentList = parentList;
 	}
-	
+
 	existingValue(target, opts) {
 		console.log("multi target to " + opts.list + " index " + [opts.setVal]);
 		opts.list.existingValue(target, opts);
