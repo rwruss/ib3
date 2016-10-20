@@ -1,0 +1,14 @@
+1001 - Signup Form
+1002 - Login Form
+1003 - Player Stats
+1004 - Player Games
+1005 - Logout
+1006 - Process Signup
+1007 - Create a new player
+1008 - Verify login
+1009 - Show open games
+1010 - Create new game Menu
+1011 - Process create game
+1012 - Load Game
+1013 - Join a Game Process
+1014 - Signup Response
